@@ -1,0 +1,19 @@
+.llm-prose {
+  max-width: 72ch;
+  color: var(--color-foreground);
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+}
+
+.llm-scroll-region {
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .llm-motion-safe {
+    animation: none !important;
+    scroll-behavior: auto !important;
+    transition: none !important;
+  }
+}
