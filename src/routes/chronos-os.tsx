@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowUpRight, LockKeyhole, Wifi } from "lucide-react";
+import { ArrowUpRight, Download, LockKeyhole, Wifi } from "lucide-react";
 import { AuthForm } from "@/components/auth/AuthForm";
 import wallpaper from "@/assets/tech-computing.jpg";
 
@@ -50,7 +50,11 @@ function ChronosOSLogin() {
       <div className="relative z-10 mx-auto grid w-full max-w-6xl flex-1 items-center gap-12 px-5 py-12 md:grid-cols-[1fr_420px] md:px-10">
         <section className="text-white">
           <p className="text-xs font-medium uppercase tracking-[0.2em] text-white/65">
-            {now.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" })}
+            {now.toLocaleDateString(undefined, {
+              weekday: "long",
+              month: "long",
+              day: "numeric",
+            })}
           </p>
           <p className="mt-4 font-display text-6xl font-semibold tabular-nums sm:text-8xl">
             {now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
@@ -59,7 +63,8 @@ function ChronosOSLogin() {
             Your workspace, in its own time.
           </h1>
           <p className="mt-3 max-w-md text-sm leading-relaxed text-white/70">
-            Sign in to continue. ChronosOS keeps this experience focused on secure account access.
+            Sign in to continue. ChronosOS keeps this experience focused on
+            secure account access.
           </p>
         </section>
 
@@ -72,20 +77,39 @@ function ChronosOSLogin() {
               <h2 className="font-display text-lg font-semibold text-foreground">
                 Sign in to ChronosOS
               </h2>
-              <p className="text-xs text-muted-foreground">Use your Ted's Lab account</p>
+              <p className="text-xs text-muted-foreground">
+                Use your Ted's Lab account
+              </p>
             </div>
           </div>
-          <AuthForm mode="signin" showSignupLink={false} redirectAfterSignIn={false} />
+          <AuthForm
+            mode="signin"
+            showSignupLink={false}
+            redirectAfterSignIn={false}
+          />
         </section>
       </div>
 
       <footer className="relative z-10 flex flex-col gap-3 border-t border-white/10 bg-black/20 px-5 py-4 text-xs text-white/65 backdrop-blur-md sm:flex-row sm:items-center sm:justify-between sm:px-8">
         <span className="inline-flex items-center gap-2">
-          <span className="size-1.5 rounded-full bg-primary" /> Ted's Lab account services
+          <span className="size-1.5 rounded-full bg-primary" /> Ted's Lab
+          account services
         </span>
-        <Link to="/download" className="inline-flex items-center gap-1.5 hover:text-white">
-          Get ChronosOS for Mac <ArrowUpRight className="size-3.5" />
-        </Link>
+        <div className="flex flex-wrap items-center gap-4">
+          <a
+            href="/downloads/ChronosOS.dmg"
+            download="ChronosOS.dmg"
+            className="inline-flex items-center gap-1.5 hover:text-white"
+          >
+            <Download className="size-3.5" /> Download DMG
+          </a>
+          <Link
+            to="/download"
+            className="inline-flex items-center gap-1.5 hover:text-white"
+          >
+            Get ChronosOS for Mac <ArrowUpRight className="size-3.5" />
+          </Link>
+        </div>
       </footer>
     </main>
   );

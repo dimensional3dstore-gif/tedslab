@@ -1,0 +1,1 @@
+import{t as e}from"./photosynthese-hp2KrDXh.js";var t=e;export{t as component};

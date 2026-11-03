@@ -1,0 +1,1 @@
+var e=`/assets/tech-computing-BxqdUC2U.jpg`;export{e as t};

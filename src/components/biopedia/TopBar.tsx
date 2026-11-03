@@ -1,4 +1,13 @@
-import { Bookmark, History, Menu, Search, Sun, Moon, User } from "lucide-react";
+import {
+  Bookmark,
+  Download,
+  History,
+  Menu,
+  Search,
+  Sun,
+  Moon,
+  User,
+} from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/use-auth";
 
@@ -40,6 +49,17 @@ export function TopBar({
         <Search className="pointer-events-none absolute top-1/2 right-4 size-4 -translate-y-1/2 text-muted-foreground" />
       </label>
 
+      <a
+        href="/downloads/ChronosOS.dmg"
+        download="ChronosOS.dmg"
+        aria-label="Download ChronosOS DMG"
+        title="Download ChronosOS DMG"
+        className="inline-flex h-10 shrink-0 items-center gap-2 rounded-md border border-border px-3 text-sm font-medium text-foreground hover:bg-secondary"
+      >
+        <Download className="size-4" />
+        <span className="hidden sm:inline">Download DMG</span>
+      </a>
+
       <div className="ml-auto hidden items-center gap-5 md:flex">
         <span className="flex items-center gap-2 text-sm text-muted-foreground">
           <Bookmark className="size-4" />
@@ -64,7 +84,11 @@ export function TopBar({
               compact ? "translate-x-6" : "translate-x-0"
             }`}
           >
-            {compact ? <Moon className="size-3.5" /> : <Sun className="size-3.5" />}
+            {compact ? (
+              <Moon className="size-3.5" />
+            ) : (
+              <Sun className="size-3.5" />
+            )}
           </span>
         </button>
         {user && (
@@ -75,7 +99,9 @@ export function TopBar({
               </span>
               <div className="leading-tight">
                 <p className="text-sm font-medium">My dashboard</p>
-                <p className="max-w-[10rem] truncate text-xs text-muted-foreground">{user.email}</p>
+                <p className="max-w-[10rem] truncate text-xs text-muted-foreground">
+                  {user.email}
+                </p>
               </div>
             </Link>
           </div>

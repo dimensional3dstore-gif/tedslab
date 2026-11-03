@@ -1,0 +1,84 @@
+//#region node_modules/.nitro/vite/services/ssr/assets/biopedia-data-CPw6dQS_.js
+var articles = [
+	{
+		slug: "neurons",
+		title: "Neurons: The Body's Communication Network",
+		excerpt: "Discover how neurons transmit signals and coordinate every function.",
+		minutes: 8,
+		tone: "cyan"
+	},
+	{
+		slug: "animal-adaptations",
+		title: "Adaptations in the Animal Kingdom",
+		excerpt: "Explore amazing adaptations that help animals survive in their environments.",
+		minutes: 6,
+		tone: "amber"
+	},
+	{
+		slug: "immune-system",
+		title: "The Immune System Explained",
+		excerpt: "Learn how your body defends itself against harmful invaders.",
+		minutes: 7,
+		tone: "green"
+	},
+	{
+		slug: "fungi",
+		title: "The Hidden World of Fungi",
+		excerpt: "Fungi play a crucial role in nature—more than you think.",
+		minutes: 5,
+		tone: "violet"
+	},
+	{
+		slug: "zygote-to-baby",
+		title: "From Zygote to Baby",
+		excerpt: "A fascinating journey through human development.",
+		minutes: 9,
+		tone: "rose"
+	}
+];
+var timeline = [
+	{
+		when: "3.5 Ga",
+		what: "First Life Forms"
+	},
+	{
+		when: "541 Ma",
+		what: "Cambrian Explosion"
+	},
+	{
+		when: "200 Ma",
+		what: "Age of Dinosaurs"
+	},
+	{
+		when: "66 Ma",
+		what: "Mass Extinction"
+	},
+	{
+		when: "Present",
+		what: "Human Civilization"
+	}
+];
+var quiz = {
+	question: "Which organelle is known as the powerhouse of the cell?",
+	options: [
+		{
+			key: "A",
+			label: "Nucleus"
+		},
+		{
+			key: "B",
+			label: "Mitochondria"
+		},
+		{
+			key: "C",
+			label: "Ribosome"
+		},
+		{
+			key: "D",
+			label: "Golgi Apparatus"
+		}
+	],
+	answer: "B"
+};
+//#endregion
+export { quiz as n, timeline as r, articles as t };

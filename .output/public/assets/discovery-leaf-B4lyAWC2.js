@@ -1,0 +1,1 @@
+var e=`/assets/discovery-leaf-CDLQK6NX.jpg`;export{e as t};
