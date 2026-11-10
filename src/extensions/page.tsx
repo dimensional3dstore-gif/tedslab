@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Download } from "lucide-react";
+import { AppShell } from "@/components/biopedia/AppShell";
 import { getChronosOSDownloadUrl } from "@/lib/chronos-os-download";
 import { FontBar } from "./components/noter/font-bar";
 import { FormatBar } from "./components/noter/format-bar";
@@ -23,42 +24,44 @@ export default function ExtensionsPage() {
   const chronosDownloadUrl = getChronosOSDownloadUrl();
 
   return (
-    <main className="mx-auto w-full max-w-5xl space-y-6 p-6">
-      <header>
-        <h1 className="font-display text-3xl font-bold text-foreground">
-          Extensions
-        </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Small tools that extend writing and research.
-        </p>
-      </header>
-      <div className="divide-y divide-border border-y border-border">
-        {extensions.map((extension) => (
-          <Link
-            key={extension.title}
-            to={extension.path}
-            className="flex flex-wrap items-center justify-between gap-3 py-5 hover:text-primary"
-          >
-            <span>
-              <span className="block font-semibold text-foreground">
-                {extension.title}
+    <AppShell>
+      <div className="mx-auto w-full max-w-5xl space-y-6">
+        <header>
+          <h1 className="font-display text-3xl font-bold text-foreground">
+            Extensions
+          </h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Small tools that extend writing and research.
+          </p>
+        </header>
+        <div className="divide-y divide-border border-y border-border">
+          {extensions.map((extension) => (
+            <Link
+              key={extension.title}
+              to={extension.path}
+              className="flex flex-wrap items-center justify-between gap-3 py-5 hover:text-primary"
+            >
+              <span>
+                <span className="block font-semibold text-foreground">
+                  {extension.title}
+                </span>
+                <span className="mt-1 block text-sm text-muted-foreground">
+                  {extension.description}
+                </span>
               </span>
-              <span className="mt-1 block text-sm text-muted-foreground">
-                {extension.description}
-              </span>
-            </span>
-            <span aria-hidden="true">→</span>
-          </Link>
-        ))}
+              <span aria-hidden="true">→</span>
+            </Link>
+          ))}
+        </div>
+        <a
+          href={chronosDownloadUrl}
+          download
+          className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
+        >
+          <Download className="size-4" /> Download ChronosOS for Mac
+        </a>
       </div>
-      <a
-        href={chronosDownloadUrl}
-        download
-        className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
-      >
-        <Download className="size-4" /> Download ChronosOS for Mac
-      </a>
-    </main>
+    </AppShell>
   );
 }
 
@@ -103,38 +106,40 @@ export function NoterPage() {
   };
 
   return (
-    <main className="mx-auto w-full max-w-4xl space-y-5 p-6">
-      <header>
-        <h1 className="font-display text-3xl font-bold text-foreground">
-          Noter
-        </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Notes stay in this browser until you export them.
-        </p>
-      </header>
-      <FormatBar onFormat={applyFormat} />
-      <FontBar value={font} onChange={setFont} />
-      <textarea
-        ref={editorRef}
-        value={text}
-        onChange={(event) => setText(event.target.value)}
-        aria-label="Note text"
-        placeholder="Write a note…"
-        className={`min-h-80 w-full rounded-md border border-input bg-background p-4 leading-relaxed text-foreground ${font === "serif" ? "font-serif" : font === "mono" ? "font-mono" : "font-sans"}`}
-      />
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <p role="status" className="text-sm text-muted-foreground">
-          {notice || `${text.length.toLocaleString()} characters`}
-        </p>
-        <button
-          type="button"
-          disabled={!text}
-          onClick={downloadNote}
-          className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-50"
-        >
-          <Download className="size-4" /> Download notes
-        </button>
+    <AppShell>
+      <div className="mx-auto w-full max-w-4xl space-y-5">
+        <header>
+          <h1 className="font-display text-3xl font-bold text-foreground">
+            Noter
+          </h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Notes stay in this browser until you export them.
+          </p>
+        </header>
+        <FormatBar onFormat={applyFormat} />
+        <FontBar value={font} onChange={setFont} />
+        <textarea
+          ref={editorRef}
+          value={text}
+          onChange={(event) => setText(event.target.value)}
+          aria-label="Note text"
+          placeholder="Write a note…"
+          className={`min-h-80 w-full rounded-md border border-input bg-background p-4 leading-relaxed text-foreground ${font === "serif" ? "font-serif" : font === "mono" ? "font-mono" : "font-sans"}`}
+        />
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <p role="status" className="text-sm text-muted-foreground">
+            {notice || `${text.length.toLocaleString()} characters`}
+          </p>
+          <button
+            type="button"
+            disabled={!text}
+            onClick={downloadNote}
+            className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-50"
+          >
+            <Download className="size-4" /> Download notes
+          </button>
+        </div>
       </div>
-    </main>
+    </AppShell>
   );
 }

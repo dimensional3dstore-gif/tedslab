@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { AppShell } from "@/components/biopedia/AppShell";
 
 type Coordinates = { latitude: number; longitude: number; accuracy: number };
 
@@ -70,63 +71,65 @@ export default function GpsScannerPage() {
   };
 
   return (
-    <main className="mx-auto w-full max-w-3xl space-y-6 p-6">
-      <header>
-        <h1 className="text-3xl font-bold text-foreground">
-          GPS and camera scanner
-        </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Read your device coordinates and preview the rear camera locally.
+    <AppShell>
+      <main className="mx-auto w-full max-w-3xl space-y-6">
+        <header>
+          <h1 className="text-3xl font-bold text-foreground">
+            GPS and camera scanner
+          </h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Read your device coordinates and preview the rear camera locally.
+          </p>
+        </header>
+        <section className="grid gap-4 sm:grid-cols-2">
+          <button
+            type="button"
+            onClick={locate}
+            className="rounded-md bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground"
+          >
+            Read location
+          </button>
+          <button
+            type="button"
+            onClick={toggleCamera}
+            className="rounded-md border border-border px-4 py-3 text-sm font-semibold text-foreground hover:bg-secondary"
+          >
+            {cameraActive ? "Stop camera" : "Start camera"}
+          </button>
+        </section>
+        <p
+          role="status"
+          aria-live="polite"
+          className="text-sm text-muted-foreground"
+        >
+          {message}
         </p>
-      </header>
-      <section className="grid gap-4 sm:grid-cols-2">
-        <button
-          type="button"
-          onClick={locate}
-          className="rounded-md bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground"
-        >
-          Read location
-        </button>
-        <button
-          type="button"
-          onClick={toggleCamera}
-          className="rounded-md border border-border px-4 py-3 text-sm font-semibold text-foreground hover:bg-secondary"
-        >
-          {cameraActive ? "Stop camera" : "Start camera"}
-        </button>
-      </section>
-      <p
-        role="status"
-        aria-live="polite"
-        className="text-sm text-muted-foreground"
-      >
-        {message}
-      </p>
-      <video
-        ref={videoRef}
-        autoPlay
-        muted
-        playsInline
-        className="aspect-video w-full rounded-lg bg-black object-cover"
-        aria-label="Local camera preview"
-      />
-      {coordinates && (
-        <dl className="grid gap-3 rounded-lg border border-border bg-card p-4 sm:grid-cols-3">
-          <Coordinate
-            label="Latitude"
-            value={coordinates.latitude.toFixed(6)}
-          />
-          <Coordinate
-            label="Longitude"
-            value={coordinates.longitude.toFixed(6)}
-          />
-          <Coordinate
-            label="Accuracy"
-            value={`${Math.round(coordinates.accuracy)} m`}
-          />
-        </dl>
-      )}
-    </main>
+        <video
+          ref={videoRef}
+          autoPlay
+          muted
+          playsInline
+          className="aspect-video w-full rounded-lg bg-black object-cover"
+          aria-label="Local camera preview"
+        />
+        {coordinates && (
+          <dl className="grid gap-3 rounded-lg border border-border bg-card p-4 sm:grid-cols-3">
+            <Coordinate
+              label="Latitude"
+              value={coordinates.latitude.toFixed(6)}
+            />
+            <Coordinate
+              label="Longitude"
+              value={coordinates.longitude.toFixed(6)}
+            />
+            <Coordinate
+              label="Accuracy"
+              value={`${Math.round(coordinates.accuracy)} m`}
+            />
+          </dl>
+        )}
+      </main>
+    </AppShell>
   );
 }
 

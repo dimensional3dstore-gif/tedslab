@@ -1,1 +1,0 @@
-import{t as e}from"./jsx-runtime-Cx0BB4qO.js";import{t}from"./PlatformPlaceholderPage-BtozQwG7.js";var n=e(),r=()=>(0,n.jsx)(t,{title:`Graphication`,description:`A visual workspace for turning data and ideas into connected graphs.`,area:`Graphication`,nextSteps:[`Connect graph inputs.`,`Add layout and editing tools.`,`Add export and collaboration.`]});export{r as component};

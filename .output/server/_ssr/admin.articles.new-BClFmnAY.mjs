@@ -2,7 +2,7 @@ import { r as __toESM } from "../_runtime.mjs";
 import { u as require_react } from "../_libs/@floating-ui/react-dom+[...].mjs";
 import { v as useNavigate } from "../_libs/@tanstack/react-router+[...].mjs";
 import { o as require_jsx_runtime } from "../_libs/@radix-ui/react-collection+[...].mjs";
-import { _ as layoutFromArticleBody, d as SUBJECTS, i as DEFAULT_ARTICLE_LAYOUT } from "./router-BOjcgrMn.mjs";
+import { _ as layoutFromArticleBody, d as SUBJECTS, i as DEFAULT_ARTICLE_LAYOUT } from "./router-Cd--I7TM.mjs";
 import { n as imageKeys } from "./images-BfzzCxZw.mjs";
 import { t as Button } from "./button-D0rYmyz_.mjs";
 import { t as Input } from "./input-Ctxrk36z.mjs";
