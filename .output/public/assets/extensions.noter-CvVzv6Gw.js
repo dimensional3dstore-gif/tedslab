@@ -1,0 +1,1 @@
+import{n as e}from"./page-DMdea4Vt.js";var t=e;export{t as component};
