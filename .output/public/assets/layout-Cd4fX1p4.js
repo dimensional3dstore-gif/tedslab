@@ -1,0 +1,1 @@
+import{t as e}from"./jsx-runtime-Cx0BB4qO.js";import{t}from"./AppShell-D28Yg0hW.js";var n=e();function r({children:e}){return(0,n.jsx)(t,{children:(0,n.jsx)(`main`,{className:`mx-auto w-full max-w-5xl space-y-6`,children:e})})}export{r as t};

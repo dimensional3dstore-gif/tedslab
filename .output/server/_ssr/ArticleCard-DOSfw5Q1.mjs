@@ -1,4 +1,4 @@
-import { _ as Link } from "../_libs/@tanstack/react-router+[...].mjs";
+import { x as Link } from "../_libs/@tanstack/react-router+[...].mjs";
 import { o as require_jsx_runtime } from "../_libs/@radix-ui/react-collection+[...].mjs";
 import { $t as Bookmark, Kt as ChevronRight, Rt as Clock } from "../_libs/lucide-react.mjs";
 import { r as resolveImage } from "./images-BfzzCxZw.mjs";

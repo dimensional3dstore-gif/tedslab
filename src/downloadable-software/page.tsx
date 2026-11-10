@@ -52,7 +52,9 @@ export default function DownloadableSoftwarePage() {
     return () => controller.abort();
   }, []);
 
-  const dmg = release?.assets.find((asset) => asset.name === "ChronosOS.dmg");
+  const dmg =
+    release?.assets.find((asset) => asset.name === "ChronosOS.dmg") ??
+    release?.assets.find((asset) => /^ChronosOS.*\.dmg$/i.test(asset.name));
 
   return (
     <AppShell>

@@ -1,6 +1,6 @@
 import { r as __toESM } from "../_runtime.mjs";
 import { u as require_react } from "../_libs/@floating-ui/react-dom+[...].mjs";
-import { _ as Link } from "../_libs/@tanstack/react-router+[...].mjs";
+import { x as Link } from "../_libs/@tanstack/react-router+[...].mjs";
 import { o as require_jsx_runtime } from "../_libs/@radix-ui/react-collection+[...].mjs";
 import { t as useAuth } from "./use-auth-Ct_UUEWR.mjs";
 import { t as Button } from "./button-D0rYmyz_.mjs";
