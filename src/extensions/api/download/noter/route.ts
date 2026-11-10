@@ -7,7 +7,10 @@ export async function POST(request: Request): Promise<Response> {
     typeof body.text !== "string" ||
     body.text.length > 1_000_000
   )
-    return Response.json({ error: "A note of at most 1 MB is required." }, { status: 400 });
+    return Response.json(
+      { error: "A note of at most 1 MB is required." },
+      { status: 400 },
+    );
   return new Response(body.text, {
     headers: {
       "Content-Type": "text/plain; charset=utf-8",

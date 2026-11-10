@@ -1,6 +1,7 @@
 # Creating PDFs
 
 ## Workflow
+
 1. Confirm the audience, page size, reading order, and required content.
 2. Use a maintained PDF library; keep layout data separate from rendering logic.
 3. Embed or reference fonts and images with appropriate rights and licenses.

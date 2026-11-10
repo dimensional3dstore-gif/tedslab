@@ -17,7 +17,11 @@ export type OmlxMessage = {
 
 type OmlxDesktopBridge = {
   listModels: (baseUrl: string, apiKey?: string) => Promise<unknown>;
-  loadModel: (baseUrl: string, modelId: string, apiKey?: string) => Promise<unknown>;
+  loadModel: (
+    baseUrl: string,
+    modelId: string,
+    apiKey?: string,
+  ) => Promise<unknown>;
   chat: (
     baseUrl: string,
     modelId: string,
@@ -51,8 +55,10 @@ async function readResponse(response: Response): Promise<unknown> {
   if (!response.ok) {
     let message = `oMLX returned HTTP ${response.status}`;
     if (typeof payload === "object" && payload !== null) {
-      if ("detail" in payload && typeof payload.detail === "string") message = payload.detail;
-      else if ("error" in payload && typeof payload.error === "string") message = payload.error;
+      if ("detail" in payload && typeof payload.detail === "string")
+        message = payload.detail;
+      else if ("error" in payload && typeof payload.error === "string")
+        message = payload.error;
       else if (
         "error" in payload &&
         typeof payload.error === "object" &&
@@ -75,8 +81,12 @@ function requestHeaders(apiKey: string | undefined, json = false): Headers {
   return headers;
 }
 
-export async function listOmlxModels(baseUrl: string, apiKey?: string): Promise<OmlxModel[]> {
-  const bridge = typeof window === "undefined" ? undefined : window.chronosOS?.omlx;
+export async function listOmlxModels(
+  baseUrl: string,
+  apiKey?: string,
+): Promise<OmlxModel[]> {
+  const bridge =
+    typeof window === "undefined" ? undefined : window.chronosOS?.omlx;
   const payload = bridge
     ? await bridge.listModels(baseUrl, apiKey)
     : await readResponse(
@@ -98,14 +108,18 @@ export async function loadOmlxModel(
   apiKey?: string,
 ): Promise<void> {
   if (!modelId.trim()) throw new Error("Select a local model first.");
-  const bridge = typeof window === "undefined" ? undefined : window.chronosOS?.omlx;
+  const bridge =
+    typeof window === "undefined" ? undefined : window.chronosOS?.omlx;
   const payload = bridge
     ? await bridge.loadModel(baseUrl, modelId, apiKey)
     : await readResponse(
-        await fetch(`${apiBase(baseUrl)}/v1/models/${encodeURIComponent(modelId)}/load`, {
-          method: "POST",
-          headers: requestHeaders(apiKey),
-        }),
+        await fetch(
+          `${apiBase(baseUrl)}/v1/models/${encodeURIComponent(modelId)}/load`,
+          {
+            method: "POST",
+            headers: requestHeaders(apiKey),
+          },
+        ),
       );
   if (
     !payload ||
@@ -119,22 +133,33 @@ export async function loadOmlxModel(
   }
 }
 
-export async function chatWithOmlx(config: OmlxConfig, messages: OmlxMessage[]): Promise<string> {
+export async function chatWithOmlx(
+  config: OmlxConfig,
+  messages: OmlxMessage[],
+): Promise<string> {
   if (!config.model.trim()) throw new Error("Select an oMLX model first.");
-  const bridge = typeof window === "undefined" ? undefined : window.chronosOS?.omlx;
+  const bridge =
+    typeof window === "undefined" ? undefined : window.chronosOS?.omlx;
   const payload = bridge
     ? await bridge.chat(config.baseUrl, config.model, messages, config.apiKey)
     : await readResponse(
         await fetch(`${apiBase(config.baseUrl)}/v1/chat/completions`, {
           method: "POST",
           headers: requestHeaders(config.apiKey, true),
-          body: JSON.stringify({ model: config.model, messages, temperature: 0.2, stream: false }),
+          body: JSON.stringify({
+            model: config.model,
+            messages,
+            temperature: 0.2,
+            stream: false,
+          }),
         }),
       );
   if (!payload || typeof payload !== "object")
     throw new Error("oMLX returned an invalid chat response.");
   const choices = "choices" in payload ? payload.choices : undefined;
-  const content = Array.isArray(choices) ? choices[0]?.message?.content : undefined;
+  const content = Array.isArray(choices)
+    ? choices[0]?.message?.content
+    : undefined;
   if (typeof content !== "string" || !content.trim())
     throw new Error("oMLX returned no assistant content.");
   return content.trim();

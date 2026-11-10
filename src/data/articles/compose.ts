@@ -1,5 +1,17 @@
-import { CLUSTERS, NODE_BY_ID, NODES, backlinksTo, neighborsOf } from "../catalog";
-import type { Article, ArticleCore, AtlasNode, ClusterIdOrAtlas, NodeKind } from "../types";
+import {
+  CLUSTERS,
+  NODE_BY_ID,
+  NODES,
+  backlinksTo,
+  neighborsOf,
+} from "../catalog";
+import type {
+  Article,
+  ArticleCore,
+  AtlasNode,
+  ClusterIdOrAtlas,
+  NodeKind,
+} from "../types";
 import { CORES } from "./cores";
 
 function words(s: string): number {
@@ -129,7 +141,9 @@ function fallbackCore(node: AtlasNode): ArticleCore {
     .map((id) => NODE_BY_ID[id])
     .filter((n): n is AtlasNode => n?.kind === "topic" || n?.kind === "hub")
     .slice(0, 5);
-  const born = node.born ? ` The record of a life begins around ${node.born}.` : "";
+  const born = node.born
+    ? ` The record of a life begins around ${node.born}.`
+    : "";
   const tagLine = node.tags.length
     ? ` Its working tags in this vault — ${node.tags.map((t) => `*${t}*`).join(", ")} — are handles for retrieval, not a claim that the subject has been tamed.`
     : "";
@@ -138,7 +152,9 @@ function fallbackCore(node: AtlasNode): ArticleCore {
     lede: `${node.title} is ${kindPhrase(node.kind)} in ${cluster}, kept here as a place you can enter from any neighboring idea.${born} ${node.summary} The atlas refuses to treat this as a dictionary gloss. It is a room with doors, and the doors have names: ${node.related
       .slice(0, 5)
       .map(link)
-      .join(", ")}. To read the entry is to accept that the shortest path through ${node.title.toLowerCase()} is rarely a straight line.`,
+      .join(
+        ", ",
+      )}. To read the entry is to accept that the shortest path through ${node.title.toLowerCase()} is rarely a straight line.`,
     idea: `${node.title} is not a slogan and not a course title. It names a region of argument with methods, enemies, and a habit of producing further questions. ${node.summary} What follows treats the idea as something that can be inhabited: interior rooms, not a label on a cabinet. ${
       topics.length
         ? `The surrounding fields — ${topics.map((t) => link(t.id)).join(", ")} — are not "see also" afterthoughts. They are the load-bearing walls.`
@@ -161,18 +177,48 @@ function fallbackCore(node: AtlasNode): ArticleCore {
   };
 }
 
-function sectionTitles(kind: NodeKind): { idea: string; lineage: string; net: string; tension: string } {
+function sectionTitles(kind: NodeKind): {
+  idea: string;
+  lineage: string;
+  net: string;
+  tension: string;
+} {
   switch (kind) {
     case "figure":
-      return { idea: "Work", lineage: "Life and century", net: "Who they pull in", tension: "Afterlives and arguments" };
+      return {
+        idea: "Work",
+        lineage: "Life and century",
+        net: "Who they pull in",
+        tension: "Afterlives and arguments",
+      };
     case "hub":
-      return { idea: "The continent", lineage: "How the field gathered", net: "Interior ranges", tension: "Fault lines" };
+      return {
+        idea: "The continent",
+        lineage: "How the field gathered",
+        net: "Interior ranges",
+        tension: "Fault lines",
+      };
     case "atlas":
-      return { idea: "What a map of knowledge is", lineage: "Earlier atlases", net: "The eight climates", tension: "What a map conceals" };
+      return {
+        idea: "What a map of knowledge is",
+        lineage: "Earlier atlases",
+        net: "The eight climates",
+        tension: "What a map conceals",
+      };
     case "concept":
-      return { idea: "The working idea", lineage: "Where the word came from", net: "Where it is used", tension: "What it cannot yet do" };
+      return {
+        idea: "The working idea",
+        lineage: "Where the word came from",
+        net: "Where it is used",
+        tension: "What it cannot yet do",
+      };
     default:
-      return { idea: "The field", lineage: "A brief lineage", net: "A neighborhood", tension: "Open problems" };
+      return {
+        idea: "The field",
+        lineage: "A brief lineage",
+        net: "A neighborhood",
+        tension: "Open problems",
+      };
   }
 }
 
@@ -184,7 +230,8 @@ export function composeBody(node: AtlasNode): string {
     .filter((n): n is AtlasNode => Boolean(n));
 
   const preferred = [...neigh].sort((a, b) => {
-    const rank = (k: NodeKind) => ({ hub: 0, topic: 1, concept: 2, figure: 3, atlas: 4 })[k];
+    const rank = (k: NodeKind) =>
+      ({ hub: 0, topic: 1, concept: 2, figure: 3, atlas: 4 })[k];
     return rank(a.kind) - rank(b.kind);
   });
 
@@ -210,7 +257,9 @@ export function composeBody(node: AtlasNode): string {
             (b) =>
               `${link(b.id)} reaches ${link(node.id)} from ${clusterTitle(b.cluster).toLowerCase()}: ${b.summary}`,
           )
-          .join(" ")} Following a backlink is how a reader discovers that a private obsession is already a public road.`
+          .join(
+            " ",
+          )} Following a backlink is how a reader discovers that a private obsession is already a public road.`
       : `Some nodes are sources more than destinations. ${link(node.id)} is densely outgoing; its backlinks will thicken as the vault is read, because reading is itself a way of drawing edges.`;
 
   const close = `To read ${link(node.id)} well is not to finish it. It is to leave with two or three neighbors open, a disagreement you can name, and a sense of where this idea sits in ${clusterTitle(
@@ -248,7 +297,11 @@ export function composeBody(node: AtlasNode): string {
 }
 
 export function wordCountOf(body: string): number {
-  return words(body.replace(/\[\[([^\]|]+)(?:\|[^\]]+)?\]\]/g, "$1").replace(/[#*_]/g, " "));
+  return words(
+    body
+      .replace(/\[\[([^\]|]+)(?:\|[^\]]+)?\]\]/g, "$1")
+      .replace(/[#*_]/g, " "),
+  );
 }
 
 export function getArticle(id: string): Article | undefined {

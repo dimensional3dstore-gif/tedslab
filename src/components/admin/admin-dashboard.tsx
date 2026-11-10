@@ -12,11 +12,15 @@ interface DeploymentMetrics {
 }
 
 async function getDeploymentMetrics(): Promise<DeploymentMetrics> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { count: userCount } = await (supabase as any)
     .from("profiles")
     .select("id", { count: "exact", head: true });
 
-  const { data: settings } = await (supabase as any).from("site_settings").select("key, value");
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: settings } = await (supabase as any)
+    .from("site_settings")
+    .select("key, value");
 
   const metrics = (settings ?? []) as Array<{ key: string; value: string }>;
   const map = Object.fromEntries(metrics.map((item) => [item.key, item.value]));
@@ -29,6 +33,7 @@ async function getDeploymentMetrics(): Promise<DeploymentMetrics> {
 }
 
 const db = supabase as unknown as {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   from: (table: string) => any;
 };
 
@@ -96,7 +101,9 @@ export function AdminDashboard() {
   });
 
   if (isLoading) {
-    return <div className="text-sm text-muted-foreground">Loading statistics...</div>;
+    return (
+      <div className="text-sm text-muted-foreground">Loading statistics...</div>
+    );
   }
 
   const totalContent = stats?.reduce((sum, s) => sum + s.total, 0) ?? 0;
@@ -108,19 +115,27 @@ export function AdminDashboard() {
       <div className="grid gap-4 md:grid-cols-3">
         <Card className="p-6">
           <div className="space-y-2">
-            <h3 className="text-sm font-medium text-muted-foreground">Total Content</h3>
+            <h3 className="text-sm font-medium text-muted-foreground">
+              Total Content
+            </h3>
             <p className="text-3xl font-bold">{totalContent}</p>
           </div>
         </Card>
         <Card className="p-6">
           <div className="space-y-2">
-            <h3 className="text-sm font-medium text-muted-foreground">Published</h3>
-            <p className="text-3xl font-bold text-green-600">{totalPublished}</p>
+            <h3 className="text-sm font-medium text-muted-foreground">
+              Published
+            </h3>
+            <p className="text-3xl font-bold text-green-600">
+              {totalPublished}
+            </p>
           </div>
         </Card>
         <Card className="p-6">
           <div className="space-y-2">
-            <h3 className="text-sm font-medium text-muted-foreground">Drafts</h3>
+            <h3 className="text-sm font-medium text-muted-foreground">
+              Drafts
+            </h3>
             <p className="text-3xl font-bold text-amber-600">{totalDraft}</p>
           </div>
         </Card>
@@ -141,7 +156,8 @@ export function AdminDashboard() {
                     Total: <span className="font-semibold">{stat.total}</span>
                   </span>
                   <span className="text-xs text-green-600">
-                    Published: <span className="font-semibold">{stat.published}</span>
+                    Published:{" "}
+                    <span className="font-semibold">{stat.published}</span>
                   </span>
                   <span className="text-xs text-amber-600">
                     Draft: <span className="font-semibold">{stat.draft}</span>
@@ -150,7 +166,8 @@ export function AdminDashboard() {
               </div>
               <div className="flex gap-2">
                 <Badge variant="outline" className="text-green-700">
-                  {Math.round((stat.published / Math.max(stat.total, 1)) * 100)}%
+                  {Math.round((stat.published / Math.max(stat.total, 1)) * 100)}
+                  %
                 </Badge>
               </div>
             </div>
@@ -172,13 +189,17 @@ export function AdminDashboard() {
 
         <div className="grid gap-4 md:grid-cols-3">
           <div className="rounded-md border border-border bg-secondary/40 p-4">
-            <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">User board</p>
+            <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">
+              User board
+            </p>
             <p className="mt-2 text-3xl font-bold text-foreground">
               {deploymentMetrics?.users ?? 0}
             </p>
           </div>
           <div className="rounded-md border border-border bg-secondary/40 p-4">
-            <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">Visit board</p>
+            <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">
+              Visit board
+            </p>
             <p className="mt-2 text-3xl font-bold text-foreground">
               {deploymentMetrics?.visits ?? 0}
             </p>
@@ -195,7 +216,8 @@ export function AdminDashboard() {
 
         {deployMutation.isSuccess && (
           <div className="mt-4 rounded-md border border-green-200 bg-green-50 p-3 text-sm text-green-800">
-            Deployment started successfully. Production URL: {deployMutation.data?.url}
+            Deployment started successfully. Production URL:{" "}
+            {deployMutation.data?.url}
           </div>
         )}
 

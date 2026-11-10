@@ -78,8 +78,14 @@
     oklch(0.3 0.09 260 / 0.55) 0%,
     oklch(0.16 0.012 250) 65%
   );
-  --gradient-glow: linear-gradient(135deg, oklch(0.78 0.19 145 / 0.18), oklch(0.68 0.2 305 / 0.12));
-  --shadow-glow: 0 0 0 1px oklch(0.78 0.19 145 / 0.25), 0 12px 40px oklch(0.78 0.19 145 / 0.15);
+  --gradient-glow: linear-gradient(
+    135deg,
+    oklch(0.78 0.19 145 / 0.18),
+    oklch(0.68 0.2 305 / 0.12)
+  );
+  --shadow-glow:
+    0 0 0 1px oklch(0.78 0.19 145 / 0.25),
+    0 12px 40px oklch(0.78 0.19 145 / 0.15);
 }
 
 @layer base {

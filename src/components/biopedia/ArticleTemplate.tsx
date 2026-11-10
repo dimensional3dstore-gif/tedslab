@@ -12,7 +12,10 @@ import { Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/biopedia/AppShell";
 import { RelatedArticles } from "@/components/biopedia/RelatedArticles";
 import type { ArticleRow } from "@/lib/content";
-import { layoutFromArticleBody, type ArticleLayout } from "@/lib/article-layout";
+import {
+  layoutFromArticleBody,
+  type ArticleLayout,
+} from "@/lib/article-layout";
 import { resolveImage } from "@/lib/images";
 
 const TABS = [
@@ -40,12 +43,16 @@ export function ArticleTemplate({
     layoutFromArticleBody(article.body) ??
     ({
       version: 1 as const,
-      tags: [article.subject_slug ?? "Article", article.section_slug ?? "Encyclopedia"].filter(
-        Boolean,
-      ),
+      tags: [
+        article.subject_slug ?? "Article",
+        article.section_slug ?? "Encyclopedia",
+      ].filter(Boolean),
       facts: [
         { label: "Subject", value: article.subject_slug ?? "General" },
-        { label: "Read time", value: article.minutes ? `${article.minutes} min` : "—" },
+        {
+          label: "Read time",
+          value: article.minutes ? `${article.minutes} min` : "—",
+        },
       ],
       overview: [article.excerpt ?? "", article.body ?? ""].filter(Boolean),
       sections: [],
@@ -68,7 +75,10 @@ export function ArticleTemplate({
             {i === crumbs.length - 1 ? (
               <span className="font-medium text-primary">{c}</span>
             ) : i === 1 && article.subject_slug ? (
-              <Link to={`/${article.subject_slug}`} className="hover:text-foreground">
+              <Link
+                to={`/${article.subject_slug}`}
+                className="hover:text-foreground"
+              >
                 {c}
               </Link>
             ) : (
@@ -132,7 +142,10 @@ export function ArticleTemplate({
         ))}
       </div>
 
-      <section id="section-0" className="mt-8 rounded-2xl border border-border bg-card/80 p-6">
+      <section
+        id="section-0"
+        className="mt-8 rounded-2xl border border-border bg-card/80 p-6"
+      >
         <h2 className="text-3xl font-bold text-foreground">Overview</h2>
         <div className="mt-6 space-y-5 text-base leading-relaxed text-muted-foreground">
           {layout.overview.map((p) => (
@@ -140,7 +153,9 @@ export function ArticleTemplate({
           ))}
           {layout.equation && (
             <div className="overflow-hidden rounded-xl border border-primary/20 bg-primary/5 p-5 text-center">
-              <div className="text-sm font-semibold text-foreground">{layout.equation.formula}</div>
+              <div className="text-sm font-semibold text-foreground">
+                {layout.equation.formula}
+              </div>
               <div className="mt-2 text-xs uppercase tracking-[0.12em] text-muted-foreground">
                 {layout.equation.caption}
               </div>
@@ -158,16 +173,26 @@ export function ArticleTemplate({
           <h2 className="text-3xl font-bold text-foreground">{sec.heading}</h2>
           <div className="mt-6 space-y-4">
             {sec.paragraphs?.map((p) => (
-              <p key={p.slice(0, 40)} className="text-base leading-relaxed text-muted-foreground">
+              <p
+                key={p.slice(0, 40)}
+                className="text-base leading-relaxed text-muted-foreground"
+              >
                 {p}
               </p>
             ))}
             {sec.cards?.map((card, ci) => (
-              <div key={card.title} className="rounded-lg border border-border bg-secondary/50 p-4">
+              <div
+                key={card.title}
+                className="rounded-lg border border-border bg-secondary/50 p-4"
+              >
                 <h3 className="font-semibold text-foreground">
-                  {card.title.startsWith(String(ci + 1)) ? card.title : `${ci + 1}. ${card.title}`}
+                  {card.title.startsWith(String(ci + 1))
+                    ? card.title
+                    : `${ci + 1}. ${card.title}`}
                 </h3>
-                <p className="mt-2 text-sm text-muted-foreground">{card.text}</p>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  {card.text}
+                </p>
               </div>
             ))}
           </div>
@@ -212,20 +237,22 @@ export function ArticleTemplate({
           </h2>
         </div>
         <nav className="space-y-1 p-2 text-sm">
-          {["Overview", ...layout.sections.map((s) => s.heading)].map((item, index) => (
-            <a
-              key={item}
-              href={preview ? undefined : `#section-${index}`}
-              className={`flex items-center justify-between rounded-md px-3 py-2 transition-colors ${
-                index === 0
-                  ? "bg-primary/10 text-primary"
-                  : "text-muted-foreground hover:bg-secondary hover:text-foreground"
-              }`}
-            >
-              <span>{item}</span>
-              {index !== 0 && <ChevronRight className="size-3.5" />}
-            </a>
-          ))}
+          {["Overview", ...layout.sections.map((s) => s.heading)].map(
+            (item, index) => (
+              <a
+                key={item}
+                href={preview ? undefined : `#section-${index}`}
+                className={`flex items-center justify-between rounded-md px-3 py-2 transition-colors ${
+                  index === 0
+                    ? "bg-primary/10 text-primary"
+                    : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                }`}
+              >
+                <span>{item}</span>
+                {index !== 0 && <ChevronRight className="size-3.5" />}
+              </a>
+            ),
+          )}
         </nav>
       </section>
       <section className="bio-panel">
@@ -237,9 +264,14 @@ export function ArticleTemplate({
         </div>
         <div className="grid grid-cols-2 gap-3 p-4 text-sm">
           {layout.facts.map((f) => (
-            <div key={f.label} className="rounded-lg border border-border bg-secondary/50 p-3">
+            <div
+              key={f.label}
+              className="rounded-lg border border-border bg-secondary/50 p-3"
+            >
               <p className="text-xs text-muted-foreground">{f.label}</p>
-              <p className="mt-1 text-xs font-medium text-foreground">{f.value}</p>
+              <p className="mt-1 text-xs font-medium text-foreground">
+                {f.value}
+              </p>
             </div>
           ))}
         </div>

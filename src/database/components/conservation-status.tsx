@@ -8,7 +8,11 @@ const statusTone: Record<string, string> = {
   "Critically Endangered": "text-destructive",
 };
 
-export function ConservationStatus({ value }: { value: string | null | undefined }) {
+export function ConservationStatus({
+  value,
+}: {
+  value: string | null | undefined;
+}) {
   if (!value?.trim()) return null;
   return (
     <span

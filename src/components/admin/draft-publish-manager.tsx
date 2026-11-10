@@ -22,6 +22,7 @@ interface DraftPublishManagerProps<T extends DraftPublishItem> {
 }
 
 const db = supabase as unknown as {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   from: (table: string) => any;
 };
 
@@ -43,8 +44,7 @@ export function DraftPublishManager<T extends DraftPublishItem>({
 
   // Determine current status from both status field and published boolean
   const currentStatus: ContentStatus =
-    (item.status as ContentStatus) ||
-    (item.published ? "published" : "draft");
+    (item.status as ContentStatus) || (item.published ? "published" : "draft");
 
   const handleStatusChange = async (newStatus: ContentStatus) => {
     setUpdating(true);
@@ -55,7 +55,10 @@ export function DraftPublishManager<T extends DraftPublishItem>({
         published: newStatus === "published",
       };
 
-      const { error: updateError } = await db.from(table).update(payload).eq("id", item.id);
+      const { error: updateError } = await db
+        .from(table)
+        .update(payload)
+        .eq("id", item.id);
       if (updateError) throw updateError;
 
       await queryClient.invalidateQueries({ queryKey });

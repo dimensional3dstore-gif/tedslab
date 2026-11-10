@@ -5,6 +5,7 @@ A comprehensive biology education platform built with modern web technologies. F
 ## 🎯 Features
 
 ### For Learners
+
 - 📚 Browse comprehensive biology content organized by subject
 - 🔍 Search across articles, glossary, and videos
 - 📝 Take quizzes and flashcards for active learning
@@ -13,6 +14,7 @@ A comprehensive biology education platform built with modern web technologies. F
 - 📱 Responsive mobile-friendly design
 
 ### For Admins
+
 - 📊 Admin Dashboard with content statistics and monitoring
 - ✏️ Content Management System (CMS) for:
   - Articles with draft/publish workflow
@@ -96,6 +98,7 @@ Login at `/auth` with admin credentials, then access:
 ## 🗺️ Site Navigation
 
 **Public Routes:**
+
 - `/` - Homepage
 - `/categories` - Browse all categories
 - `/organisms` - Organisms category
@@ -112,16 +115,19 @@ Login at `/auth` with admin credentials, then access:
 - `/saved` - Saved articles (requires login)
 
 **Auth Routes:**
+
 - `/auth` - Sign in
 - `/signup` - Create account
 - `/dashboard` - User dashboard (requires login)
 
 **Admin Routes:**
+
 - `/admin/*` - Admin panel (requires admin role)
 
 ## 📊 Admin Dashboard
 
 The admin dashboard displays:
+
 - **Statistics**: Total content, published count, draft count
 - **Content Breakdown**: Per-type statistics (articles, pages, videos, etc.)
 - **Quick Links**: Navigate to management sections
@@ -158,6 +164,7 @@ SITE_URL=https://your-domain.com
 ## 📦 Database
 
 Tables managed automatically by Supabase:
+
 - `auth.users` - User authentication
 - `user_roles` - Admin role management
 - `subjects` - Main categories
@@ -207,15 +214,18 @@ All content and code are proprietary to Ted's Lab.
 ## 🆘 Troubleshooting
 
 ### Build Issues
+
 - Clear `node_modules` and reinstall: `rm -rf node_modules && npm install`
 - Check Node version: `node --version` (requires 18+)
 
 ### Admin Access Issues
+
 - Verify user has admin role in `user_roles` table
 - Check Supabase credentials in `.env`
 - Try signing out and back in
 
 ### Database Issues
+
 - Verify Supabase connection
 - Check CORS settings
 - Review Supabase logs

@@ -1,6 +1,7 @@
 # Creating Educational Videos
 
 ## Production sequence
+
 1. Define one learning objective and the audience's assumed knowledge.
 2. Write a concise script with an opening question, explanation, example, and recap.
 3. Storyboard visuals that clarify the explanation rather than decorate it.

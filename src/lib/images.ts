@@ -74,7 +74,10 @@ export const subjectImageKey: Record<string, string> = {
 };
 
 /** Resolve an image: an explicit URL wins, then a built-in key, then a fallback. */
-export function resolveImage(imageUrl?: string | null, imageKey?: string | null): string {
+export function resolveImage(
+  imageUrl?: string | null,
+  imageKey?: string | null,
+): string {
   const url = imageUrl?.trim();
   // Ignore leftover placeholder-service URLs; prefer the bundled artwork instead.
   if (url && !url.includes("placehold.co")) return url;

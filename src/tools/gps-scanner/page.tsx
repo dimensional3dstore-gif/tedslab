@@ -5,13 +5,16 @@ type Coordinates = { latitude: number; longitude: number; accuracy: number };
 export default function GpsScannerPage() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [coordinates, setCoordinates] = useState<Coordinates | null>(null);
-  const [message, setMessage] = useState("Camera and location access start only when requested.");
+  const [message, setMessage] = useState(
+    "Camera and location access start only when requested.",
+  );
   const [cameraActive, setCameraActive] = useState(false);
 
   useEffect(
     () => () => {
       const stream = videoRef.current?.srcObject;
-      if (stream instanceof MediaStream) stream.getTracks().forEach((track) => track.stop());
+      if (stream instanceof MediaStream)
+        stream.getTracks().forEach((track) => track.stop());
     },
     [],
   );
@@ -31,7 +34,8 @@ export default function GpsScannerPage() {
         });
         setMessage("Location received from your device.");
       },
-      (error) => setMessage(error.message || "Location access was not granted."),
+      (error) =>
+        setMessage(error.message || "Location access was not granted."),
       { enableHighAccuracy: true, timeout: 12_000, maximumAge: 15_000 },
     );
   };
@@ -39,14 +43,17 @@ export default function GpsScannerPage() {
   const toggleCamera = async () => {
     if (cameraActive) {
       const stream = videoRef.current?.srcObject;
-      if (stream instanceof MediaStream) stream.getTracks().forEach((track) => track.stop());
+      if (stream instanceof MediaStream)
+        stream.getTracks().forEach((track) => track.stop());
       if (videoRef.current) videoRef.current.srcObject = null;
       setCameraActive(false);
       setMessage("Camera stopped.");
       return;
     }
     if (!navigator.mediaDevices?.getUserMedia) {
-      setMessage("Camera access requires a secure context and a supported browser.");
+      setMessage(
+        "Camera access requires a secure context and a supported browser.",
+      );
       return;
     }
     try {
@@ -65,7 +72,9 @@ export default function GpsScannerPage() {
   return (
     <main className="mx-auto w-full max-w-3xl space-y-6 p-6">
       <header>
-        <h1 className="text-3xl font-bold text-foreground">GPS and camera scanner</h1>
+        <h1 className="text-3xl font-bold text-foreground">
+          GPS and camera scanner
+        </h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Read your device coordinates and preview the rear camera locally.
         </p>
@@ -86,7 +95,11 @@ export default function GpsScannerPage() {
           {cameraActive ? "Stop camera" : "Start camera"}
         </button>
       </section>
-      <p role="status" aria-live="polite" className="text-sm text-muted-foreground">
+      <p
+        role="status"
+        aria-live="polite"
+        className="text-sm text-muted-foreground"
+      >
         {message}
       </p>
       <video
@@ -99,9 +112,18 @@ export default function GpsScannerPage() {
       />
       {coordinates && (
         <dl className="grid gap-3 rounded-lg border border-border bg-card p-4 sm:grid-cols-3">
-          <Coordinate label="Latitude" value={coordinates.latitude.toFixed(6)} />
-          <Coordinate label="Longitude" value={coordinates.longitude.toFixed(6)} />
-          <Coordinate label="Accuracy" value={`${Math.round(coordinates.accuracy)} m`} />
+          <Coordinate
+            label="Latitude"
+            value={coordinates.latitude.toFixed(6)}
+          />
+          <Coordinate
+            label="Longitude"
+            value={coordinates.longitude.toFixed(6)}
+          />
+          <Coordinate
+            label="Accuracy"
+            value={`${Math.round(coordinates.accuracy)} m`}
+          />
         </dl>
       )}
     </main>

@@ -1,65 +1,71 @@
-import fs from 'fs/promises';
-import path from 'path';
+import fs from "fs/promises";
+import path from "path";
 
 const articlesData = [
   {
-    slug: 'mitosis-cell-division',
-    title: 'Mitosis and Cell Division',
-    section: 'cells-microscopy',
-    description: 'How cells divide to produce two identical daughter cells.',
-    tags: ['Cell Biology', 'Division', 'Reproduction'],
+    slug: "mitosis-cell-division",
+    title: "Mitosis and Cell Division",
+    section: "cells-microscopy",
+    description: "How cells divide to produce two identical daughter cells.",
+    tags: ["Cell Biology", "Division", "Reproduction"],
   },
   {
-    slug: 'enzyme-catalysis',
-    title: 'Enzymes and Catalysis',
-    section: 'cells-microscopy',
-    description: 'How enzymes speed up chemical reactions in cells.',
-    tags: ['Biochemistry', 'Catalysis', 'Enzymes'],
+    slug: "enzyme-catalysis",
+    title: "Enzymes and Catalysis",
+    section: "cells-microscopy",
+    description: "How enzymes speed up chemical reactions in cells.",
+    tags: ["Biochemistry", "Catalysis", "Enzymes"],
   },
   {
-    slug: 'evolution-natural-selection',
-    title: 'Evolution and Natural Selection',
-    section: 'evolution',
-    description: 'How populations change over time through natural selection.',
-    tags: ['Evolution', 'Adaptation', 'Biology'],
+    slug: "evolution-natural-selection",
+    title: "Evolution and Natural Selection",
+    section: "evolution",
+    description: "How populations change over time through natural selection.",
+    tags: ["Evolution", "Adaptation", "Biology"],
   },
   {
-    slug: 'human-anatomy-systems',
-    title: 'Human Anatomy and Organ Systems',
-    section: 'human-biology',
-    description: 'Overview of the major organ systems in the human body.',
-    tags: ['Anatomy', 'Physiology', 'Systems'],
+    slug: "human-anatomy-systems",
+    title: "Human Anatomy and Organ Systems",
+    section: "human-biology",
+    description: "Overview of the major organ systems in the human body.",
+    tags: ["Anatomy", "Physiology", "Systems"],
   },
   {
-    slug: 'food-chains-energy-flow',
-    title: 'Food Chains and Energy Flow',
-    section: 'ecology-environment',
-    description: 'How energy flows through ecosystems via food chains and webs.',
-    tags: ['Ecology', 'Energy', 'Food Webs'],
+    slug: "food-chains-energy-flow",
+    title: "Food Chains and Energy Flow",
+    section: "ecology-environment",
+    description:
+      "How energy flows through ecosystems via food chains and webs.",
+    tags: ["Ecology", "Energy", "Food Webs"],
   },
   {
-    slug: 'photosynthesis-light-reactions',
-    title: 'Photosynthesis: Light Reactions',
-    section: 'biological-processes',
-    description: 'The light-dependent reactions that power photosynthesis.',
-    tags: ['Photosynthesis', 'Energy', 'Light'],
+    slug: "photosynthesis-light-reactions",
+    title: "Photosynthesis: Light Reactions",
+    section: "biological-processes",
+    description: "The light-dependent reactions that power photosynthesis.",
+    tags: ["Photosynthesis", "Energy", "Light"],
   },
   {
-    slug: 'meiosis-gamete-formation',
-    title: 'Meiosis and Gamete Formation',
-    section: 'genetics-dna',
-    description: 'How meiosis produces genetically diverse gametes.',
-    tags: ['Genetics', 'Reproduction', 'Division'],
+    slug: "meiosis-gamete-formation",
+    title: "Meiosis and Gamete Formation",
+    section: "genetics-dna",
+    description: "How meiosis produces genetically diverse gametes.",
+    tags: ["Genetics", "Reproduction", "Division"],
   },
 ];
 
-const componentTemplate = (title, slug, description, tags) => `import { BookOpenText, CheckCircle2, ChevronRight, Leaf, Microscope, Sparkles, ThumbsDown, ThumbsUp } from "lucide-react";
+const componentTemplate = (
+  title,
+  slug,
+  description,
+  tags,
+) => `import { BookOpenText, CheckCircle2, ChevronRight, Leaf, Microscope, Sparkles, ThumbsDown, ThumbsUp } from "lucide-react";
 import discoveryLeaf from "@/assets/discovery-leaf.jpg";
 import { AppShell } from "@/components/biopedia/AppShell";
 
-const topicTags = [${tags.map(t => `"${t}"`).join(', ')}];
+const topicTags = [${tags.map((t) => `"${t}"`).join(", ")}];
 
-export default function ${title.replace(/\s+/g, '')}Page() {
+export default function ${title.replace(/\s+/g, "")}Page() {
   return (
     <AppShell
       rail={
@@ -162,7 +168,10 @@ export default function ${title.replace(/\s+/g, '')}Page() {
 }
 `;
 
-const routeTemplate = (slug, componentName) => `import { createFileRoute } from "@tanstack/react-router";
+const routeTemplate = (
+  slug,
+  componentName,
+) => `import { createFileRoute } from "@tanstack/react-router";
 import ${componentName}Page from "@/components/biopedia/pages/articles/biology/${slug}";
 
 export const Route = createFileRoute("/articles/${slug}")({
@@ -171,22 +180,30 @@ export const Route = createFileRoute("/articles/${slug}")({
 `;
 
 async function generateArticles() {
-  const basePath = '/Users/ted/Downloads/study-hub-tedslab';
-  const componentsPath = path.join(basePath, 'src/components/biopedia/pages/articles/biology');
-  const routesPath = path.join(basePath, 'src/routes');
+  const basePath = "/Users/ted/Downloads/study-hub-tedslab";
+  const componentsPath = path.join(
+    basePath,
+    "src/components/biopedia/pages/articles/biology",
+  );
+  const routesPath = path.join(basePath, "src/routes");
 
   try {
-    console.log('📝 Generating 7 biology articles...');
+    console.log("📝 Generating 7 biology articles...");
 
     for (const article of articlesData) {
       // Generate component name from slug
       const componentName = article.slug
-        .split('-')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join('');
+        .split("-")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join("");
 
       // Create component file
-      const componentContent = componentTemplate(article.title, article.slug, article.description, article.tags);
+      const componentContent = componentTemplate(
+        article.title,
+        article.slug,
+        article.description,
+        article.tags,
+      );
       const componentFile = path.join(componentsPath, `${article.slug}.tsx`);
       await fs.writeFile(componentFile, componentContent);
       console.log(`✓ Created component: ${article.slug}.tsx`);
@@ -198,13 +215,13 @@ async function generateArticles() {
       console.log(`✓ Created route: articles.${article.slug}.tsx`);
     }
 
-    console.log('\n✅ Successfully generated 7 articles!');
-    console.log('\nNew articles created:');
-    articlesData.forEach(a => {
+    console.log("\n✅ Successfully generated 7 articles!");
+    console.log("\nNew articles created:");
+    articlesData.forEach((a) => {
       console.log(`   • /articles/${a.slug} - ${a.title}`);
     });
   } catch (err) {
-    console.error('❌ Error generating articles:', err);
+    console.error("❌ Error generating articles:", err);
     process.exit(1);
   }
 }

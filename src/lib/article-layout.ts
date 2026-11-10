@@ -41,7 +41,10 @@ export const DEFAULT_ARTICLE_LAYOUT: ArticleLayout = {
           text: "State the idea in one precise sentence a learner can reuse.",
         },
         { title: "Mechanism", text: "Name the parts and how they interact." },
-        { title: "Why it matters", text: "Connect the idea to a real system, text, or problem." },
+        {
+          title: "Why it matters",
+          text: "Connect the idea to a real system, text, or problem.",
+        },
       ],
     },
     {
@@ -50,12 +53,18 @@ export const DEFAULT_ARTICLE_LAYOUT: ArticleLayout = {
         "Start with the observation or question. Gather the structures involved. Trace cause and effect in order. End with a check: what would change if one part failed?",
       ],
       cards: [
-        { title: "1. Observe", text: "What is actually happening, in plain language?" },
+        {
+          title: "1. Observe",
+          text: "What is actually happening, in plain language?",
+        },
         {
           title: "2. Name the parts",
           text: "List the actors, forces, or terms that must be kept distinct.",
         },
-        { title: "3. Follow the sequence", text: "Put the process in time. First, then, finally." },
+        {
+          title: "3. Follow the sequence",
+          text: "Put the process in time. First, then, finally.",
+        },
       ],
     },
     {
@@ -98,12 +107,15 @@ function normalizeArticleLayout(value: Partial<ArticleLayout>): ArticleLayout {
     facts: Array.isArray(value.facts)
       ? value.facts.filter(
           (fact): fact is { label: string; value: string } =>
-            Boolean(fact) && typeof fact.label === "string" && typeof fact.value === "string",
+            Boolean(fact) &&
+            typeof fact.label === "string" &&
+            typeof fact.value === "string",
         )
       : [],
     overview:
-      value.overview?.filter((paragraph): paragraph is string => typeof paragraph === "string") ??
-      [],
+      value.overview?.filter(
+        (paragraph): paragraph is string => typeof paragraph === "string",
+      ) ?? [],
     ...(equation ? { equation } : {}),
     sections: Array.isArray(value.sections)
       ? value.sections
@@ -117,7 +129,9 @@ function normalizeArticleLayout(value: Partial<ArticleLayout>): ArticleLayout {
             );
             const cards = section.cards?.filter(
               (card): card is ArticleCardBlock =>
-                Boolean(card) && typeof card.title === "string" && typeof card.text === "string",
+                Boolean(card) &&
+                typeof card.title === "string" &&
+                typeof card.text === "string",
             );
             return {
               heading: section.heading,
@@ -142,7 +156,9 @@ function bodyToPlainText(body: string): string {
     .trim();
 }
 
-export function layoutFromArticleBody(body?: string | null): ArticleLayout | null {
+export function layoutFromArticleBody(
+  body?: string | null,
+): ArticleLayout | null {
   if (!body?.trim()) return null;
   const parsed = parseArticleLayout(body);
   if (parsed) return parsed;
@@ -171,7 +187,10 @@ export function layoutFromArticleBody(body?: string | null): ArticleLayout | nul
       continue;
     }
     const heading = line.replace(/^#{1,6}\s+/, "").trim();
-    if (heading !== line || (line.length < 90 && !/[.!?]$/.test(line) && current === null)) {
+    if (
+      heading !== line ||
+      (line.length < 90 && !/[.!?]$/.test(line) && current === null)
+    ) {
       flushParagraph();
       if (!current && overview.length === 0 && sections.length === 0) continue;
       current = { heading, paragraphs: [] };

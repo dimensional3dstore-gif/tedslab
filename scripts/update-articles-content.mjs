@@ -15,8 +15,10 @@ envContent.split("\n").forEach((line) => {
     const [key, ...valueParts] = trimmed.split("=");
     let value = valueParts.join("=").trim();
     // Remove surrounding quotes if present
-    if ((value.startsWith('"') && value.endsWith('"')) || 
-        (value.startsWith("'") && value.endsWith("'"))) {
+    if (
+      (value.startsWith('"') && value.endsWith('"')) ||
+      (value.startsWith("'") && value.endsWith("'"))
+    ) {
       value = value.slice(1, -1);
     }
     env[key.trim()] = value;
@@ -25,14 +27,18 @@ envContent.split("\n").forEach((line) => {
 
 const supabase = createClient(
   env.VITE_SUPABASE_URL || env.SUPABASE_URL || "",
-  env.VITE_SUPABASE_PUBLISHABLE_KEY || env.SUPABASE_PUBLISHABLE_KEY || env.VITE_SUPABASE_ANON_KEY || ""
+  env.VITE_SUPABASE_PUBLISHABLE_KEY ||
+    env.SUPABASE_PUBLISHABLE_KEY ||
+    env.VITE_SUPABASE_ANON_KEY ||
+    "",
 );
 
 const articlesData = [
   {
     slug: "cellular-respiration",
     title: "Cellular Respiration",
-    excerpt: "The process cells use to break down glucose and release energy as ATP.",
+    excerpt:
+      "The process cells use to break down glucose and release energy as ATP.",
     body: "<h2>Overview</h2><p>Cellular respiration is the process by which cells break down glucose and other organic molecules to extract chemical energy stored in these substances. This energy is released and used to form ATP (adenosine triphosphate), the primary energy currency of the cell. The process occurs in virtually all living organisms and is essential for maintaining cellular functions, including metabolism, growth, and reproduction.</p><h2>Aerobic Respiration</h2><p>Aerobic respiration occurs in the presence of oxygen and is the most efficient method of energy extraction. It consists of three main stages: glycolysis, the citric acid cycle, and the electron transport chain. Together, these processes yield approximately 30-32 ATP molecules per glucose molecule, making aerobic respiration far more efficient than anaerobic alternatives.</p><h2>Anaerobic Respiration</h2><p>In the absence of oxygen, cells can undergo anaerobic respiration or fermentation. This process is less efficient, typically producing only 2 ATP molecules per glucose molecule, but allows cells to continue generating energy when oxygen is unavailable. Anaerobic respiration is employed by certain bacteria and by muscle cells during intense physical exertion.</p><h2>Significance</h2><p>Understanding cellular respiration is fundamental to comprehending how organisms obtain and utilize energy. Disruptions in this process can lead to various metabolic disorders and diseases, making it a critical area of study in biochemistry and medicine.</p>",
   },
   {

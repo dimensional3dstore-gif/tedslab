@@ -1,1 +1,0 @@
-import{t as e}from"./jsx-runtime-Cx0BB4qO.js";import{t}from"./PlatformPlaceholderPage-Cd4Fm2DU.js";var n=e(),r=()=>(0,n.jsx)(t,{title:`Networker`,description:`A planned network and connection workspace for Ted's Lab.`,area:`Networker`,nextSteps:[`Define network entities.`,`Connect communication and discovery.`,`Add permissions and presence.`]});export{r as component};

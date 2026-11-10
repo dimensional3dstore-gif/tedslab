@@ -4,7 +4,8 @@ import { Trash2 } from "lucide-react";
 import { AppShell, PageHeader } from "@/components/biopedia/AppShell";
 
 const title = "Notebook — Ted's Lab";
-const description = "Keep your own biology study notes, saved right in your browser.";
+const description =
+  "Keep your own biology study notes, saved right in your browser.";
 const KEY = "biopedia:notes";
 
 type Note = { id: string; text: string; created: string };
@@ -55,7 +56,11 @@ function NotebookPage() {
           const text = draft.trim();
           if (!text) return;
           save([
-            { id: crypto.randomUUID(), text, created: new Date().toLocaleString() },
+            {
+              id: crypto.randomUUID(),
+              text,
+              created: new Date().toLocaleString(),
+            },
             ...notes,
           ]);
           setDraft("");
@@ -89,7 +94,9 @@ function NotebookPage() {
             <li key={n.id} className="flex items-start gap-3 bio-panel p-4">
               <div className="min-w-0 flex-1">
                 <p className="text-sm whitespace-pre-wrap">{n.text}</p>
-                <p className="mt-2 text-xs text-muted-foreground">{n.created}</p>
+                <p className="mt-2 text-xs text-muted-foreground">
+                  {n.created}
+                </p>
               </div>
               <button
                 type="button"

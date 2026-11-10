@@ -1,13 +1,15 @@
 import { supabase } from "@/integrations/supabase/client";
 
 const db = supabase as unknown as {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   from: (table: string) => any;
 };
 
 export interface PageEntry {
   url: string;
   lastmod?: string;
-  changefreq?: "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never";
+  changefreq?:
+    "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never";
   priority?: number;
 }
 
@@ -66,7 +68,7 @@ export async function getAllPages(): Promise<PageEntry[]> {
     { url: "/timeline", priority: 0.8 },
     { url: "/flashcards", priority: 0.7 },
     { url: "/quizzes", priority: 0.7 },
-    { url: "/videos", priority: 0.8 }
+    { url: "/videos", priority: 0.8 },
   );
 
   // Dynamic subjects
@@ -187,7 +189,9 @@ function escapeXml(str: string): string {
     .replace(/'/g, "&apos;");
 }
 
-export async function getPagesList(): Promise<{ label: string; url: string }[]> {
+export async function getPagesList(): Promise<
+  { label: string; url: string }[]
+> {
   const pages: { label: string; url: string }[] = [
     { label: "Home", url: "/" },
     { label: "Categories", url: "/categories" },

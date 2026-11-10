@@ -17,7 +17,8 @@ import { clusterColor } from "./GraphCanvas";
 
 function KindIcon({ kind, className }: { kind: NodeKind; className?: string }) {
   const cls = cn("size-3.5 shrink-0", className);
-  if (kind === "hub" || kind === "atlas") return <Hexagon className={cls} strokeWidth={1.8} />;
+  if (kind === "hub" || kind === "atlas")
+    return <Hexagon className={cls} strokeWidth={1.8} />;
   if (kind === "figure") return <User className={cls} strokeWidth={1.8} />;
   if (kind === "concept") return <Hash className={cls} strokeWidth={1.8} />;
   return <FileText className={cls} strokeWidth={1.8} />;
@@ -36,14 +37,13 @@ function NodeRow({ node, depth }: { node: AtlasNode; depth: number }) {
       onDoubleClick={() => openArticle(node.id)}
       className={cn(
         "group flex w-full items-center gap-1.5 rounded-xs py-1 pr-2 text-left text-[12.5px] leading-tight",
-        active ? "bg-bg-active text-fg" : "text-fg-muted hover:bg-bg-hover hover:text-fg",
+        active
+          ? "bg-bg-active text-fg"
+          : "text-fg-muted hover:bg-bg-hover hover:text-fg",
       )}
       style={{ paddingLeft: 8 + depth * 12 }}
     >
-      <KindIcon
-        kind={node.kind}
-        className="opacity-80"
-      />
+      <KindIcon kind={node.kind} className="opacity-80" />
       <span
         className="min-w-0 flex-1 truncate"
         style={active ? { color: clusterColor(node.cluster) } : undefined}
@@ -90,7 +90,9 @@ function Folder({
         />
         <span className="min-w-0 flex-1 truncate">{title}</span>
         {count != null && (
-          <span className="font-mono text-[10px] tabular-nums text-fg-subtle">{count}</span>
+          <span className="font-mono text-[10px] tabular-nums text-fg-subtle">
+            {count}
+          </span>
         )}
       </button>
       {expanded && <div>{children}</div>}
@@ -99,7 +101,9 @@ function Folder({
 }
 
 function FilesPane() {
-  const filter = useAtlas((s) => s.explorerFilter).trim().toLowerCase();
+  const filter = useAtlas((s) => s.explorerFilter)
+    .trim()
+    .toLowerCase();
   const grouped = useMemo(() => {
     const match = (n: AtlasNode) =>
       !filter ||
@@ -134,17 +138,29 @@ function FilesPane() {
             color={cluster.accent}
             count={total}
           >
-            <Folder id={`${cluster.id}-topics`} title="Topics" count={topics.length}>
+            <Folder
+              id={`${cluster.id}-topics`}
+              title="Topics"
+              count={topics.length}
+            >
               {topics.map((n) => (
                 <NodeRow key={n.id} node={n} depth={2} />
               ))}
             </Folder>
-            <Folder id={`${cluster.id}-figures`} title="Figures" count={figures.length}>
+            <Folder
+              id={`${cluster.id}-figures`}
+              title="Figures"
+              count={figures.length}
+            >
               {figures.map((n) => (
                 <NodeRow key={n.id} node={n} depth={2} />
               ))}
             </Folder>
-            <Folder id={`${cluster.id}-concepts`} title="Concepts" count={concepts.length}>
+            <Folder
+              id={`${cluster.id}-concepts`}
+              title="Concepts"
+              count={concepts.length}
+            >
               {concepts.map((n) => (
                 <NodeRow key={n.id} node={n} depth={2} />
               ))}
@@ -159,7 +175,8 @@ function FilesPane() {
 function TagsPane() {
   const tags = useMemo(() => {
     const m = new Map<string, number>();
-    for (const n of NODES) for (const t of n.tags) m.set(t, (m.get(t) ?? 0) + 1);
+    for (const n of NODES)
+      for (const t of n.tags) m.set(t, (m.get(t) ?? 0) + 1);
     return [...m.entries()].sort((a, b) => b[1] - a[1]);
   }, []);
   const select = useAtlas((s) => s.select);
@@ -182,7 +199,9 @@ function TagsPane() {
                 <Hash className="size-3 text-accent-dim" />
                 {tag}
               </span>
-              <span className="font-mono text-[10px] tabular-nums text-fg-subtle">{count}</span>
+              <span className="font-mono text-[10px] tabular-nums text-fg-subtle">
+                {count}
+              </span>
             </button>
           </li>
         ))}
@@ -196,13 +215,29 @@ function StarredPane() {
   const recent = useAtlas((s) => s.recent);
   return (
     <div className="atlas-scroll flex-1 overflow-y-auto py-1">
-      <p className="px-3 py-1 text-[10px] font-medium uppercase tracking-wider text-fg-subtle">Starred</p>
+      <p className="px-3 py-1 text-[10px] font-medium uppercase tracking-wider text-fg-subtle">
+        Starred
+      </p>
       {bookmarks.length === 0 && (
-        <p className="px-3 py-2 text-[12px] text-fg-subtle">No starred notes yet.</p>
+        <p className="px-3 py-2 text-[12px] text-fg-subtle">
+          No starred notes yet.
+        </p>
       )}
-      {bookmarks.map((id) => NODE_BY_ID[id] && <NodeRow key={id} node={NODE_BY_ID[id]} depth={0} />)}
-      <p className="mt-3 px-3 py-1 text-[10px] font-medium uppercase tracking-wider text-fg-subtle">Recent</p>
-      {recent.map((id) => NODE_BY_ID[id] && <NodeRow key={`r-${id}`} node={NODE_BY_ID[id]} depth={0} />)}
+      {bookmarks.map(
+        (id) =>
+          NODE_BY_ID[id] && (
+            <NodeRow key={id} node={NODE_BY_ID[id]} depth={0} />
+          ),
+      )}
+      <p className="mt-3 px-3 py-1 text-[10px] font-medium uppercase tracking-wider text-fg-subtle">
+        Recent
+      </p>
+      {recent.map(
+        (id) =>
+          NODE_BY_ID[id] && (
+            <NodeRow key={`r-${id}`} node={NODE_BY_ID[id]} depth={0} />
+          ),
+      )}
     </div>
   );
 }
@@ -212,13 +247,23 @@ export function Explorer() {
   const filter = useAtlas((s) => s.explorerFilter);
   const setFilter = useAtlas((s) => s.setExplorerFilter);
   const title =
-    rail === "tags" ? "Tags" : rail === "starred" ? "Starred" : rail === "graph" ? "Graph files" : "Explorer";
+    rail === "tags"
+      ? "Tags"
+      : rail === "starred"
+        ? "Starred"
+        : rail === "graph"
+          ? "Graph files"
+          : "Explorer";
 
   return (
     <aside className="flex h-full min-w-0 flex-col border-r border-border bg-bg-sidebar">
       <div className="flex h-10 items-center justify-between border-b border-border px-3">
-        <h2 className="text-[11px] font-semibold uppercase tracking-[0.14em] text-fg-muted">{title}</h2>
-        <span className="font-mono text-[10px] tabular-nums text-fg-subtle">{NODES.length}</span>
+        <h2 className="text-[11px] font-semibold uppercase tracking-[0.14em] text-fg-muted">
+          {title}
+        </h2>
+        <span className="font-mono text-[10px] tabular-nums text-fg-subtle">
+          {NODES.length}
+        </span>
       </div>
       {rail !== "tags" && rail !== "starred" && (
         <div className="border-b border-border px-2 py-2">
@@ -233,7 +278,13 @@ export function Explorer() {
           </label>
         </div>
       )}
-      {rail === "tags" ? <TagsPane /> : rail === "starred" ? <StarredPane /> : <FilesPane />}
+      {rail === "tags" ? (
+        <TagsPane />
+      ) : rail === "starred" ? (
+        <StarredPane />
+      ) : (
+        <FilesPane />
+      )}
     </aside>
   );
 }

@@ -3,18 +3,21 @@
 ## 🎯 What Was Changed
 
 ### New Routes Created
-| Route | Purpose | URL Example |
-|-------|---------|-------------|
-| `$subject.$section.tsx` | Show all articles in a section | `/biology/human-biology` |
-| `$section.$topic.tsx` | Show topic with related articles | `/human-biology/neurons` |
-| `articles.$slug.tsx` | Show full article details | `/articles/neurons` |
+
+| Route                   | Purpose                          | URL Example              |
+| ----------------------- | -------------------------------- | ------------------------ |
+| `$subject.$section.tsx` | Show all articles in a section   | `/biology/human-biology` |
+| `$section.$topic.tsx`   | Show topic with related articles | `/human-biology/neurons` |
+| `articles.$slug.tsx`    | Show full article details        | `/articles/neurons`      |
 
 ### Type Updates
+
 **ArticleRow** (`src/lib/content.ts`) - Added `topic_slug: string | null`
 
 This allows articles to be linked to specific topics for better organization.
 
 ### Admin Updates
+
 **Articles Admin** (`src/routes/_authenticated/admin.articles.tsx`) - Added `topic_slug` field
 
 Admins can now assign each article to a topic when creating/editing.
@@ -22,6 +25,7 @@ Admins can now assign each article to a topic when creating/editing.
 ## 📍 Navigation Paths
 
 ### Path 1: Sidebar → Subject → Section → Topic → Article
+
 ```
 Sidebar (click "Biology")
   ↓ /{biology}
@@ -34,6 +38,7 @@ Section Page (shows articles)
 ```
 
 ### Path 2: Direct Articles List
+
 ```
 Sidebar (click "All Articles")
   ↓ /articles
@@ -43,6 +48,7 @@ Articles Page (grid of all articles)
 ```
 
 ### Path 3: Topic Deep Link
+
 ```
 Direct URL: /{section}/{topic}
   ↓ /{human-biology}/{neurons}
@@ -64,6 +70,7 @@ All Articles:     /articles
 ## 💾 Database Schema
 
 ### Articles Table - New Fields
+
 ```sql
 ALTER TABLE articles ADD COLUMN topic_slug VARCHAR(255);
 
@@ -72,6 +79,7 @@ ALTER TABLE articles ADD COLUMN topic_slug VARCHAR(255);
 ```
 
 ### Query Examples
+
 ```sql
 -- Get all articles for a topic
 SELECT * FROM articles WHERE topic_slug = 'neurons';
@@ -83,18 +91,20 @@ SELECT * FROM articles WHERE section_slug = 'human-biology';
 SELECT * FROM articles WHERE subject_slug = 'biology';
 
 -- Get published articles for a topic
-SELECT * FROM articles 
+SELECT * FROM articles
 WHERE topic_slug = 'neurons' AND published = true;
 ```
 
 ## 🛠️ Generating Content
 
 ### 1. Run Article Generator
+
 ```bash
 node scripts/generate-articles.mjs
 ```
 
 This generates:
+
 - One article per topic
 - Unique slugs combining section + topic
 - Full article bodies with context
@@ -102,11 +112,13 @@ This generates:
 - Read times and tone colors
 
 ### 2. Output Location
+
 ```
 /tmp/seed/generate-articles.sql
 ```
 
 ### 3. Load into Database
+
 ```bash
 # Via psql
 psql -h your-db-host -d your-db-name -f /tmp/seed/generate-articles.sql
@@ -118,20 +130,20 @@ psql -h your-db-host -d your-db-name -f /tmp/seed/generate-articles.sql
 ## 🧭 Component Usage
 
 ### TopicGrid Component
+
 ```tsx
 import { TopicGrid } from "@/components/biopedia/TopicGrid";
 
 <TopicGrid
   sectionSlug="human-biology"
-  topics={[
-    { id: "1", slug: "neurons", title: "Neurons", blurb: "..." }
-  ]}
-/>
+  topics={[{ id: "1", slug: "neurons", title: "Neurons", blurb: "..." }]}
+/>;
 
 // Automatically links to: /{section}/{topic}
 ```
 
 ### AppShell Component
+
 ```tsx
 import { AppShell, PageHeader } from "@/components/biopedia/AppShell";
 
@@ -142,7 +154,7 @@ import { AppShell, PageHeader } from "@/components/biopedia/AppShell";
       {/* Content filtered by search query q */}
     </>
   )}
-</AppShell>
+</AppShell>;
 
 // Provides:
 // - Sidebar with all navigation
@@ -219,16 +231,19 @@ Documentation:
 ## 🐛 Debugging
 
 ### Article not showing in topic page?
+
 - Check `article.topic_slug` matches `topic.slug`
 - Verify `article.published = true`
 - Check browser console for data loading errors
 
 ### Topic page loading slowly?
+
 - Check database query performance
 - Verify topic has articles assigned
 - Check image optimization settings
 
 ### Search not working?
+
 - Verify search query is being passed
 - Check that articles have title/excerpt
 - Clear browser cache
@@ -236,7 +251,12 @@ Documentation:
 ## 📞 API Hooks
 
 ```typescript
-import { useArticles, useSections, useTopics, useSubjects } from "@/lib/content";
+import {
+  useArticles,
+  useSections,
+  useTopics,
+  useSubjects,
+} from "@/lib/content";
 
 // In components:
 const { data: articles = [], isLoading } = useArticles();
@@ -248,6 +268,7 @@ const { data: subjects = [] } = useSubjects();
 ## 🎨 Styling Classes
 
 Common classes used in article/topic components:
+
 - `bio-panel` - Card styling
 - `prose prose-sm` - Article body typography
 - `text-sm font-semibold` - Headers

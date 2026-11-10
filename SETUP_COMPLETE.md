@@ -7,6 +7,7 @@ All articles and topics are now fully linkable and openable. The system has been
 ## 📋 What's Been Done
 
 ### 1. **Route Structure** ✅
+
 - `/$subject` - Subject overview page (e.g., `/biology`)
 - `/$subject/$section` - Section with all articles (e.g., `/biology/organisms`)
 - `/$section/$topic` - Topic page with related articles (e.g., `/organisms/animal-kingdom`)
@@ -14,17 +15,21 @@ All articles and topics are now fully linkable and openable. The system has been
 - `/articles` - All articles page
 
 ### 2. **Database Updates** ✅
+
 - Added `topic_slug` field to articles table
 - Created article schema in `entitles/articles.sql`
 - Created migration to generate articles for all topics in `entitles/seed-articles.sql`
 
 ### 3. **Component Updates** ✅
-- **FeaturedArticles** - Now links articles to `/articles/{slug}` 
+
+- **FeaturedArticles** - Now links articles to `/articles/{slug}`
 - **CategoryGrid** - Links subjects to `/{subject_slug}`
 - **TopicGrid** - Links topics to `/{section_slug}/{topic_slug}`
 
 ### 4. **Homepage Linking** ✅
+
 Homepage now links to:
+
 - Featured articles (clickable cards)
 - All categories/subjects (via CategoryGrid)
 - All articles page
@@ -33,9 +38,11 @@ Homepage now links to:
 ## 🚀 Setup Steps
 
 ### Step 1: Update Database Schema
+
 The `entitles/articles.sql` file already has the latest schema with `topic_slug` field. If your database doesn't have this field yet, it will be created automatically.
 
 ### Step 2: Load Article Data
+
 Run the migration to generate articles for all topics:
 
 ```sql
@@ -46,11 +53,13 @@ Run the migration to generate articles for all topics:
 ```
 
 Or via command line:
+
 ```bash
 psql -h your-host -d your-db -U your-user -f entitles/seed-articles.sql
 ```
 
 ### Step 3: Verify Data
+
 After running the migration, verify that articles were created:
 
 ```sql
@@ -63,6 +72,7 @@ You should see one article per topic, all published.
 ## 🔗 Complete Navigation Flow
 
 ### From Homepage
+
 ```
 Homepage
   ├─ Featured Articles → Click card → /articles/{slug}
@@ -73,6 +83,7 @@ Homepage
 ```
 
 ### From Sidebar
+
 ```
 Sidebar
   ├─ Click Subject (e.g., "Biology") → /{subject}
@@ -86,6 +97,7 @@ Sidebar
 ```
 
 ### Topic Details Flow
+
 ```
 Section Page (/{subject}/{section})
   └─ Topics appear (via TopicGrid)
@@ -97,6 +109,7 @@ Section Page (/{subject}/{section})
 ## 📊 Data Structure
 
 ### Relationships
+
 ```
 Subject
   └─ Section (via section.subject_id)
@@ -105,6 +118,7 @@ Subject
 ```
 
 ### Key Fields
+
 - **article.topic_slug** - Links article to topic
 - **article.section_slug** - Links article to section
 - **article.subject_slug** - Links article to subject
@@ -114,7 +128,9 @@ Subject
 ## 🎨 Article Features
 
 ### Auto-Generated Properties
+
 When articles are created from topics:
+
 - **Title**: Topic title + ": Full Guide"
 - **Excerpt**: Topic blurb
 - **Body**: Topic body (existing content)
@@ -123,7 +139,9 @@ When articles are created from topics:
 - **Image Key**: Inherited from section
 
 ### Admin Editing
+
 Admins can edit articles via:
+
 - `/admin/articles` - Article management
 - Can change: title, excerpt, body, minutes, tone, status, published flag, etc.
 
@@ -161,13 +179,15 @@ Admins can modify articles at `/admin/articles`:
 ## 📁 Files Changed/Created
 
 ### Created
+
 - `entitles/seed-articles.sql` - Migration to create all articles
 - `entitles/articles-data.sql` - Sample article data
 - `src/routes/articles.$slug.tsx` - Article detail route
-- `src/routes/$subject.$section.tsx` - Section detail route  
+- `src/routes/$subject.$section.tsx` - Section detail route
 - `src/routes/$section.$topic.tsx` - Topic detail route
 
 ### Modified
+
 - `entitles/articles.sql` - Added topic_slug field and index
 - `src/lib/content.ts` - Added topic_slug to ArticleRow type
 - `src/components/biopedia/FeaturedArticles.tsx` - Added links to articles
@@ -178,21 +198,25 @@ Admins can modify articles at `/admin/articles`:
 ## 🚨 Troubleshooting
 
 ### Articles not showing?
+
 1. Check if articles are published: `SELECT * FROM articles WHERE published = false LIMIT 5;`
 2. Check if topic_slug matches: `SELECT DISTINCT topic_slug FROM articles;`
 3. Check if articles have valid subject/section slugs
 
 ### Topics not opening?
+
 1. Verify route `$section.$topic.tsx` exists
 2. Check if topics have valid section_id
 3. Check browser console for routing errors
 
 ### Links not working?
+
 1. Verify routes are generated: `npm run dev` rebuilds routes
 2. Check URL matches route pattern: `/{section}/{topic}`
 3. Clear browser cache if needed
 
 ### Search not working?
+
 1. Check if articles have title and excerpt
 2. Verify search query is passed to component
 3. Check browser console for errors
@@ -200,21 +224,27 @@ Admins can modify articles at `/admin/articles`:
 ## 💡 Important Notes
 
 ### Topic Opening
+
 Topics now open via their dedicated route `/{section}/{topic}`. The topic page displays:
+
 - Topic title and description
 - Topic body (rich content)
 - Related articles for that topic
 - Search functionality
 
-### Article Opening  
+### Article Opening
+
 Articles open via `/articles/{slug}`. The article page displays:
+
 - Full article body
 - Article metadata (minutes, subject, etc.)
 - Article image
 - Back navigation to articles list
 
 ### Deep Linking
+
 All pages support deep linking:
+
 - Direct URL: `/biology/human-biology/neurons` → Opens topic
 - Direct URL: `/articles/neurons-guide` → Opens article
 - Bookmarks and history work correctly
@@ -224,6 +254,7 @@ All pages support deep linking:
 Each subject has sections with topics:
 
 **Biology**
+
 - Organisms (6+ topics)
 - Cells & Microscopy (5+ topics)
 - Human Biology (6+ topics)
@@ -248,6 +279,7 @@ Similar structures for Mathematics, Science, English, History, Technology.
 ## 📞 Support
 
 For issues:
+
 1. Check the routing architecture in `ARCHITECTURE_DIAGRAM.md`
 2. Verify database schema in `entitles/articles.sql`
 3. Check component linking in specific route files

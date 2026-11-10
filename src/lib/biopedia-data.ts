@@ -31,7 +31,12 @@ export const categories: Category[] = [
     blurb: "Systems, Organs, Health & Disease",
     image: catHuman,
   },
-  { slug: "plants", title: "Plants", blurb: "Structure, Growth, Reproduction", image: catPlants },
+  {
+    slug: "plants",
+    title: "Plants",
+    blurb: "Structure, Growth, Reproduction",
+    image: catPlants,
+  },
   {
     slug: "ecology-environment",
     title: "Ecology",
@@ -58,14 +63,16 @@ export const articles: Article[] = [
   {
     slug: "neurons",
     title: "Neurons: The Body's Communication Network",
-    excerpt: "Discover how neurons transmit signals and coordinate every function.",
+    excerpt:
+      "Discover how neurons transmit signals and coordinate every function.",
     minutes: 8,
     tone: "cyan",
   },
   {
     slug: "animal-adaptations",
     title: "Adaptations in the Animal Kingdom",
-    excerpt: "Explore amazing adaptations that help animals survive in their environments.",
+    excerpt:
+      "Explore amazing adaptations that help animals survive in their environments.",
     minutes: 6,
     tone: "amber",
   },

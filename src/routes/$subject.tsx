@@ -5,13 +5,18 @@ import { supabase } from "@/integrations/supabase/client";
 import type { SectionRow, Subject } from "@/lib/content";
 import { resolveImage } from "@/lib/images";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const db = supabase as unknown as { from: (table: string) => any };
 
 const subjectQueryOptions = (slug: string) =>
   queryOptions({
     queryKey: ["subject", slug],
     queryFn: async () => {
-      const { data, error } = await db.from("subjects").select("*").eq("slug", slug).maybeSingle();
+      const { data, error } = await db
+        .from("subjects")
+        .select("*")
+        .eq("slug", slug)
+        .maybeSingle();
       if (error) throw error;
       return (data ?? null) as Subject | null;
     },
@@ -33,7 +38,9 @@ const subjectSectionsQueryOptions = (subjectId: string) =>
 
 export const Route = createFileRoute("/$subject")({
   loader: async ({ context, params }) => {
-    const subject = await context.queryClient.ensureQueryData(subjectQueryOptions(params.subject));
+    const subject = await context.queryClient.ensureQueryData(
+      subjectQueryOptions(params.subject),
+    );
     if (!subject) throw notFound();
     const sections = await context.queryClient.ensureQueryData(
       subjectSectionsQueryOptions(subject.id),
@@ -41,7 +48,9 @@ export const Route = createFileRoute("/$subject")({
     return { subject, sections };
   },
   head: ({ loaderData }) => {
-    const title = loaderData ? `${loaderData.subject.title} — Ted's Lab` : "Ted's Lab";
+    const title = loaderData
+      ? `${loaderData.subject.title} — Ted's Lab`
+      : "Ted's Lab";
     const description = loaderData?.subject.description ?? "";
     return {
       meta: [
@@ -78,7 +87,11 @@ function SubjectPage() {
           />
           <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {(sections ?? [])
-              .filter((s) => !q || `${s.title} ${s.description ?? ""}`.toLowerCase().includes(q))
+              .filter(
+                (s) =>
+                  !q ||
+                  `${s.title} ${s.description ?? ""}`.toLowerCase().includes(q),
+              )
               .map((s) => (
                 <Link
                   key={s.id}

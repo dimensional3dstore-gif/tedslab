@@ -95,11 +95,15 @@ export function SearchModal() {
             placeholder="Search notes, figures, tags…"
             className="h-11 flex-1 bg-transparent text-[14px] text-fg outline-none placeholder:text-fg-subtle"
           />
-          <kbd className="rounded-xs border border-border px-1.5 font-mono text-[10px] text-fg-subtle">esc</kbd>
+          <kbd className="rounded-xs border border-border px-1.5 font-mono text-[10px] text-fg-subtle">
+            esc
+          </kbd>
         </div>
         <ul className="atlas-scroll max-h-[52vh] overflow-y-auto py-1">
           {results.length === 0 && (
-            <li className="px-4 py-6 text-center text-[13px] text-fg-subtle">No matching notes.</li>
+            <li className="px-4 py-6 text-center text-[13px] text-fg-subtle">
+              No matching notes.
+            </li>
           )}
           {results.map((n, i) => {
             const Icon = icon(n.kind);
@@ -115,12 +119,19 @@ export function SearchModal() {
                     i === active ? "bg-bg-active" : "hover:bg-bg-hover",
                   )}
                 >
-                  <Icon className="mt-0.5 size-4 text-accent-dim" strokeWidth={1.7} />
+                  <Icon
+                    className="mt-0.5 size-4 text-accent-dim"
+                    strokeWidth={1.7}
+                  />
                   <span className="min-w-0">
                     <span className="block text-[13px] text-fg">{n.title}</span>
-                    <span className="line-clamp-1 text-[11px] text-fg-muted">{n.summary}</span>
+                    <span className="line-clamp-1 text-[11px] text-fg-muted">
+                      {n.summary}
+                    </span>
                   </span>
-                  <span className="ml-auto shrink-0 font-mono text-[10px] text-fg-subtle">{n.kind}</span>
+                  <span className="ml-auto shrink-0 font-mono text-[10px] text-fg-subtle">
+                    {n.kind}
+                  </span>
                 </button>
               </li>
             );

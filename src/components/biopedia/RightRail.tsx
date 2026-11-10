@@ -122,7 +122,9 @@ function TimelinePanel() {
         {timeline.map((t) => (
           <li key={t.when} className="flex items-center gap-3 text-sm">
             <span className="size-2.5 shrink-0 rounded-full bg-primary" />
-            <span className="w-16 shrink-0 text-xs text-bio-cyan">{t.when}</span>
+            <span className="w-16 shrink-0 text-xs text-bio-cyan">
+              {t.when}
+            </span>
             <span className="text-xs text-foreground">{t.what}</span>
           </li>
         ))}
@@ -145,7 +147,10 @@ function QuickFacts() {
           <Dna className="size-7 text-primary" />
           <div>
             <p className="text-sm font-semibold">
-              ~8.7 <span className="text-xs font-normal text-muted-foreground">Million</span>
+              ~8.7{" "}
+              <span className="text-xs font-normal text-muted-foreground">
+                Million
+              </span>
             </p>
             <p className="text-xs text-muted-foreground">Species on Earth</p>
           </div>

@@ -1,7 +1,7 @@
 import { _ as Link } from "../_libs/@tanstack/react-router+[...].mjs";
 import { o as require_jsx_runtime } from "../_libs/@radix-ui/react-collection+[...].mjs";
 import { Ht as CircleCheck, Kt as ChevronRight, O as Sparkles, Q as Microscope, g as ThumbsDown, h as ThumbsUp, pt as Leaf, tn as BookOpenText } from "../_libs/lucide-react.mjs";
-import { _ as layoutFromArticleBody } from "./router-Do9_DjQ6.mjs";
+import { _ as layoutFromArticleBody } from "./router-BOjcgrMn.mjs";
 import { r as resolveImage } from "./images-BfzzCxZw.mjs";
 import { t as ArticleCard } from "./ArticleCard-DOSfw5Q1.mjs";
 import { t as AppShell } from "./AppShell-BSLOU_FO.mjs";

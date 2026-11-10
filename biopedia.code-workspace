@@ -1,9 +1,9 @@
 {
-	"folders": [
-		{
-			"name": "biopedia",
-			"path": "."
-		}
-	],
-	"settings": {}
+  "folders": [
+    {
+      "name": "biopedia",
+      "path": ".",
+    },
+  ],
+  "settings": {},
 }

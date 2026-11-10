@@ -2,28 +2,35 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { AppShell, PageHeader } from "@/components/biopedia/AppShell";
 
-const tutorialMap: Record<string, { title: string; description: string; videoUrl: string; duration: string }> = {
+const tutorialMap: Record<
+  string,
+  { title: string; description: string; videoUrl: string; duration: string }
+> = {
   "getting-started": {
     title: "Getting Started with Ted's Lab",
-    description: "Learn how to browse subjects, save study material, and build a routine with the library and dashboard.",
+    description:
+      "Learn how to browse subjects, save study material, and build a routine with the library and dashboard.",
     videoUrl: "https://www.youtube.com/watch?v=ysz5S6PUM-U",
     duration: "4 min",
   },
   "using-notes": {
     title: "How to Use the Notes Tool",
-    description: "Use the notebook to record key ideas, chapter summaries, and quick revision reminders.",
+    description:
+      "Use the notebook to record key ideas, chapter summaries, and quick revision reminders.",
     videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
     duration: "3 min",
   },
   "using-ai-tutor": {
     title: "Using the AI Tutor",
-    description: "Ask effective questions and use AI to turn content into study prompts and deeper explanations.",
+    description:
+      "Ask effective questions and use AI to turn content into study prompts and deeper explanations.",
     videoUrl: "https://www.youtube.com/watch?v=aqz-KE-bpKQ",
     duration: "5 min",
   },
   "saving-content": {
     title: "Saving and Organizing Study Content",
-    description: "Bookmark the articles and materials you want to revisit, so your learning stays focused and organized.",
+    description:
+      "Bookmark the articles and materials you want to revisit, so your learning stays focused and organized.",
     videoUrl: "https://www.youtube.com/watch?v=ScMzIvxBSi4",
     duration: "4 min",
   },
@@ -63,7 +70,10 @@ function TutorialPage() {
       <AppShell>
         <div className="bio-panel p-6">
           <p className="text-sm text-muted-foreground">Tutorial not found.</p>
-          <Link to="/tutorials" className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-primary">
+          <Link
+            to="/tutorials"
+            className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-primary"
+          >
             <ArrowLeft className="size-4" />
             Back to tutorials
           </Link>
@@ -77,13 +87,19 @@ function TutorialPage() {
   return (
     <AppShell>
       <div>
-        <Link to="/tutorials" className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground">
+        <Link
+          to="/tutorials"
+          className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground"
+        >
           <ArrowLeft className="size-3.5" />
           Back to tutorials
         </Link>
 
         <div className="mt-4">
-          <PageHeader title={tutorial.title} description={`${tutorial.description} Duration: ${tutorial.duration}`} />
+          <PageHeader
+            title={tutorial.title}
+            description={`${tutorial.description} Duration: ${tutorial.duration}`}
+          />
 
           <div className="mt-6 overflow-hidden rounded-lg bio-panel">
             {embedUrl ? (

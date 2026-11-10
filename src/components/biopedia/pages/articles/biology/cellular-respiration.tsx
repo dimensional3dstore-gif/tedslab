@@ -1,8 +1,22 @@
-import { BookOpenText, CheckCircle2, ChevronRight, Leaf, Microscope, Sparkles, ThumbsDown, ThumbsUp } from "lucide-react";
+import {
+  BookOpenText,
+  CheckCircle2,
+  ChevronRight,
+  Leaf,
+  Microscope,
+  Sparkles,
+  ThumbsDown,
+  ThumbsUp,
+} from "lucide-react";
 import discoveryLeaf from "@/assets/discovery-leaf.jpg";
 import { AppShell } from "@/components/biopedia/AppShell";
 
-const topicTags = ["Cell Biology", "Energy", "Mitochondria", "Biological Process"];
+const topicTags = [
+  "Cell Biology",
+  "Energy",
+  "Mitochondria",
+  "Biological Process",
+];
 
 export default function CellularRespirationPage() {
   return (
@@ -85,7 +99,11 @@ export default function CellularRespirationPage() {
               </div>
 
               <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground">
-                Cellular respiration is the process by which cells break down glucose and other organic molecules to extract chemical energy. This energy is released and used to form ATP, the primary energy currency of the cell, enabling all cellular functions including metabolism, growth, and reproduction.
+                Cellular respiration is the process by which cells break down
+                glucose and other organic molecules to extract chemical energy.
+                This energy is released and used to form ATP, the primary energy
+                currency of the cell, enabling all cellular functions including
+                metabolism, growth, and reproduction.
               </p>
 
               <div className="mt-5 flex flex-wrap gap-2">
@@ -142,7 +160,10 @@ export default function CellularRespirationPage() {
 
           <div className="mt-6 space-y-5 text-base leading-relaxed text-muted-foreground">
             <p>
-              Cellular respiration is the process by which cells break down glucose to produce ATP (adenosine triphosphate), the energy currency of the cell. Unlike photosynthesis, which stores energy, respiration releases the energy stored in glucose molecules.
+              Cellular respiration is the process by which cells break down
+              glucose to produce ATP (adenosine triphosphate), the energy
+              currency of the cell. Unlike photosynthesis, which stores energy,
+              respiration releases the energy stored in glucose molecules.
             </p>
 
             <div className="overflow-hidden rounded-xl border border-primary/20 bg-primary/5 p-5 text-center">
@@ -155,33 +176,46 @@ export default function CellularRespirationPage() {
             </div>
 
             <p>
-              Cellular respiration occurs in three main stages: glycolysis, the Krebs cycle, and the electron transport chain. Each stage releases energy that is captured in ATP molecules.
+              Cellular respiration occurs in three main stages: glycolysis, the
+              Krebs cycle, and the electron transport chain. Each stage releases
+              energy that is captured in ATP molecules.
             </p>
           </div>
         </section>
 
         <section className="mt-8 rounded-2xl border border-border bg-card/80 p-6">
-          <h3 className="text-3xl font-bold text-foreground">The Three Main Stages</h3>
+          <h3 className="text-3xl font-bold text-foreground">
+            The Three Main Stages
+          </h3>
 
           <div className="mt-6 space-y-4">
             <div className="rounded-lg border border-border bg-secondary/50 p-4">
               <h4 className="font-semibold text-foreground">1. Glycolysis</h4>
               <p className="mt-2 text-sm text-muted-foreground">
-                Occurs in the cytoplasm. One glucose molecule is broken into two pyruvate molecules, producing a small amount of ATP and NADH without requiring oxygen.
+                Occurs in the cytoplasm. One glucose molecule is broken into two
+                pyruvate molecules, producing a small amount of ATP and NADH
+                without requiring oxygen.
               </p>
             </div>
 
             <div className="rounded-lg border border-border bg-secondary/50 p-4">
-              <h4 className="font-semibold text-foreground">2. Krebs Cycle (Citric Acid Cycle)</h4>
+              <h4 className="font-semibold text-foreground">
+                2. Krebs Cycle (Citric Acid Cycle)
+              </h4>
               <p className="mt-2 text-sm text-muted-foreground">
-                Takes place in the mitochondrial matrix. Each pyruvate is converted to Acetyl-CoA, which enters the cycle. This stage produces CO₂, ATP, and electron carriers.
+                Takes place in the mitochondrial matrix. Each pyruvate is
+                converted to Acetyl-CoA, which enters the cycle. This stage
+                produces CO₂, ATP, and electron carriers.
               </p>
             </div>
 
             <div className="rounded-lg border border-border bg-secondary/50 p-4">
-              <h4 className="font-semibold text-foreground">3. Electron Transport Chain</h4>
+              <h4 className="font-semibold text-foreground">
+                3. Electron Transport Chain
+              </h4>
               <p className="mt-2 text-sm text-muted-foreground">
-                The most efficient stage, occurring on the inner mitochondrial membrane. Produces most of the ATP from one glucose molecule.
+                The most efficient stage, occurring on the inner mitochondrial
+                membrane. Produces most of the ATP from one glucose molecule.
               </p>
             </div>
           </div>

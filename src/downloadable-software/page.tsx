@@ -16,7 +16,9 @@ export default function DownloadableSoftwarePage() {
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">
             Desktop software
           </p>
-          <h2 className="mt-2 font-display text-3xl font-bold text-foreground">ChronosOS</h2>
+          <h2 className="mt-2 font-display text-3xl font-bold text-foreground">
+            ChronosOS
+          </h2>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
             A native macOS window for the login-only ChronosOS experience.
           </p>
@@ -25,9 +27,12 @@ export default function DownloadableSoftwarePage() {
           <div className="flex items-start gap-3">
             <MonitorDown className="mt-0.5 size-5 text-primary" />
             <div>
-              <h2 className="font-semibold text-foreground">macOS disk image</h2>
+              <h2 className="font-semibold text-foreground">
+                macOS disk image
+              </h2>
               <p className="mt-1 text-sm text-muted-foreground">
-                Apple Silicon build. Internet access is required to reach the hosted sign-in page.
+                Apple Silicon build. Internet access is required to reach the
+                hosted sign-in page.
               </p>
             </div>
           </div>

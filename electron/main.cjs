@@ -17,7 +17,9 @@ function requireLocalOmlxUrl(baseUrl) {
     url.username ||
     url.password
   ) {
-    throw new Error("The desktop model server must be an HTTP service on this Mac.");
+    throw new Error(
+      "The desktop model server must be an HTTP service on this Mac.",
+    );
   }
   return url;
 }
@@ -26,7 +28,8 @@ async function requestOmlx(baseUrl, pathname, options = {}) {
   const { timeoutMs = 30_000, ...requestOptions } = options;
   const base = requireLocalOmlxUrl(baseUrl);
   const url = new URL(pathname, base);
-  if (url.origin !== base.origin) throw new Error("The model request left the local server origin.");
+  if (url.origin !== base.origin)
+    throw new Error("The model request left the local server origin.");
 
   const response = await fetch(url, {
     ...requestOptions,
@@ -42,7 +45,11 @@ async function requestOmlx(baseUrl, pathname, options = {}) {
   }
   if (!response.ok) {
     const detail = payload?.detail ?? payload?.error;
-    throw new Error(typeof detail === "string" ? detail : `oMLX returned HTTP ${response.status}.`);
+    throw new Error(
+      typeof detail === "string"
+        ? detail
+        : `oMLX returned HTTP ${response.status}.`,
+    );
   }
   if (payload === null) throw new Error("oMLX returned an invalid response.");
   return payload;
@@ -51,10 +58,14 @@ async function requestOmlx(baseUrl, pathname, options = {}) {
 function assertTrustedRenderer(event) {
   try {
     if (new URL(event.senderFrame.url).origin !== appUrl.origin) {
-      throw new Error("The ChronosOS page is not allowed to use the local model bridge.");
+      throw new Error(
+        "The ChronosOS page is not allowed to use the local model bridge.",
+      );
     }
   } catch {
-    throw new Error("The ChronosOS page is not allowed to use the local model bridge.");
+    throw new Error(
+      "The ChronosOS page is not allowed to use the local model bridge.",
+    );
   }
 }
 
@@ -75,44 +86,61 @@ ipcMain.handle("chronos-omlx:list", async (event, baseUrl, apiKey) => {
 
 ipcMain.handle("chronos-omlx:load", async (event, baseUrl, modelId, apiKey) => {
   assertTrustedRenderer(event);
-  if (typeof modelId !== "string" || modelId.length < 1 || modelId.length > 300) {
-    throw new Error("Choose a valid local model.");
-  }
-  return requestOmlx(baseUrl, `/v1/models/${encodeURIComponent(modelId)}/load`, {
-    method: "POST",
-    headers: addOmlxAuthorization({ Accept: "application/json" }, apiKey),
-    timeoutMs: 20 * 60 * 1000,
-  });
-});
-
-ipcMain.handle("chronos-omlx:chat", async (event, baseUrl, modelId, messages, apiKey) => {
-  assertTrustedRenderer(event);
   if (
     typeof modelId !== "string" ||
     modelId.length < 1 ||
-    modelId.length > 300 ||
-    !Array.isArray(messages) ||
-    messages.length < 1 ||
-    messages.length > 32 ||
-    messages.some((message) =>
-      !message ||
-      !["system", "user", "assistant"].includes(message.role) ||
-      typeof message.content !== "string" ||
-      message.content.length > 20_000,
-    )
+    modelId.length > 300
   ) {
-    throw new Error("The local chat request is invalid or too large.");
+    throw new Error("Choose a valid local model.");
   }
-  return requestOmlx(baseUrl, "/v1/chat/completions", {
-    method: "POST",
-    headers: addOmlxAuthorization(
-      { "Content-Type": "application/json", Accept: "application/json" },
-      apiKey,
-    ),
-    body: JSON.stringify({ model: modelId, messages, temperature: 0.2, stream: false }),
-    timeoutMs: 5 * 60 * 1000,
-  });
+  return requestOmlx(
+    baseUrl,
+    `/v1/models/${encodeURIComponent(modelId)}/load`,
+    {
+      method: "POST",
+      headers: addOmlxAuthorization({ Accept: "application/json" }, apiKey),
+      timeoutMs: 20 * 60 * 1000,
+    },
+  );
 });
+
+ipcMain.handle(
+  "chronos-omlx:chat",
+  async (event, baseUrl, modelId, messages, apiKey) => {
+    assertTrustedRenderer(event);
+    if (
+      typeof modelId !== "string" ||
+      modelId.length < 1 ||
+      modelId.length > 300 ||
+      !Array.isArray(messages) ||
+      messages.length < 1 ||
+      messages.length > 32 ||
+      messages.some(
+        (message) =>
+          !message ||
+          !["system", "user", "assistant"].includes(message.role) ||
+          typeof message.content !== "string" ||
+          message.content.length > 20_000,
+      )
+    ) {
+      throw new Error("The local chat request is invalid or too large.");
+    }
+    return requestOmlx(baseUrl, "/v1/chat/completions", {
+      method: "POST",
+      headers: addOmlxAuthorization(
+        { "Content-Type": "application/json", Accept: "application/json" },
+        apiKey,
+      ),
+      body: JSON.stringify({
+        model: modelId,
+        messages,
+        temperature: 0.2,
+        stream: false,
+      }),
+      timeoutMs: 5 * 60 * 1000,
+    });
+  },
+);
 
 function createWindow() {
   const window = new BrowserWindow({
@@ -137,7 +165,10 @@ function createWindow() {
 
   window.webContents.setWindowOpenHandler(({ url }) => {
     const target = new URL(url);
-    if (["http:", "https:"].includes(target.protocol) && target.origin !== appUrl.origin) {
+    if (
+      ["http:", "https:"].includes(target.protocol) &&
+      target.origin !== appUrl.origin
+    ) {
       void shell.openExternal(target.href);
     }
     return { action: "deny" };

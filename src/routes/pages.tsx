@@ -28,15 +28,22 @@ function PagesListPage() {
       {(q) => {
         const publishedPages = pages.filter((p) => p.published);
         const filtered = publishedPages.filter(
-          (p) => !q || `${p.title} ${p.description ?? ""}`.toLowerCase().includes(q),
+          (p) =>
+            !q || `${p.title} ${p.description ?? ""}`.toLowerCase().includes(q),
         );
 
         return (
           <>
             <PageHeader title="All Pages" description={description} />
-            {isLoading && <p className="mt-6 text-sm text-muted-foreground">Loading pages…</p>}
+            {isLoading && (
+              <p className="mt-6 text-sm text-muted-foreground">
+                Loading pages…
+              </p>
+            )}
             {!isLoading && filtered.length === 0 && (
-              <p className="mt-6 text-sm text-muted-foreground">No pages match your search.</p>
+              <p className="mt-6 text-sm text-muted-foreground">
+                No pages match your search.
+              </p>
             )}
             <div className="mt-6 space-y-3">
               {filtered.map((page) => (
@@ -57,13 +64,17 @@ function PagesListPage() {
                     />
                   )}
                   <div className="flex-1 min-w-0">
-                    <h2 className="text-sm font-semibold text-foreground">{page.title}</h2>
+                    <h2 className="text-sm font-semibold text-foreground">
+                      {page.title}
+                    </h2>
                     {page.description && (
                       <p className="mt-2 text-xs leading-relaxed text-muted-foreground line-clamp-3">
                         {page.description}
                       </p>
                     )}
-                    <p className="mt-3 text-xs text-primary font-semibold">Read more →</p>
+                    <p className="mt-3 text-xs text-primary font-semibold">
+                      Read more →
+                    </p>
                   </div>
                 </Link>
               ))}

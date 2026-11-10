@@ -58,25 +58,47 @@ export function Toolbar() {
 
   return (
     <header className="flex h-10 shrink-0 items-center gap-1 border-b border-border bg-bg-sidebar px-2">
-      <Tool title="Toggle explorer" active={explorerOpen} onClick={toggleExplorer}>
+      <Tool
+        title="Toggle explorer"
+        active={explorerOpen}
+        onClick={toggleExplorer}
+      >
         <PanelLeft className="size-3.5" />
       </Tool>
       <div className="flex items-center gap-2 pr-2">
         <Network className="size-3.5 text-accent" strokeWidth={1.8} />
-        <h1 className="text-[13px] font-medium tracking-tight text-fg">Knowledge Graph</h1>
+        <h1 className="text-[13px] font-medium tracking-tight text-fg">
+          Knowledge Graph
+        </h1>
       </div>
       <div className="mx-1 h-4 w-px bg-border-strong" />
-      <Tool title="Graph view" active={view === "graph"} onClick={() => setView("graph")}>
+      <Tool
+        title="Graph view"
+        active={view === "graph"}
+        onClick={() => setView("graph")}
+      >
         <Network className="size-3.5" />
       </Tool>
-      <Tool title="Reader" active={view === "article"} onClick={() => setView("article")}>
+      <Tool
+        title="Reader"
+        active={view === "article"}
+        onClick={() => setView("article")}
+      >
         <BookOpen className="size-3.5" />
       </Tool>
-      <Tool title="Split" active={view === "split"} onClick={() => setView("split")}>
+      <Tool
+        title="Split"
+        active={view === "split"}
+        onClick={() => setView("split")}
+      >
         <Columns2 className="size-3.5" />
       </Tool>
       <div className="mx-1 h-4 w-px bg-border-strong" />
-      <Tool title="Show labels" active={settings.showLabels} onClick={() => patch({ showLabels: !settings.showLabels })}>
+      <Tool
+        title="Show labels"
+        active={settings.showLabels}
+        onClick={() => patch({ showLabels: !settings.showLabels })}
+      >
         <Type className="size-3.5" />
       </Tool>
       <Tool
@@ -93,13 +115,24 @@ export function Toolbar() {
       >
         <Focus className="size-3.5" />
       </Tool>
-      <Tool title="Local graph" active={settings.localMode} onClick={() => patch({ localMode: !settings.localMode })}>
+      <Tool
+        title="Local graph"
+        active={settings.localMode}
+        onClick={() => patch({ localMode: !settings.localMode })}
+      >
         <LocateFixed className="size-3.5" />
       </Tool>
-      <Tool title="Show arrows" active={settings.showArrows} onClick={() => patch({ showArrows: !settings.showArrows })}>
+      <Tool
+        title="Show arrows"
+        active={settings.showArrows}
+        onClick={() => patch({ showArrows: !settings.showArrows })}
+      >
         <Spline className="size-3.5" />
       </Tool>
-      <Tool title="Fit graph" onClick={() => window.dispatchEvent(new Event("atlas:fit"))}>
+      <Tool
+        title="Fit graph"
+        onClick={() => window.dispatchEvent(new Event("atlas:fit"))}
+      >
         <Maximize2 className="size-3.5" />
       </Tool>
       <div className="flex-1" />
@@ -115,10 +148,16 @@ export function Toolbar() {
         className="ml-1 hidden h-7 items-center gap-2 rounded-sm border border-border bg-bg px-2 text-[11px] text-fg-subtle md:flex"
       >
         <span>Search</span>
-        <kbd className="rounded-xs border border-border px-1 font-mono text-[9px]">⌘K</kbd>
+        <kbd className="rounded-xs border border-border px-1 font-mono text-[9px]">
+          ⌘K
+        </kbd>
       </button>
       <ArrowLeftRight className="ml-1 hidden size-3.5 text-fg-subtle lg:block" />
-      <Tool title="Toggle inspector" active={inspectorOpen} onClick={toggleInspector}>
+      <Tool
+        title="Toggle inspector"
+        active={inspectorOpen}
+        onClick={toggleInspector}
+      >
         <PanelRight className="size-3.5" />
       </Tool>
     </header>

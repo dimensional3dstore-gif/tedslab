@@ -16,17 +16,20 @@ interface TopicCardProps {
 }
 
 export const TopicCard = forwardRef<HTMLAnchorElement, TopicCardProps>(
-  ({
-    topic,
-    sectionSlug,
-    subjectSlug,
-    sectionImageKey,
-    saved = false,
-    onBookmarkClick,
-    showBookmark = true,
-  }, ref) => {
+  (
+    {
+      topic,
+      sectionSlug,
+      subjectSlug,
+      sectionImageKey,
+      saved = false,
+      onBookmarkClick,
+      showBookmark = true,
+    },
+    ref,
+  ) => {
     const topicId = `${sectionSlug}/${topic.slug}`;
-    const topicLink = subjectSlug 
+    const topicLink = subjectSlug
       ? `/${subjectSlug}/${sectionSlug}/${topic.slug}`
       : `/${sectionSlug}/${topic.slug}`;
 
@@ -83,7 +86,9 @@ export const TopicCard = forwardRef<HTMLAnchorElement, TopicCardProps>(
                 }`}
               >
                 <div className="flex items-center gap-1.5">
-                  <Bookmark className={`size-3.5 ${saved ? "fill-current" : ""}`} />
+                  <Bookmark
+                    className={`size-3.5 ${saved ? "fill-current" : ""}`}
+                  />
                   {saved ? "Saved" : "Save"}
                 </div>
               </button>
@@ -95,5 +100,5 @@ export const TopicCard = forwardRef<HTMLAnchorElement, TopicCardProps>(
         </div>
       </Link>
     );
-  }
+  },
 );

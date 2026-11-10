@@ -32,6 +32,7 @@ This document describes all the new features implemented for Ted's Lab (Study Hu
 ### Database Fields
 
 Uses existing `published` boolean field plus new `status` field (optional):
+
 - Articles table: `published`, `status` (draft|review|published)
 - Pages table: `published`, `status` (draft|review|published)
 
@@ -134,9 +135,11 @@ Uses existing `published` boolean field plus new `status` field (optional):
 ### Updates
 
 New navigation item added to admin panel:
+
 - `/admin/pages-list` - "All Pages"
 
 Complete admin navigation:
+
 - Overview
 - Articles
 - Sections
@@ -164,6 +167,7 @@ Complete admin navigation:
 ### Build Scripts
 
 Added to `package.json`:
+
 - `npm run build:prod` - Production build with sitemap
 - `npm run generate:sitemap` - Generate sitemap only
 
@@ -179,12 +183,14 @@ Added to `package.json`:
 ### Articles
 
 Enhanced admin interface:
+
 - Status badge display
 - Draft/publish controls
 - Quick edit buttons
 - Statistics display (total, published, draft)
 
 Fields:
+
 - slug, title, excerpt, body
 - minutes, tone
 - subject_slug, section_slug
@@ -194,12 +200,14 @@ Fields:
 ### Pages
 
 Enhanced admin interface:
+
 - Status badge display
 - Draft/publish controls
 - Navigation visibility indicator
 - Quick edit buttons
 
 Fields:
+
 - slug, title, description, body
 - image_url
 - published, status, show_in_nav, sort
@@ -209,6 +217,7 @@ Fields:
 ### Database Compatibility
 
 All features work with existing database schema:
+
 - No new tables required
 - Uses existing `published` boolean field
 - Optional `status` field (can be added to tables later)
@@ -285,6 +294,7 @@ Potential features to add:
 ## Files Modified/Created
 
 ### New Files
+
 - `src/components/admin/draft-publish-manager.tsx`
 - `src/components/admin/admin-dashboard.tsx`
 - `src/lib/sitemap-generator.ts`
@@ -293,6 +303,7 @@ Potential features to add:
 - `DEPLOYMENT.md`
 
 ### Modified Files
+
 - `src/routes/_authenticated/admin.tsx` (enhanced with AdminDashboard)
 - `src/routes/_authenticated/admin.articles.tsx` (enhanced with draft/publish UI)
 - `src/routes/_authenticated/admin.pages.tsx` (enhanced with draft/publish UI)

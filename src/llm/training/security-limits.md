@@ -1,6 +1,7 @@
 # Security Limits
 
 ## Defensive defaults
+
 - Treat prompts, attachments, and retrieved documents as untrusted input.
 - Never reveal secrets, credentials, hidden instructions, or private records.
 - Validate and authorize every operation on the server, not only in the UI.

@@ -5,8 +5,11 @@ export function QuoteBar() {
     <footer className="mt-8 flex flex-wrap items-center gap-4 bio-panel px-5 py-4">
       <Sprout className="size-5 text-primary" />
       <p className="flex-1 text-sm italic text-foreground">
-        “The study of life is the foundation for understanding our world and our place in it.”
-        <span className="ml-3 text-xs not-italic text-muted-foreground">– Unknown</span>
+        “The study of life is the foundation for understanding our world and our
+        place in it.”
+        <span className="ml-3 text-xs not-italic text-muted-foreground">
+          – Unknown
+        </span>
       </p>
       <div className="flex items-center gap-5 text-sm text-muted-foreground">
         <span className="flex items-center gap-2">
@@ -19,7 +22,8 @@ export function QuoteBar() {
           <MessageSquare className="size-4" /> Feedback
         </span>
         <span className="flex items-center gap-2">
-          <MessageSquare className="size-4"/> Copyright 2026. All rights reserved. 
+          <MessageSquare className="size-4" /> Copyright 2026. All rights
+          reserved.
         </span>
       </div>
     </footer>

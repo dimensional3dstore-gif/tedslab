@@ -1,10 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Download, BookOpenText, Sparkles, ShieldCheck } from "lucide-react";
+import {
+  ArrowRight,
+  Download,
+  BookOpenText,
+  Sparkles,
+  ShieldCheck,
+} from "lucide-react";
 import { AppShell } from "@/components/biopedia/AppShell";
 import { getChronosOSDownloadUrl } from "@/lib/chronos-os-download";
 
 const title = "Download ChronosOS";
-const description = "Install the ChronosOS desktop app for a focused sign-in to Ted's Lab.";
+const description =
+  "Install the ChronosOS desktop app for a focused sign-in to Ted's Lab.";
 
 export const Route = createFileRoute("/download")({
   head: () => ({
@@ -59,12 +66,20 @@ function DownloadPage() {
 
             <div className="grid gap-3 rounded-2xl border border-border bg-card/80 p-4 text-sm text-muted-foreground shadow-sm">
               <div className="rounded-xl bg-secondary p-3">
-                <p className="text-xs uppercase tracking-[0.12em] text-primary">Desktop package</p>
-                <p className="mt-2 font-medium text-foreground">macOS DMG installer</p>
+                <p className="text-xs uppercase tracking-[0.12em] text-primary">
+                  Desktop package
+                </p>
+                <p className="mt-2 font-medium text-foreground">
+                  macOS DMG installer
+                </p>
               </div>
               <div className="rounded-xl bg-secondary p-3">
-                <p className="text-xs uppercase tracking-[0.12em] text-primary">Sign-in surface</p>
-                <p className="mt-2 font-medium text-foreground">ChronosOS login only</p>
+                <p className="text-xs uppercase tracking-[0.12em] text-primary">
+                  Sign-in surface
+                </p>
+                <p className="mt-2 font-medium text-foreground">
+                  ChronosOS login only
+                </p>
               </div>
             </div>
           </div>
@@ -75,12 +90,14 @@ function DownloadPage() {
             {
               icon: BookOpenText,
               title: "Curated content",
-              description: "Open the ChronosOS login from a native macOS window.",
+              description:
+                "Open the ChronosOS login from a native macOS window.",
             },
             {
               icon: Sparkles,
               title: "Smarter revision",
-              description: "Use the existing Ted's Lab account and Supabase sign-in flow.",
+              description:
+                "Use the existing Ted's Lab account and Supabase sign-in flow.",
             },
             {
               icon: ShieldCheck,
@@ -88,17 +105,25 @@ function DownloadPage() {
               description:
                 "The installer is an unsigned desktop wrapper around the hosted login page.",
             },
-          ].map(({ icon: Icon, title: cardTitle, description: cardDescription }) => (
-            <div key={cardTitle} className="bio-panel p-5">
-              <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                <Icon className="size-5" />
+          ].map(
+            ({
+              icon: Icon,
+              title: cardTitle,
+              description: cardDescription,
+            }) => (
+              <div key={cardTitle} className="bio-panel p-5">
+                <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <Icon className="size-5" />
+                </div>
+                <h2 className="mt-4 text-lg font-semibold text-foreground">
+                  {cardTitle}
+                </h2>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  {cardDescription}
+                </p>
               </div>
-              <h2 className="mt-4 text-lg font-semibold text-foreground">{cardTitle}</h2>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                {cardDescription}
-              </p>
-            </div>
-          ))}
+            ),
+          )}
         </section>
 
         <section className="bio-panel p-6">

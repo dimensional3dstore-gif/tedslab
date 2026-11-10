@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { NODE_BY_ID, TITLE_TO_ID } from "@/data/catalog";
 import type { ReactNode } from "react";
 
@@ -11,7 +12,11 @@ function resolveId(raw: string): string | null {
   return byTitle ?? null;
 }
 
-function inline(text: string, onNavigate: (id: string) => void, keyPrefix: string): ReactNode[] {
+function inline(
+  text: string,
+  onNavigate: (id: string) => void,
+  keyPrefix: string,
+): ReactNode[] {
   const parts: ReactNode[] = [];
   let last = 0;
   const re = new RegExp(WIKI.source + "|" + INLINE.source, "g");
@@ -80,9 +85,7 @@ export function WikiBody({
   const flushPara = () => {
     if (!para.length) return;
     const text = para.join(" ");
-    blocks.push(
-      <p key={`p-${bi++}`}>{inline(text, onNavigate, `p${bi}`)}</p>,
-    );
+    blocks.push(<p key={`p-${bi++}`}>{inline(text, onNavigate, `p${bi}`)}</p>);
     para = [];
   };
   const flushList = () => {
@@ -108,7 +111,9 @@ export function WikiBody({
       flushPara();
       flushList();
       blocks.push(
-        <h2 key={`h-${bi++}`}>{inline(line.slice(3), onNavigate, `h${bi}`)}</h2>,
+        <h2 key={`h-${bi++}`}>
+          {inline(line.slice(3), onNavigate, `h${bi}`)}
+        </h2>,
       );
       continue;
     }
@@ -116,7 +121,9 @@ export function WikiBody({
       flushPara();
       flushList();
       blocks.push(
-        <h3 key={`h3-${bi++}`}>{inline(line.slice(4), onNavigate, `h3${bi}`)}</h3>,
+        <h3 key={`h3-${bi++}`}>
+          {inline(line.slice(4), onNavigate, `h3${bi}`)}
+        </h3>,
       );
       continue;
     }
@@ -148,5 +155,12 @@ export function extractHeadings(markdown: string): string[] {
   return markdown
     .split("\n")
     .filter((l) => l.startsWith("## "))
-    .map((l) => l.replace(/^##\s+/, "").replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g, (_m, id, label) => label || id));
+    .map((l) =>
+      l
+        .replace(/^##\s+/, "")
+        .replace(
+          /\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g,
+          (_m, id, label) => label || id,
+        ),
+    );
 }

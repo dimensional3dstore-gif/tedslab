@@ -4,7 +4,8 @@ import { useVideos } from "@/lib/content";
 import { resolveImage, subjectImageKey } from "@/lib/images";
 
 const title = "Videos — Ted's Lab";
-const description = "Watch curated videos covering topics across every Ted's Lab subject.";
+const description =
+  "Watch curated videos covering topics across every Ted's Lab subject.";
 
 export const Route = createFileRoute("/videos")({
   head: () => ({
@@ -27,14 +28,21 @@ function VideosPage() {
     <AppShell>
       {(q) => {
         const filtered = videos.filter(
-          (v) => !q || `${v.title} ${v.description ?? ""}`.toLowerCase().includes(q),
+          (v) =>
+            !q || `${v.title} ${v.description ?? ""}`.toLowerCase().includes(q),
         );
         return (
           <>
             <PageHeader title="Videos" description={description} />
-            {isLoading && <p className="mt-6 text-sm text-muted-foreground">Loading videos…</p>}
+            {isLoading && (
+              <p className="mt-6 text-sm text-muted-foreground">
+                Loading videos…
+              </p>
+            )}
             {!isLoading && filtered.length === 0 && (
-              <p className="mt-6 text-sm text-muted-foreground">No videos match your search.</p>
+              <p className="mt-6 text-sm text-muted-foreground">
+                No videos match your search.
+              </p>
             )}
             <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
               {filtered.map((v) => (
@@ -47,7 +55,9 @@ function VideosPage() {
                   <img
                     src={resolveImage(
                       v.poster_url,
-                      v.subject_slug ? (subjectImageKey[v.subject_slug] ?? null) : null,
+                      v.subject_slug
+                        ? (subjectImageKey[v.subject_slug] ?? null)
+                        : null,
                     )}
                     alt={v.title}
                     loading="lazy"

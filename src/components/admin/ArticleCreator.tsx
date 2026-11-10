@@ -28,7 +28,9 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
   const [section, setSection] = useState(existing?.section_slug ?? "organisms");
   const [imageKey, setImageKey] = useState(existing?.image_key ?? "hero-cell");
   const [layout, setLayout] = useState<ArticleLayout>(
-    existing ? (layoutFromArticleBody(existing.body) ?? cloneDefault()) : cloneDefault(),
+    existing
+      ? (layoutFromArticleBody(existing.body) ?? cloneDefault())
+      : cloneDefault(),
   );
   const [status, setStatus] = useState<"draft" | "published">(
     existing?.published ? "published" : "draft",
@@ -80,7 +82,8 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
       >
         <h2 className="font-display text-lg font-semibold">Create article</h2>
         <p className="text-xs text-muted-foreground">
-          The default encyclopedia layout is already loaded. Edit fields and watch the live preview.
+          The default encyclopedia layout is already loaded. Edit fields and
+          watch the live preview.
         </p>
         <label className="block space-y-1 text-xs text-muted-foreground">
           Title
@@ -132,7 +135,10 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
             className="min-h-28 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground"
             value={layout.overview.join("\n")}
             onChange={(e) =>
-              setLayout({ ...layout, overview: e.target.value.split("\n").filter(Boolean) })
+              setLayout({
+                ...layout,
+                overview: e.target.value.split("\n").filter(Boolean),
+              })
             }
           />
         </label>
@@ -156,7 +162,11 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
             Save draft
           </Button>
           <Button type="submit">Publish</Button>
-          <Button type="button" variant="ghost" onClick={() => setLayout(cloneDefault())}>
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={() => setLayout(cloneDefault())}
+          >
             Reset layout
           </Button>
         </div>
@@ -166,7 +176,11 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
         <p className="mb-3 text-[11px] font-semibold uppercase tracking-widest text-primary">
           Default layout preview
         </p>
-        <ArticleTemplate article={previewArticle} layoutOverride={layout} preview />
+        <ArticleTemplate
+          article={previewArticle}
+          layoutOverride={layout}
+          preview
+        />
       </div>
     </div>
   );

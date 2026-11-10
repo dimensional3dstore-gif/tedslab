@@ -25,7 +25,10 @@ export type SimLink = {
 };
 
 const CLUSTER_ANGLE: Record<string, number> = Object.fromEntries(
-  CLUSTERS.map((c, i) => [c.id, (Math.PI * 2 * i) / CLUSTERS.length - Math.PI / 2]),
+  CLUSTERS.map((c, i) => [
+    c.id,
+    (Math.PI * 2 * i) / CLUSTERS.length - Math.PI / 2,
+  ]),
 );
 
 /** Distance of each cluster hub from the atlas center. */
@@ -52,7 +55,15 @@ function jitter(id: string, span: number): number {
 
 function radiusFor(n: AtlasNode, degree: number): number {
   const base =
-    n.kind === "atlas" ? 16 : n.kind === "hub" ? 10.5 : n.kind === "topic" ? 7.2 : n.kind === "figure" ? 5.6 : 5.0;
+    n.kind === "atlas"
+      ? 16
+      : n.kind === "hub"
+        ? 10.5
+        : n.kind === "topic"
+          ? 7.2
+          : n.kind === "figure"
+            ? 5.6
+            : 5.0;
   return base + Math.min(2.2, degree * 0.07);
 }
 
@@ -69,14 +80,19 @@ function clusterHubXY(cluster: string): { x: number; y: number } {
  * Place each cluster as a solar system so neighboring dots stay far
  * enough apart that titles can be read without overlapping.
  */
-function seedXY(n: AtlasNode, indexInKind: number, kindCount: number): { x: number; y: number } {
+function seedXY(
+  n: AtlasNode,
+  indexInKind: number,
+  kindCount: number,
+): { x: number; y: number } {
   if (n.cluster === "atlas" || n.kind === "atlas") return { x: 0, y: 0 };
   const hub = clusterHubXY(n.cluster);
   if (n.kind === "hub") return hub;
   const a0 = CLUSTER_ANGLE[n.cluster] ?? 0;
   const ring = KIND_RING[n.kind] ?? 900;
   const step = (Math.PI * 2) / Math.max(1, kindCount);
-  const kindShift = n.kind === "topic" ? 0.12 : n.kind === "figure" ? 0.38 : 0.64;
+  const kindShift =
+    n.kind === "topic" ? 0.12 : n.kind === "figure" ? 0.38 : 0.64;
   const ang = a0 + step * (indexInKind + kindShift) + jitter(n.id, 0.14);
   const r = ring + jitter(n.id + "r", 70);
   return { x: hub.x + Math.cos(ang) * r, y: hub.y + Math.sin(ang) * r };
@@ -113,7 +129,9 @@ export function buildSimulation(): { nodes: SimNode[]; links: SimLink[] } {
   const kindIndex = new Map<string, { i: number; n: number }>();
   for (const cluster of ["atlas", ...CLUSTERS.map((c) => c.id)]) {
     for (const kind of ["hub", "topic", "figure", "concept"] as const) {
-      const group = NODES.filter((n) => n.cluster === cluster && n.kind === kind);
+      const group = NODES.filter(
+        (n) => n.cluster === cluster && n.kind === kind,
+      );
       group.forEach((n, i) => kindIndex.set(n.id, { i, n: group.length }));
     }
   }
@@ -145,7 +163,8 @@ export function buildSimulation(): { nodes: SimNode[]; links: SimLink[] } {
       forceLink<SimNode, SimLink>(links)
         .id((d) => d.id)
         .distance((l) => {
-          if (l.source.kind === "atlas" || l.target.kind === "atlas") return 560;
+          if (l.source.kind === "atlas" || l.target.kind === "atlas")
+            return 560;
           if (l.source.kind === "hub" || l.target.kind === "hub") {
             return l.source.cluster === l.target.cluster ? 380 : 920;
           }
@@ -153,7 +172,8 @@ export function buildSimulation(): { nodes: SimNode[]; links: SimLink[] } {
           return 560;
         })
         .strength((l) => {
-          if (l.source.kind === "atlas" || l.target.kind === "atlas") return 0.16;
+          if (l.source.kind === "atlas" || l.target.kind === "atlas")
+            return 0.16;
           return l.source.cluster === l.target.cluster ? 0.22 : 0.035;
         }),
     )
@@ -161,7 +181,13 @@ export function buildSimulation(): { nodes: SimNode[]; links: SimLink[] } {
       "charge",
       forceManyBody<SimNode>()
         .strength((d) =>
-          d.kind === "atlas" ? -1600 : d.kind === "hub" ? -820 : d.kind === "topic" ? -280 : -180,
+          d.kind === "atlas"
+            ? -1600
+            : d.kind === "hub"
+              ? -820
+              : d.kind === "topic"
+                ? -280
+                : -180,
         )
         .distanceMax(1600),
     )
@@ -180,13 +206,17 @@ export function buildSimulation(): { nodes: SimNode[]; links: SimLink[] } {
     .force("center", forceCenter(0, 0).strength(0.015))
     .force(
       "x",
-      forceX<SimNode>((d) => (d.kind === "atlas" ? 0 : clusterHubXY(d.cluster).x)).strength((d) =>
+      forceX<SimNode>((d) =>
+        d.kind === "atlas" ? 0 : clusterHubXY(d.cluster).x,
+      ).strength((d) =>
         d.kind === "atlas" ? 0.16 : d.kind === "hub" ? 0.12 : 0.028,
       ),
     )
     .force(
       "y",
-      forceY<SimNode>((d) => (d.kind === "atlas" ? 0 : clusterHubXY(d.cluster).y)).strength((d) =>
+      forceY<SimNode>((d) =>
+        d.kind === "atlas" ? 0 : clusterHubXY(d.cluster).y,
+      ).strength((d) =>
         d.kind === "atlas" ? 0.16 : d.kind === "hub" ? 0.12 : 0.028,
       ),
     )

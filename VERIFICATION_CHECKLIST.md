@@ -3,12 +3,14 @@
 ## Phase 1: Database Setup
 
 - [ ] **Add topic_slug field to articles table**
+
   ```sql
   -- Should already exist in articles.sql schema
   -- Verify: \d articles (shows all columns including topic_slug)
   ```
 
 - [ ] **Load article seed data**
+
   ```sql
   -- File: entitles/seed-articles.sql
   -- Copy entire SQL and run in Supabase SQL Editor
@@ -17,11 +19,11 @@
 
 - [ ] **Verify data loaded**
   ```sql
-  SELECT COUNT(*) as total_articles, 
+  SELECT COUNT(*) as total_articles,
          COUNT(DISTINCT topic_slug) as topics_with_articles,
          COUNT(DISTINCT section_slug) as sections_covered
   FROM articles WHERE published = true;
-  
+
   -- Expected: ~200+ articles, ~180+ topics, ~60+ sections
   ```
 
@@ -29,10 +31,11 @@
 
 - [ ] **Check routes file exists**
   - [ ] `src/routes/$section.$topic.tsx` - ✅ Created
-  - [ ] `src/routes/articles.$slug.tsx` - ✅ Created  
+  - [ ] `src/routes/articles.$slug.tsx` - ✅ Created
   - [ ] `src/routes/$subject.$section.tsx` - ✅ Created
 
 - [ ] **No compilation errors**
+
   ```bash
   npm run dev
   # Check terminal for "No errors" message
@@ -64,6 +67,7 @@
 ## Phase 4: Navigation Testing
 
 ### Homepage Testing
+
 - [ ] Homepage loads without errors
 - [ ] **Featured Articles section**
   - [ ] Shows article cards
@@ -83,6 +87,7 @@
   - [ ] Each article card is clickable
 
 ### Sidebar Navigation Testing
+
 - [ ] Sidebar appears on all pages
 - [ ] **Subject links** work
   - [ ] Click "Biology" → `/biology`
@@ -99,6 +104,7 @@
   - [ ] Shows all published articles
 
 ### Topic Navigation Testing
+
 - [ ] **Via subject section**
   - [ ] Go to `/biology/organisms`
   - [ ] See topic cards (Animal Kingdom, Fungi, etc.)
@@ -115,6 +121,7 @@
   - [ ] Page loads correctly
 
 ### Article Navigation Testing
+
 - [ ] **Via Featured Articles**
   - [ ] Homepage featured articles are clickable
   - [ ] Click → `/articles/{slug}`
@@ -215,30 +222,36 @@
 ## Phase 9: Data Verification
 
 - [ ] **Article count per subject**
+
   ```sql
-  SELECT subject_slug, COUNT(*) 
-  FROM articles 
-  GROUP BY subject_slug 
+  SELECT subject_slug, COUNT(*)
+  FROM articles
+  GROUP BY subject_slug
   ORDER BY subject_slug;
   ```
+
   Expected: Biology ~60, Math ~30, Science ~36, English ~30, History ~30, Tech ~30+
 
 - [ ] **All articles published**
+
   ```sql
   SELECT COUNT(*) FROM articles WHERE published = false;
   ```
+
   Expected: 0 (or minimal draft articles)
 
 - [ ] **All articles linked to topics**
+
   ```sql
   SELECT COUNT(*) FROM articles WHERE topic_slug IS NULL;
   ```
+
   Expected: 0
 
 - [ ] **All topics have articles**
   ```sql
-  SELECT COUNT(DISTINCT topic_slug) 
-  FROM articles 
+  SELECT COUNT(DISTINCT topic_slug)
+  FROM articles
   WHERE topic_slug IS NOT NULL;
   ```
   Should match approximate topic count
@@ -262,6 +275,7 @@
 ## Sign-Off Checklist
 
 ### Before Production
+
 - [ ] All automated tests pass
 - [ ] No console errors in dev tools
 - [ ] No TypeScript errors
@@ -269,6 +283,7 @@
 - [ ] SQL migration backed up
 
 ### After Deployment
+
 - [ ] Test on production URL
 - [ ] Admin can edit articles
 - [ ] Search works on production
@@ -278,14 +293,14 @@
 
 ## Troubleshooting Quick Links
 
-| Issue | Solution |
-|-------|----------|
-| Routes not working | Run `npm run dev` to regenerate routes |
-| Articles not showing | Check `published = true` in DB |
-| Topic pages 404 | Verify `$section.$topic.tsx` exists |
-| Links broken | Check URL pattern matches route |
-| Search not working | Clear browser cache, restart dev server |
-| Images not loading | Check image_key and resolveImage function |
+| Issue                | Solution                                  |
+| -------------------- | ----------------------------------------- |
+| Routes not working   | Run `npm run dev` to regenerate routes    |
+| Articles not showing | Check `published = true` in DB            |
+| Topic pages 404      | Verify `$section.$topic.tsx` exists       |
+| Links broken         | Check URL pattern matches route           |
+| Search not working   | Clear browser cache, restart dev server   |
+| Images not loading   | Check image_key and resolveImage function |
 
 ## Support Scripts
 
@@ -309,6 +324,7 @@ npm install && npm run dev
 ## Completion
 
 ✅ When all checkboxes are marked:
+
 - Topics can be opened and viewed
 - Articles can be opened and viewed
 - Complete navigation from homepage to articles works

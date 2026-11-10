@@ -49,7 +49,11 @@ export interface P2PRoomOptions {
   iceServers?: RTCIceServer[];
   onPeersChanged?: (peers: PeerInfo[]) => void;
   /** Fires for both the unreliable "state" and reliable "reliable" channels. */
-  onMessage?: (from: string, data: unknown, channel: "state" | "reliable") => void;
+  onMessage?: (
+    from: string,
+    data: unknown,
+    channel: "state" | "reliable",
+  ) => void;
   /** Fires once, on the first successful signaling poll (registration). */
   onConnected?: () => void;
 }
@@ -90,7 +94,9 @@ export function defaultIceServers(): RTCIceServer[] {
   // gathering, so either one being unreachable costs nothing.
   return [
     {
-      urls: urls?.length ? urls : ["stun:stun.l.google.com:19302", "stun:stun.cloudflare.com:3478"],
+      urls: urls?.length
+        ? urls
+        : ["stun:stun.l.google.com:19302", "stun:stun.cloudflare.com:3478"],
     },
   ];
 }
@@ -141,7 +147,11 @@ export class P2PRoom {
     void fetch("/api/rtc", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ op: "leave", room: this.opts.room, peer: this.opts.selfId }),
+      body: JSON.stringify({
+        op: "leave",
+        room: this.opts.room,
+        peer: this.opts.selfId,
+      }),
       keepalive: true,
     }).catch(() => {});
   }
@@ -157,7 +167,9 @@ export class P2PRoom {
   /** Send reliably (ordered) to one peer, or to all when peerId is omitted. */
   send(data: unknown, peerId?: string): void {
     const wire = JSON.stringify({ t: "d", d: data });
-    const targets = peerId ? [this.peers.get(peerId)] : [...this.peers.values()];
+    const targets = peerId
+      ? [this.peers.get(peerId)]
+      : [...this.peers.values()];
     for (const slot of targets) {
       if (slot?.reliable?.readyState === "open") slot.reliable.send(wire);
     }
@@ -243,7 +255,11 @@ export class P2PRoom {
 
   // ── per-pair connection ────────────────────────────────────────────────────
 
-  private connectTo(peerId: string, name: string, initiator: boolean): PeerSlot | null {
+  private connectTo(
+    peerId: string,
+    name: string,
+    initiator: boolean,
+  ): PeerSlot | null {
     if (this.closed) return null;
     const pc = new RTCPeerConnection({
       iceServers: this.opts.iceServers ?? defaultIceServers(),
@@ -266,11 +282,15 @@ export class P2PRoom {
     this.peers.set(peerId, slot);
 
     pc.onicecandidate = (e) => {
-      if (e.candidate) void this.sendSignal(peerId, "ice", e.candidate.toJSON());
+      if (e.candidate)
+        void this.sendSignal(peerId, "ice", e.candidate.toJSON());
     };
     pc.onconnectionstatechange = () => {
       slot.info.connectionState = pc.connectionState;
-      if (pc.connectionState === "connecting" || pc.connectionState === "connected") {
+      if (
+        pc.connectionState === "connecting" ||
+        pc.connectionState === "connected"
+      ) {
         slot.lastProgressAt = Date.now();
       }
       if (pc.connectionState === "connected") {
@@ -284,7 +304,10 @@ export class P2PRoom {
         // lost offer or dead path cannot wedge the pair (glare-safe).
         pc.restartIce();
       }
-      if (pc.connectionState === "failed" || pc.connectionState === "disconnected") {
+      if (
+        pc.connectionState === "failed" ||
+        pc.connectionState === "disconnected"
+      ) {
         this.schedulePoll(FAST_POLL_MS);
       }
     };
@@ -307,7 +330,10 @@ export class P2PRoom {
         slot,
         pc.createDataChannel("state", { ordered: false, maxRetransmits: 0 }),
       );
-      this.attachChannel(slot, pc.createDataChannel("reliable", { ordered: true }));
+      this.attachChannel(
+        slot,
+        pc.createDataChannel("reliable", { ordered: true }),
+      );
     }
     return slot;
   }
@@ -352,7 +378,8 @@ export class P2PRoom {
       try {
         await slot.pc.addIceCandidate(candidate);
       } catch (err) {
-        if (!slot.ignoreOffer) console.warn("[p2p] addIceCandidate failed:", err);
+        if (!slot.ignoreOffer)
+          console.warn("[p2p] addIceCandidate failed:", err);
       }
       if (this.closed) return;
     }
@@ -380,7 +407,8 @@ export class P2PRoom {
       if (kind === "offer" || kind === "answer") {
         const description = payload as RTCSessionDescriptionInit;
         const collision =
-          kind === "offer" && (slot.makingOffer || slot.pc.signalingState !== "stable");
+          kind === "offer" &&
+          (slot.makingOffer || slot.pc.signalingState !== "stable");
         slot.ignoreOffer = !polite && collision;
         if (slot.ignoreOffer) return;
         try {
@@ -407,7 +435,11 @@ export class P2PRoom {
         if (kind === "offer") {
           await slot.pc.setLocalDescription();
           if (this.closed) return;
-          await this.sendSignal(from, "answer", slot.pc.localDescription!.toJSON());
+          await this.sendSignal(
+            from,
+            "answer",
+            slot.pc.localDescription!.toJSON(),
+          );
         }
       } else if (kind === "ice") {
         const candidate = payload as RTCIceCandidateInit;
@@ -421,7 +453,8 @@ export class P2PRoom {
           await slot.pc.addIceCandidate(candidate);
         } catch (err) {
           // The enclosing catch would swallow a rethrow; log the real signal.
-          if (!slot.ignoreOffer) console.warn("[p2p] addIceCandidate failed:", err);
+          if (!slot.ignoreOffer)
+            console.warn("[p2p] addIceCandidate failed:", err);
         }
       }
     } catch {
@@ -434,7 +467,11 @@ export class P2PRoom {
    * Signals are serialized per remote peer (a candidate must never overtake
    * its SDP into the DB) and retried on failure with short backoff.
    */
-  private sendSignal(to: string, kind: SignalKind, payload: unknown): Promise<void> {
+  private sendSignal(
+    to: string,
+    kind: SignalKind,
+    payload: unknown,
+  ): Promise<void> {
     const prev = this.signalQueues.get(to) ?? Promise.resolve();
     const next = prev.then(() => this.postSignal(to, kind, payload));
     this.signalQueues.set(
@@ -444,7 +481,11 @@ export class P2PRoom {
     return next;
   }
 
-  private async postSignal(to: string, kind: SignalKind, payload: unknown): Promise<void> {
+  private async postSignal(
+    to: string,
+    kind: SignalKind,
+    payload: unknown,
+  ): Promise<void> {
     for (let attempt = 0; ; attempt++) {
       if (this.closed) return;
       try {
@@ -466,10 +507,15 @@ export class P2PRoom {
         if (attempt >= SIGNAL_RETRY_DELAYS_MS.length) {
           // Delivery gave up; the pair converges on the next offer cycle (or
           // the watchdog rebuilds it). Logged once so failures are visible.
-          console.warn(`[p2p] signal ${kind} to ${to} failed after retries`, err);
+          console.warn(
+            `[p2p] signal ${kind} to ${to} failed after retries`,
+            err,
+          );
           return;
         }
-        await new Promise((r) => setTimeout(r, SIGNAL_RETRY_DELAYS_MS[attempt]));
+        await new Promise((r) =>
+          setTimeout(r, SIGNAL_RETRY_DELAYS_MS[attempt]),
+        );
       }
     }
   }
@@ -481,7 +527,8 @@ export class P2PRoom {
     for (const slot of this.peers.values()) {
       if (slot.state?.readyState !== "open") continue;
       const stale =
-        slot.pingSentAt !== undefined && performance.now() - slot.pingSentAt > 2 * PING_INTERVAL_MS;
+        slot.pingSentAt !== undefined &&
+        performance.now() - slot.pingSentAt > 2 * PING_INTERVAL_MS;
       if (slot.pingSentAt === undefined || stale) {
         // A lost pong must not freeze rttMs forever: expire and re-ping.
         slot.pingSentAt = performance.now();
@@ -508,7 +555,8 @@ export class P2PRoom {
       const live = slot.pc.connectionState;
       if (live !== slot.info.connectionState) {
         slot.info.connectionState = live;
-        if (live === "connecting" || live === "connected") slot.lastProgressAt = now;
+        if (live === "connecting" || live === "connected")
+          slot.lastProgressAt = now;
         this.emitPeers();
       }
       if (slot.terminal || live === "connected") continue;
@@ -541,13 +589,17 @@ export class P2PRoom {
       const stats = await slot.pc.getStats();
       let selected: RTCIceCandidatePairStats | undefined;
       stats.forEach((s) => {
-        if (s.type === "candidate-pair" && (s as RTCIceCandidatePairStats).nominated) {
+        if (
+          s.type === "candidate-pair" &&
+          (s as RTCIceCandidatePairStats).nominated
+        ) {
           selected = s as RTCIceCandidatePairStats;
         }
       });
       const localId = selected?.localCandidateId;
       if (localId) {
-        const local = stats.get(localId) as { candidateType?: string } | undefined;
+        const local = stats.get(localId) as
+          { candidateType?: string } | undefined;
         slot.info.candidateType = local?.candidateType ?? null;
         this.emitPeers();
       }
@@ -561,7 +613,13 @@ export class P2PRoom {
     // setters otherwise re-render consumers on every poll/ping.
     const list = this.peerList();
     const fingerprint = JSON.stringify(
-      list.map((p) => [p.id, p.name, p.connectionState, p.candidateType, p.rttMs]),
+      list.map((p) => [
+        p.id,
+        p.name,
+        p.connectionState,
+        p.candidateType,
+        p.rttMs,
+      ]),
     );
     if (fingerprint === this.lastPeersFingerprint) return;
     this.lastPeersFingerprint = fingerprint;

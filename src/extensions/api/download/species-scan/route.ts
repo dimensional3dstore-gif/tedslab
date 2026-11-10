@@ -7,7 +7,10 @@ export async function POST(request: Request): Promise<Response> {
     typeof body.species !== "string" ||
     body.species.trim().length === 0
   )
-    return Response.json({ error: "A species name is required." }, { status: 400 });
+    return Response.json(
+      { error: "A species name is required." },
+      { status: 400 },
+    );
   const report = {
     species: body.species.trim().slice(0, 160),
     createdAt: new Date().toISOString(),

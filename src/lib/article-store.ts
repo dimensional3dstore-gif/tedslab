@@ -20,7 +20,9 @@ export function saveCustomArticles(articles: ArticleRow[]) {
 
 export function upsertCustomArticle(article: ArticleRow) {
   const all = loadCustomArticles();
-  const idx = all.findIndex((a) => a.id === article.id || a.slug === article.slug);
+  const idx = all.findIndex(
+    (a) => a.id === article.id || a.slug === article.slug,
+  );
   if (idx >= 0) all[idx] = article;
   else all.unshift(article);
   saveCustomArticles(all);
@@ -32,10 +34,12 @@ export function deleteCustomArticle(id: string) {
 }
 
 export function slugifyTitle(title: string) {
-  return title
-    .toLowerCase()
-    .replace(/&/g, "and")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "")
-    .slice(0, 80) || "untitled-article";
+  return (
+    title
+      .toLowerCase()
+      .replace(/&/g, "and")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "")
+      .slice(0, 80) || "untitled-article"
+  );
 }

@@ -1,4 +1,13 @@
-import { BookOpenText, CheckCircle2, ChevronRight, Leaf, Microscope, Sparkles, ThumbsDown, ThumbsUp } from "lucide-react";
+import {
+  BookOpenText,
+  CheckCircle2,
+  ChevronRight,
+  Leaf,
+  Microscope,
+  Sparkles,
+  ThumbsDown,
+  ThumbsUp,
+} from "lucide-react";
 import discoveryLeaf from "@/assets/discovery-leaf.jpg";
 import { AppShell } from "@/components/biopedia/AppShell";
 
@@ -17,7 +26,13 @@ export default function EnzymesandCatalysisPage() {
               </h2>
             </div>
             <nav className="space-y-1 p-2 text-sm">
-              {["Overview", "Key Concepts", "Process Steps", "Examples", "Summary"].map((item, index) => (
+              {[
+                "Overview",
+                "Key Concepts",
+                "Process Steps",
+                "Examples",
+                "Summary",
+              ].map((item, index) => (
                 <a
                   key={item}
                   href="#"
@@ -48,7 +63,9 @@ export default function EnzymesandCatalysisPage() {
                 Reviewed by Experts
               </div>
               <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground">
-                Enzymes are protein molecules that function as biological catalysts, dramatically accelerating the rate of chemical reactions within cells without being consumed in the process.
+                Enzymes are protein molecules that function as biological
+                catalysts, dramatically accelerating the rate of chemical
+                reactions within cells without being consumed in the process.
               </p>
               <div className="mt-5 flex flex-wrap gap-2">
                 {topicTags.map((tag) => (
@@ -75,7 +92,8 @@ export default function EnzymesandCatalysisPage() {
           <h2 className="text-3xl font-bold text-foreground">Overview</h2>
           <div className="mt-6 space-y-5 text-base leading-relaxed text-muted-foreground">
             <p>
-              How enzymes speed up chemical reactions in cells. This article explores the fundamental concepts, processes, and applications.
+              How enzymes speed up chemical reactions in cells. This article
+              explores the fundamental concepts, processes, and applications.
             </p>
           </div>
         </section>

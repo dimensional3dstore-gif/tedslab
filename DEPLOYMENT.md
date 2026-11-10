@@ -3,6 +3,7 @@
 ## Overview
 
 This guide covers deploying Ted's Lab (Study Hub) to production. The application is built with:
+
 - **Frontend**: React 19 + TanStack Router
 - **Backend**: Nitro (via TanStack Start)
 - **Database**: Supabase PostgreSQL
@@ -36,6 +37,7 @@ NODE_ENV=production
 ### 2. Database Setup
 
 Ensure all Supabase tables exist:
+
 - `users` (managed by Supabase Auth)
 - `user_roles` (admin role management)
 - `subjects`
@@ -67,6 +69,7 @@ bun run build:prod
 ```
 
 This will:
+
 1. Build the Vite application
 2. Generate the sitemap
 3. Prepare assets for deployment
@@ -81,6 +84,7 @@ npm run preview
 ```
 
 Visit http://localhost:4173 and test:
+
 - Homepage: `/`
 - Categories: `/categories`
 - Auth: `/auth`, `/signup`
@@ -108,6 +112,7 @@ Visit http://localhost:4173 and test:
 ### 4. Test Content Filtering
 
 Verify that only published content shows on public pages:
+
 - Articles with `published=true` appear on public routes
 - Draft articles only visible to admins
 - Pages with `published=false` don't appear in navigation
@@ -201,6 +206,7 @@ Create `netlify.toml`:
 ### Maintenance
 
 Regular tasks:
+
 - Backup database
 - Review logs for errors
 - Update dependencies monthly
@@ -231,6 +237,7 @@ Regular tasks:
 ## Support
 
 For issues:
+
 1. Check Lovable.dev documentation (if using)
 2. Check TanStack Start documentation
 3. Review Supabase documentation

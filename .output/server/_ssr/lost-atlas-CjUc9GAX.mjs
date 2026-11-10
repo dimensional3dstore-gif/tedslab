@@ -3,7 +3,7 @@ import { u as require_react } from "../_libs/@floating-ui/react-dom+[...].mjs";
 import { _ as Link } from "../_libs/@tanstack/react-router+[...].mjs";
 import { o as require_jsx_runtime } from "../_libs/@radix-ui/react-collection+[...].mjs";
 import { N as Search, an as ArrowUpRight } from "../_libs/lucide-react.mjs";
-import { a as EXTINCT_SPECIES } from "./router-Do9_DjQ6.mjs";
+import { a as EXTINCT_SPECIES } from "./router-BOjcgrMn.mjs";
 import { r as resolveImage } from "./images-BfzzCxZw.mjs";
 import { t as Input } from "./input-Ctxrk36z.mjs";
 import { t as LostAtlasLayout } from "./layout-DqK-726B.mjs";

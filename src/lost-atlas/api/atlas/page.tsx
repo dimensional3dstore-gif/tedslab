@@ -32,7 +32,9 @@ export default function LostAtlasPage() {
         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">
           Knowledge systems
         </p>
-        <h1 className="mt-2 font-display text-3xl font-bold text-foreground">Lost Atlas</h1>
+        <h1 className="mt-2 font-display text-3xl font-bold text-foreground">
+          Lost Atlas
+        </h1>
         <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
           {introduction}
         </p>
@@ -49,7 +51,11 @@ export default function LostAtlasPage() {
           onClick={speak}
           className="inline-flex items-center gap-2 rounded-md border border-border px-4 py-2 text-sm text-foreground hover:bg-secondary"
         >
-          {speaking ? <VolumeX className="size-4" /> : <Volume2 className="size-4" />}
+          {speaking ? (
+            <VolumeX className="size-4" />
+          ) : (
+            <Volume2 className="size-4" />
+          )}
           {speaking ? "Stop reading" : "Read introduction"}
         </button>
       </div>

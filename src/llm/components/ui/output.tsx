@@ -1,6 +1,12 @@
 import type { ReactNode } from "react";
 
-export function LlmOutput({ children, label }: { children: ReactNode; label: string }) {
+export function LlmOutput({
+  children,
+  label,
+}: {
+  children: ReactNode;
+  label: string;
+}) {
   return (
     <section
       aria-label={label}

@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { SectionRow, Subject } from "@/lib/content";
 import { useBookmarks } from "@/hooks/use-bookmarks";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const db = supabase as unknown as { from: (table: string) => any };
 
 const sectionQueryOptions = (subjectSlug: string, sectionSlug: string) =>
@@ -27,7 +28,11 @@ const subjectQueryOptions = (slug: string) =>
   queryOptions({
     queryKey: ["subject", slug],
     queryFn: async () => {
-      const { data, error } = await db.from("subjects").select("*").eq("slug", slug).maybeSingle();
+      const { data, error } = await db
+        .from("subjects")
+        .select("*")
+        .eq("slug", slug)
+        .maybeSingle();
       if (error) throw error;
       return (data ?? null) as Subject | null;
     },
@@ -44,6 +49,7 @@ const sectionArticlesQueryOptions = (sectionSlug: string) =>
         .eq("published", true)
         .order("sort", { ascending: true });
       if (error) throw error;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return (data ?? []) as any[];
     },
   });
@@ -51,23 +57,25 @@ const sectionArticlesQueryOptions = (sectionSlug: string) =>
 export const Route = createFileRoute("/$subject/$section")({
   loader: async ({ context, params }) => {
     const subject = await context.queryClient.ensureQueryData(
-      subjectQueryOptions(params.subject)
+      subjectQueryOptions(params.subject),
     );
     if (!subject) throw notFound();
-    
+
     const section = await context.queryClient.ensureQueryData(
-      sectionQueryOptions(params.subject, params.section)
+      sectionQueryOptions(params.subject, params.section),
     );
     if (!section) throw notFound();
-    
+
     const articles = await context.queryClient.ensureQueryData(
-      sectionArticlesQueryOptions(params.section)
+      sectionArticlesQueryOptions(params.section),
     );
-    
+
     return { subject, section, articles };
   },
   head: ({ loaderData }) => {
-    const title = loaderData ? `${loaderData.section.title} — Ted's Lab` : "Ted's Lab";
+    const title = loaderData
+      ? `${loaderData.section.title} — Ted's Lab`
+      : "Ted's Lab";
     const description = loaderData?.section.description ?? "";
     return {
       meta: [
@@ -84,11 +92,15 @@ export const Route = createFileRoute("/$subject/$section")({
 });
 
 function SectionDetailPage() {
-  const { subject: initialSubject, section: initialSection, articles: initialArticles } = Route.useLoaderData();
+  const {
+    subject: initialSubject,
+    section: initialSection,
+    articles: initialArticles,
+  } = Route.useLoaderData();
   const { subject } = Route.useParams();
   const { section: sectionSlug } = Route.useParams();
   const { bookmarks, toggleBookmark } = useBookmarks();
-  
+
   const { data: sectionData } = useQuery({
     ...sectionQueryOptions(subject, sectionSlug),
     initialData: initialSection,
@@ -105,7 +117,8 @@ function SectionDetailPage() {
     <AppShell>
       {(q) => {
         const filtered = articles.filter(
-          (a) => !q || `${a.title} ${a.excerpt ?? ""}`.toLowerCase().includes(q),
+          (a) =>
+            !q || `${a.title} ${a.excerpt ?? ""}`.toLowerCase().includes(q),
         );
 
         return (
@@ -117,7 +130,7 @@ function SectionDetailPage() {
               <ArrowLeft className="size-3.5" />
               Back to {initialSubject.title}
             </Link>
-            
+
             <div className="mt-4">
               {/* Header Section */}
               <header className="bio-panel p-6">
@@ -145,7 +158,11 @@ function SectionDetailPage() {
               {sectionData_safe.body && (
                 <div className="mt-6 bio-panel p-6">
                   <div className="prose prose-sm max-w-none dark:prose-invert">
-                    <div dangerouslySetInnerHTML={{ __html: sectionData_safe.body }} />
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: sectionData_safe.body,
+                      }}
+                    />
                   </div>
                 </div>
               )}

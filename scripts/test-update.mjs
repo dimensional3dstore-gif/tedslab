@@ -8,8 +8,10 @@ envContent.split("\n").forEach((line) => {
   if (trimmed && !trimmed.startsWith("#")) {
     const [key, ...valueParts] = trimmed.split("=");
     let value = valueParts.join("=").trim();
-    if ((value.startsWith('"') && value.endsWith('"')) || 
-        (value.startsWith("'") && value.endsWith("'"))) {
+    if (
+      (value.startsWith('"') && value.endsWith('"')) ||
+      (value.startsWith("'") && value.endsWith("'"))
+    ) {
       value = value.slice(1, -1);
     }
     env[key.trim()] = value;
@@ -22,7 +24,7 @@ console.log("- Key:", env.VITE_SUPABASE_PUBLISHABLE_KEY ? "✓" : "missing");
 
 const supabase = createClient(
   env.VITE_SUPABASE_URL || env.SUPABASE_URL,
-  env.VITE_SUPABASE_PUBLISHABLE_KEY || env.SUPABASE_PUBLISHABLE_KEY
+  env.VITE_SUPABASE_PUBLISHABLE_KEY || env.SUPABASE_PUBLISHABLE_KEY,
 );
 
 // Test update on first article

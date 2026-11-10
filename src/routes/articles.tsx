@@ -33,15 +33,22 @@ function ArticlesPage() {
       {(q) => {
         const publishedArticles = articles.filter((a) => a.published);
         const filtered = publishedArticles.filter(
-          (a) => !q || `${a.title} ${a.excerpt ?? ""}`.toLowerCase().includes(q),
+          (a) =>
+            !q || `${a.title} ${a.excerpt ?? ""}`.toLowerCase().includes(q),
         );
 
         return (
           <>
             <PageHeader title="All Articles" description={description} />
-            {isLoading && <p className="mt-6 text-sm text-muted-foreground">Loading articles…</p>}
+            {isLoading && (
+              <p className="mt-6 text-sm text-muted-foreground">
+                Loading articles…
+              </p>
+            )}
             {!isLoading && filtered.length === 0 && (
-              <p className="mt-6 text-sm text-muted-foreground">No articles match your search.</p>
+              <p className="mt-6 text-sm text-muted-foreground">
+                No articles match your search.
+              </p>
             )}
             <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {filtered.map((article) => (

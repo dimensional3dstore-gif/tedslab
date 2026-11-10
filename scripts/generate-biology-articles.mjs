@@ -1,10 +1,12 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
-const supabaseKey = process.env.VITE_SUPABASE_PUBLISHABLE_KEY || process.env.SUPABASE_PUBLISHABLE_KEY;
+const supabaseKey =
+  process.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
+  process.env.SUPABASE_PUBLISHABLE_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
-  console.error('Missing Supabase credentials');
+  console.error("Missing Supabase credentials");
   process.exit(1);
 }
 
@@ -12,9 +14,10 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 const articles = [
   {
-    slug: 'cellular-respiration',
-    title: 'Cellular Respiration',
-    excerpt: 'The process cells use to break down glucose and release energy as ATP.',
+    slug: "cellular-respiration",
+    title: "Cellular Respiration",
+    excerpt:
+      "The process cells use to break down glucose and release energy as ATP.",
     body: `Cellular respiration is the process by which cells break down glucose to produce ATP (adenosine triphosphate), the energy currency of the cell.
 
 ## Overview
@@ -37,17 +40,18 @@ Aerobic respiration requires oxygen and produces approximately 36-38 ATP per glu
 ## Key Takeaway
 Cellular respiration is the fundamental process that powers all cellular activities. The mitochondrion is truly the powerhouse of the cell.`,
     minutes: 10,
-    tone: 'educational',
-    subject_slug: 'biology',
-    section_slug: 'cells-microscopy',
-    image_key: 'hero-cell',
+    tone: "educational",
+    subject_slug: "biology",
+    section_slug: "cells-microscopy",
+    image_key: "hero-cell",
     published: true,
     sort: 0,
   },
   {
-    slug: 'dna-structure-function',
-    title: 'DNA Structure and Function',
-    excerpt: 'Understanding the double helix structure that carries genetic information.',
+    slug: "dna-structure-function",
+    title: "DNA Structure and Function",
+    excerpt:
+      "Understanding the double helix structure that carries genetic information.",
     body: `DNA (deoxyribonucleic acid) is the molecule that stores genetic information in all living organisms.
 
 ## The Double Helix Structure
@@ -65,17 +69,17 @@ The central dogma of molecular biology describes the flow of information: DNA �
 ## Key Takeaway
 DNA is the blueprint of life, containing all the instructions needed to build and maintain organisms.`,
     minutes: 9,
-    tone: 'educational',
-    subject_slug: 'biology',
-    section_slug: 'genetics-dna',
-    image_key: 'hero-cell',
+    tone: "educational",
+    subject_slug: "biology",
+    section_slug: "genetics-dna",
+    image_key: "hero-cell",
     published: true,
     sort: 1,
   },
   {
-    slug: 'protein-synthesis',
-    title: 'Protein Synthesis',
-    excerpt: 'How cells build proteins using mRNA and ribosomes.',
+    slug: "protein-synthesis",
+    title: "Protein Synthesis",
+    excerpt: "How cells build proteins using mRNA and ribosomes.",
     body: `Protein synthesis is the process by which cells build proteins based on instructions from DNA.
 
 ## Transcription
@@ -90,17 +94,17 @@ After synthesis, proteins may be modified, folded, or transported to specific ce
 ## Key Takeaway
 Protein synthesis is the molecular machinery that converts genetic information into functional proteins that perform most cellular processes.`,
     minutes: 8,
-    tone: 'educational',
-    subject_slug: 'biology',
-    section_slug: 'genetics-dna',
-    image_key: 'hero-cell',
+    tone: "educational",
+    subject_slug: "biology",
+    section_slug: "genetics-dna",
+    image_key: "hero-cell",
     published: true,
     sort: 2,
   },
   {
-    slug: 'mitosis-cell-division',
-    title: 'Mitosis and Cell Division',
-    excerpt: 'How cells divide to produce two identical daughter cells.',
+    slug: "mitosis-cell-division",
+    title: "Mitosis and Cell Division",
+    excerpt: "How cells divide to produce two identical daughter cells.",
     body: `Mitosis is the process of nuclear division that produces two genetically identical daughter cells.
 
 ## The Four Phases
@@ -119,17 +123,17 @@ Cytokinesis is the division of the cytoplasm. In animal cells, a cleavage furrow
 ## Key Takeaway
 Mitosis ensures accurate distribution of genetic material to daughter cells, essential for growth and tissue repair.`,
     minutes: 7,
-    tone: 'educational',
-    subject_slug: 'biology',
-    section_slug: 'cells-microscopy',
-    image_key: 'hero-cell',
+    tone: "educational",
+    subject_slug: "biology",
+    section_slug: "cells-microscopy",
+    image_key: "hero-cell",
     published: true,
     sort: 3,
   },
   {
-    slug: 'enzyme-catalysis',
-    title: 'Enzymes and Catalysis',
-    excerpt: 'How enzymes speed up chemical reactions in cells.',
+    slug: "enzyme-catalysis",
+    title: "Enzymes and Catalysis",
+    excerpt: "How enzymes speed up chemical reactions in cells.",
     body: `Enzymes are biological catalysts that increase the rate of chemical reactions without being consumed.
 
 ## How Enzymes Work
@@ -147,17 +151,17 @@ Cells regulate enzyme activity through competitive and non-competitive inhibitio
 ## Key Takeaway
 Enzymes are essential for life, enabling complex biochemical reactions to occur at rates compatible with living systems.`,
     minutes: 8,
-    tone: 'educational',
-    subject_slug: 'biology',
-    section_slug: 'cells-microscopy',
-    image_key: 'hero-cell',
+    tone: "educational",
+    subject_slug: "biology",
+    section_slug: "cells-microscopy",
+    image_key: "hero-cell",
     published: true,
     sort: 4,
   },
   {
-    slug: 'evolution-natural-selection',
-    title: 'Evolution and Natural Selection',
-    excerpt: 'How populations change over time through natural selection.',
+    slug: "evolution-natural-selection",
+    title: "Evolution and Natural Selection",
+    excerpt: "How populations change over time through natural selection.",
     body: `Evolution is the process by which organisms change over time. Natural selection is the primary mechanism of evolution.
 
 ## Darwin's Theory of Natural Selection
@@ -175,17 +179,17 @@ The modern evolutionary synthesis combines Darwin's natural selection with genet
 ## Key Takeaway
 Evolution explains the diversity of life and how organisms adapt to their environments.`,
     minutes: 9,
-    tone: 'educational',
-    subject_slug: 'biology',
-    section_slug: 'evolution',
-    image_key: 'hero-cell',
+    tone: "educational",
+    subject_slug: "biology",
+    section_slug: "evolution",
+    image_key: "hero-cell",
     published: true,
     sort: 5,
   },
   {
-    slug: 'human-anatomy-systems',
-    title: 'Human Anatomy and Organ Systems',
-    excerpt: 'Overview of the major organ systems in the human body.',
+    slug: "human-anatomy-systems",
+    title: "Human Anatomy and Organ Systems",
+    excerpt: "Overview of the major organ systems in the human body.",
     body: `The human body is organized into multiple organ systems, each performing vital functions.
 
 ## Major Organ Systems
@@ -210,17 +214,17 @@ These systems work together maintaining homeostasis—the stable internal enviro
 ## Key Takeaway
 The complexity of the human body emerges from the coordinated function of multiple organ systems.`,
     minutes: 10,
-    tone: 'educational',
-    subject_slug: 'biology',
-    section_slug: 'human-biology',
-    image_key: 'hero-cell',
+    tone: "educational",
+    subject_slug: "biology",
+    section_slug: "human-biology",
+    image_key: "hero-cell",
     published: true,
     sort: 6,
   },
   {
-    slug: 'food-chains-energy-flow',
-    title: 'Food Chains and Energy Flow',
-    excerpt: 'How energy flows through ecosystems via food chains and webs.',
+    slug: "food-chains-energy-flow",
+    title: "Food Chains and Energy Flow",
+    excerpt: "How energy flows through ecosystems via food chains and webs.",
     body: `Food chains and food webs describe the flow of energy and nutrients through ecosystems.
 
 ## Trophic Levels
@@ -240,17 +244,17 @@ Real ecosystems contain complex food webs with multiple interconnected food chai
 ## Key Takeaway
 Energy flows one direction through ecosystems—from the sun through producers and consumers to eventual decomposition.`,
     minutes: 8,
-    tone: 'educational',
-    subject_slug: 'biology',
-    section_slug: 'ecology-environment',
-    image_key: 'hero-cell',
+    tone: "educational",
+    subject_slug: "biology",
+    section_slug: "ecology-environment",
+    image_key: "hero-cell",
     published: true,
     sort: 7,
   },
   {
-    slug: 'photosynthesis-light-reactions',
-    title: 'Photosynthesis: Light Reactions',
-    excerpt: 'The light-dependent reactions that power photosynthesis.',
+    slug: "photosynthesis-light-reactions",
+    title: "Photosynthesis: Light Reactions",
+    excerpt: "The light-dependent reactions that power photosynthesis.",
     body: `The light reactions are the photo-dependent portion of photosynthesis, occurring in the thylakoid membranes.
 
 ## Photosystem II
@@ -268,17 +272,17 @@ The light reactions produce ATP and NADPH, which power the Calvin cycle (light-i
 ## Key Takeaway
 The light reactions convert light energy into chemical energy stored in ATP and NADPH.`,
     minutes: 9,
-    tone: 'educational',
-    subject_slug: 'biology',
-    section_slug: 'biological-processes',
-    image_key: 'discovery-leaf',
+    tone: "educational",
+    subject_slug: "biology",
+    section_slug: "biological-processes",
+    image_key: "discovery-leaf",
     published: true,
     sort: 8,
   },
   {
-    slug: 'meiosis-gamete-formation',
-    title: 'Meiosis and Gamete Formation',
-    excerpt: 'How meiosis produces genetically diverse gametes.',
+    slug: "meiosis-gamete-formation",
+    title: "Meiosis and Gamete Formation",
+    excerpt: "How meiosis produces genetically diverse gametes.",
     body: `Meiosis is a specialized form of cell division that produces gametes (sex cells) with half the chromosome number of the parent cell.
 
 ## Two Divisions
@@ -296,10 +300,10 @@ Meiosis enables sexual reproduction, combining genetic material from two parents
 ## Key Takeaway
 Meiosis is essential for sexual reproduction and genetic diversity in populations.`,
     minutes: 8,
-    tone: 'educational',
-    subject_slug: 'biology',
-    section_slug: 'genetics-dna',
-    image_key: 'hero-cell',
+    tone: "educational",
+    subject_slug: "biology",
+    section_slug: "genetics-dna",
+    image_key: "hero-cell",
     published: true,
     sort: 9,
   },
@@ -307,25 +311,25 @@ Meiosis is essential for sexual reproduction and genetic diversity in population
 
 async function seedArticles() {
   try {
-    console.log('🌱 Generating 10 biology articles...');
-    
+    console.log("🌱 Generating 10 biology articles...");
+
     const { data, error } = await supabase
-      .from('articles')
+      .from("articles")
       .insert(articles)
       .select();
 
     if (error) {
-      console.error('❌ Error inserting articles:', error);
+      console.error("❌ Error inserting articles:", error);
       process.exit(1);
     }
 
-    console.log('✅ Successfully created articles!');
+    console.log("✅ Successfully created articles!");
     console.log(`📊 Inserted ${data?.length || 0} articles:`);
     data?.forEach((article) => {
       console.log(`   • ${article.title} (${article.slug})`);
     });
   } catch (err) {
-    console.error('❌ Error:', err);
+    console.error("❌ Error:", err);
     process.exit(1);
   }
 }

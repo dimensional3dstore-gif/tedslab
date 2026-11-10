@@ -9,7 +9,8 @@ export function getChronosOSDownloadUrl() {
   }
 
   const host = window.location.hostname;
-  const isLocalPreview = host === "localhost" || host === "127.0.0.1" || host.endsWith(".local");
+  const isLocalPreview =
+    host === "localhost" || host === "127.0.0.1" || host.endsWith(".local");
 
   return isLocalPreview ? CHRONOSOS_LOCAL_DOWNLOAD_URL : CHRONOSOS_DOWNLOAD_URL;
 }

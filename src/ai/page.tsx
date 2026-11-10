@@ -1,30 +1,39 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowUpRight, BrainCircuit, FileText, MessageCircle, Sparkles, Wand2, Zap } from 'lucide-react';
-import { buildAiResponse, readKnowledge } from '@/ai';
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  ArrowUpRight,
+  BrainCircuit,
+  FileText,
+  MessageCircle,
+  Sparkles,
+  Wand2,
+  Zap,
+} from "lucide-react";
+import { buildAiResponse, readKnowledge } from "@/ai";
 
 const starterPrompts = [
-  'How should I study biology efficiently?',
-  'What is this site designed to help me do?',
-  'Explain the basics of cell energy in simple terms.',
-  'Give me a 30-minute revision plan for tomorrow.',
+  "How should I study biology efficiently?",
+  "What is this site designed to help me do?",
+  "Explain the basics of cell energy in simple terms.",
+  "Give me a 30-minute revision plan for tomorrow.",
 ];
 
 type ChatMessage = {
-  role: 'user' | 'assistant';
+  role: "user" | "assistant";
   content: string;
 };
 
 export function Pate() {
-  const [question, setQuestion] = useState('');
+  const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
-      role: 'assistant',
-      content: 'Hi! I can help with biology, revision planning, and understanding the study material on this site. Ask me anything.',
+      role: "assistant",
+      content:
+        "Hi! I can help with biology, revision planning, and understanding the study material on this site. Ask me anything.",
     },
   ]);
   const [isThinking, setIsThinking] = useState(false);
   const [typingIndex, setTypingIndex] = useState(0);
-  const [fullResponse, setFullResponse] = useState('');
+  const [fullResponse, setFullResponse] = useState("");
   const typingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const knowledgeFiles = useMemo(() => readKnowledge(), []);
@@ -46,11 +55,11 @@ export function Pate() {
     const trimmed = question.trim();
     if (!trimmed || isThinking) return;
 
-    setMessages((prev) => [...prev, { role: 'user', content: trimmed }]);
-    setQuestion('');
+    setMessages((prev) => [...prev, { role: "user", content: trimmed }]);
+    setQuestion("");
     setIsThinking(true);
     setTypingIndex(0);
-    setFullResponse('');
+    setFullResponse("");
 
     const response = await buildAiResponse(trimmed);
     setFullResponse(response);
@@ -59,7 +68,7 @@ export function Pate() {
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === 'Enter' && !event.shiftKey) {
+    if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
       void handleAsk();
     }
@@ -69,12 +78,15 @@ export function Pate() {
   useEffect(() => {
     if (fullResponse && typingIndex === fullResponse.length && !isThinking) {
       setMessages((prev) => {
-        if (prev[prev.length - 1].role === 'assistant' && !prev[prev.length - 1].content) {
+        if (
+          prev[prev.length - 1].role === "assistant" &&
+          !prev[prev.length - 1].content
+        ) {
           return prev;
         }
-        return [...prev, { role: 'assistant', content: fullResponse }];
+        return [...prev, { role: "assistant", content: fullResponse }];
       });
-      setFullResponse('');
+      setFullResponse("");
       setTypingIndex(0);
     }
   }, [typingIndex, fullResponse, isThinking]);
@@ -88,8 +100,12 @@ export function Pate() {
               <BrainCircuit className="size-5" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-foreground">AI study tutor</h2>
-              <p className="text-sm text-muted-foreground">Built from your learning knowledge</p>
+              <h2 className="text-lg font-semibold text-foreground">
+                AI study tutor
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                Built from your learning knowledge
+              </p>
             </div>
           </div>
 
@@ -118,12 +134,14 @@ export function Pate() {
               <FileText className="size-3.5" />
               {knowledgeFiles.length} sources
             </div>
-            <div className={`text-[11px] font-medium px-2.5 py-1 rounded-full ${
-              isThinking 
-                ? 'bg-yellow-500/10 text-yellow-600 dark:text-yellow-400' 
-                : 'bg-green-500/10 text-green-600 dark:text-green-400'
-            }`}>
-              {isThinking ? '◐ Generating...' : '✓ Ready'}
+            <div
+              className={`text-[11px] font-medium px-2.5 py-1 rounded-full ${
+                isThinking
+                  ? "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400"
+                  : "bg-green-500/10 text-green-600 dark:text-green-400"
+              }`}
+            >
+              {isThinking ? "◐ Generating..." : "✓ Ready"}
             </div>
           </div>
 
@@ -131,28 +149,32 @@ export function Pate() {
             {messages.map((message, index) => (
               <div
                 key={`${message.role}-${index}`}
-                className={`flex gap-3 ${message.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}
+                className={`flex gap-3 ${message.role === "user" ? "flex-row-reverse" : "flex-row"}`}
               >
-                <div className={`flex-shrink-0 size-8 rounded-full flex items-center justify-center ${
-                  message.role === 'user'
-                    ? 'bg-primary/10 text-primary'
-                    : 'bg-secondary/10 text-secondary'
-                }`}>
-                  {message.role === 'user' ? (
+                <div
+                  className={`flex-shrink-0 size-8 rounded-full flex items-center justify-center ${
+                    message.role === "user"
+                      ? "bg-primary/10 text-primary"
+                      : "bg-secondary/10 text-secondary"
+                  }`}
+                >
+                  {message.role === "user" ? (
                     <MessageCircle className="size-4" />
                   ) : (
                     <BrainCircuit className="size-4" />
                   )}
                 </div>
 
-                <div className={`max-w-sm ${message.role === 'user' ? 'flex-row-reverse' : ''}`}>
+                <div
+                  className={`max-w-sm ${message.role === "user" ? "flex-row-reverse" : ""}`}
+                >
                   <div
                     className={[
-                      'rounded-2xl px-5 py-4 text-sm leading-7 shadow-xs border',
-                      message.role === 'user'
-                        ? 'bg-gradient-to-br from-primary to-primary/80 text-primary-foreground border-primary/30 rounded-br-none'
-                        : 'bg-gradient-to-br from-background/95 to-background/70 text-foreground border-border/40 rounded-bl-none',
-                    ].join(' ')}
+                      "rounded-2xl px-5 py-4 text-sm leading-7 shadow-xs border",
+                      message.role === "user"
+                        ? "bg-gradient-to-br from-primary to-primary/80 text-primary-foreground border-primary/30 rounded-br-none"
+                        : "bg-gradient-to-br from-background/95 to-background/70 text-foreground border-border/40 rounded-bl-none",
+                    ].join(" ")}
                   >
                     <div className="whitespace-pre-wrap break-words">
                       {message.content}
@@ -171,11 +193,31 @@ export function Pate() {
                   <div className="rounded-2xl rounded-bl-none px-5 py-4 text-sm text-muted-foreground bg-gradient-to-br from-background/95 to-background/70 border border-border/40 shadow-xs">
                     <div className="flex gap-2 items-center h-6">
                       <div className="flex gap-1">
-                        <div className="w-1.5 h-1.5 rounded-full bg-gradient-to-t from-primary to-primary/40 animate-bounce" style={{ animationDelay: '0ms', animationDuration: '1.4s' }} />
-                        <div className="w-1.5 h-1.5 rounded-full bg-gradient-to-t from-primary to-primary/40 animate-bounce" style={{ animationDelay: '200ms', animationDuration: '1.4s' }} />
-                        <div className="w-1.5 h-1.5 rounded-full bg-gradient-to-t from-primary to-primary/40 animate-bounce" style={{ animationDelay: '400ms', animationDuration: '1.4s' }} />
+                        <div
+                          className="w-1.5 h-1.5 rounded-full bg-gradient-to-t from-primary to-primary/40 animate-bounce"
+                          style={{
+                            animationDelay: "0ms",
+                            animationDuration: "1.4s",
+                          }}
+                        />
+                        <div
+                          className="w-1.5 h-1.5 rounded-full bg-gradient-to-t from-primary to-primary/40 animate-bounce"
+                          style={{
+                            animationDelay: "200ms",
+                            animationDuration: "1.4s",
+                          }}
+                        />
+                        <div
+                          className="w-1.5 h-1.5 rounded-full bg-gradient-to-t from-primary to-primary/40 animate-bounce"
+                          style={{
+                            animationDelay: "400ms",
+                            animationDuration: "1.4s",
+                          }}
+                        />
                       </div>
-                      <span className="text-xs ml-2 font-medium">Thinking...</span>
+                      <span className="text-xs ml-2 font-medium">
+                        Thinking...
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -192,7 +234,9 @@ export function Pate() {
                     <div className="whitespace-pre-wrap break-words">
                       {fullResponse.slice(0, typingIndex)}
                       {typingIndex < fullResponse.length && (
-                        <span className="animate-pulse text-primary font-semibold">|</span>
+                        <span className="animate-pulse text-primary font-semibold">
+                          |
+                        </span>
                       )}
                     </div>
                   </div>
@@ -202,7 +246,9 @@ export function Pate() {
           </div>
 
           <div className="mt-5 space-y-3">
-            <label className="block text-xs font-semibold text-foreground uppercase tracking-wide">Your question</label>
+            <label className="block text-xs font-semibold text-foreground uppercase tracking-wide">
+              Your question
+            </label>
             <div className="relative">
               <textarea
                 value={question}
@@ -216,7 +262,11 @@ export function Pate() {
 
             <div className="flex items-center justify-between pt-2">
               <div className="text-xs text-muted-foreground">
-                Press <kbd className="px-1.5 py-0.5 rounded text-xs border border-border bg-muted">Enter</kbd> to send
+                Press{" "}
+                <kbd className="px-1.5 py-0.5 rounded text-xs border border-border bg-muted">
+                  Enter
+                </kbd>{" "}
+                to send
               </div>
               <button
                 type="button"
@@ -248,7 +298,8 @@ export function Pate() {
         </div>
 
         <div className="rounded-2xl border border-border bg-muted/20 p-4 text-sm leading-7 text-foreground">
-          Ask for study advice, explanations of core concepts, revision plans, or a summary of how the site works.
+          Ask for study advice, explanations of core concepts, revision plans,
+          or a summary of how the site works.
         </div>
       </div>
     </div>

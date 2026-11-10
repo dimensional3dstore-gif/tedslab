@@ -4,7 +4,8 @@ import { AppShell, PageHeader } from "@/components/biopedia/AppShell";
 import { flashcards } from "@/lib/biopedia-sections";
 
 const title = "Flashcards — Ted's Lab";
-const description = "Flip through key biology terms and check yourself before an exam.";
+const description =
+  "Flip through key biology terms and check yourself before an exam.";
 
 export const Route = createFileRoute("/flashcards")({
   head: () => ({
@@ -23,13 +24,17 @@ export const Route = createFileRoute("/flashcards")({
 function FlashcardsPage() {
   const [flipped, setFlipped] = useState<string[]>([]);
   const toggle = (front: string) =>
-    setFlipped((p) => (p.includes(front) ? p.filter((f) => f !== front) : [...p, front]));
+    setFlipped((p) =>
+      p.includes(front) ? p.filter((f) => f !== front) : [...p, front],
+    );
 
   return (
     <AppShell>
       {(q) => {
         const items = q
-          ? flashcards.filter((c) => `${c.front} ${c.back}`.toLowerCase().includes(q))
+          ? flashcards.filter((c) =>
+              `${c.front} ${c.back}`.toLowerCase().includes(q),
+            )
           : flashcards;
         return (
           <>
@@ -44,7 +49,13 @@ function FlashcardsPage() {
                     onClick={() => toggle(c.front)}
                     className="flex h-36 flex-col items-center justify-center bio-panel p-4 text-center transition-colors hover:border-primary/50"
                   >
-                    <p className={isFlipped ? "text-sm text-muted-foreground" : "text-base font-semibold"}>
+                    <p
+                      className={
+                        isFlipped
+                          ? "text-sm text-muted-foreground"
+                          : "text-base font-semibold"
+                      }
+                    >
                       {isFlipped ? c.back : c.front}
                     </p>
                     <span className="mt-3 text-xs text-primary">

@@ -1,5 +1,7 @@
 export function Categories({ values }: { values: string[] }) {
-  const categories = [...new Set(values.map((value) => value.trim()).filter(Boolean))];
+  const categories = [
+    ...new Set(values.map((value) => value.trim()).filter(Boolean)),
+  ];
   if (categories.length === 0) return null;
   return (
     <ul className="flex flex-wrap gap-2" aria-label="Categories">

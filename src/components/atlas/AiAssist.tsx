@@ -1,14 +1,20 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { BrainCircuit, RefreshCw, Sparkles, BookOpen } from "lucide-react";
 import { CLUSTERS } from "@/data/catalog";
-import { generateDailyArticles, getStoredArticles, type GeneratedArticle } from "@/lib/ai-generator";
+import {
+  generateDailyArticles,
+  getStoredArticles,
+  type GeneratedArticle,
+} from "@/lib/ai-generator";
 
 const SUBJECTS = CLUSTERS.map((c) => c.id);
 
 export function AiAssistPanel() {
   const [articles, setArticles] = useState<GeneratedArticle[]>([]);
   const [busy, setBusy] = useState(false);
-  const [selectedSubject, setSelectedSubject] = useState<string>(SUBJECTS[0] ?? "biology");
+  const [selectedSubject, setSelectedSubject] = useState<string>(
+    SUBJECTS[0] ?? "biology",
+  );
   const [lastRun, setLastRun] = useState<string | null>(null);
 
   const refresh = useCallback(() => {
@@ -43,9 +49,12 @@ export function AiAssistPanel() {
           <BrainCircuit className="size-5" />
         </span>
         <div>
-          <h2 className="font-display text-lg font-semibold text-foreground">AI Assist</h2>
+          <h2 className="font-display text-lg font-semibold text-foreground">
+            AI Assist
+          </h2>
           <p className="text-xs text-muted-foreground">
-            Generates 10 local articles per subject every day — no API key required.
+            Generates 10 local articles per subject every day — no API key
+            required.
           </p>
         </div>
       </div>
@@ -56,13 +65,18 @@ export function AiAssistPanel() {
         disabled={busy}
         className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-60"
       >
-        {busy ? <RefreshCw className="size-4 animate-spin" /> : <Sparkles className="size-4" />}
+        {busy ? (
+          <RefreshCw className="size-4 animate-spin" />
+        ) : (
+          <Sparkles className="size-4" />
+        )}
         {busy ? "Generating…" : "Generate today's batch"}
       </button>
 
       {lastRun && (
         <p className="text-[11px] text-muted-foreground">
-          Last batch: <span className="text-foreground">{lastRun}</span> · {articles.length} articles
+          Last batch: <span className="text-foreground">{lastRun}</span> ·{" "}
+          {articles.length} articles
         </p>
       )}
 
@@ -90,7 +104,8 @@ export function AiAssistPanel() {
       <div className="max-h-[28rem] space-y-2 overflow-y-auto pr-1">
         {filtered.length === 0 ? (
           <p className="rounded-lg border border-dashed border-border p-4 text-center text-xs text-muted-foreground">
-            No articles yet for this subject. Run generation to create 10 local drafts.
+            No articles yet for this subject. Run generation to create 10 local
+            drafts.
           </p>
         ) : (
           filtered.map((a) => (
@@ -102,7 +117,9 @@ export function AiAssistPanel() {
                 <BookOpen className="size-3" />
                 {a.subject}
               </div>
-              <h3 className="text-sm font-semibold text-foreground">{a.title}</h3>
+              <h3 className="text-sm font-semibold text-foreground">
+                {a.title}
+              </h3>
               <p className="mt-1 line-clamp-3 text-xs leading-relaxed text-muted-foreground">
                 {a.summary}
               </p>

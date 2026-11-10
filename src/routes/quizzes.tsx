@@ -4,7 +4,8 @@ import { AppShell, PageHeader } from "@/components/biopedia/AppShell";
 import { quizBank } from "@/lib/biopedia-sections";
 
 const title = "Biology Quizzes — Ted's Lab";
-const description = "Test what you know with quick multiple-choice questions across biology.";
+const description =
+  "Test what you know with quick multiple-choice questions across biology.";
 
 export const Route = createFileRoute("/quizzes")({
   head: () => ({

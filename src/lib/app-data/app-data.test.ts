@@ -51,94 +51,126 @@ async function withStubbedGate(
 
 describe("callTool failure memo", () => {
   it("replays an identical failure within the memo window without refetching", async () => {
-    await withStubbedGate(500, { ok: false, errorMessage: "boom" }, async (calls) => {
-      const options = {
-        connectorType: ConnectorType.GoogleDrive,
-        token: fakeJwt({ sub: "memo-user-1", iat: 1000, exp: 2000 }),
-      };
-      const first = await callTool("google_drive_search", { q: "memo" }, options);
-      const second = await callTool("google_drive_search", { q: "memo" }, options);
-      assert.equal(first.ok, false);
-      assert.equal(first.errorMessage, "boom");
-      assert.deepEqual(second, first);
-      assert.equal(calls(), 1);
-    });
+    await withStubbedGate(
+      500,
+      { ok: false, errorMessage: "boom" },
+      async (calls) => {
+        const options = {
+          connectorType: ConnectorType.GoogleDrive,
+          token: fakeJwt({ sub: "memo-user-1", iat: 1000, exp: 2000 }),
+        };
+        const first = await callTool(
+          "google_drive_search",
+          { q: "memo" },
+          options,
+        );
+        const second = await callTool(
+          "google_drive_search",
+          { q: "memo" },
+          options,
+        );
+        assert.equal(first.ok, false);
+        assert.equal(first.errorMessage, "boom");
+        assert.deepEqual(second, first);
+        assert.equal(calls(), 1);
+      },
+    );
   });
 
   it("keys by token identity so a reminted token shares the memo entry", async () => {
-    await withStubbedGate(500, { ok: false, errorMessage: "boom" }, async (calls) => {
-      const first = await callTool(
-        "google_drive_search",
-        { q: "remint" },
-        {
-          connectorType: ConnectorType.GoogleDrive,
-          token: fakeJwt({ sub: "memo-user-2", iat: 1000, exp: 2000 }),
-        },
-      );
-      const second = await callTool(
-        "google_drive_search",
-        { q: "remint" },
-        {
-          connectorType: ConnectorType.GoogleDrive,
-          token: fakeJwt({ sub: "memo-user-2", iat: 1001, exp: 2001 }),
-        },
-      );
-      assert.equal(first.ok, false);
-      assert.deepEqual(second, first);
-      assert.equal(calls(), 1);
+    await withStubbedGate(
+      500,
+      { ok: false, errorMessage: "boom" },
+      async (calls) => {
+        const first = await callTool(
+          "google_drive_search",
+          { q: "remint" },
+          {
+            connectorType: ConnectorType.GoogleDrive,
+            token: fakeJwt({ sub: "memo-user-2", iat: 1000, exp: 2000 }),
+          },
+        );
+        const second = await callTool(
+          "google_drive_search",
+          { q: "remint" },
+          {
+            connectorType: ConnectorType.GoogleDrive,
+            token: fakeJwt({ sub: "memo-user-2", iat: 1001, exp: 2001 }),
+          },
+        );
+        assert.equal(first.ok, false);
+        assert.deepEqual(second, first);
+        assert.equal(calls(), 1);
 
-      const other = await callTool(
-        "google_drive_search",
-        { q: "remint" },
-        {
-          connectorType: ConnectorType.GoogleDrive,
-          token: fakeJwt({ sub: "memo-user-3", iat: 1000, exp: 2000 }),
-        },
-      );
-      assert.equal(other.ok, false);
-      assert.equal(calls(), 2);
-    });
+        const other = await callTool(
+          "google_drive_search",
+          { q: "remint" },
+          {
+            connectorType: ConnectorType.GoogleDrive,
+            token: fakeJwt({ sub: "memo-user-3", iat: 1000, exp: 2000 }),
+          },
+        );
+        assert.equal(other.ok, false);
+        assert.equal(calls(), 2);
+      },
+    );
   });
 
   it("sweeps expired entries on write so unique keys do not accumulate", async () => {
-    await withStubbedGate(500, { ok: false, errorMessage: "boom" }, async () => {
-      mock.timers.enable({ apis: ["Date"], now: 1_000_000 });
-      try {
-        const sizeBefore = failureMemoSize();
-        const options = {
-          connectorType: ConnectorType.GoogleDrive,
-          token: fakeJwt({ sub: "memo-user-5", iat: 1000, exp: 2000 }),
-        };
-        await callTool("google_drive_search", { q: "sweep-a" }, options);
-        await callTool("google_drive_search", { q: "sweep-b" }, options);
-        assert.equal(failureMemoSize(), sizeBefore + 2);
+    await withStubbedGate(
+      500,
+      { ok: false, errorMessage: "boom" },
+      async () => {
+        mock.timers.enable({ apis: ["Date"], now: 1_000_000 });
+        try {
+          const sizeBefore = failureMemoSize();
+          const options = {
+            connectorType: ConnectorType.GoogleDrive,
+            token: fakeJwt({ sub: "memo-user-5", iat: 1000, exp: 2000 }),
+          };
+          await callTool("google_drive_search", { q: "sweep-a" }, options);
+          await callTool("google_drive_search", { q: "sweep-b" }, options);
+          assert.equal(failureMemoSize(), sizeBefore + 2);
 
-        mock.timers.setTime(1_000_000 + 5_001);
-        await callTool("google_drive_search", { q: "sweep-c" }, options);
-        assert.equal(
-          failureMemoSize(),
-          sizeBefore + 1,
-          "expired sweep-a/sweep-b entries must be removed on the sweep-c write",
-        );
-      } finally {
-        mock.timers.reset();
-      }
-    });
+          mock.timers.setTime(1_000_000 + 5_001);
+          await callTool("google_drive_search", { q: "sweep-c" }, options);
+          assert.equal(
+            failureMemoSize(),
+            sizeBefore + 1,
+            "expired sweep-a/sweep-b entries must be removed on the sweep-c write",
+          );
+        } finally {
+          mock.timers.reset();
+        }
+      },
+    );
   });
 
   it("never memoizes login-required 401s", async () => {
-    await withStubbedGate(401, { errorMessage: "login required" }, async (calls) => {
-      const options = {
-        connectorType: ConnectorType.GoogleDrive,
-        token: fakeJwt({ sub: "memo-user-4", iat: 1000, exp: 2000 }),
-      };
-      const first = await callTool("google_drive_search", { q: "auth" }, options);
-      const second = await callTool("google_drive_search", { q: "auth" }, options);
-      assert.equal(first.ok, false);
-      assert.equal(first.loginRequired, true);
-      assert.equal(second.loginRequired, true);
-      assert.equal(calls(), 2);
-    });
+    await withStubbedGate(
+      401,
+      { errorMessage: "login required" },
+      async (calls) => {
+        const options = {
+          connectorType: ConnectorType.GoogleDrive,
+          token: fakeJwt({ sub: "memo-user-4", iat: 1000, exp: 2000 }),
+        };
+        const first = await callTool(
+          "google_drive_search",
+          { q: "auth" },
+          options,
+        );
+        const second = await callTool(
+          "google_drive_search",
+          { q: "auth" },
+          options,
+        );
+        assert.equal(first.ok, false);
+        assert.equal(first.loginRequired, true);
+        assert.equal(second.loginRequired, true);
+        assert.equal(calls(), 2);
+      },
+    );
   });
 });
 
@@ -303,7 +335,11 @@ describe("redirectToLoginIfRequired", () => {
         },
       },
       () =>
-        redirectToLoginIfRequired({ ok: false, data: null, loginRequired: true }),
+        redirectToLoginIfRequired({
+          ok: false,
+          data: null,
+          loginRequired: true,
+        }),
     );
     assert.equal(did, false);
     assert.equal(target, "");
@@ -359,7 +395,8 @@ describe("classifyCallToolError", () => {
     const state = classifyCallToolError({
       ok: false,
       data: null,
-      errorMessage: "scope_denied: tool notion-list-recent-pages not in grant scopes",
+      errorMessage:
+        "scope_denied: tool notion-list-recent-pages not in grant scopes",
     });
     assert.equal(state?.kind, "scope_denied");
     assert.match(state?.message ?? "", /tool outside its grant/);

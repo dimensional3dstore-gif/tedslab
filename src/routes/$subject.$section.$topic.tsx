@@ -8,13 +8,18 @@ import type { SectionRow, Subject, TopicRow } from "@/lib/content";
 import { resolveImage } from "@/lib/images";
 import { useBookmarks } from "@/hooks/use-bookmarks";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const db = supabase as unknown as { from: (table: string) => any };
 
 const subjectQueryOptions = (slug: string) =>
   queryOptions({
     queryKey: ["subject", slug],
     queryFn: async () => {
-      const { data, error } = await db.from("subjects").select("*").eq("slug", slug).maybeSingle();
+      const { data, error } = await db
+        .from("subjects")
+        .select("*")
+        .eq("slug", slug)
+        .maybeSingle();
       if (error) throw error;
       return (data ?? null) as Subject | null;
     },
@@ -28,7 +33,16 @@ const sectionQueryOptions = (subjectSlug: string, sectionSlug: string) =>
         .from("sections")
         .select("*")
         .eq("slug", sectionSlug)
-        .eq("subject_id", (await db.from("subjects").select("id").eq("slug", subjectSlug).maybeSingle())?.data?.id ?? "")
+        .eq(
+          "subject_id",
+          (
+            await db
+              .from("subjects")
+              .select("id")
+              .eq("slug", subjectSlug)
+              .maybeSingle()
+          )?.data?.id ?? "",
+        )
         .maybeSingle();
       if (error) throw error;
       return (data ?? null) as SectionRow | null;
@@ -60,13 +74,16 @@ const topicArticlesQueryOptions = (topicSlug: string) =>
         .eq("published", true)
         .order("sort", { ascending: true });
       if (error) throw error;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return (data ?? []) as any[];
     },
   });
 
 export const Route = createFileRoute("/$subject/$section/$topic")({
   loader: async ({ context, params }) => {
-    const subject = await context.queryClient.ensureQueryData(subjectQueryOptions(params.subject));
+    const subject = await context.queryClient.ensureQueryData(
+      subjectQueryOptions(params.subject),
+    );
     if (!subject) throw notFound();
 
     const section = await context.queryClient.ensureQueryData(
@@ -86,7 +103,9 @@ export const Route = createFileRoute("/$subject/$section/$topic")({
     return { subject, section, topic, articles };
   },
   head: ({ loaderData }) => {
-    const title = loaderData ? `${loaderData.topic.title} — Ted's Lab` : "Ted's Lab";
+    const title = loaderData
+      ? `${loaderData.topic.title} — Ted's Lab`
+      : "Ted's Lab";
     const description = loaderData?.topic.blurb ?? "";
     return {
       meta: [
@@ -103,9 +122,17 @@ export const Route = createFileRoute("/$subject/$section/$topic")({
 });
 
 function SubjectTopicPage() {
-  const { subject: subjectSlug, section: sectionSlug, topic: topicSlug } = Route.useParams();
-  const { subject: initialSubject, section: initialSection, topic: initialTopic, articles: initialArticles } =
-    Route.useLoaderData();
+  const {
+    subject: subjectSlug,
+    section: sectionSlug,
+    topic: topicSlug,
+  } = Route.useParams();
+  const {
+    subject: initialSubject,
+    section: initialSection,
+    topic: initialTopic,
+    articles: initialArticles,
+  } = Route.useLoaderData();
   const { bookmarks, toggleBookmark } = useBookmarks();
 
   const { data: section } = useQuery({
@@ -127,7 +154,8 @@ function SubjectTopicPage() {
     <AppShell>
       {(q) => {
         const filtered = articles.filter(
-          (a) => !q || `${a.title} ${a.excerpt ?? ""}`.toLowerCase().includes(q),
+          (a) =>
+            !q || `${a.title} ${a.excerpt ?? ""}`.toLowerCase().includes(q),
         );
 
         return (

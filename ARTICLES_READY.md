@@ -29,6 +29,7 @@ User Navigation
 ### 1️⃣ Generate Articles (Choose Your Method)
 
 #### **Method A: Admin Panel** ⭐ (Easiest)
+
 ```
 1. Go to /admin/articles
 2. Click "Generate Articles" button
@@ -37,6 +38,7 @@ User Navigation
 ```
 
 #### **Method B: SQL Script**
+
 ```
 1. Open Supabase Dashboard
 2. SQL Editor → New Query
@@ -45,11 +47,13 @@ User Navigation
 ```
 
 #### **Method C: Node.js**
+
 ```bash
 node scripts/seed-and-verify-articles.mjs
 ```
 
 ### 2️⃣ Verify It Works
+
 ```
 1. Go to /articles
 2. See grid of article cards
@@ -59,6 +63,7 @@ node scripts/seed-and-verify-articles.mjs
 ```
 
 ### 3️⃣ Manage Articles
+
 ```
 Admin Panel: /admin/articles
 - View all articles
@@ -70,14 +75,18 @@ Admin Panel: /admin/articles
 ## Components Built
 
 ### 1. RelatedArticles Component ✨
+
 **File**: `src/components/biopedia/RelatedArticles.tsx`
+
 - Displays 6+ articles from same topic
 - Falls back to 3 from same section
 - Responsive grid layout
 - Automatic query based on topic_slug
 
-### 2. ArticleCard Component 
+### 2. ArticleCard Component
+
 **File**: `src/components/biopedia/ArticleCard.tsx`
+
 - Fully clickable card
 - Image + metadata
 - Read time + tone badge
@@ -86,18 +95,21 @@ Admin Panel: /admin/articles
 ### 3. Generation Systems ⚙️
 
 **SQL Script**: `entitles/seed-articles-comprehensive.sql`
+
 - Creates articles from all topics
 - Handles duplicates gracefully
 - Can run multiple times safely
 - ~200+ articles created
 
 **Node Script**: `scripts/seed-and-verify-articles.mjs`
+
 - Programmatic generation
 - Verification & statistics
 - Direct database access
 - Detailed reporting
 
 **Admin Button**: `/admin/articles`
+
 - One-click generation
 - Status display
 - Error handling
@@ -105,11 +117,11 @@ Admin Panel: /admin/articles
 
 ## Routes & Pages
 
-| Path | Component | Feature |
-|------|-----------|---------|
-| `/articles` | ArticlesPage | All articles grid with ArticleCard |
-| `/articles/{slug}` | ArticleDetailPage | Article content + RelatedArticles |
-| `/admin/articles` | ArticlesAdminPage | Admin with "Generate Articles" button |
+| Path               | Component         | Feature                               |
+| ------------------ | ----------------- | ------------------------------------- |
+| `/articles`        | ArticlesPage      | All articles grid with ArticleCard    |
+| `/articles/{slug}` | ArticleDetailPage | Article content + RelatedArticles     |
+| `/admin/articles`  | ArticlesAdminPage | Admin with "Generate Articles" button |
 
 ## Files Created (New)
 
@@ -144,24 +156,26 @@ Documentation:
 ✅ **Responsive Design** - Works on mobile/tablet/desktop  
 ✅ **Admin Management** - Full CRUD in admin panel  
 ✅ **No Compilation Errors** - All code verified  
-✅ **Production Ready** - Tested and working  
+✅ **Production Ready** - Tested and working
 
 ## Technical Details
 
 ### Article Linking Architecture
+
 ```typescript
 // Database relationship
 articles.topic_slug = topics.slug
 
 // Query in RelatedArticles component
-SELECT * FROM articles 
-WHERE topic_slug = current_article.topic_slug 
+SELECT * FROM articles
+WHERE topic_slug = current_article.topic_slug
 AND slug != current_article.slug
 AND published = true
 LIMIT 9
 ```
 
 ### ArticleCard Props
+
 ```typescript
 <ArticleCard
   article={article}              // ArticleRow object
@@ -174,6 +188,7 @@ LIMIT 9
 ```
 
 ### Article Fields
+
 - `slug` - Unique identifier (e.g., "cells-mitochondria")
 - `topic_slug` - **KEY FIELD** - Links articles together
 - `title`, `excerpt`, `body` - Content
@@ -185,7 +200,7 @@ LIMIT 9
 ## Testing Checklist
 
 - [x] ArticleCard component works
-- [x] RelatedArticles component works  
+- [x] RelatedArticles component works
 - [x] Articles route uses ArticleCard
 - [x] Article detail route has RelatedArticles
 - [x] Admin panel has Generate button
@@ -197,26 +212,28 @@ LIMIT 9
 
 ## Quick Links
 
-| Resource | Location |
-|----------|----------|
-| 🚀 Quick Start | `ARTICLE_QUICK_START.md` |
-| 📖 Full Guide | `ARTICLE_GENERATION_GUIDE.md` |
-| 🏗️ Technical Docs | `ARTICLE_IMPLEMENTATION_SUMMARY.md` |
-| 🎮 Admin Panel | `/admin/articles` |
-| 📋 All Articles | `/articles` |
+| Resource          | Location                                   |
+| ----------------- | ------------------------------------------ |
+| 🚀 Quick Start    | `ARTICLE_QUICK_START.md`                   |
+| 📖 Full Guide     | `ARTICLE_GENERATION_GUIDE.md`              |
+| 🏗️ Technical Docs | `ARTICLE_IMPLEMENTATION_SUMMARY.md`        |
+| 🎮 Admin Panel    | `/admin/articles`                          |
+| 📋 All Articles   | `/articles`                                |
 | 📄 SQL Generation | `entitles/seed-articles-comprehensive.sql` |
-| 🔧 Node Script | `scripts/seed-and-verify-articles.mjs` |
+| 🔧 Node Script    | `scripts/seed-and-verify-articles.mjs`     |
 
 ## What Happens Now
 
 After you generate articles:
 
 ### Database
+
 - Articles table filled with generated articles
 - Each article linked to topic via topic_slug
 - All published and immediately visible
 
 ### Website
+
 - `/articles` page shows article grid
 - Each card clickable → `/articles/{slug}`
 - Detail page shows article content
@@ -224,6 +241,7 @@ After you generate articles:
 - Click related → Navigate to new article
 
 ### Admin
+
 - `/admin/articles` shows all articles
 - Expand any article to edit/manage
 - Generate button creates more if needed
@@ -234,13 +252,14 @@ After you generate articles:
 ✅ All code is complete  
 ✅ No dependencies to install  
 ✅ No configuration files to edit  
-✅ Ready to use immediately  
+✅ Ready to use immediately
 
 Just run generation → articles appear!
 
 ## Summary
 
 You now have:
+
 - ✅ Complete article system from scratch
 - ✅ Automatic article generation (3 methods)
 - ✅ Automatic article linking via topics

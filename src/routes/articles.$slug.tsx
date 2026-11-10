@@ -17,14 +17,23 @@ function ArticleDetailPage() {
   const { data: articles = [], isLoading } = useArticles();
 
   const article =
-    (articles.length > 0 ? articles : fallbackArticles).find((a) => a.slug === slug) ??
-    fallbackArticles.find((a) => a.slug === slug);
+    (articles.length > 0 ? articles : fallbackArticles).find(
+      (a) => a.slug === slug,
+    ) ?? fallbackArticles.find((a) => a.slug === slug);
   if (isLoading) {
-    return <div className="p-6 text-sm text-muted-foreground">Loading article...</div>;
+    return (
+      <div className="p-6 text-sm text-muted-foreground">
+        Loading article...
+      </div>
+    );
   }
 
   if (!article) {
-    return <div className="p-6 text-sm text-muted-foreground">Article not found.</div>;
+    return (
+      <div className="p-6 text-sm text-muted-foreground">
+        Article not found.
+      </div>
+    );
   }
 
   return <ArticleTemplate article={article} related={articles} />;

@@ -11,5 +11,8 @@ export async function POST(request: Request): Promise<Response> {
       { error: "A text string of at most 20,000 characters is required." },
       { status: 400 },
     );
-  return Response.json({ text: `<u>${body.text.replace(/[<>]/g, "")}</u>`, format: "underline" });
+  return Response.json({
+    text: `<u>${body.text.replace(/[<>]/g, "")}</u>`,
+    format: "underline",
+  });
 }

@@ -9,6 +9,9 @@ export async function POST(request: Request): Promise<Response> {
     typeof body.font !== "string" ||
     !fonts.has(body.font)
   )
-    return Response.json({ error: "Choose sans, serif, or mono." }, { status: 400 });
+    return Response.json(
+      { error: "Choose sans, serif, or mono." },
+      { status: 400 },
+    );
   return Response.json({ font: body.font, className: `font-${body.font}` });
 }

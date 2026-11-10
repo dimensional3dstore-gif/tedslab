@@ -6,7 +6,9 @@ export default function VideoLibraryPage() {
   return (
     <main className="mx-auto w-full max-w-6xl space-y-6 p-6">
       <header>
-        <h1 className="font-display text-3xl font-bold text-foreground">Video library</h1>
+        <h1 className="font-display text-3xl font-bold text-foreground">
+          Video library
+        </h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Browse lessons and demonstrations from across the encyclopedia.
         </p>
@@ -46,7 +48,9 @@ export default function VideoLibraryPage() {
             </div>
             <div className="p-4">
               <h2 className="font-semibold text-foreground">{video.title}</h2>
-              <p className="mt-2 line-clamp-3 text-sm text-muted-foreground">{video.description}</p>
+              <p className="mt-2 line-clamp-3 text-sm text-muted-foreground">
+                {video.description}
+              </p>
             </div>
           </Link>
         ))}

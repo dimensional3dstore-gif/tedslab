@@ -25,7 +25,9 @@ export default function ExtensionsPage() {
   return (
     <main className="mx-auto w-full max-w-5xl space-y-6 p-6">
       <header>
-        <h1 className="font-display text-3xl font-bold text-foreground">Extensions</h1>
+        <h1 className="font-display text-3xl font-bold text-foreground">
+          Extensions
+        </h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Small tools that extend writing and research.
         </p>
@@ -38,7 +40,9 @@ export default function ExtensionsPage() {
             className="flex flex-wrap items-center justify-between gap-3 py-5 hover:text-primary"
           >
             <span>
-              <span className="block font-semibold text-foreground">{extension.title}</span>
+              <span className="block font-semibold text-foreground">
+                {extension.title}
+              </span>
               <span className="mt-1 block text-sm text-muted-foreground">
                 {extension.description}
               </span>
@@ -88,7 +92,9 @@ export function NoterPage() {
   };
 
   const downloadNote = () => {
-    const url = URL.createObjectURL(new Blob([text], { type: "text/plain;charset=utf-8" }));
+    const url = URL.createObjectURL(
+      new Blob([text], { type: "text/plain;charset=utf-8" }),
+    );
     const anchor = document.createElement("a");
     anchor.href = url;
     anchor.download = "notes.txt";
@@ -99,7 +105,9 @@ export function NoterPage() {
   return (
     <main className="mx-auto w-full max-w-4xl space-y-5 p-6">
       <header>
-        <h1 className="font-display text-3xl font-bold text-foreground">Noter</h1>
+        <h1 className="font-display text-3xl font-bold text-foreground">
+          Noter
+        </h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Notes stay in this browser until you export them.
         </p>

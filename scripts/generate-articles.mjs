@@ -3,7 +3,9 @@ import { sections as bioSections } from "../src/lib/biopedia-sections.ts";
 import fs from "node:fs";
 
 const q = (v) =>
-  v === null || v === undefined ? "NULL" : `'${String(v).replaceAll("'", "''")}'`;
+  v === null || v === undefined
+    ? "NULL"
+    : `'${String(v).replaceAll("'", "''")}'`;
 
 const slugify = (s) =>
   s
@@ -24,7 +26,16 @@ function generateArticleBody(title, topicBlurb, sectionTitle, subjectTitle) {
 }
 
 // Color palette for articles
-const tones = ["cyan", "amber", "green", "violet", "rose", "blue", "orange", "indigo"];
+const tones = [
+  "cyan",
+  "amber",
+  "green",
+  "violet",
+  "rose",
+  "blue",
+  "orange",
+  "indigo",
+];
 
 const subjects = [
   { slug: "biology", title: "Biology" },
@@ -37,42 +48,83 @@ const subjects = [
 
 const extraSections = {
   mathematics: [
-    ["number-algebra", "Number & Algebra", "Working with number systems, expressions and equations.", [
-      ["Number Systems", "Naturals, integers, rationals, reals and where each is used."],
-      ["Indices & Surds", "Laws of powers and simplifying irrational roots."],
-      ["Linear Equations", "Solving, rearranging and modelling with straight-line relationships."],
-      ["Quadratics", "Factorising, completing the square and the quadratic formula."],
-      ["Simultaneous Equations", "Finding values that satisfy several conditions at once."],
-      ["Sequences & Series", "Arithmetic, geometric and recursive patterns."],
-    ]],
+    [
+      "number-algebra",
+      "Number & Algebra",
+      "Working with number systems, expressions and equations.",
+      [
+        [
+          "Number Systems",
+          "Naturals, integers, rationals, reals and where each is used.",
+        ],
+        ["Indices & Surds", "Laws of powers and simplifying irrational roots."],
+        [
+          "Linear Equations",
+          "Solving, rearranging and modelling with straight-line relationships.",
+        ],
+        [
+          "Quadratics",
+          "Factorising, completing the square and the quadratic formula.",
+        ],
+        [
+          "Simultaneous Equations",
+          "Finding values that satisfy several conditions at once.",
+        ],
+        ["Sequences & Series", "Arithmetic, geometric and recursive patterns."],
+      ],
+    ],
   ],
   science: [
-    ["physics", "Physics", "Motion, forces, energy and the rules the universe seems to follow.", [
-      ["Motion", "Displacement, velocity, acceleration and graphs."],
-      ["Forces", "Newton's laws, friction and free-body diagrams."],
-      ["Energy & Work", "Conservation, transfer and efficiency."],
-      ["Waves & Sound", "Frequency, wavelength, reflection and resonance."],
-      ["Electricity", "Current, voltage, resistance and circuits."],
-      ["Light & Optics", "Reflection, refraction, lenses and the spectrum."],
-    ]],
-    ["chemistry", "Chemistry", "Matter, its structure and the reactions that rearrange it.", [
-      ["Atomic Structure", "Protons, neutrons, electrons and shells."],
-      ["The Periodic Table", "Groups, periods and predicting behaviour."],
-      ["Bonding", "Ionic, covalent and metallic bonds."],
-      ["Chemical Reactions", "Balancing equations and reaction types."],
-      ["Acids & Bases", "pH, neutralisation and indicators."],
-      ["Stoichiometry", "The mole and quantitative chemistry."],
-    ]],
+    [
+      "physics",
+      "Physics",
+      "Motion, forces, energy and the rules the universe seems to follow.",
+      [
+        ["Motion", "Displacement, velocity, acceleration and graphs."],
+        ["Forces", "Newton's laws, friction and free-body diagrams."],
+        ["Energy & Work", "Conservation, transfer and efficiency."],
+        ["Waves & Sound", "Frequency, wavelength, reflection and resonance."],
+        ["Electricity", "Current, voltage, resistance and circuits."],
+        ["Light & Optics", "Reflection, refraction, lenses and the spectrum."],
+      ],
+    ],
+    [
+      "chemistry",
+      "Chemistry",
+      "Matter, its structure and the reactions that rearrange it.",
+      [
+        ["Atomic Structure", "Protons, neutrons, electrons and shells."],
+        ["The Periodic Table", "Groups, periods and predicting behaviour."],
+        ["Bonding", "Ionic, covalent and metallic bonds."],
+        ["Chemical Reactions", "Balancing equations and reaction types."],
+        ["Acids & Bases", "pH, neutralisation and indicators."],
+        ["Stoichiometry", "The mole and quantitative chemistry."],
+      ],
+    ],
   ],
   english: [
-    ["literature", "Literature", "Novels, plays and short fiction, and how to read them closely.", [
-      ["Narrative Structure", "Exposition, conflict, climax and resolution."],
-      ["Character & Motivation", "How writers build people worth caring about."],
-      ["Theme", "Finding the argument underneath the story."],
-      ["Setting & Context", "Time, place and the world a text was written in."],
-      ["Point of View", "First person, third limited, omniscient and unreliable narrators."],
-      ["Shakespeare", "Reading early modern drama with confidence."],
-    ]],
+    [
+      "literature",
+      "Literature",
+      "Novels, plays and short fiction, and how to read them closely.",
+      [
+        ["Narrative Structure", "Exposition, conflict, climax and resolution."],
+        [
+          "Character & Motivation",
+          "How writers build people worth caring about.",
+        ],
+        ["Theme", "Finding the argument underneath the story."],
+        [
+          "Setting & Context",
+          "Time, place and the world a text was written in.",
+        ],
+        [
+          "Point of View",
+          "First person, third limited, omniscient and unreliable narrators.",
+        ],
+        ["Shakespeare", "Reading early modern drama with confidence."],
+      ],
+    ],
   ],
 };
 
@@ -145,7 +197,10 @@ fs.mkdirSync("/tmp/seed", { recursive: true });
 // Write to output file
 const sqlScript = out.join("\n");
 fs.writeFileSync("/tmp/seed/generate-articles.sql", sqlScript);
-fs.writeFileSync("/tmp/seed/article-count.txt", `Total articles generated: ${articleSort}`);
+fs.writeFileSync(
+  "/tmp/seed/article-count.txt",
+  `Total articles generated: ${articleSort}`,
+);
 
 console.log(`Total articles: ${articleSort}`);
 console.log("SQL file saved to: /tmp/seed/generate-articles.sql");

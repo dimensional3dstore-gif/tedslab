@@ -1,0 +1,1 @@
+import{t as e}from"./jsx-runtime-Cx0BB4qO.js";import{t}from"./PlatformPlaceholderPage-BtozQwG7.js";var n=e(),r=()=>(0,n.jsx)(t,{title:`Maplication`,description:`A map workspace for geographic and biological exploration.`,area:`Maplication`,nextSteps:[`Connect map data sources.`,`Add layers and search.`,`Add export and saved-map actions.`]});export{r as component};

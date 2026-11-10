@@ -5,8 +5,9 @@
 ✅ **Complete article generation and linking system** has been built and is ready to use.
 
 The system automatically:
+
 - Generates articles from all topics in the database
-- Links them together via topic_slug field  
+- Links them together via topic_slug field
 - Displays related articles on detail pages
 - Uses consistent ArticleCard components throughout the site
 
@@ -15,38 +16,44 @@ The system automatically:
 ### 1. Article Generation Methods (Choose Any)
 
 #### Method A: Admin Panel (Recommended for ease)
+
 - Location: `/admin/articles`
 - Button: "Generate Articles"
 - One-click article creation
 - Status messages and counts displayed
 
-#### Method B: SQL Script  
+#### Method B: SQL Script
+
 - File: `entitles/seed-articles-comprehensive.sql`
 - Run in Supabase SQL Editor
 - Creates all articles in one query
 - Can be run multiple times safely
 
 #### Method C: Node.js Script
-- File: `scripts/seed-and-verify-articles.mjs`  
+
+- File: `scripts/seed-and-verify-articles.mjs`
 - Command: `node scripts/seed-and-verify-articles.mjs`
 - Generates + verifies + reports statistics
 
 ### 2. Article Display Components
 
 #### ArticleCard Component
+
 - Used consistently across the site
 - Fully clickable cards with images
 - Shows read time, tone/category badge
 - Responsive grid layouts
 - Bookmark integration
 
-#### RelatedArticles Component  
+#### RelatedArticles Component
+
 - Displays on article detail pages
 - Filters by matching topic_slug
 - Shows up to 9 related articles
 - Smart fallback to section-level articles
 
 #### ContentLayout Component
+
 - Article detail page template
 - Header with metadata
 - Image section
@@ -55,15 +62,16 @@ The system automatically:
 
 ### 3. Routes Configured
 
-| Route | Purpose |
-|-------|---------|
-| `/articles` | All articles listing (grid view with ArticleCard) |
-| `/articles/{slug}` | Article detail page with RelatedArticles |
-| `/admin/articles` | Admin management with Generate button |
+| Route              | Purpose                                           |
+| ------------------ | ------------------------------------------------- |
+| `/articles`        | All articles listing (grid view with ArticleCard) |
+| `/articles/{slug}` | Article detail page with RelatedArticles          |
+| `/admin/articles`  | Admin management with Generate button             |
 
 ### 4. Database Schema
 
 Articles table has:
+
 - `slug` - Unique identifier
 - `title` - Article title
 - `excerpt` - Short summary
@@ -80,12 +88,14 @@ Articles table has:
 ### Step 1: Generate Articles (Do This First)
 
 **Using Admin Panel (Easiest):**
+
 1. Go to `/admin/articles`
 2. Click "Generate Articles" button
 3. Wait for success message
 4. Done!
 
 **Using SQL:**
+
 1. Open Supabase dashboard
 2. Go to SQL Editor
 3. Create new query
@@ -93,6 +103,7 @@ Articles table has:
 5. Run
 
 **Using Node Script:**
+
 ```bash
 cd /Users/ted/Downloads/study-hub-tedslab
 node scripts/seed-and-verify-articles.mjs
@@ -101,7 +112,7 @@ node scripts/seed-and-verify-articles.mjs
 ### Step 2: Verify Articles Created
 
 1. Go to `/admin/articles`
-2. Should show "Published: 100+" 
+2. Should show "Published: 100+"
 3. Go to `/articles`
 4. Should see grid of article cards
 
@@ -116,24 +127,30 @@ node scripts/seed-and-verify-articles.mjs
 ## Files Created/Modified
 
 ### New Components
+
 - `src/components/biopedia/RelatedArticles.tsx` - Related articles display
 - `src/components/biopedia/ArticleCard.tsx` - Already existed, now used everywhere
 
-### New Routes  
+### New Routes
+
 - No new routes (using existing `/articles/{slug}`)
 
 ### Updated Routes
+
 - `src/routes/articles.tsx` - Now uses ArticleCard component
 - `src/routes/articles.$slug.tsx` - Now includes RelatedArticles component
 - `src/routes/_authenticated/admin.articles.tsx` - Added Generate button
 
 ### New Scripts
+
 - `scripts/seed-and-verify-articles.mjs` - Article generation/verification
 
 ### New SQL
+
 - `entitles/seed-articles-comprehensive.sql` - Comprehensive seeding script
 
 ### New Documentation
+
 - `ARTICLE_GENERATION_GUIDE.md` - Comprehensive guide
 - `ARTICLE_QUICK_START.md` - Quick reference
 - `ARTICLE_IMPLEMENTATION_SUMMARY.md` - This file
@@ -141,6 +158,7 @@ node scripts/seed-and-verify-articles.mjs
 ## How It Works
 
 ### The Flow
+
 ```
 Topics (in database)
     ↓ Generate articles from topics
@@ -161,6 +179,7 @@ Articles (in database)
 ```
 
 ### The Linking
+
 - Articles linked via `topic_slug` field
 - Database stores relationship
 - RelatedArticles component performs the query
@@ -181,6 +200,7 @@ Articles (in database)
 ## Architecture
 
 ### Component Hierarchy
+
 ```
 AppShell
   └─ ArticlesPage (/articles)
@@ -200,6 +220,7 @@ AdminPageShell (/admin/articles)
 ```
 
 ### Data Flow
+
 ```
 Database: topics → create → articles (with topic_slug)
                        ↓
@@ -218,26 +239,26 @@ Display: ArticleCard renders matched articles
 
 ```typescript
 interface ArticleRow {
-  id: string;              // UUID
-  slug: string;            // Unique: "cells-mitochondria"
-  title: string;           // "Mitochondria: Full Guide"
-  excerpt: string;         // Short summary
-  body: string;            // HTML content
-  minutes: number;         // 5-10 min read estimate
-  tone: string;            // "Cellular Biology" (category badge)
-  
+  id: string; // UUID
+  slug: string; // Unique: "cells-mitochondria"
+  title: string; // "Mitochondria: Full Guide"
+  excerpt: string; // Short summary
+  body: string; // HTML content
+  minutes: number; // 5-10 min read estimate
+  tone: string; // "Cellular Biology" (category badge)
+
   // Linking Fields
-  topic_slug: string;      // Links to source topic
-  section_slug: string;    // Parent section
-  subject_slug: string;    // Parent subject
-  
-  image_key: string;       // Image identifier
-  image_url: string;       // Resolved URL
-  
-  published: boolean;      // Visibility
-  status: string;          // "draft" | "review" | "published"
-  sort: number;            // Sort order
-  
+  topic_slug: string; // Links to source topic
+  section_slug: string; // Parent section
+  subject_slug: string; // Parent subject
+
+  image_key: string; // Image identifier
+  image_url: string; // Resolved URL
+
+  published: boolean; // Visibility
+  status: string; // "draft" | "review" | "published"
+  sort: number; // Sort order
+
   created_at: timestamp;
   updated_at: timestamp;
 }
@@ -246,26 +267,34 @@ interface ArticleRow {
 ## Admin Operations
 
 ### View Articles
+
 Path: `/admin/articles`
+
 - See all articles with status
 - Click "Expand" for details
 - Shows counts (total, published)
 
 ### Generate Articles
+
 Button: "Generate Articles" (on /admin/articles)
+
 - Creates one article per topic
 - Status: Shows generating, success, or error
 - Count: Shows before/after totals
 - Safe: Can run multiple times
 
 ### Edit Articles
+
 Expanded view in admin panel
+
 - Edit title, body, excerpt
 - Change status (draft/published)
 - Save changes (instant update)
 
 ### Toggle Publishing
+
 Expanded view in admin panel
+
 - Use Draft/Publish Manager
 - Toggle published on/off
 - Changes appear immediately on site
@@ -295,9 +324,9 @@ node scripts/seed-and-verify-articles.mjs
 SELECT COUNT(*) FROM articles WHERE published = true;
 
 # See articles by subject
-SELECT subject_slug, COUNT(*) 
-FROM articles 
-WHERE published = true 
+SELECT subject_slug, COUNT(*)
+FROM articles
+WHERE published = true
 GROUP BY subject_slug;
 ```
 
@@ -321,7 +350,7 @@ GROUP BY subject_slug;
 ## Documentation Files
 
 - **ARTICLE_QUICK_START.md** ← Start here for quick overview
-- **ARTICLE_GENERATION_GUIDE.md** ← Comprehensive detailed guide  
+- **ARTICLE_GENERATION_GUIDE.md** ← Comprehensive detailed guide
 - **ARTICLE_IMPLEMENTATION_SUMMARY.md** ← This technical reference
 
 ## Next Steps

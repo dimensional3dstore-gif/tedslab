@@ -1,4 +1,13 @@
-import { BookOpenText, CheckCircle2, ChevronRight, Leaf, Microscope, Sparkles, ThumbsDown, ThumbsUp } from "lucide-react";
+import {
+  BookOpenText,
+  CheckCircle2,
+  ChevronRight,
+  Leaf,
+  Microscope,
+  Sparkles,
+  ThumbsDown,
+  ThumbsUp,
+} from "lucide-react";
 import discoveryLeaf from "@/assets/discovery-leaf.jpg";
 import { AppShell } from "@/components/biopedia/AppShell";
 
@@ -17,7 +26,13 @@ export default function MeiosisandGameteFormationPage() {
               </h2>
             </div>
             <nav className="space-y-1 p-2 text-sm">
-              {["Overview", "Key Concepts", "Process Steps", "Examples", "Summary"].map((item, index) => (
+              {[
+                "Overview",
+                "Key Concepts",
+                "Process Steps",
+                "Examples",
+                "Summary",
+              ].map((item, index) => (
                 <a
                   key={item}
                   href="#"
@@ -48,7 +63,9 @@ export default function MeiosisandGameteFormationPage() {
                 Reviewed by Experts
               </div>
               <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground">
-                Meiosis is a specialized form of cell division producing four genetically diverse haploid gametes from a single diploid parent cell, essential for sexual reproduction and genetic diversity.
+                Meiosis is a specialized form of cell division producing four
+                genetically diverse haploid gametes from a single diploid parent
+                cell, essential for sexual reproduction and genetic diversity.
               </p>
               <div className="mt-5 flex flex-wrap gap-2">
                 {topicTags.map((tag) => (
@@ -75,7 +92,8 @@ export default function MeiosisandGameteFormationPage() {
           <h2 className="text-3xl font-bold text-foreground">Overview</h2>
           <div className="mt-6 space-y-5 text-base leading-relaxed text-muted-foreground">
             <p>
-              How meiosis produces genetically diverse gametes. This article explores the fundamental concepts, processes, and applications.
+              How meiosis produces genetically diverse gametes. This article
+              explores the fundamental concepts, processes, and applications.
             </p>
           </div>
         </section>

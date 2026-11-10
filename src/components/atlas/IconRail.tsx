@@ -1,4 +1,11 @@
-import { Bookmark, Files, Network, Search, Settings2, Tags } from "lucide-react";
+import {
+  Bookmark,
+  Files,
+  Network,
+  Search,
+  Settings2,
+  Tags,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAtlas, type RailTab } from "@/store/atlas";
 
@@ -48,10 +55,14 @@ export function IconRail() {
               onClick={() => onClick(it.id)}
               className={cn(
                 "relative flex size-10 items-center justify-center rounded-md text-fg-muted transition-colors duration-150",
-                active ? "bg-bg-active text-fg" : "hover:bg-bg-hover hover:text-fg",
+                active
+                  ? "bg-bg-active text-fg"
+                  : "hover:bg-bg-hover hover:text-fg",
               )}
             >
-              {active && <span className="absolute left-0 h-5 w-0.5 rounded-full bg-accent" />}
+              {active && (
+                <span className="absolute left-0 h-5 w-0.5 rounded-full bg-accent" />
+              )}
               <Icon className="size-4" strokeWidth={1.6} />
             </button>
           );

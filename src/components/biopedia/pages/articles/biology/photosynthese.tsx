@@ -1,4 +1,13 @@
-import { BookOpenText, CheckCircle2, ChevronRight, Leaf, Microscope, Sparkles, ThumbsDown, ThumbsUp } from "lucide-react";
+import {
+  BookOpenText,
+  CheckCircle2,
+  ChevronRight,
+  Leaf,
+  Microscope,
+  Sparkles,
+  ThumbsDown,
+  ThumbsUp,
+} from "lucide-react";
 import discoveryLeaf from "@/assets/discovery-leaf.jpg";
 import { AppShell } from "@/components/biopedia/AppShell";
 
@@ -56,7 +65,10 @@ export default function PhotosyntheseTopicPage() {
               <div className="grid grid-cols-2 gap-3">
                 <Fact label="Type" value="Anabolic process" />
                 <Fact label="Occurs in" value="Chloroplasts" />
-                <Fact label="Required for" value="Plant growth, oxygen production, and energy" />
+                <Fact
+                  label="Required for"
+                  value="Plant growth, oxygen production, and energy"
+                />
                 <Fact label="Discovered by" value="Jan Ingenhousz (1779)" />
               </div>
             </div>
@@ -85,7 +97,12 @@ export default function PhotosyntheseTopicPage() {
               </div>
 
               <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground">
-                Photosynthesis is the fundamental biochemical process by which plants, algae, and certain bacteria convert light energy from the sun into chemical energy stored in glucose molecules. This process is essential for virtually all life on Earth, as it produces oxygen and organic compounds that sustain entire ecosystems.
+                Photosynthesis is the fundamental biochemical process by which
+                plants, algae, and certain bacteria convert light energy from
+                the sun into chemical energy stored in glucose molecules. This
+                process is essential for virtually all life on Earth, as it
+                produces oxygen and organic compounds that sustain entire
+                ecosystems.
               </p>
 
               <div className="mt-5 flex flex-wrap gap-2">
@@ -142,9 +159,10 @@ export default function PhotosyntheseTopicPage() {
 
           <div className="mt-6 space-y-5 text-base leading-relaxed text-muted-foreground">
             <p>
-              Photosynthesis occurs mainly in the chloroplasts of plant cells. It uses light energy
-              from the sun to convert carbon dioxide and water into glucose (a sugar) and oxygen.
-              The overall equation for photosynthesis is:
+              Photosynthesis occurs mainly in the chloroplasts of plant cells.
+              It uses light energy from the sun to convert carbon dioxide and
+              water into glucose (a sugar) and oxygen. The overall equation for
+              photosynthesis is:
             </p>
 
             <div className="overflow-hidden rounded-xl border border-primary/20 bg-primary/5 p-5 text-center">
@@ -168,8 +186,9 @@ export default function PhotosyntheseTopicPage() {
             </div>
 
             <p>
-              This process is fundamental to life on Earth, providing energy for organisms and
-              helping to regulate the atmosphere by releasing oxygen.
+              This process is fundamental to life on Earth, providing energy for
+              organisms and helping to regulate the atmosphere by releasing
+              oxygen.
             </p>
           </div>
         </section>
@@ -177,11 +196,13 @@ export default function PhotosyntheseTopicPage() {
         <section className="mt-8 rounded-2xl border border-border bg-card/80 p-6">
           <div className="grid gap-6 lg:grid-cols-[1.05fr_1.2fr] lg:items-center">
             <div>
-              <h3 className="text-3xl font-bold text-foreground">Where Does It Happen?</h3>
+              <h3 className="text-3xl font-bold text-foreground">
+                Where Does It Happen?
+              </h3>
               <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-                Photosynthesis takes place in the chloroplasts, which are found in the cells of
-                green plants and algae. Chloroplasts contain chlorophyll, the green pigment that
-                captures light energy.
+                Photosynthesis takes place in the chloroplasts, which are found
+                in the cells of green plants and algae. Chloroplasts contain
+                chlorophyll, the green pigment that captures light energy.
               </p>
             </div>
 
@@ -206,11 +227,14 @@ export default function PhotosyntheseTopicPage() {
               <div className="rounded-full bg-primary/15 p-2 text-primary">
                 <Leaf className="size-4" />
               </div>
-              <h4 className="text-xl font-semibold text-foreground">Key Takeaway</h4>
+              <h4 className="text-xl font-semibold text-foreground">
+                Key Takeaway
+              </h4>
             </div>
             <p className="mt-3 text-base text-muted-foreground">
-              Chloroplasts are the “solar panels” of the cell, capturing light energy and converting
-              it into chemical energy in the form of glucose.
+              Chloroplasts are the “solar panels” of the cell, capturing light
+              energy and converting it into chemical energy in the form of
+              glucose.
             </p>
           </div>
         </section>

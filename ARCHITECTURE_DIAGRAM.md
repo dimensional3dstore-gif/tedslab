@@ -183,18 +183,22 @@ Filtered results displayed instantly
 ## Key Implementation Details
 
 ### URL Structure
+
 - Subjects: `/{subject_slug}` (e.g., `/biology`)
 - Sections: `/{subject_slug}/{section_slug}` (e.g., `/biology/human-biology`)
 - Topics: `/{section_slug}/{topic_slug}` (e.g., `/human-biology/neurons`)
 - Articles: `/articles/{article_slug}` (e.g., `/articles/neurons`)
 
 ### Data Generation
+
 Run this command to generate all articles:
+
 ```bash
 node scripts/generate-articles.mjs
 ```
 
 This creates one article per topic with:
+
 - Unique slug combining section + topic slug
 - Full article body based on topic information
 - Links to subject, section, and topic
@@ -202,6 +206,7 @@ This creates one article per topic with:
 - Randomized tone color for visual variety
 
 ### Performance Optimization
+
 - Server-side data loading with React Query
 - Initial data passed via loader
 - Optimistic UI updates

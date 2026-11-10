@@ -12,7 +12,7 @@ import {
 export async function getSummary(
   title: string,
   content: string,
-  maxLength: number = 150
+  maxLength: number = 150,
 ): Promise<string> {
   try {
     const summary = await summarizeArticle(title, content, maxLength);
@@ -29,7 +29,7 @@ export async function getSummary(
 export async function getKeyPoints(
   title: string,
   content: string,
-  numPoints: number = 5
+  numPoints: number = 5,
 ): Promise<string[]> {
   try {
     const points = await extractKeyPoints(title, content, numPoints);
@@ -45,7 +45,7 @@ export async function getKeyPoints(
  */
 export async function getOneSentenceSummary(
   title: string,
-  content: string
+  content: string,
 ): Promise<string> {
   try {
     const summary = await generateOneSentenceSummary(title, content);

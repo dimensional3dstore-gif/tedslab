@@ -1,6 +1,7 @@
 # Wiring a Backend
 
 ## Integration contract
+
 1. Define request and response schemas before connecting the UI.
 2. Validate input at the server boundary and return consistent status codes.
 3. Authenticate the caller and authorize access to each requested resource.

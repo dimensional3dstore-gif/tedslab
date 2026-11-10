@@ -1,9 +1,4 @@
-import {
-  importJWK,
-  jwtVerify,
-  type JWK,
-  type JWTVerifyGetKey,
-} from "jose";
+import { importJWK, jwtVerify, type JWK, type JWTVerifyGetKey } from "jose";
 
 export const GATE_IDENTITY_HEADER = "x-grok-identity";
 export const GATE_JWKS_PATH = "/__gate/identity-key";

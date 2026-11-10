@@ -70,8 +70,12 @@ export function ContentLayout({
                         <div className="mt-4 flex flex-wrap gap-4">
                           {metadata.map((meta) => (
                             <div key={meta.label}>
-                              <p className="text-xs text-muted-foreground">{meta.label}</p>
-                              <p className="text-sm font-medium text-foreground">{meta.value}</p>
+                              <p className="text-xs text-muted-foreground">
+                                {meta.label}
+                              </p>
+                              <p className="text-sm font-medium text-foreground">
+                                {meta.value}
+                              </p>
                             </div>
                           ))}
                         </div>
@@ -83,7 +87,12 @@ export function ContentLayout({
                 {/* Image Section */}
                 {image && (
                   <div className="mt-6 overflow-hidden rounded-lg">
-                    <img src={image} alt={imageAlt} className="w-full" loading="eager" />
+                    <img
+                      src={image}
+                      alt={imageAlt}
+                      className="w-full"
+                      loading="eager"
+                    />
                   </div>
                 )}
 

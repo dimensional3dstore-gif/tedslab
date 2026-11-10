@@ -39,11 +39,15 @@ export default function TranslatePage() {
         !("translatedText" in result) ||
         typeof result.translatedText !== "string"
       )
-        throw new Error("The translation provider returned an invalid response.");
+        throw new Error(
+          "The translation provider returned an invalid response.",
+        );
       setTranslation(result.translatedText);
       setMessage("Translation complete.");
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Translation failed.");
+      setMessage(
+        error instanceof Error ? error.message : "Translation failed.",
+      );
     } finally {
       setBusy(false);
     }
@@ -62,7 +66,9 @@ export default function TranslatePage() {
     <TranslateLayout>
       <TranslateBreadcrumb steps={["Language tools", "Translator"]} />
       <header>
-        <h1 className="font-display text-3xl font-bold text-foreground">Translator</h1>
+        <h1 className="font-display text-3xl font-bold text-foreground">
+          Translator
+        </h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Translate text with the provider configured for this deployment.
         </p>
@@ -131,7 +137,11 @@ export default function TranslatePage() {
           </p>
         </section>
       )}
-      <p role="status" aria-live="polite" className="text-sm text-muted-foreground">
+      <p
+        role="status"
+        aria-live="polite"
+        className="text-sm text-muted-foreground"
+      >
         {message}
       </p>
     </TranslateLayout>

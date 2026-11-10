@@ -1,7 +1,15 @@
 export async function POST(request: Request): Promise<Response> {
   const body: unknown = await request.json().catch(() => null);
-  if (!body || typeof body !== "object" || !("latitude" in body) || !("longitude" in body)) {
-    return Response.json({ error: "Latitude and longitude are required." }, { status: 400 });
+  if (
+    !body ||
+    typeof body !== "object" ||
+    !("latitude" in body) ||
+    !("longitude" in body)
+  ) {
+    return Response.json(
+      { error: "Latitude and longitude are required." },
+      { status: 400 },
+    );
   }
   const { latitude, longitude } = body;
   if (
@@ -19,5 +27,9 @@ export async function POST(request: Request): Promise<Response> {
       { status: 400 },
     );
   }
-  return Response.json({ latitude, longitude, recordedAt: new Date().toISOString() });
+  return Response.json({
+    latitude,
+    longitude,
+    recordedAt: new Date().toISOString(),
+  });
 }

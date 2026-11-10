@@ -19,7 +19,9 @@ export function CategoryGrid({ items }: { items: CategoryGridItem[] }) {
       </h2>
 
       {items.length === 0 ? (
-        <p className="mt-4 text-sm text-muted-foreground">No categories match your search.</p>
+        <p className="mt-4 text-sm text-muted-foreground">
+          No categories match your search.
+        </p>
       ) : (
         <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-6">
           {items.map((c) => (

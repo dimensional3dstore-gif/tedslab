@@ -15,12 +15,18 @@ export async function POST(request: Request): Promise<Response> {
     !("format" in body) ||
     typeof body.format !== "string"
   )
-    return Response.json({ error: "A text value and format are required." }, { status: 400 });
+    return Response.json(
+      { error: "A text value and format are required." },
+      { status: 400 },
+    );
   if (body.text.length > 20_000 || !(body.format in wrappers))
     return Response.json(
       { error: "Text is too long or the format is unsupported." },
       { status: 400 },
     );
   const [before, after] = wrappers[body.format as keyof typeof wrappers];
-  return Response.json({ text: `${before}${body.text}${after}`, format: body.format });
+  return Response.json({
+    text: `${before}${body.text}${after}`,
+    format: body.format,
+  });
 }

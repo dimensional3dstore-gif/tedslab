@@ -27,7 +27,8 @@ export const SUBJECTS: Subject[] = [
     id: "sub-biology",
     slug: "biology",
     title: "Biology",
-    description: "Life, cells, organisms, genetics and the living systems of Earth.",
+    description:
+      "Life, cells, organisms, genetics and the living systems of Earth.",
     icon: "Sprout",
     image_key: "hero-cell",
     image_url: null,
@@ -102,8 +103,14 @@ const extraSections: {
     icon: "Variable",
     image_key: "math-algebra",
     topics: [
-      { title: "Linear Equations", blurb: "Solving for unknowns with balance and substitution." },
-      { title: "Functions", blurb: "Inputs, outputs and mapping one world onto another." },
+      {
+        title: "Linear Equations",
+        blurb: "Solving for unknowns with balance and substitution.",
+      },
+      {
+        title: "Functions",
+        blurb: "Inputs, outputs and mapping one world onto another.",
+      },
       { title: "Polynomials", blurb: "Sums of powers and how they factor." },
     ],
   },
@@ -115,9 +122,18 @@ const extraSections: {
     icon: "Triangle",
     image_key: "math-geometry",
     topics: [
-      { title: "Euclidean Proof", blurb: "Axioms, theorems and the logic of diagrams." },
-      { title: "Trigonometry", blurb: "Sine, cosine and the circle of ratios." },
-      { title: "Coordinate Geometry", blurb: "Points, lines and distance on the plane." },
+      {
+        title: "Euclidean Proof",
+        blurb: "Axioms, theorems and the logic of diagrams.",
+      },
+      {
+        title: "Trigonometry",
+        blurb: "Sine, cosine and the circle of ratios.",
+      },
+      {
+        title: "Coordinate Geometry",
+        blurb: "Points, lines and distance on the plane.",
+      },
     ],
   },
   {
@@ -128,9 +144,15 @@ const extraSections: {
     icon: "LineChart",
     image_key: "math-calculus",
     topics: [
-      { title: "Limits", blurb: "Approaching a value without having to arrive." },
+      {
+        title: "Limits",
+        blurb: "Approaching a value without having to arrive.",
+      },
       { title: "Derivatives", blurb: "Instantaneous rate of change." },
-      { title: "Integrals", blurb: "Area, accumulation and the antiderivative." },
+      {
+        title: "Integrals",
+        blurb: "Area, accumulation and the antiderivative.",
+      },
     ],
   },
   {
@@ -141,9 +163,15 @@ const extraSections: {
     icon: "ChartBar",
     image_key: "math-statistics",
     topics: [
-      { title: "Distributions", blurb: "How values spread around a typical case." },
+      {
+        title: "Distributions",
+        blurb: "How values spread around a typical case.",
+      },
       { title: "Sampling", blurb: "Learning about a whole from a part." },
-      { title: "Hypothesis Tests", blurb: "Asking whether a difference is noise." },
+      {
+        title: "Hypothesis Tests",
+        blurb: "Asking whether a difference is noise.",
+      },
     ],
   },
   {
@@ -154,9 +182,15 @@ const extraSections: {
     icon: "Atom",
     image_key: "sci-physics",
     topics: [
-      { title: "Newtonian Mechanics", blurb: "Force, mass and the laws of motion." },
+      {
+        title: "Newtonian Mechanics",
+        blurb: "Force, mass and the laws of motion.",
+      },
       { title: "Energy", blurb: "Work, conservation and transformation." },
-      { title: "Waves & Light", blurb: "Oscillation, interference and spectra." },
+      {
+        title: "Waves & Light",
+        blurb: "Oscillation, interference and spectra.",
+      },
     ],
   },
   {
@@ -167,8 +201,14 @@ const extraSections: {
     icon: "FlaskConical",
     image_key: "sci-chemistry",
     topics: [
-      { title: "Periodic Table", blurb: "Patterns of elements and their properties." },
-      { title: "Chemical Bonds", blurb: "Ionic, covalent and metallic attraction." },
+      {
+        title: "Periodic Table",
+        blurb: "Patterns of elements and their properties.",
+      },
+      {
+        title: "Chemical Bonds",
+        blurb: "Ionic, covalent and metallic attraction.",
+      },
       { title: "Reactions", blurb: "Reactants, products and rates." },
     ],
   },
@@ -180,7 +220,10 @@ const extraSections: {
     icon: "Globe",
     image_key: "sci-earth",
     topics: [
-      { title: "Plate Tectonics", blurb: "Moving crust and the making of mountains." },
+      {
+        title: "Plate Tectonics",
+        blurb: "Moving crust and the making of mountains.",
+      },
       { title: "Atmosphere", blurb: "Layers, weather and climate drivers." },
       { title: "Oceans", blurb: "Currents, chemistry and heat storage." },
     ],
@@ -194,8 +237,14 @@ const extraSections: {
     image_key: "sci-method",
     topics: [
       { title: "Observation", blurb: "Seeing carefully before explaining." },
-      { title: "Hypothesis", blurb: "A testable guess about how the world works." },
-      { title: "Experiment", blurb: "Controls, variables and honest measurement." },
+      {
+        title: "Hypothesis",
+        blurb: "A testable guess about how the world works.",
+      },
+      {
+        title: "Experiment",
+        blurb: "Controls, variables and honest measurement.",
+      },
     ],
   },
   {
@@ -206,8 +255,14 @@ const extraSections: {
     icon: "Landmark",
     image_key: "his-ancient",
     topics: [
-      { title: "Mesopotamia", blurb: "Rivers, cuneiform and the first cities." },
-      { title: "Classical Greece", blurb: "City-states, philosophy and democracy." },
+      {
+        title: "Mesopotamia",
+        blurb: "Rivers, cuneiform and the first cities.",
+      },
+      {
+        title: "Classical Greece",
+        blurb: "City-states, philosophy and democracy.",
+      },
       { title: "Rome", blurb: "Republic, empire and a legal inheritance." },
     ],
   },
@@ -220,8 +275,14 @@ const extraSections: {
     image_key: "his-medieval",
     topics: [
       { title: "Feudal Orders", blurb: "Land, loyalty and local power." },
-      { title: "Faith and Learning", blurb: "Monasteries, universities and books." },
-      { title: "Trade Routes", blurb: "Silk, spice and the movement of ideas." },
+      {
+        title: "Faith and Learning",
+        blurb: "Monasteries, universities and books.",
+      },
+      {
+        title: "Trade Routes",
+        blurb: "Silk, spice and the movement of ideas.",
+      },
     ],
   },
   {
@@ -232,9 +293,18 @@ const extraSections: {
     icon: "Flag",
     image_key: "his-revolutions",
     topics: [
-      { title: "Scientific Revolution", blurb: "A new way of asking nature questions." },
-      { title: "Atlantic Revolutions", blurb: "Rights, republics and written constitutions." },
-      { title: "Industrial Revolution", blurb: "Machines, cities and a new clock of work." },
+      {
+        title: "Scientific Revolution",
+        blurb: "A new way of asking nature questions.",
+      },
+      {
+        title: "Atlantic Revolutions",
+        blurb: "Rights, republics and written constitutions.",
+      },
+      {
+        title: "Industrial Revolution",
+        blurb: "Machines, cities and a new clock of work.",
+      },
     ],
   },
   {
@@ -245,8 +315,14 @@ const extraSections: {
     icon: "Swords",
     image_key: "his-wars",
     topics: [
-      { title: "Causes of War", blurb: "Fear, interest, honour and miscalculation." },
-      { title: "World Wars", blurb: "Total war and a remade twentieth century." },
+      {
+        title: "Causes of War",
+        blurb: "Fear, interest, honour and miscalculation.",
+      },
+      {
+        title: "World Wars",
+        blurb: "Total war and a remade twentieth century.",
+      },
       { title: "Aftermath", blurb: "Treaties, memory and reconstruction." },
     ],
   },
@@ -258,8 +334,14 @@ const extraSections: {
     icon: "BookOpen",
     image_key: "eng-literature",
     topics: [
-      { title: "Narrative Form", blurb: "Plot, voice and the architecture of stories." },
-      { title: "Character", blurb: "Desire, change and the person on the page." },
+      {
+        title: "Narrative Form",
+        blurb: "Plot, voice and the architecture of stories.",
+      },
+      {
+        title: "Character",
+        blurb: "Desire, change and the person on the page.",
+      },
       { title: "Theme", blurb: "What a work is about beneath the plot." },
     ],
   },
@@ -272,7 +354,10 @@ const extraSections: {
     image_key: "eng-poetry",
     topics: [
       { title: "Imagery", blurb: "Pictures the mind can hold." },
-      { title: "Meter & Sound", blurb: "Rhythm, rhyme and the music of lines." },
+      {
+        title: "Meter & Sound",
+        blurb: "Rhythm, rhyme and the music of lines.",
+      },
       { title: "Form", blurb: "Sonnet, free verse and chosen constraint." },
     ],
   },
@@ -284,7 +369,10 @@ const extraSections: {
     icon: "ListTree",
     image_key: "eng-grammar",
     topics: [
-      { title: "Parts of Speech", blurb: "Nouns, verbs and the company they keep." },
+      {
+        title: "Parts of Speech",
+        blurb: "Nouns, verbs and the company they keep.",
+      },
       { title: "Syntax", blurb: "How order builds sense." },
       { title: "Punctuation", blurb: "Marks that steer the reader's breath." },
     ],
@@ -311,7 +399,10 @@ const extraSections: {
     image_key: "tech-computing",
     topics: [
       { title: "Algorithms", blurb: "Step-by-step procedures that scale." },
-      { title: "Data Structures", blurb: "How information is arranged for speed." },
+      {
+        title: "Data Structures",
+        blurb: "How information is arranged for speed.",
+      },
       { title: "Complexity", blurb: "Why some problems grow too fast." },
     ],
   },
@@ -323,8 +414,14 @@ const extraSections: {
     icon: "Code",
     image_key: "tech-programming",
     topics: [
-      { title: "Variables & Types", blurb: "Names for values the machine can trust." },
-      { title: "Control Flow", blurb: "Branches, loops and the path of execution." },
+      {
+        title: "Variables & Types",
+        blurb: "Names for values the machine can trust.",
+      },
+      {
+        title: "Control Flow",
+        blurb: "Branches, loops and the path of execution.",
+      },
       { title: "Functions", blurb: "Reusable units of behaviour." },
     ],
   },
@@ -337,8 +434,14 @@ const extraSections: {
     image_key: "tech-ai",
     topics: [
       { title: "Machine Learning", blurb: "Fitting models that generalise." },
-      { title: "Neural Networks", blurb: "Layers that transform representation." },
-      { title: "Language Models", blurb: "Predicting the next token, at scale." },
+      {
+        title: "Neural Networks",
+        blurb: "Layers that transform representation.",
+      },
+      {
+        title: "Language Models",
+        blurb: "Predicting the next token, at scale.",
+      },
     ],
   },
   {
@@ -350,8 +453,14 @@ const extraSections: {
     image_key: "tech-security",
     topics: [
       { title: "Threats", blurb: "What an adversary can try." },
-      { title: "Cryptography", blurb: "Secrets, integrity and authentic identity." },
-      { title: "Defence in Depth", blurb: "Layers so one failure is not the end." },
+      {
+        title: "Cryptography",
+        blurb: "Secrets, integrity and authentic identity.",
+      },
+      {
+        title: "Defence in Depth",
+        blurb: "Layers so one failure is not the end.",
+      },
     ],
   },
 ];
@@ -463,7 +572,8 @@ export const PAGES: PageRow[] = [
     id: "page-about",
     slug: "about",
     title: "About Ted's Lab",
-    description: "A learning encyclopedia with a knowledge graph and daily study assist.",
+    description:
+      "A learning encyclopedia with a knowledge graph and daily study assist.",
     body: "<p>Ted's Lab is an illustrated encyclopedia. BioPedia articles sit beside the Knowledge Atlas so you can read deeply and also see how ideas link.</p>",
     image_url: null,
     published: true,
@@ -498,7 +608,10 @@ export const TABLES: Record<string, unknown[]> = {
   videos: VIDEOS,
   pages: PAGES,
   nav_links: NAV_LINKS,
-  site_settings: Object.entries(SETTINGS).map(([key, value]) => ({ key, value })),
+  site_settings: Object.entries(SETTINGS).map(([key, value]) => ({
+    key,
+    value,
+  })),
   extinct_species: EXTINCT_SPECIES,
   user_roles: [],
 };

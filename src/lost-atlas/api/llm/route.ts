@@ -8,12 +8,18 @@ export async function POST(request: Request): Promise<Response> {
     !("question" in body) ||
     typeof body.question !== "string"
   )
-    return Response.json({ error: "A question string is required." }, { status: 400 });
+    return Response.json(
+      { error: "A question string is required." },
+      { status: 400 },
+    );
   const question = body.question.trim();
   if (!question || question.length > 2_000)
     return Response.json(
       { error: "Question length must be between 1 and 2,000 characters." },
       { status: 400 },
     );
-  return Response.json({ answer: await buildAiResponse(question), source: "site-knowledge" });
+  return Response.json({
+    answer: await buildAiResponse(question),
+    source: "site-knowledge",
+  });
 }

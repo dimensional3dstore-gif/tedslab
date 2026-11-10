@@ -1,0 +1,16 @@
+import { o as require_jsx_runtime } from "../_libs/@radix-ui/react-collection+[...].mjs";
+import { t as PlatformPlaceholderPage } from "./PlatformPlaceholderPage-DBfuO1Gm.mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/graphication-BbaYIWPr.js
+var import_jsx_runtime = require_jsx_runtime();
+var SplitComponent = () => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PlatformPlaceholderPage, {
+	title: "Graphication",
+	description: "A visual workspace for turning data and ideas into connected graphs.",
+	area: "Graphication",
+	nextSteps: [
+		"Connect graph inputs.",
+		"Add layout and editing tools.",
+		"Add export and collaboration."
+	]
+});
+//#endregion
+export { SplitComponent as component };

@@ -33,7 +33,11 @@ function CategoriesPage() {
           <PageHeader title="All Categories" description={description} />
           <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {items
-              .filter((s) => !q || `${s.title} ${s.description ?? ""}`.toLowerCase().includes(q))
+              .filter(
+                (s) =>
+                  !q ||
+                  `${s.title} ${s.description ?? ""}`.toLowerCase().includes(q),
+              )
               .map((s) => {
                 const topicCount = (sections ?? []).filter(
                   (sec) => sec.subject_id === s.id,
@@ -48,7 +52,9 @@ function CategoriesPage() {
                     <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
                       {s.description}
                     </p>
-                    <p className="mt-3 text-xs text-primary">{topicCount} sections</p>
+                    <p className="mt-3 text-xs text-primary">
+                      {topicCount} sections
+                    </p>
                   </Link>
                 );
               })}

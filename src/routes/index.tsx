@@ -1,6 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
-import { ChevronRight, Video, BookMarked, CheckCircle, PenTool, Bookmark, Plus, Lightbulb } from "lucide-react";
+import {
+  ChevronRight,
+  Video,
+  BookMarked,
+  CheckCircle,
+  PenTool,
+  Bookmark,
+  Plus,
+  Lightbulb,
+} from "lucide-react";
 import { AppShell } from "@/components/biopedia/AppShell";
 import { Hero } from "@/components/biopedia/Hero";
 import { CategoryGrid } from "@/components/biopedia/CategoryGrid";
@@ -47,7 +56,9 @@ function Index() {
             items={
               q
                 ? categories.filter((c) =>
-                    `${c.title} ${c.description ?? ""}`.toLowerCase().includes(q),
+                    `${c.title} ${c.description ?? ""}`
+                      .toLowerCase()
+                      .includes(q),
                   )
                 : categories
             }
@@ -63,7 +74,7 @@ function Index() {
             bookmarks={bookmarks}
             onToggleBookmark={toggleBookmark}
           />
-          
+
           <section className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             <div className="bio-panel p-6">
               <h2 className="flex items-center gap-2 font-display text-lg font-semibold">
@@ -81,7 +92,7 @@ function Index() {
                 <ChevronRight className="size-4" />
               </Link>
             </div>
-            
+
             <div className="bio-panel p-6">
               <h2 className="flex items-center gap-2 font-display text-lg font-semibold">
                 <span>📄</span>

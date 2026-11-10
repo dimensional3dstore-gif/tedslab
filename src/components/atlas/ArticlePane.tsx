@@ -24,13 +24,17 @@ export function ArticlePane() {
     return (
       <div className="flex h-full items-center justify-center bg-canvas px-6 text-center">
         <p className="max-w-sm text-[13px] text-fg-muted">
-          Select a node and open its article to read a long-form entry from the vault.
+          Select a node and open its article to read a long-form entry from the
+          vault.
         </p>
       </div>
     );
   }
 
-  const cluster = node.cluster === "atlas" ? null : CLUSTERS.find((c) => c.id === node.cluster);
+  const cluster =
+    node.cluster === "atlas"
+      ? null
+      : CLUSTERS.find((c) => c.id === node.cluster);
   const mins = Math.max(4, Math.round(article.wordCount / 220));
   const next = neighborsOf(node.id)
     .map((id) => NODE_BY_ID[id])
@@ -53,12 +57,17 @@ export function ArticlePane() {
           <ArrowLeft className="size-4" />
         </button>
         <Network className="size-3.5 text-accent" />
-        <span className="min-w-0 truncate text-[12px] text-fg-muted">{article.title}</span>
+        <span className="min-w-0 truncate text-[12px] text-fg-muted">
+          {article.title}
+        </span>
         <div className="flex-1" />
         <button
           type="button"
           onClick={() => toggleBookmark(node.id)}
-          className={cn("flex size-8 items-center justify-center rounded-sm", starred ? "text-accent" : "text-fg-subtle")}
+          className={cn(
+            "flex size-8 items-center justify-center rounded-sm",
+            starred ? "text-accent" : "text-fg-subtle",
+          )}
         >
           <Bookmark className={cn("size-3.5", starred && "fill-accent")} />
         </button>
@@ -71,18 +80,25 @@ export function ArticlePane() {
           <h1 className="mt-2 font-serif text-[2rem] leading-[1.15] tracking-[-0.03em] text-fg sm:text-[2.35rem]">
             {article.title}
           </h1>
-          <p className="mt-4 text-[15px] leading-relaxed text-fg-muted">{article.summary}</p>
+          <p className="mt-4 text-[15px] leading-relaxed text-fg-muted">
+            {article.summary}
+          </p>
           <div className="mt-4 flex flex-wrap items-center gap-3 text-[12px] text-fg-subtle">
             <span className="inline-flex items-center gap-1">
               <Clock className="size-3.5" />
               {mins} min read
             </span>
-            <span className="font-mono tabular-nums">{article.wordCount.toLocaleString()} words</span>
+            <span className="font-mono tabular-nums">
+              {article.wordCount.toLocaleString()} words
+            </span>
             {node.born && <span>{node.born}</span>}
           </div>
           <div className="mt-3 flex flex-wrap gap-1.5">
             {article.tags.map((t) => (
-              <span key={t} className="rounded-sm bg-bg-elevated px-1.5 py-0.5 font-mono text-[10px] text-fg-muted">
+              <span
+                key={t}
+                className="rounded-sm bg-bg-elevated px-1.5 py-0.5 font-mono text-[10px] text-fg-muted"
+              >
                 {t}
               </span>
             ))}
@@ -97,7 +113,9 @@ export function ArticlePane() {
             />
           </div>
           <nav className="mt-12 border-t border-border pt-6">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-fg-subtle">Continue</p>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-fg-subtle">
+              Continue
+            </p>
             <ul className="mt-3 grid gap-2 sm:grid-cols-2">
               {next.map(
                 (n) =>
@@ -116,8 +134,12 @@ export function ArticlePane() {
                           style={{ background: clusterColor(n.cluster) }}
                         />
                         <span>
-                          <span className="block text-[13px] text-fg">{n.title}</span>
-                          <span className="mt-0.5 line-clamp-2 text-[11px] text-fg-muted">{n.summary}</span>
+                          <span className="block text-[13px] text-fg">
+                            {n.title}
+                          </span>
+                          <span className="mt-0.5 line-clamp-2 text-[11px] text-fg-muted">
+                            {n.summary}
+                          </span>
                         </span>
                       </button>
                     </li>

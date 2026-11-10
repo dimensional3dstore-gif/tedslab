@@ -16,7 +16,9 @@ export function AppShell({
   const [compact, setCompact] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const { bookmarks } = useBookmarks();
-  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const pathname = useRouterState({
+    select: (state) => state.location.pathname,
+  });
 
   useEffect(() => {
     setMobileSidebarOpen(false);
@@ -24,7 +26,10 @@ export function AppShell({
 
   return (
     <div className="flex min-h-screen bg-background">
-      <Sidebar mobileOpen={mobileSidebarOpen} onCloseMobile={() => setMobileSidebarOpen(false)} />
+      <Sidebar
+        mobileOpen={mobileSidebarOpen}
+        onCloseMobile={() => setMobileSidebarOpen(false)}
+      />
       <div className="flex min-w-0 flex-1 flex-col">
         <TopBar
           query={query}
@@ -36,7 +41,9 @@ export function AppShell({
         />
         <main className="flex flex-1 flex-col gap-6 p-4 md:p-6 xl:flex-row">
           <div className="min-w-0 flex-1">
-            {typeof children === "function" ? children(query.trim().toLowerCase()) : children}
+            {typeof children === "function"
+              ? children(query.trim().toLowerCase())
+              : children}
             <QuoteBar />
           </div>
           {rail}
@@ -46,11 +53,21 @@ export function AppShell({
   );
 }
 
-export function PageHeader({ title, description }: { title: string; description: string }) {
+export function PageHeader({
+  title,
+  description,
+}: {
+  title: string;
+  description: string;
+}) {
   return (
     <header className="bio-panel p-6">
-      <h1 className="font-display text-3xl font-bold text-foreground">{title}</h1>
-      <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted-foreground">{description}</p>
+      <h1 className="font-display text-3xl font-bold text-foreground">
+        {title}
+      </h1>
+      <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted-foreground">
+        {description}
+      </p>
     </header>
   );
 }

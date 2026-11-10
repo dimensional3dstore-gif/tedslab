@@ -22,7 +22,9 @@ export function FeaturedArticles({
   return (
     <section className="mt-8">
       <div className="flex items-center justify-between gap-3">
-        <h2 className="font-display text-xl font-semibold">Featured Articles</h2>
+        <h2 className="font-display text-xl font-semibold">
+          Featured Articles
+        </h2>
         <div className="flex items-center gap-1">
           <button
             type="button"
@@ -44,7 +46,9 @@ export function FeaturedArticles({
       </div>
 
       {published.length === 0 ? (
-        <p className="mt-4 text-sm text-muted-foreground">No articles match your search.</p>
+        <p className="mt-4 text-sm text-muted-foreground">
+          No articles match your search.
+        </p>
       ) : (
         <div
           ref={scroller}

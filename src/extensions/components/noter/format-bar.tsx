@@ -6,9 +6,17 @@ import { NoterButton } from "./button";
 
 type Format = "bold" | "italic" | "strike" | "underline";
 
-export function FormatBar({ onFormat }: { onFormat: (format: Format) => void }) {
+export function FormatBar({
+  onFormat,
+}: {
+  onFormat: (format: Format) => void;
+}) {
   return (
-    <div role="toolbar" aria-label="Text formatting" className="flex flex-wrap gap-1">
+    <div
+      role="toolbar"
+      aria-label="Text formatting"
+      className="flex flex-wrap gap-1"
+    >
       <BoldButton onFormat={onFormat} />
       <ItalicButton onFormat={onFormat} />
       <StrikethroughButton onFormat={onFormat} />

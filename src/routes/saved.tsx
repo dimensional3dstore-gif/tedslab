@@ -24,10 +24,15 @@ export const Route = createFileRoute("/saved")({
 
 function label(id: string) {
   const article = articles.find((a) => a.slug === id);
-  if (article) return { name: article.title, where: "Featured article", to: "/" };
+  if (article)
+    return { name: article.title, where: "Featured article", to: "/" };
   const [slug, topic] = id.split("/");
   const section = sections.find((s) => s.slug === slug);
-  return { name: topic ?? id, where: section?.title ?? "Ted's Lab", to: `/${slug ?? ""}` };
+  return {
+    name: topic ?? id,
+    where: section?.title ?? "Ted's Lab",
+    to: `/${slug ?? ""}`,
+  };
 }
 
 function SavedPage() {
@@ -48,7 +53,10 @@ function SavedPage() {
               <li key={id} className="flex items-center gap-3 bio-panel p-4">
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-semibold">{item.name}</p>
-                  <Link to={item.to} className="text-xs text-primary hover:underline">
+                  <Link
+                    to={item.to}
+                    className="text-xs text-primary hover:underline"
+                  >
                     {item.where}
                   </Link>
                 </div>

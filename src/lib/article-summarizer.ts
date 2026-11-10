@@ -8,20 +8,18 @@ const client = new Anthropic({
  * Extract plain text from HTML string
  */
 export function extractTextFromHtml(html: string): string {
-  return (
-    html
-      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "") // Remove scripts
-      .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, "") // Remove styles
-      .replace(/<[^>]*>/g, " ") // Remove all HTML tags
-      .replace(/&nbsp;/g, " ")
-      .replace(/&amp;/g, "&")
-      .replace(/&lt;/g, "<")
-      .replace(/&gt;/g, ">")
-      .replace(/&quot;/g, '"')
-      .replace(/&apos;/g, "'")
-      .replace(/\s+/g, " ") // Collapse whitespace
-      .trim()
-  );
+  return html
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "") // Remove scripts
+    .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, "") // Remove styles
+    .replace(/<[^>]*>/g, " ") // Remove all HTML tags
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/\s+/g, " ") // Collapse whitespace
+    .trim();
 }
 
 /**
@@ -33,7 +31,7 @@ export function extractTextFromHtml(html: string): string {
 export async function summarizeArticle(
   title: string,
   content: string,
-  maxLength: number = 150
+  maxLength: number = 150,
 ): Promise<string> {
   try {
     // Extract text from HTML if needed
@@ -84,7 +82,7 @@ Provide only the summary without any additional commentary or formatting.`,
 export async function extractKeyPoints(
   title: string,
   content: string,
-  numPoints: number = 5
+  numPoints: number = 5,
 ): Promise<string[]> {
   try {
     const plainText =
@@ -134,7 +132,7 @@ Provide only the key points, one per line, without numbering or bullet symbols.`
  */
 export async function generateOneSentenceSummary(
   title: string,
-  content: string
+  content: string,
 ): Promise<string> {
   try {
     const plainText =

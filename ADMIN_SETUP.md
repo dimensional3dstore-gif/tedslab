@@ -99,7 +99,7 @@ To grant admin role to multiple users:
 ```sql
 -- Grant admin to multiple users
 INSERT INTO user_roles (user_id, role)
-VALUES 
+VALUES
   ((SELECT id FROM auth.users WHERE email = 'admin1@example.com'), 'admin'),
   ((SELECT id FROM auth.users WHERE email = 'admin2@example.com'), 'admin'),
   ((SELECT id FROM auth.users WHERE email = 'admin3@example.com'), 'admin')
@@ -193,25 +193,23 @@ The admin system uses Supabase API with these operations:
 ```javascript
 // Get user role
 const { data } = await supabase
-  .from('user_roles')
-  .select('role')
-  .eq('user_id', user.id);
+  .from("user_roles")
+  .select("role")
+  .eq("user_id", user.id);
 
 // Grant admin role
 const { error } = await supabase
-  .from('user_roles')
-  .insert({ user_id: userId, role: 'admin' });
+  .from("user_roles")
+  .insert({ user_id: userId, role: "admin" });
 
 // Update content status
 const { error } = await supabase
-  .from('articles')
-  .update({ status: 'published', published: true })
-  .eq('id', articleId);
+  .from("articles")
+  .update({ status: "published", published: true })
+  .eq("id", articleId);
 
 // Get statistics
-const { data } = await supabase
-  .from('articles')
-  .select('id, published');
+const { data } = await supabase.from("articles").select("id, published");
 ```
 
 ## Next Steps
@@ -225,6 +223,7 @@ const { data } = await supabase
 ## Support
 
 For issues with admin setup:
+
 1. Check database tables exist
 2. Verify Supabase connection
 3. Check browser console for errors

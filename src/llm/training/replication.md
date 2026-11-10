@@ -1,9 +1,11 @@
 # Replication and Reproducibility
 
 ## Goal
+
 Make technical results repeatable by recording the inputs, environment, and exact steps used.
 
 ## Workflow
+
 1. Identify the original source and distinguish observed facts from assumptions.
 2. Record versions, configuration, model identifiers, seeds, and relevant hardware.
 3. Reproduce the smallest example before scaling it up.

@@ -1,6 +1,10 @@
 import { Mail } from "lucide-react";
 
-export function ContactPill({ email = "hello@teds-lab.com" }: { email?: string }) {
+export function ContactPill({
+  email = "hello@teds-lab.com",
+}: {
+  email?: string;
+}) {
   return (
     <a
       href={`mailto:${email}`}

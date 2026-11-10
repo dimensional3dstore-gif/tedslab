@@ -3,13 +3,22 @@ import { copyFile, mkdir, readdir } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const projectRoot = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "..",
+);
 const releaseDirectory = path.join(projectRoot, "release");
 
-execFileSync("npm", ["run", "desktop:mac"], { cwd: projectRoot, stdio: "inherit" });
+execFileSync("npm", ["run", "desktop:mac"], {
+  cwd: projectRoot,
+  stdio: "inherit",
+});
 
-const dmgName = (await readdir(releaseDirectory)).find((name) => name.endsWith(".dmg"));
-if (!dmgName) throw new Error("electron-builder completed without producing a DMG.");
+const dmgName = (await readdir(releaseDirectory)).find((name) =>
+  name.endsWith(".dmg"),
+);
+if (!dmgName)
+  throw new Error("electron-builder completed without producing a DMG.");
 
 const dmgSource = path.join(releaseDirectory, dmgName);
 const downloadDirectory = path.join(projectRoot, "public", "downloads");
@@ -18,4 +27,6 @@ const releaseInstallerPath = path.join(releaseDirectory, "ChronosOS.dmg");
 await mkdir(downloadDirectory, { recursive: true });
 await copyFile(dmgSource, path.join(downloadDirectory, "ChronosOS.dmg"));
 await copyFile(dmgSource, releaseInstallerPath);
-console.log("Published installer to public/downloads/ChronosOS.dmg and release/ChronosOS.dmg");
+console.log(
+  "Published installer to public/downloads/ChronosOS.dmg and release/ChronosOS.dmg",
+);

@@ -25,7 +25,8 @@ export const EXTINCT_SPECIES: ExtinctSpeciesArticle[] = [
     taxonomic_group: "Bird",
     extinction_period: "Late 17th century",
     region: "Mauritius, Indian Ocean",
-    last_record: "The final date is uncertain; the species disappeared by the late 1600s.",
+    last_record:
+      "The final date is uncertain; the species disappeared by the late 1600s.",
     primary_driver: "Hunting, introduced animals, and habitat change",
     summary:
       "A large flightless pigeon whose island evolution left it vulnerable to new predators and rapid human settlement.",
@@ -48,7 +49,8 @@ export const EXTINCT_SPECIES: ExtinctSpeciesArticle[] = [
     taxonomic_group: "Bird",
     extinction_period: "Early 20th century",
     region: "Eastern and central North America",
-    last_record: "The last known individual, Martha, died in captivity in 1914.",
+    last_record:
+      "The last known individual, Martha, died in captivity in 1914.",
     primary_driver: "Commercial hunting and large-scale forest clearing",
     summary:
       "Once among North America's most numerous birds, the passenger pigeon collapsed from enormous flocks to extinction within decades.",
@@ -72,7 +74,8 @@ export const EXTINCT_SPECIES: ExtinctSpeciesArticle[] = [
     extinction_period: "20th century",
     region: "Tasmania; formerly mainland Australia and New Guinea",
     last_record: "The last known captive thylacine died at Hobart Zoo in 1936.",
-    primary_driver: "Persecution, habitat pressure, and small-population vulnerability",
+    primary_driver:
+      "Persecution, habitat pressure, and small-population vulnerability",
     summary:
       "The thylacine was a striped carnivorous marsupial remembered as the Tasmanian tiger or wolf.",
     habitat:
@@ -94,7 +97,8 @@ export const EXTINCT_SPECIES: ExtinctSpeciesArticle[] = [
     taxonomic_group: "Bird",
     extinction_period: "19th century",
     region: "North Atlantic coasts and islands",
-    last_record: "The last confirmed pair was killed on Eldey, Iceland, in 1844.",
+    last_record:
+      "The last confirmed pair was killed on Eldey, Iceland, in 1844.",
     primary_driver: "Hunting for meat, oil, feathers, and museum specimens",
     summary:
       "A flightless seabird adapted to cold North Atlantic waters and vulnerable on its few breeding islands.",
@@ -117,7 +121,8 @@ export const EXTINCT_SPECIES: ExtinctSpeciesArticle[] = [
     taxonomic_group: "Marine mammal",
     extinction_period: "18th century",
     region: "Commander Islands, North Pacific",
-    last_record: "The last animals were killed by 1768, decades after scientific description.",
+    last_record:
+      "The last animals were killed by 1768, decades after scientific description.",
     primary_driver: "Intensive hunting by visiting sailors",
     summary:
       "A very large, slow-moving relative of the dugong that grazed kelp in cold northern seas.",
@@ -165,7 +170,8 @@ export const EXTINCT_SPECIES: ExtinctSpeciesArticle[] = [
     region: "Europe, western Asia, and North Africa",
     last_record: "The last recorded aurochs died in Poland in 1627.",
     primary_driver: "Habitat loss, hunting, and competition with livestock",
-    summary: "The aurochs was a wild cattle species and the ancestor of domestic cattle.",
+    summary:
+      "The aurochs was a wild cattle species and the ancestor of domestic cattle.",
     habitat:
       "Aurochs used woodland, forest edges, and open pasture across a vast range. As agriculture expanded, wild herds became isolated in managed forests.",
     decline_story:
@@ -185,7 +191,8 @@ export const EXTINCT_SPECIES: ExtinctSpeciesArticle[] = [
     taxonomic_group: "Bird",
     extinction_period: "20th century",
     region: "Eastern United States and the Mississippi basin",
-    last_record: "The last captive bird died in 1918; the species was later declared extinct.",
+    last_record:
+      "The last captive bird died in 1918; the species was later declared extinct.",
     primary_driver: "Forest conversion, persecution, and collection",
     summary:
       "North America's only native parrot species ranged through river forests and open woodlands.",
@@ -234,7 +241,8 @@ export const EXTINCT_SPECIES: ExtinctSpeciesArticle[] = [
     region: "Monteverde cloud forest, Costa Rica",
     last_record: "The last confirmed observations were in 1989.",
     primary_driver: "Rapid environmental change; exact causes remain debated",
-    summary: "A vividly colored toad known from a small, high-elevation area in Costa Rica.",
+    summary:
+      "A vividly colored toad known from a small, high-elevation area in Costa Rica.",
     habitat:
       "Golden toads bred in temporary pools in the humid Monteverde cloud forest. Their narrow range made them sensitive to local changes in rainfall and temperature.",
     decline_story:
@@ -254,7 +262,8 @@ export const EXTINCT_SPECIES: ExtinctSpeciesArticle[] = [
     taxonomic_group: "Reptile",
     extinction_period: "21st century",
     region: "Pinta Island, Galapagos",
-    last_record: "Lonesome George, the last known purebred individual, died in 2012.",
+    last_record:
+      "Lonesome George, the last known purebred individual, died in 2012.",
     primary_driver: "Hunting and ecological damage from introduced goats",
     summary:
       "A giant tortoise from one Galapagos island became known through its final individual.",
@@ -279,7 +288,8 @@ export const EXTINCT_SPECIES: ExtinctSpeciesArticle[] = [
     region: "The Pyrenees, between Spain and France",
     last_record:
       "The last known individual, Celia, died in 2000; a cloned kid survived only briefly in 2003.",
-    primary_driver: "Hunting, habitat fragmentation, and small-population effects",
+    primary_driver:
+      "Hunting, habitat fragmentation, and small-population effects",
     summary:
       "A mountain ibex subspecies whose final individual became part of an early cloning attempt.",
     habitat:
@@ -327,7 +337,8 @@ export const EXTINCT_SPECIES: ExtinctSpeciesArticle[] = [
     region: "Bramble Cay, Torres Strait, Australia",
     last_record:
       "The last confirmed survey record was in 2009; the species was declared extinct in 2016.",
-    primary_driver: "Loss of habitat from inundation and erosion, linked to sea-level rise",
+    primary_driver:
+      "Loss of habitat from inundation and erosion, linked to sea-level rise",
     summary:
       "A small rodent restricted to a tiny, low-lying coral cay at the northern edge of Australia.",
     habitat:
@@ -371,12 +382,14 @@ export const EXTINCT_SPECIES: ExtinctSpeciesArticle[] = [
     common_name: "Woolly Mammoth",
     scientific_name: "Mammuthus primigenius",
     taxonomic_group: "Mammal",
-    extinction_period: "Holocene; last island populations about 4,000 years ago",
+    extinction_period:
+      "Holocene; last island populations about 4,000 years ago",
     region: "Northern Eurasia and North America; later Wrangel Island",
     last_record:
       "The final known population survived on Wrangel Island until roughly 4,000 years ago.",
     primary_driver: "Climate-driven habitat loss and human hunting",
-    summary: "A cold-adapted elephant that ranged across the mammoth steppe during the Ice Age.",
+    summary:
+      "A cold-adapted elephant that ranged across the mammoth steppe during the Ice Age.",
     habitat:
       "Woolly mammoths grazed open, cold steppe-tundra. As climates warmed, forests and wetlands replaced much of this grass-rich ecosystem.",
     decline_story:
@@ -398,7 +411,8 @@ export const EXTINCT_SPECIES: ExtinctSpeciesArticle[] = [
     region: "Europe and northern Asia",
     last_record:
       "The species disappeared near the end of the last Ice Age; dates vary across its range.",
-    primary_driver: "Changing climate and prey communities, with human pressure also considered",
+    primary_driver:
+      "Changing climate and prey communities, with human pressure also considered",
     summary:
       "A large Ice Age cat known from fossils and striking images made by people in Paleolithic caves.",
     habitat:
@@ -423,7 +437,8 @@ export const EXTINCT_SPECIES: ExtinctSpeciesArticle[] = [
     last_record:
       "The latest populations vanished several thousand years ago; the species was not limited to Ireland.",
     primary_driver: "Environmental change and loss of suitable open habitat",
-    summary: "A giant deer famous for immense antlers, whose range extended well beyond Ireland.",
+    summary:
+      "A giant deer famous for immense antlers, whose range extended well beyond Ireland.",
     habitat:
       "Giant deer used open woodland and grassland mosaics. Their large antlers are sometimes linked to display and competition, not simply a physical burden.",
     decline_story:
@@ -468,7 +483,8 @@ export const EXTINCT_SPECIES: ExtinctSpeciesArticle[] = [
     region: "Salt marshes of the St. Johns River, Florida",
     last_record: "The last known individual, Orange Band, died in 1987.",
     primary_driver: "Salt-marsh destruction and altered water management",
-    summary: "A dark-plumaged sparrow subspecies restricted to a narrow stretch of Florida marsh.",
+    summary:
+      "A dark-plumaged sparrow subspecies restricted to a narrow stretch of Florida marsh.",
     habitat:
       "The sparrow nested in cordgrass and other vegetation in tidal salt marsh. Its small range depended on marsh hydrology and plant structure.",
     decline_story:
@@ -478,7 +494,11 @@ export const EXTINCT_SPECIES: ExtinctSpeciesArticle[] = [
     legacy:
       "Habitat engineering can erase a subspecies even when conservation action begins, if intervention comes after the population bottleneck.",
     image_key: "sci-earth",
-    related_slugs: ["passenger-pigeon", "carolina-parakeet", "bramble-cay-melomys"],
+    related_slugs: [
+      "passenger-pigeon",
+      "carolina-parakeet",
+      "bramble-cay-melomys",
+    ],
     sort_order: 20,
   },
   {
@@ -489,7 +509,8 @@ export const EXTINCT_SPECIES: ExtinctSpeciesArticle[] = [
     extinction_period: "19th century",
     region: "North American Atlantic coast",
     last_record: "The last confirmed specimen was collected in 1878.",
-    primary_driver: "Likely a combination of hunting and changes to coastal feeding habitat",
+    primary_driver:
+      "Likely a combination of hunting and changes to coastal feeding habitat",
     summary:
       "A sea duck with specialized feeding structures, poorly understood even before its extinction.",
     habitat:
@@ -535,7 +556,8 @@ export const EXTINCT_SPECIES: ExtinctSpeciesArticle[] = [
     extinction_period: "19th century",
     region: "Falkland Islands",
     last_record: "The last known warrah was killed in 1876.",
-    primary_driver: "Persecution by settlers and lack of refuge on small islands",
+    primary_driver:
+      "Persecution by settlers and lack of refuge on small islands",
     summary:
       "The only native land mammal of the Falkland Islands, encountered by early European explorers.",
     habitat:
@@ -584,7 +606,8 @@ export const EXTINCT_SPECIES: ExtinctSpeciesArticle[] = [
     last_record:
       "The last known captive animal died in Vienna in 1928; wild populations disappeared earlier.",
     primary_driver: "Hunting, capture, and loss of open range",
-    summary: "A small, fast wild equid adapted to arid grassland and desert margins.",
+    summary:
+      "A small, fast wild equid adapted to arid grassland and desert margins.",
     habitat:
       "Syrian wild asses used open steppe and desert-edge habitats, moving widely in search of water and seasonal forage.",
     decline_story:

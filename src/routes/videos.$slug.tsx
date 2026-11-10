@@ -43,13 +43,18 @@ function VideoDetailPage() {
           <ArrowLeft className="size-3.5" />
           Back to videos
         </Link>
-        {isLoading && <p className="mt-6 text-sm text-muted-foreground">Loading video…</p>}
+        {isLoading && (
+          <p className="mt-6 text-sm text-muted-foreground">Loading video…</p>
+        )}
         {!isLoading && !video && (
           <p className="mt-6 text-sm text-muted-foreground">Video not found.</p>
         )}
         {video && (
           <div className="mt-4">
-            <PageHeader title={video.title} description={video.description ?? ""} />
+            <PageHeader
+              title={video.title}
+              description={video.description ?? ""}
+            />
             <div className="mt-6 overflow-hidden rounded-lg bio-panel">
               {(() => {
                 const embedUrl = getEmbedUrl(video.url);

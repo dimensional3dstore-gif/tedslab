@@ -15,7 +15,9 @@ export function InfoBox({
       className={`rounded-md border p-4 text-sm ${tone === "warning" ? "border-bio-amber/40 bg-bio-amber/10" : "border-border bg-secondary/50"}`}
     >
       <h2 className="font-semibold text-foreground">{title}</h2>
-      <div className="mt-2 leading-relaxed text-muted-foreground">{children}</div>
+      <div className="mt-2 leading-relaxed text-muted-foreground">
+        {children}
+      </div>
     </aside>
   );
 }

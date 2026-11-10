@@ -10,6 +10,7 @@ import { useBookmarks } from "@/hooks/use-bookmarks";
 import { Link } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const db = supabase as unknown as { from: (table: string) => any };
 
 const topicQueryOptions = (sectionSlug: string, topicSlug: string) =>
@@ -37,6 +38,7 @@ const topicArticlesQueryOptions = (topicSlug: string) =>
         .eq("published", true)
         .order("sort", { ascending: true });
       if (error) throw error;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return (data ?? []) as any[];
     },
   });
@@ -51,6 +53,7 @@ const sectionQueryOptions = (sectionSlug: string) =>
         .eq("slug", sectionSlug)
         .maybeSingle();
       if (error) throw error;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return (data ?? null) as any;
     },
   });
@@ -58,23 +61,25 @@ const sectionQueryOptions = (sectionSlug: string) =>
 export const Route = createFileRoute("/$section/$topic")({
   loader: async ({ context, params }) => {
     const section = await context.queryClient.ensureQueryData(
-      sectionQueryOptions(params.section)
+      sectionQueryOptions(params.section),
     );
     if (!section) throw notFound();
 
     const topic = await context.queryClient.ensureQueryData(
-      topicQueryOptions(params.section, params.topic)
+      topicQueryOptions(params.section, params.topic),
     );
     if (!topic) throw notFound();
 
     const articles = await context.queryClient.ensureQueryData(
-      topicArticlesQueryOptions(params.topic)
+      topicArticlesQueryOptions(params.topic),
     );
 
     return { section, topic, articles };
   },
   head: ({ loaderData }) => {
-    const title = loaderData ? `${loaderData.topic.title} — Ted's Lab` : "Ted's Lab";
+    const title = loaderData
+      ? `${loaderData.topic.title} — Ted's Lab`
+      : "Ted's Lab";
     const description = loaderData?.topic.blurb ?? "";
     return {
       meta: [
@@ -91,8 +96,16 @@ export const Route = createFileRoute("/$section/$topic")({
 });
 
 function TopicDetailPage() {
-  const { subject: subjectSlug, section: sectionSlug, topic: topicSlug } = Route.useParams();
-  const { section: initialSection, topic: initialTopic, articles: initialArticles } = Route.useLoaderData();
+  const {
+    subject: subjectSlug,
+    section: sectionSlug,
+    topic: topicSlug,
+  } = Route.useParams();
+  const {
+    section: initialSection,
+    topic: initialTopic,
+    articles: initialArticles,
+  } = Route.useLoaderData();
   const { bookmarks, toggleBookmark } = useBookmarks();
 
   const { data: section } = useQuery({
@@ -114,7 +127,8 @@ function TopicDetailPage() {
     <AppShell>
       {(q) => {
         const filtered = articles.filter(
-          (a) => !q || `${a.title} ${a.excerpt ?? ""}`.toLowerCase().includes(q),
+          (a) =>
+            !q || `${a.title} ${a.excerpt ?? ""}`.toLowerCase().includes(q),
         );
 
         return (

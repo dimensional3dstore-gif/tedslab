@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import type { Session, User } from "@supabase/supabase-js";
-import { getSupabaseAuthClient, supabaseAuthConfigured } from "@/integrations/supabase/auth";
+import {
+  getSupabaseAuthClient,
+  supabaseAuthConfigured,
+} from "@/integrations/supabase/auth";
 
 type AuthState = {
   session: Session | null;
@@ -29,7 +32,11 @@ export function useAuth() {
       .getSession()
       .then(({ data }) => {
         if (active)
-          setState({ session: data.session, user: data.session?.user ?? null, loading: false });
+          setState({
+            session: data.session,
+            user: data.session?.user ?? null,
+            loading: false,
+          });
       })
       .catch(() => {
         if (active) setState(SIGNED_OUT);
@@ -37,7 +44,8 @@ export function useAuth() {
     const {
       data: { subscription },
     } = auth.onAuthStateChange((_event, session) => {
-      if (active) setState({ session, user: session?.user ?? null, loading: false });
+      if (active)
+        setState({ session, user: session?.user ?? null, loading: false });
     });
 
     return () => {
@@ -53,7 +61,8 @@ export function useAuth() {
   };
 
   const updateProfile = async (displayName: string) => {
-    if (!supabaseAuthConfigured) throw new Error("Account authentication is not configured.");
+    if (!supabaseAuthConfigured)
+      throw new Error("Account authentication is not configured.");
     const { error } = await getSupabaseAuthClient().auth.updateUser({
       data: { full_name: displayName.trim(), display_name: displayName.trim() },
     });

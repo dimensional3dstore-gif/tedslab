@@ -36,9 +36,13 @@ function TimelinePage() {
               {items.map((t) => (
                 <li key={t.when + t.what} className="relative">
                   <span className="absolute -left-[1.9rem] top-1.5 size-3 rounded-full bg-primary" />
-                  <p className="text-xs font-semibold tracking-wide text-bio-cyan">{t.when}</p>
+                  <p className="text-xs font-semibold tracking-wide text-bio-cyan">
+                    {t.when}
+                  </p>
                   <h2 className="text-sm font-semibold">{t.what}</h2>
-                  <p className="mt-1 text-xs text-muted-foreground">{t.detail}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {t.detail}
+                  </p>
                 </li>
               ))}
             </ol>

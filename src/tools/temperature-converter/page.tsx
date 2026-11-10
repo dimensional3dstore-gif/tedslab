@@ -8,7 +8,9 @@ export default function TemperatureConverterPage() {
   return (
     <main className="mx-auto w-full max-w-2xl space-y-6 p-6">
       <header>
-        <h1 className="text-3xl font-bold text-foreground">Temperature converter</h1>
+        <h1 className="text-3xl font-bold text-foreground">
+          Temperature converter
+        </h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Convert Celsius to Fahrenheit and Kelvin.
         </p>
@@ -29,7 +31,11 @@ export default function TemperatureConverterPage() {
           value={valid ? (value * 9) / 5 + 32 : null}
           unit="°F"
         />
-        <TemperatureResult label="Kelvin" value={valid ? value + 273.15 : null} unit="K" />
+        <TemperatureResult
+          label="Kelvin"
+          value={valid ? value + 273.15 : null}
+          unit="K"
+        />
         <TemperatureResult
           label="Rankine"
           value={valid ? ((value + 273.15) * 9) / 5 : null}
@@ -51,8 +57,13 @@ function TemperatureResult({
 }) {
   return (
     <div className="rounded-md bg-secondary p-4">
-      <p className="text-xs uppercase tracking-wide text-muted-foreground">{label}</p>
-      <output className="mt-2 block font-mono text-xl text-foreground" aria-live="polite">
+      <p className="text-xs uppercase tracking-wide text-muted-foreground">
+        {label}
+      </p>
+      <output
+        className="mt-2 block font-mono text-xl text-foreground"
+        aria-live="polite"
+      >
         {value === null ? "Enter a temperature" : `${value.toFixed(2)} ${unit}`}
       </output>
     </div>

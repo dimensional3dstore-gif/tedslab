@@ -23,13 +23,19 @@ export default function PrivateChatPage() {
   return (
     <PrivateChatLayout>
       <header>
-        <h1 className="font-display text-3xl font-bold text-foreground">Private study chat</h1>
+        <h1 className="font-display text-3xl font-bold text-foreground">
+          Private study chat
+        </h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Ask the local learning tutor. This page does not save a conversation history.
+          Ask the local learning tutor. This page does not save a conversation
+          history.
         </p>
       </header>
       <form onSubmit={submit} className="grid gap-3">
-        <label htmlFor="private-chat-prompt" className="text-sm font-medium text-foreground">
+        <label
+          htmlFor="private-chat-prompt"
+          className="text-sm font-medium text-foreground"
+        >
           Question
         </label>
         <textarea

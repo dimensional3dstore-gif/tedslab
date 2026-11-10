@@ -3,16 +3,19 @@
 ## What's Ready Now
 
 ### ✅ Topics Can Be Opened
+
 - Route: `/{section}/{topic}` (e.g., `/organisms/animal-kingdom`)
 - Shows: Topic details + related articles
 - Linking: TopicGrid automatically links to this route
 
-### ✅ Articles Can Be Opened  
+### ✅ Articles Can Be Opened
+
 - Route: `/articles/{slug}` (e.g., `/articles/organisms-animal-kingdom`)
 - Shows: Full article content
 - Linking: Featured articles + all article cards link to this
 
 ### ✅ Complete Navigation
+
 - Homepage → Featured Articles (click to open)
 - Homepage → Categories (click to explore subject)
 - Subject → Sections (click to see articles)
@@ -23,14 +26,18 @@
 ## SQL Files to Load
 
 ### 1. **entitles/articles.sql** (Schema)
+
 Already in place. Contains:
+
 - CREATE TABLE articles with topic_slug field
 - Indexes for performance
 
 ### 2. **entitles/seed-articles.sql** (Data Migration)
+
 Load this to create all articles for existing topics.
 
 **How to load:**
+
 ```sql
 -- Via Supabase Dashboard → SQL Editor
 -- Copy entire content and execute
@@ -40,12 +47,14 @@ psql -h your-host -d database_name -U user -f entitles/seed-articles.sql
 ```
 
 **What it does:**
+
 - Generates one article per topic across ALL subjects
 - Sets all articles to published=true
 - Links each article to its topic via topic_slug
 - Assigns random read times and colors
 
 **Result:**
+
 - Biology: ~60+ articles
 - Mathematics: ~30+ articles
 - Science: ~36+ articles
@@ -55,11 +64,13 @@ psql -h your-host -d database_name -U user -f entitles/seed-articles.sql
 - **Total**: ~200+ articles, all published and linked
 
 ### 3. **entitles/articles-data.sql** (Sample Data)
+
 Contains example articles with detailed content. Can be used to review format or imported separately.
 
 ## Navigation Examples
 
 ### Example 1: Homepage to Article
+
 ```
 1. Land on homepage
 2. See "Featured Articles" section
@@ -70,6 +81,7 @@ Contains example articles with detailed content. Can be used to review format or
 ```
 
 ### Example 2: Sidebar to Topic to Article
+
 ```
 1. Click "Biology" in sidebar
 2. See sections (Organisms, Cells & Microscopy, etc.)
@@ -82,10 +94,11 @@ Contains example articles with detailed content. Can be used to review format or
 ```
 
 ### Example 3: Direct Deep Link
+
 ```
 1. Visit: /organisms/animal-kingdom
    → Opens topic page for "Animal Kingdom" topic
-2. Visit: /articles/organisms-animal-kingdom  
+2. Visit: /articles/organisms-animal-kingdom
    → Opens article for that topic
 3. Visit: /biology/organisms
    → Opens section page showing all articles
@@ -94,16 +107,19 @@ Contains example articles with detailed content. Can be used to review format or
 ## Components Updated
 
 ### FeaturedArticles
+
 **Before**: Cards didn't link anywhere  
 **After**: Cards link to `/articles/{slug}`  
 **File**: `src/components/biopedia/FeaturedArticles.tsx`
 
 ### CategoryGrid
+
 **Before**: Works as before  
 **After**: Links to `/{subject}` (already working)  
 **File**: `src/components/biopedia/CategoryGrid.tsx`
 
 ### TopicGrid
+
 **Before**: Links to `/{section}/{topic}` (was not working)  
 **After**: Links work with new route  
 **File**: `src/components/biopedia/TopicGrid.tsx`
@@ -111,17 +127,20 @@ Contains example articles with detailed content. Can be used to review format or
 ## Routes Created
 
 ### New Routes
+
 1. **`$section.$topic.tsx`** - Topic detail page
 2. **`articles.$slug.tsx`** - Article detail page
 3. **`$subject.$section.tsx`** - Section detail page
 
 ### Existing Routes (Updated)
+
 - `articles.tsx` - Now has functional links
 - `$subject.tsx` - Fixed section links
 
 ## Data Model
 
 ### Articles Table Fields
+
 ```sql
 id              UUID PRIMARY KEY
 slug            TEXT UNIQUE           -- e.g. "organisms-animal-kingdom"
@@ -144,6 +163,7 @@ updated_at      TIMESTAMPTZ          -- Auto-set
 ```
 
 ### Key Links
+
 - `article.topic_slug` → `topic.slug` (N:M possible)
 - `article.section_slug` → `section.slug`
 - `article.subject_slug` → `subject.slug`
@@ -151,9 +171,11 @@ updated_at      TIMESTAMPTZ          -- Auto-set
 ## Admin Capabilities
 
 ### Article Management
+
 **URL**: `/admin/articles`
 
 Admins can:
+
 - View all articles
 - Edit article content (title, body, excerpt, etc.)
 - Change article status (draft/review/published)
@@ -162,7 +184,9 @@ Admins can:
 - Assign to different topics/sections
 
 ### Direct Database Edit
+
 Admins can also:
+
 - Edit SQL directly in `/admin/database` (if available)
 - Bulk update articles
 - Change published flag for multiple articles
@@ -199,6 +223,7 @@ src/
 ## Quick Start
 
 ### 1. Load Data
+
 ```bash
 # Copy content from entitles/seed-articles.sql
 # Paste into Supabase SQL Editor
@@ -206,12 +231,14 @@ src/
 ```
 
 ### 2. Verify
+
 ```sql
 SELECT COUNT(*) FROM articles WHERE published = true;
 -- Should show ~200+
 ```
 
 ### 3. Test Navigation
+
 ```
 1. Open http://localhost:5173 (homepage)
 2. Click a featured article → should work
@@ -221,6 +248,7 @@ SELECT COUNT(*) FROM articles WHERE published = true;
 ```
 
 ### 4. Try Admin
+
 ```
 1. Go to http://localhost:5173/auth (login/signup)
 2. Go to http://localhost:5173/admin/articles
@@ -230,23 +258,24 @@ SELECT COUNT(*) FROM articles WHERE published = true;
 
 ## Status Summary
 
-| Component | Status | Details |
-|-----------|--------|---------|
-| Topic Routes | ✅ Ready | `$section.$topic.tsx` routes working |
-| Article Routes | ✅ Ready | `articles.$slug.tsx` routes working |
-| Section Routes | ✅ Ready | `$subject.$section.tsx` routes working |
-| Homepage Links | ✅ Ready | Featured articles clickable |
-| Sidebar Links | ✅ Ready | All navigation working |
-| TopicGrid | ✅ Ready | Links to topics working |
-| ArticleGrid | ✅ Ready | Links to articles working |
-| Database Schema | ✅ Ready | topic_slug field added |
-| Data Migration | ✅ Ready | seed-articles.sql ready to load |
-| Admin Panel | ✅ Ready | Can edit articles at /admin/articles |
-| Compilation | ✅ Ready | No errors |
+| Component       | Status   | Details                                |
+| --------------- | -------- | -------------------------------------- |
+| Topic Routes    | ✅ Ready | `$section.$topic.tsx` routes working   |
+| Article Routes  | ✅ Ready | `articles.$slug.tsx` routes working    |
+| Section Routes  | ✅ Ready | `$subject.$section.tsx` routes working |
+| Homepage Links  | ✅ Ready | Featured articles clickable            |
+| Sidebar Links   | ✅ Ready | All navigation working                 |
+| TopicGrid       | ✅ Ready | Links to topics working                |
+| ArticleGrid     | ✅ Ready | Links to articles working              |
+| Database Schema | ✅ Ready | topic_slug field added                 |
+| Data Migration  | ✅ Ready | seed-articles.sql ready to load        |
+| Admin Panel     | ✅ Ready | Can edit articles at /admin/articles   |
+| Compilation     | ✅ Ready | No errors                              |
 
 ## Theme Consistency
 
 Articles maintain theme consistency:
+
 - **Biology articles**: `cat-organisms`, `hero-cell`, `cat-human`, `cat-genetics` image keys
 - **Math articles**: `math-algebra`, `math-geometry` image keys
 - **Science articles**: `sci-physics`, `sci-chemistry` image keys
@@ -259,6 +288,7 @@ Each topic gets a related article with matching theme from its section.
 ## Next: Admin Content Management
 
 Admin can now:
+
 1. Login at `/auth`
 2. Go to `/admin/articles`
 3. Click any article to expand

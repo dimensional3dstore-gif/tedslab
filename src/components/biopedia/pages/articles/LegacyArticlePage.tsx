@@ -18,7 +18,9 @@ export function LegacyArticlePage({
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">
             {subject}
           </p>
-          <h1 className="mt-3 font-display text-4xl font-bold text-foreground">{title}</h1>
+          <h1 className="mt-3 font-display text-4xl font-bold text-foreground">
+            {title}
+          </h1>
           <p className="mt-4 max-w-3xl text-base leading-relaxed text-muted-foreground">
             {summary}
           </p>
@@ -28,7 +30,9 @@ export function LegacyArticlePage({
             <h2 className="font-display text-2xl font-semibold text-foreground">
               {section.heading}
             </h2>
-            <p className="max-w-3xl text-sm leading-7 text-muted-foreground">{section.body}</p>
+            <p className="max-w-3xl text-sm leading-7 text-muted-foreground">
+              {section.body}
+            </p>
           </section>
         ))}
       </article>

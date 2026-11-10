@@ -1,5 +1,10 @@
 import { useState, type ReactNode } from "react";
-import { isAdminLoggedIn, loginAdmin, logoutAdmin, ADMIN_USERNAME } from "@/lib/admin-auth";
+import {
+  isAdminLoggedIn,
+  loginAdmin,
+  logoutAdmin,
+  ADMIN_USERNAME,
+} from "@/lib/admin-auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -25,10 +30,16 @@ export function AdminGate({ children }: { children: ReactNode }) {
           }}
         >
           <h1 className="font-display text-2xl font-bold">Admin sign in</h1>
-          <p className="text-sm text-muted-foreground">Ted's Lab editorial desk.</p>
+          <p className="text-sm text-muted-foreground">
+            Ted's Lab editorial desk.
+          </p>
           <div className="space-y-1">
             <label className="text-xs text-muted-foreground">Username</label>
-            <Input value={user} onChange={(e) => setUser(e.target.value)} autoComplete="username" />
+            <Input
+              value={user}
+              onChange={(e) => setUser(e.target.value)}
+              autoComplete="username"
+            />
           </div>
           <div className="space-y-1">
             <label className="text-xs text-muted-foreground">Password</label>
@@ -43,7 +54,9 @@ export function AdminGate({ children }: { children: ReactNode }) {
           <Button type="submit" className="w-full">
             Sign in
           </Button>
-          <p className="text-[11px] text-muted-foreground">Hint: user is {ADMIN_USERNAME}.</p>
+          <p className="text-[11px] text-muted-foreground">
+            Hint: user is {ADMIN_USERNAME}.
+          </p>
         </form>
       </div>
     );
@@ -52,7 +65,9 @@ export function AdminGate({ children }: { children: ReactNode }) {
   return (
     <div>
       <div className="mb-4 flex items-center justify-between">
-        <p className="text-xs text-muted-foreground">Signed in as {ADMIN_USERNAME}</p>
+        <p className="text-xs text-muted-foreground">
+          Signed in as {ADMIN_USERNAME}
+        </p>
         <Button
           type="button"
           variant="outline"

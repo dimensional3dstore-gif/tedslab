@@ -10,7 +10,9 @@ export default function CalculatorPage() {
   const first = Number(left);
   const second = Number(right);
   const valid =
-    Number.isFinite(first) && Number.isFinite(second) && !(operator === "/" && second === 0);
+    Number.isFinite(first) &&
+    Number.isFinite(second) &&
+    !(operator === "/" && second === 0);
   const result = valid
     ? operator === "+"
       ? first + second

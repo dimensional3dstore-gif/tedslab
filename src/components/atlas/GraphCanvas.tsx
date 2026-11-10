@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { useEffect, useRef } from "react";
 import { CLUSTERS, neighborsOf } from "@/data/catalog";
 import { getLaidOutGraph, type SimNode } from "@/lib/graph/layout";
@@ -19,7 +20,11 @@ type Cam = { x: number; y: number; k: number };
 
 function hexRgb(hex: string): [number, number, number] {
   const h = hex.replace("#", "");
-  return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
+  return [
+    parseInt(h.slice(0, 2), 16),
+    parseInt(h.slice(2, 4), 16),
+    parseInt(h.slice(4, 6), 16),
+  ];
 }
 
 function screenPt(n: { x: number; y: number }, cam: Cam, w: number, h: number) {
@@ -148,7 +153,8 @@ export function GraphCanvas() {
         const t = panTo.current;
         cam.current.x += (t.x - cam.current.x) * 0.09;
         cam.current.y += (t.y - cam.current.y) * 0.09;
-        if (Math.hypot(t.x - cam.current.x, t.y - cam.current.y) < 4) panTo.current = null;
+        if (Math.hypot(t.x - cam.current.x, t.y - cam.current.y) < 4)
+          panTo.current = null;
       }
       const { settings: st, selectedId: sel, hoveredId } = useAtlas.getState();
       const rect = canvas.getBoundingClientRect();
@@ -192,11 +198,14 @@ export function GraphCanvas() {
         ) {
           continue;
         }
-        const hot = focus && focusSet.has(l.source.id) && focusSet.has(l.target.id);
+        const hot =
+          focus && focusSet.has(l.source.id) && focusSet.has(l.target.id);
         const dim = st.dimUnrelated && focus && !hot;
         const same = l.source.cluster === l.target.cluster;
         const alpha = hot ? 0.46 : dim ? 0.028 : same ? 0.15 : 0.055;
-        const col = st.colorGroups ? CLUSTER_COLOR[l.source.cluster] ?? "#5ce1ff" : "#5ce1ff";
+        const col = st.colorGroups
+          ? (CLUSTER_COLOR[l.source.cluster] ?? "#5ce1ff")
+          : "#5ce1ff";
         const [r, g, bl] = hexRgb(col);
         ctx.strokeStyle = `rgba(${r},${g},${bl},${alpha})`;
         ctx.lineWidth = hot ? 1.5 : same ? 0.75 : 0.42;
@@ -210,9 +219,15 @@ export function GraphCanvas() {
           const my = (a.y + b.y) / 2;
           ctx.beginPath();
           ctx.moveTo(mx, my);
-          ctx.lineTo(mx - 6 * Math.cos(ang - 0.4), my - 6 * Math.sin(ang - 0.4));
+          ctx.lineTo(
+            mx - 6 * Math.cos(ang - 0.4),
+            my - 6 * Math.sin(ang - 0.4),
+          );
           ctx.moveTo(mx, my);
-          ctx.lineTo(mx - 6 * Math.cos(ang + 0.4), my - 6 * Math.sin(ang + 0.4));
+          ctx.lineTo(
+            mx - 6 * Math.cos(ang + 0.4),
+            my - 6 * Math.sin(ang + 0.4),
+          );
           ctx.stroke();
         }
       }
@@ -223,13 +238,32 @@ export function GraphCanvas() {
         if (p.x < -40 || p.y < -40 || p.x > w + 40 || p.y > h + 40) continue;
         const hot = !focus || focusSet.has(n.id);
         const dim = st.dimUnrelated && focus && !hot;
-        const col = st.colorGroups ? CLUSTER_COLOR[n.cluster] ?? "#5ce1ff" : "#7af0ff";
-        const [r, g, bl] = hexRgb(n.kind === "atlas" || n.kind === "hub" ? "#e8fbff" : col);
+        const col = st.colorGroups
+          ? (CLUSTER_COLOR[n.cluster] ?? "#5ce1ff")
+          : "#7af0ff";
+        const [r, g, bl] = hexRgb(
+          n.kind === "atlas" || n.kind === "hub" ? "#e8fbff" : col,
+        );
         const rad = n.r * Math.max(0.9, Math.sqrt(k) * 1.05);
-        const glowR = rad * (n.kind === "atlas" ? 7.2 : n.kind === "hub" ? 5.0 : 3.4);
-        const pulseAmt = n.id === sel ? 0.12 * (0.5 + 0.5 * Math.sin(pulse.current)) : 0;
-        const galpha = dim ? 0.04 : n.kind === "atlas" ? 0.55 : n.kind === "hub" ? 0.4 : 0.24;
-        const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, glowR * (1 + pulseAmt));
+        const glowR =
+          rad * (n.kind === "atlas" ? 7.2 : n.kind === "hub" ? 5.0 : 3.4);
+        const pulseAmt =
+          n.id === sel ? 0.12 * (0.5 + 0.5 * Math.sin(pulse.current)) : 0;
+        const galpha = dim
+          ? 0.04
+          : n.kind === "atlas"
+            ? 0.55
+            : n.kind === "hub"
+              ? 0.4
+              : 0.24;
+        const grad = ctx.createRadialGradient(
+          p.x,
+          p.y,
+          0,
+          p.x,
+          p.y,
+          glowR * (1 + pulseAmt),
+        );
         grad.addColorStop(0, `rgba(${r},${g},${bl},${galpha + pulseAmt})`);
         grad.addColorStop(0.45, `rgba(${r},${g},${bl},${galpha * 0.25})`);
         grad.addColorStop(1, `rgba(${r},${g},${bl},0)`);
@@ -271,7 +305,11 @@ export function GraphCanvas() {
           const p = screenPt(hub, cam.current, w, h);
           if (p.x < 40 || p.y < 28 || p.x > w - 40 || p.y > h - 20) continue;
           ctx.fillStyle = "rgba(122, 240, 255, 0.42)";
-          ctx.fillText(c.title.toUpperCase(), p.x, p.y - hub.r * Math.max(1, k) - 22);
+          ctx.fillText(
+            c.title.toUpperCase(),
+            p.x,
+            p.y - hub.r * Math.max(1, k) - 22,
+          );
         }
       }
 
@@ -279,24 +317,39 @@ export function GraphCanvas() {
         const placed: { x: number; y: number; w: number }[] = [];
         const labelOk = (x: number, y: number, tw: number) => {
           for (const q of placed) {
-            if (Math.abs(q.x - x) < (q.w + tw) * 0.52 && Math.abs(q.y - y) < 15) return false;
+            if (Math.abs(q.x - x) < (q.w + tw) * 0.52 && Math.abs(q.y - y) < 15)
+              return false;
           }
           return true;
         };
         const order = [...nodes].sort((a, b) => {
           const rank = (n: SimNode) =>
-            n.kind === "atlas" ? 4 : n.kind === "hub" ? 3 : n.kind === "topic" ? 2 : n.kind === "figure" ? 1 : 0;
+            n.kind === "atlas"
+              ? 4
+              : n.kind === "hub"
+                ? 3
+                : n.kind === "topic"
+                  ? 2
+                  : n.kind === "figure"
+                    ? 1
+                    : 0;
           const dr = rank(b) - rank(a);
           return dr !== 0 ? dr : b.degree - a.degree;
         });
-        const fontPx = Math.max(11, Math.min(15, 12.5 * Math.min(1.25, Math.max(0.7, k))));
+        const fontPx = Math.max(
+          11,
+          Math.min(15, 12.5 * Math.min(1.25, Math.max(0.7, k))),
+        );
         ctx.font = `${fontPx}px "IBM Plex Sans", system-ui, sans-serif`;
         for (const n of order) {
           if (!visible(n)) continue;
           const p = screenPt(n, cam.current, w, h);
           if (p.x < 18 || p.y < 14 || p.x > w - 18 || p.y > h - 16) continue;
           const important =
-            n.kind === "atlas" || n.kind === "hub" || n.id === sel || n.id === hoverId.current;
+            n.kind === "atlas" ||
+            n.kind === "hub" ||
+            n.id === sel ||
+            n.id === hoverId.current;
           const show =
             important ||
             (n.kind === "topic" && k > 0.34) ||
@@ -322,7 +375,14 @@ export function GraphCanvas() {
         }
       }
 
-      const vg = ctx.createRadialGradient(w / 2, h / 2, Math.min(w, h) * 0.28, w / 2, h / 2, Math.max(w, h) * 0.74);
+      const vg = ctx.createRadialGradient(
+        w / 2,
+        h / 2,
+        Math.min(w, h) * 0.28,
+        w / 2,
+        h / 2,
+        Math.max(w, h) * 0.74,
+      );
       vg.addColorStop(0, "rgba(3,4,10,0)");
       vg.addColorStop(1, "rgba(3,4,10,0.5)");
       ctx.fillStyle = vg;

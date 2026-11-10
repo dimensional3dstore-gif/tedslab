@@ -3,6 +3,7 @@ import { queryOptions } from "@tanstack/react-query";
 import { AppShell, PageHeader } from "@/components/biopedia/AppShell";
 import { supabase } from "@/integrations/supabase/client";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const db = supabase as unknown as { from: (table: string) => any };
 
 const pageQueryOptions = (slug: string) =>
@@ -22,7 +23,9 @@ const pageQueryOptions = (slug: string) =>
 
 export const Route = createFileRoute("/pages/$slug")({
   loader: async ({ context, params }) => {
-    const page = await context.queryClient.ensureQueryData(pageQueryOptions(params.slug));
+    const page = await context.queryClient.ensureQueryData(
+      pageQueryOptions(params.slug),
+    );
     if (!page) throw notFound();
     return { page };
   },
@@ -44,7 +47,9 @@ export const Route = createFileRoute("/pages/$slug")({
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
+        <h2 className="mt-4 text-xl font-semibold text-foreground">
+          Page not found
+        </h2>
         <p className="mt-2 text-sm text-muted-foreground">
           The page you're looking for doesn't exist or has been moved.
         </p>
@@ -59,7 +64,10 @@ function PageComponent() {
   return (
     <AppShell>
       <article className="max-w-4xl mx-auto">
-        <PageHeader title={initialPage.title} description={initialPage.description ?? ""} />
+        <PageHeader
+          title={initialPage.title}
+          description={initialPage.description ?? ""}
+        />
         {initialPage.image_url && (
           <img
             src={initialPage.image_url}
@@ -69,7 +77,7 @@ function PageComponent() {
           />
         )}
         <div className="mt-6 prose prose-sm max-w-none text-foreground">
-          <div 
+          <div
             className="text-sm leading-relaxed text-muted-foreground whitespace-pre-wrap"
             dangerouslySetInnerHTML={{ __html: initialPage.body ?? "" }}
           />

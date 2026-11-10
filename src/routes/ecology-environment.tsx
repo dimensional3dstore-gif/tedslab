@@ -17,8 +17,12 @@ function SectionPage() {
   const { data: topics = [] } = useTopics();
   const { data: subjects = [] } = useSubjects();
   const section = sections.find((s) => s.slug === SECTION_SLUG);
-  const subject = section ? subjects.find((s) => s.id === section.subject_id) : undefined;
-  const sectionTopics = section ? topics.filter((t) => t.section_id === section.id) : [];
+  const subject = section
+    ? subjects.find((s) => s.id === section.subject_id)
+    : undefined;
+  const sectionTopics = section
+    ? topics.filter((t) => t.section_id === section.id)
+    : [];
 
   return (
     <AppShell>

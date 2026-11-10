@@ -107,7 +107,9 @@ function extractRelevantSections(question: string) {
       const score = tokens.reduce((total, token) => {
         if (!token) return total;
         const occurrences = (
-          text.match(new RegExp(token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g")) || []
+          text.match(
+            new RegExp(token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"),
+          ) || []
         ).length;
         return total + occurrences;
       }, 0);
@@ -121,11 +123,20 @@ function extractRelevantSections(question: string) {
 function buildGeneralAnswer(question: string) {
   const q = normalize(question);
 
-  if (q.includes("photosynth") || q.includes("chlorophyll") || q.includes("glucose")) {
+  if (
+    q.includes("photosynth") ||
+    q.includes("chlorophyll") ||
+    q.includes("glucose")
+  ) {
     return "Photosynthesis is the process plants use to capture light energy and turn carbon dioxide and water into sugars, which store chemical energy. In simple terms: light powers the reaction, the plant makes food, and that food supports growth and survival.";
   }
 
-  if (q.includes("cell") || q.includes("mitosis") || q.includes("dna") || q.includes("enzyme")) {
+  if (
+    q.includes("cell") ||
+    q.includes("mitosis") ||
+    q.includes("dna") ||
+    q.includes("enzyme")
+  ) {
     return "A cell is the basic unit of life, and its parts work together to keep the organism alive. The key idea is that structure and function are connected: DNA stores instructions, enzymes speed reactions, and cell processes keep energy, growth, and repair working properly.";
   }
 
@@ -164,7 +175,11 @@ function buildGeneralAnswer(question: string) {
     return "The main idea is the concept itself: define it in plain language, explain the most important parts, and give one example. That makes the answer clear without overwhelming the learner with unnecessary detail.";
   }
 
-  if (q.includes("compare") || q.includes("difference") || q.includes("similar")) {
+  if (
+    q.includes("compare") ||
+    q.includes("difference") ||
+    q.includes("similar")
+  ) {
     return "A comparison answer should name the two ideas, explain what they share, and then highlight the key difference in purpose, structure, or outcome. That gives the learner a clean contrast instead of a vague summary.";
   }
 
@@ -182,12 +197,15 @@ export function readKnowledge() {
 function getOpenRouterApiKey() {
   const maybeMetaKey =
     typeof import.meta !== "undefined"
-      ? (import.meta as { env?: Record<string, string | undefined> }).env?.VITE_OPENROUTER_API_KEY
+      ? (import.meta as { env?: Record<string, string | undefined> }).env
+          ?.VITE_OPENROUTER_API_KEY
       : undefined;
   if (maybeMetaKey) return maybeMetaKey;
 
   if (typeof process !== "undefined") {
-    return process.env?.OPENROUTER_API_KEY ?? process.env?.VITE_OPENROUTER_API_KEY;
+    return (
+      process.env?.OPENROUTER_API_KEY ?? process.env?.VITE_OPENROUTER_API_KEY
+    );
   }
 
   return undefined;
@@ -198,28 +216,31 @@ async function askOpenRouter(question: string): Promise<string | null> {
   if (!apiKey) return null;
 
   try {
-    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-        "HTTP-Referer": "https://study-hub.local",
-        "X-Title": "Study Hub AI",
+    const response = await fetch(
+      "https://openrouter.ai/api/v1/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+          "HTTP-Referer": "https://study-hub.local",
+          "X-Title": "Study Hub AI",
+        },
+        body: JSON.stringify({
+          model: "openai/gpt-4o-mini",
+          messages: [
+            {
+              role: "system",
+              content:
+                "You are a helpful study tutor for a biology and learning site. Give clear, concise, educational answers and keep them practical and student-friendly.",
+            },
+            { role: "user", content: question },
+          ],
+          temperature: 0.7,
+          max_tokens: 500,
+        }),
       },
-      body: JSON.stringify({
-        model: "openai/gpt-4o-mini",
-        messages: [
-          {
-            role: "system",
-            content:
-              "You are a helpful study tutor for a biology and learning site. Give clear, concise, educational answers and keep them practical and student-friendly.",
-          },
-          { role: "user", content: question },
-        ],
-        temperature: 0.7,
-        max_tokens: 500,
-      }),
-    });
+    );
 
     if (!response.ok) {
       const errorText = await response.text();
@@ -227,7 +248,9 @@ async function askOpenRouter(question: string): Promise<string | null> {
       return null;
     }
 
-    const data = (await response.json()) as { choices?: Array<{ message?: { content?: string } }> };
+    const data = (await response.json()) as {
+      choices?: Array<{ message?: { content?: string } }>;
+    };
     const answer = data.choices?.[0]?.message?.content?.trim();
     return answer && answer.length > 0 ? answer : null;
   } catch (error) {

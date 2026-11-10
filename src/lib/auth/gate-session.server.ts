@@ -55,9 +55,8 @@ async function emitSessionCookie(
     return null;
   }
 
-  const sessionValue = parseSetCookieHeader(signedCookie).get(
-    sessionTokenName,
-  )?.value;
+  const sessionValue =
+    parseSetCookieHeader(signedCookie).get(sessionTokenName)?.value;
   if (!sessionValue) {
     console.error(`${LOG} signed Set-Cookie missing session token value`, {
       cookiePreview: signedCookie.slice(0, 120),
@@ -119,7 +118,10 @@ async function expireSessionDataCookie(
       maxAge: 0,
     });
   } catch (err) {
-    console.error(`${LOG} TanStack setCookie (expire session_data) failed`, err);
+    console.error(
+      `${LOG} TanStack setCookie (expire session_data) failed`,
+      err,
+    );
   }
   try {
     ctx.context.responseHeaders?.append(

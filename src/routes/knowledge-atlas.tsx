@@ -20,7 +20,10 @@ export const Route = createFileRoute("/knowledge-atlas")({
 function KnowledgeAtlasPage() {
   return (
     <AppShell rail={<AiAssistPanel />}>
-      <div className="bio-panel overflow-hidden p-0" style={{ minHeight: "calc(100vh - 10rem)" }}>
+      <div
+        className="bio-panel overflow-hidden p-0"
+        style={{ minHeight: "calc(100vh - 10rem)" }}
+      >
         <div className="atlas-theme h-[min(80vh,900px)] min-h-[520px] w-full">
           <AtlasApp />
         </div>

@@ -55,7 +55,7 @@ const DEFAULT_FOLDERS = [
   "history",
   "mind",
   "systems",
-  "geography", 
+  "geography",
   "etymology",
 ];
 
@@ -88,13 +88,19 @@ export const useAtlas = create<AtlasState>()(
           set({ selectedId: id });
           return;
         }
-        const recent = [id, ...get().recent.filter((x) => x !== id)].slice(0, 24);
+        const recent = [id, ...get().recent.filter((x) => x !== id)].slice(
+          0,
+          24,
+        );
         set({ selectedId: id, recent });
       },
       hover: (id) => set({ hoveredId: id }),
       openArticle: (id) => {
         if (!NODE_BY_ID[id]) return;
-        const recent = [id, ...get().recent.filter((x) => x !== id)].slice(0, 24);
+        const recent = [id, ...get().recent.filter((x) => x !== id)].slice(
+          0,
+          24,
+        );
         set({
           selectedId: id,
           openArticleId: id,
@@ -113,16 +119,21 @@ export const useAtlas = create<AtlasState>()(
       toggleFolder: (id) => {
         const cur = get().expandedFolders;
         set({
-          expandedFolders: cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id],
+          expandedFolders: cur.includes(id)
+            ? cur.filter((x) => x !== id)
+            : [...cur, id],
         });
       },
       toggleBookmark: (id) => {
         const cur = get().bookmarks;
         set({
-          bookmarks: cur.includes(id) ? cur.filter((x) => x !== id) : [id, ...cur],
+          bookmarks: cur.includes(id)
+            ? cur.filter((x) => x !== id)
+            : [id, ...cur],
         });
       },
-      patchSettings: (patch) => set({ settings: { ...get().settings, ...patch } }),
+      patchSettings: (patch) =>
+        set({ settings: { ...get().settings, ...patch } }),
     }),
     {
       name: "knowledge-atlas-v1",

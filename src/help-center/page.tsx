@@ -17,7 +17,8 @@ const helpTopics = [
   {
     category: "Accounts",
     title: "Signing in and saved work",
-    summary: "Your account keeps supported saved-content features associated with your profile.",
+    summary:
+      "Your account keeps supported saved-content features associated with your profile.",
     details:
       "Sign in with the account connected to this deployment. If sign-in is unavailable, confirm the Supabase account service has been configured by the site administrator.",
     to: "/auth",
@@ -26,7 +27,8 @@ const helpTopics = [
   {
     category: "Study tools",
     title: "Using Chronium AI with a local model",
-    summary: "Connect to a running oMLX server, discover a model, load it, then start chat.",
+    summary:
+      "Connect to a running oMLX server, discover a model, load it, then start chat.",
     details:
       "The default server address is http://127.0.0.1:8000. The app checks /v1/models and loads a selected model through oMLX before enabling chat. In a normal browser, the oMLX CORS allowlist must include this site's origin; the packaged desktop bridge uses loopback access.",
     to: "/llm",
@@ -35,7 +37,8 @@ const helpTopics = [
   {
     category: "Study tools",
     title: "Translation provider setup",
-    summary: "Translation requires a compatible provider endpoint configured for the deployment.",
+    summary:
+      "Translation requires a compatible provider endpoint configured for the deployment.",
     details:
       "The translator posts text, source language, and target language to VITE_TRANSLATE_API_URL. If that setting is absent, the page reports that translation is not configured instead of showing a fake result.",
     to: "/translate",
@@ -44,7 +47,8 @@ const helpTopics = [
   {
     category: "Desktop app",
     title: "Installing ChronosOS on Mac",
-    summary: "Download the Apple Silicon DMG and open the disk image on a compatible Mac.",
+    summary:
+      "Download the Apple Silicon DMG and open the disk image on a compatible Mac.",
     details:
       "The current DMG is unsigned and requires internet access for the hosted sign-in page. macOS may show a first-open security warning. The desktop download is large; if a deployment host rejects it, publish the DMG through an artifact host and update the download URL.",
     to: "/download",
@@ -53,7 +57,8 @@ const helpTopics = [
   {
     category: "Reference",
     title: "Reading Lost Planet records",
-    summary: "Each species page distinguishes known records from estimates and unresolved causes.",
+    summary:
+      "Each species page distinguishes known records from estimates and unresolved causes.",
     details:
       "Extinction dates can refer to a last confirmed sighting, a final captive animal, or a broad prehistoric interval. The record explains which kind of evidence is available and flags uncertain causes.",
     to: "/lost-atlas",
@@ -61,16 +66,23 @@ const helpTopics = [
   },
 ];
 
-const categories = ["All topics", ...new Set(helpTopics.map((topic) => topic.category))];
+const categories = [
+  "All topics",
+  ...new Set(helpTopics.map((topic) => topic.category)),
+];
 
 export default function HelpCenterPage() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All topics");
   const search = query.trim().toLowerCase();
   const visibleTopics = helpTopics.filter((topic) => {
-    const matchesCategory = category === "All topics" || topic.category === category;
+    const matchesCategory =
+      category === "All topics" || topic.category === category;
     const matchesSearch =
-      !search || `${topic.title} ${topic.summary} ${topic.details}`.toLowerCase().includes(search);
+      !search ||
+      `${topic.title} ${topic.summary} ${topic.details}`
+        .toLowerCase()
+        .includes(search);
     return matchesCategory && matchesSearch;
   });
 
@@ -109,7 +121,10 @@ export default function HelpCenterPage() {
             </button>
           ))}
         </div>
-        <section aria-label="Help topics" className="divide-y divide-border border-y border-border">
+        <section
+          aria-label="Help topics"
+          className="divide-y divide-border border-y border-border"
+        >
           {visibleTopics.map((topic) => (
             <details key={topic.title} className="group py-4">
               <summary className="flex cursor-pointer list-none items-start justify-between gap-4">
@@ -117,13 +132,19 @@ export default function HelpCenterPage() {
                   <span className="block text-[10px] font-semibold uppercase tracking-[0.12em] text-primary">
                     {topic.category}
                   </span>
-                  <span className="mt-1 block font-semibold text-foreground">{topic.title}</span>
-                  <span className="mt-1 block text-sm text-muted-foreground">{topic.summary}</span>
+                  <span className="mt-1 block font-semibold text-foreground">
+                    {topic.title}
+                  </span>
+                  <span className="mt-1 block text-sm text-muted-foreground">
+                    {topic.summary}
+                  </span>
                 </span>
                 <CircleHelp className="mt-1 size-4 shrink-0 text-muted-foreground group-open:text-primary" />
               </summary>
               <div className="ml-0 mt-4 max-w-3xl border-l-2 border-primary/30 pl-4 sm:ml-2">
-                <p className="text-sm leading-relaxed text-muted-foreground">{topic.details}</p>
+                <p className="text-sm leading-relaxed text-muted-foreground">
+                  {topic.details}
+                </p>
                 <Link
                   to={topic.to}
                   className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline"

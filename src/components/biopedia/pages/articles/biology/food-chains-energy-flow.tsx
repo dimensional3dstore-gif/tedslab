@@ -1,4 +1,13 @@
-import { BookOpenText, CheckCircle2, ChevronRight, Leaf, Microscope, Sparkles, ThumbsDown, ThumbsUp } from "lucide-react";
+import {
+  BookOpenText,
+  CheckCircle2,
+  ChevronRight,
+  Leaf,
+  Microscope,
+  Sparkles,
+  ThumbsDown,
+  ThumbsUp,
+} from "lucide-react";
 import discoveryLeaf from "@/assets/discovery-leaf.jpg";
 import { AppShell } from "@/components/biopedia/AppShell";
 
@@ -17,7 +26,13 @@ export default function FoodChainsandEnergyFlowPage() {
               </h2>
             </div>
             <nav className="space-y-1 p-2 text-sm">
-              {["Overview", "Key Concepts", "Process Steps", "Examples", "Summary"].map((item, index) => (
+              {[
+                "Overview",
+                "Key Concepts",
+                "Process Steps",
+                "Examples",
+                "Summary",
+              ].map((item, index) => (
                 <a
                   key={item}
                   href="#"
@@ -48,7 +63,10 @@ export default function FoodChainsandEnergyFlowPage() {
                 Reviewed by Experts
               </div>
               <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground">
-                Food chains and food webs are conceptual models describing the transfer of energy and matter through ecosystems, with energy originating from the sun and captured by photosynthetic organisms.
+                Food chains and food webs are conceptual models describing the
+                transfer of energy and matter through ecosystems, with energy
+                originating from the sun and captured by photosynthetic
+                organisms.
               </p>
               <div className="mt-5 flex flex-wrap gap-2">
                 {topicTags.map((tag) => (
@@ -75,7 +93,9 @@ export default function FoodChainsandEnergyFlowPage() {
           <h2 className="text-3xl font-bold text-foreground">Overview</h2>
           <div className="mt-6 space-y-5 text-base leading-relaxed text-muted-foreground">
             <p>
-              How energy flows through ecosystems via food chains and webs. This article explores the fundamental concepts, processes, and applications.
+              How energy flows through ecosystems via food chains and webs. This
+              article explores the fundamental concepts, processes, and
+              applications.
             </p>
           </div>
         </section>

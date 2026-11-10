@@ -1,10 +1,19 @@
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { ArrowRight, LoaderCircle, LockKeyhole, Mail, UserRound } from "lucide-react";
+import {
+  ArrowRight,
+  LoaderCircle,
+  LockKeyhole,
+  Mail,
+  UserRound,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { getSupabaseAuthClient, supabaseAuthConfigured } from "@/integrations/supabase/auth";
+import {
+  getSupabaseAuthClient,
+  supabaseAuthConfigured,
+} from "@/integrations/supabase/auth";
 
 export function AuthForm({
   mode,
@@ -44,20 +53,28 @@ export function AuthForm({
         ? await auth.auth.signUp({
             email: email.trim(),
             password,
-            options: { data: { full_name: name.trim(), display_name: name.trim() } },
+            options: {
+              data: { full_name: name.trim(), display_name: name.trim() },
+            },
           })
         : await auth.auth.signInWithPassword({ email: email.trim(), password });
       if (result.error) throw result.error;
 
       if (isSignup && !result.data.session) {
-        setNotice("Account created. Check your email for a confirmation link before signing in.");
+        setNotice(
+          "Account created. Check your email for a confirmation link before signing in.",
+        );
       } else if (redirectAfterSignIn) {
         await navigate({ to: "/dashboard" });
       } else {
         setNotice("Signed in successfully. Your session is active.");
       }
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Authentication failed. Please try again.");
+      setError(
+        cause instanceof Error
+          ? cause.message
+          : "Authentication failed. Please try again.",
+      );
     } finally {
       setBusy(false);
     }
@@ -66,7 +83,11 @@ export function AuthForm({
   return (
     <section className="bio-panel mx-auto w-full max-w-md p-6 sm:p-8">
       <div className="mb-6 grid size-11 place-items-center rounded-lg bg-primary/10 text-primary">
-        {isSignup ? <UserRound className="size-5" /> : <LockKeyhole className="size-5" />}
+        {isSignup ? (
+          <UserRound className="size-5" />
+        ) : (
+          <LockKeyhole className="size-5" />
+        )}
       </div>
       <h2 className="font-display text-2xl font-bold text-foreground">
         {isSignup ? "Create your account" : "Welcome back"}
@@ -82,8 +103,9 @@ export function AuthForm({
           role="status"
           className="mt-5 rounded-md border border-bio-amber/30 bg-bio-amber/10 p-3 text-sm text-foreground"
         >
-          Set <code>VITE_SUPABASE_URL</code> and <code>VITE_SUPABASE_ANON_KEY</code> for this
-          deployment to enable real account authentication.
+          Set <code>VITE_SUPABASE_URL</code> and{" "}
+          <code>VITE_SUPABASE_ANON_KEY</code> for this deployment to enable real
+          account authentication.
         </div>
       )}
 
@@ -131,7 +153,11 @@ export function AuthForm({
               minLength={8}
             />
           </div>
-          {isSignup && <p className="text-xs text-muted-foreground">Use at least 8 characters.</p>}
+          {isSignup && (
+            <p className="text-xs text-muted-foreground">
+              Use at least 8 characters.
+            </p>
+          )}
         </div>
         {isSignup && (
           <div className="space-y-2">
@@ -163,7 +189,11 @@ export function AuthForm({
             {notice}
           </p>
         )}
-        <Button className="w-full" type="submit" disabled={busy || !supabaseAuthConfigured}>
+        <Button
+          className="w-full"
+          type="submit"
+          disabled={busy || !supabaseAuthConfigured}
+        >
           {busy ? (
             <LoaderCircle className="size-4 animate-spin" />
           ) : (

@@ -1,5 +1,16 @@
 import { useQuery, queryOptions } from "@tanstack/react-query";
-import { TABLES, SUBJECTS, SECTIONS, TOPICS, ARTICLES, HERO_SLIDES, VIDEOS, PAGES, NAV_LINKS, SETTINGS } from "@/lib/catalog";
+import {
+  TABLES,
+  SUBJECTS,
+  SECTIONS,
+  TOPICS,
+  ARTICLES,
+  HERO_SLIDES,
+  VIDEOS,
+  PAGES,
+  NAV_LINKS,
+  SETTINGS,
+} from "@/lib/catalog";
 
 export type Subject = {
   id: string;

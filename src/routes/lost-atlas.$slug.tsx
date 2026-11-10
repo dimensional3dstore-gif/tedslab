@@ -4,7 +4,9 @@ import { EXTINCT_SPECIES } from "@/data/lost-atlas-species";
 import { resolveImage } from "@/lib/images";
 import { LostAtlasLayout } from "@/lost-atlas/layout";
 
-export const Route = createFileRoute("/lost-atlas/$slug")({ component: SpeciesRecordPage });
+export const Route = createFileRoute("/lost-atlas/$slug")({
+  component: SpeciesRecordPage,
+});
 
 function SpeciesRecordPage() {
   const { slug } = Route.useParams();
@@ -17,7 +19,10 @@ function SpeciesRecordPage() {
         <h1 className="font-display text-3xl font-bold text-foreground">
           Species record not found
         </h1>
-        <Link to="/lost-atlas" className="text-sm font-medium text-primary hover:underline">
+        <Link
+          to="/lost-atlas"
+          className="text-sm font-medium text-primary hover:underline"
+        >
           Return to Lost Planet
         </Link>
       </LostAtlasLayout>
@@ -25,7 +30,9 @@ function SpeciesRecordPage() {
   }
 
   const related = species.related_slugs
-    .map((relatedSlug) => EXTINCT_SPECIES.find((item) => item.slug === relatedSlug))
+    .map((relatedSlug) =>
+      EXTINCT_SPECIES.find((item) => item.slug === relatedSlug),
+    )
     .filter((item): item is (typeof EXTINCT_SPECIES)[number] => Boolean(item));
   const previous = EXTINCT_SPECIES[index - 1];
   const next = EXTINCT_SPECIES[index + 1];
@@ -77,10 +84,26 @@ function SpeciesRecordPage() {
 
         <div className="grid gap-8 p-5 sm:p-8 lg:grid-cols-[minmax(0,1fr)_240px]">
           <div className="space-y-8">
-            <ArticleSection number="01" title="Habitat and life" body={species.habitat} />
-            <ArticleSection number="02" title="Decline" body={species.decline_story} />
-            <ArticleSection number="03" title="Evidence and uncertainty" body={species.evidence} />
-            <ArticleSection number="04" title="What remains" body={species.legacy} />
+            <ArticleSection
+              number="01"
+              title="Habitat and life"
+              body={species.habitat}
+            />
+            <ArticleSection
+              number="02"
+              title="Decline"
+              body={species.decline_story}
+            />
+            <ArticleSection
+              number="03"
+              title="Evidence and uncertainty"
+              body={species.evidence}
+            />
+            <ArticleSection
+              number="04"
+              title="What remains"
+              body={species.legacy}
+            />
           </div>
           <aside className="h-fit border-l-2 border-primary/40 pl-4">
             <p className="text-xs font-semibold uppercase tracking-[0.12em] text-primary">
@@ -90,8 +113,9 @@ function SpeciesRecordPage() {
               {species.primary_driver}
             </p>
             <p className="mt-5 text-xs leading-relaxed text-muted-foreground">
-              Dates and causes are presented at the level supported by available records. For
-              uncertain cases, the profile identifies what remains unresolved.
+              Dates and causes are presented at the level supported by available
+              records. For uncertain cases, the profile identifies what remains
+              unresolved.
             </p>
           </aside>
         </div>
@@ -99,7 +123,9 @@ function SpeciesRecordPage() {
 
       {related.length > 0 && (
         <section className="space-y-3">
-          <h2 className="font-display text-xl font-semibold text-foreground">Related species</h2>
+          <h2 className="font-display text-xl font-semibold text-foreground">
+            Related species
+          </h2>
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
             {related.map((item) => (
               <Link
@@ -108,7 +134,9 @@ function SpeciesRecordPage() {
                 params={{ slug: item.slug }}
                 className="rounded-md border border-border p-4 hover:border-primary/50"
               >
-                <span className="block font-semibold text-foreground">{item.common_name}</span>
+                <span className="block font-semibold text-foreground">
+                  {item.common_name}
+                </span>
                 <span className="mt-1 block text-xs text-muted-foreground">
                   {item.taxonomic_group} · {item.extinction_period}
                 </span>
@@ -162,13 +190,25 @@ function Fact({ label, value }: { label: string; value: string }) {
   );
 }
 
-function ArticleSection({ number, title, body }: { number: string; title: string; body: string }) {
+function ArticleSection({
+  number,
+  title,
+  body,
+}: {
+  number: string;
+  title: string;
+  body: string;
+}) {
   return (
     <section className="grid gap-3 sm:grid-cols-[44px_1fr]">
       <p className="font-mono text-xs text-primary">{number}</p>
       <div>
-        <h2 className="font-display text-xl font-semibold text-foreground">{title}</h2>
-        <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground">{body}</p>
+        <h2 className="font-display text-xl font-semibold text-foreground">
+          {title}
+        </h2>
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground">
+          {body}
+        </p>
       </div>
     </section>
   );

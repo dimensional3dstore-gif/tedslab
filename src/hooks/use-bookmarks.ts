@@ -26,7 +26,9 @@ export function useBookmarks() {
   const toggleBookmark = useCallback(
     (slug: string) =>
       setBookmarks((prev) => {
-        const next = prev.includes(slug) ? prev.filter((s) => s !== slug) : [...prev, slug];
+        const next = prev.includes(slug)
+          ? prev.filter((s) => s !== slug)
+          : [...prev, slug];
         try {
           localStorage.setItem(KEY, JSON.stringify(next));
         } catch {

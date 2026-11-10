@@ -15,7 +15,9 @@ export const Route = createFileRoute("/settings")({
 
 function SettingsPage() {
   const { user, loading } = useAuth();
-  const [displayName, setDisplayName] = useState(user?.user_metadata?.display_name ?? "");
+  const [displayName, setDisplayName] = useState(
+    user?.user_metadata?.display_name ?? "",
+  );
   const [email, setEmail] = useState(user?.email ?? "");
 
   if (loading) {
@@ -25,8 +27,12 @@ function SettingsPage() {
   return (
     <div className="mx-auto max-w-2xl space-y-6 p-6">
       <header className="bio-panel p-6">
-        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-primary">Account</p>
-        <h1 className="mt-2 font-display text-3xl font-bold text-foreground">User settings</h1>
+        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-primary">
+          Account
+        </p>
+        <h1 className="mt-2 font-display text-3xl font-bold text-foreground">
+          User settings
+        </h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Update your profile details and manage the account you use to study.
         </p>
@@ -45,11 +51,17 @@ function SettingsPage() {
 
         <div className="space-y-1">
           <Label htmlFor="email">Email</Label>
-          <Input id="email" value={email} onChange={(e) => setEmail(e.target.value)} type="email" />
+          <Input
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            type="email"
+          />
         </div>
 
         <div className="rounded-xl border border-dashed border-border bg-secondary/30 p-4 text-sm text-muted-foreground">
-          This is the current account settings view. You can extend it later with password changes, notifications, or profile preferences.
+          This is the current account settings view. You can extend it later
+          with password changes, notifications, or profile preferences.
         </div>
 
         <div className="flex flex-wrap gap-3">

@@ -8,13 +8,19 @@ import { AboutTable } from "./ui/table";
 export default function AboutPage() {
   return (
     <AboutLayout>
-      <AboutBreadcrumb items={[{ label: "Home", to: "/" }, { label: "About" }]} />
+      <AboutBreadcrumb
+        items={[{ label: "Home", to: "/" }, { label: "About" }]}
+      />
       <header>
-        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">About</p>
-        <h1 className="mt-2 font-display text-4xl font-bold text-foreground">Ted's Lab</h1>
+        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">
+          About
+        </p>
+        <h1 className="mt-2 font-display text-4xl font-bold text-foreground">
+          Ted's Lab
+        </h1>
         <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-          An independent learning encyclopedia for exploring science, mathematics, history,
-          language, and technology.
+          An independent learning encyclopedia for exploring science,
+          mathematics, history, language, and technology.
         </p>
       </header>
       <AboutBox>
@@ -27,14 +33,20 @@ export default function AboutPage() {
             rows={[
               ["Articles", "Build a clear understanding of individual ideas."],
               ["Topics", "Connect articles to larger subjects and systems."],
-              ["Study tools", "Practice recall, organize notes, and review progress."],
+              [
+                "Study tools",
+                "Practice recall, organize notes, and review progress.",
+              ],
             ]}
           />
         </div>
       </AboutBox>
       <div className="flex flex-wrap items-center gap-4">
         <ContactButton />
-        <Link to="/articles" className="text-sm font-medium text-primary hover:underline">
+        <Link
+          to="/articles"
+          className="text-sm font-medium text-primary hover:underline"
+        >
           Browse articles
         </Link>
       </div>

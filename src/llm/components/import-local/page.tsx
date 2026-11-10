@@ -62,7 +62,10 @@ export function ChroniumAIPage() {
     (() => {
       const stored = readStored<Partial<LocalConfig>>(CONFIG_KEY, {});
       return {
-        baseUrl: typeof stored.baseUrl === "string" ? stored.baseUrl : defaultOmlxUrl(),
+        baseUrl:
+          typeof stored.baseUrl === "string"
+            ? stored.baseUrl
+            : defaultOmlxUrl(),
         model: typeof stored.model === "string" ? stored.model : "",
       };
     })(),
@@ -88,7 +91,9 @@ export function ChroniumAIPage() {
         .getEntriesByType("resource")
         .map((entry) => new URL(entry.name, window.location.href))
         .filter(
-          (url) => url.origin === window.location.origin && url.pathname.startsWith("/assets/"),
+          (url) =>
+            url.origin === window.location.origin &&
+            url.pathname.startsWith("/assets/"),
         )
         .map((url) => url.pathname + url.search);
       registration.active?.postMessage({ type: "CACHE_CHRONIUM", assets });
@@ -128,10 +133,13 @@ export function ChroniumAIPage() {
           ? current.model
           : (available[0]?.id ?? ""),
       }));
-      if (available.length === 0) setError("oMLX is reachable, but no local models were found.");
+      if (available.length === 0)
+        setError("oMLX is reachable, but no local models were found.");
     } catch (cause) {
       const detail =
-        cause instanceof Error ? cause.message : "Could not reach the local model server.";
+        cause instanceof Error
+          ? cause.message
+          : "Could not reach the local model server.";
       const browserHelp = isOmlxDesktopBridgeAvailable()
         ? ""
         : " In a browser, configure oMLX CORS to allow this site's origin.";
@@ -152,7 +160,12 @@ export function ChroniumAIPage() {
   }, [config.baseUrl]);
 
   const loadSelectedModel = async () => {
-    if (!config.model || !models.some((model) => model.id === config.model) || loadingModel) return;
+    if (
+      !config.model ||
+      !models.some((model) => model.id === config.model) ||
+      loadingModel
+    )
+      return;
     setLoadingModel(true);
     setLoadedModel("");
     setError("");
@@ -160,7 +173,11 @@ export function ChroniumAIPage() {
       await loadOmlxModel(config.baseUrl, config.model, apiKey);
       setLoadedModel(config.model);
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "The local model could not be loaded.");
+      setError(
+        cause instanceof Error
+          ? cause.message
+          : "The local model could not be loaded.",
+      );
     } finally {
       setLoadingModel(false);
     }
@@ -169,7 +186,11 @@ export function ChroniumAIPage() {
   const sendMessage = async (text = draft) => {
     const question = text.trim();
     if (!question || busy || !modelReady) return;
-    const userMessage: ChatMessage = { id: crypto.randomUUID(), role: "user", content: question };
+    const userMessage: ChatMessage = {
+      id: crypto.randomUUID(),
+      role: "user",
+      content: question,
+    };
     setMessages((current) => [...current, userMessage]);
     setDraft("");
     setBusy(true);
@@ -189,10 +210,19 @@ export function ChroniumAIPage() {
       ]);
       setMessages((current) => [
         ...current,
-        { id: crypto.randomUUID(), role: "assistant", content: response, source: "omlx" },
+        {
+          id: crypto.randomUUID(),
+          role: "assistant",
+          content: response,
+          source: "omlx",
+        },
       ]);
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "The local model request failed.");
+      setError(
+        cause instanceof Error
+          ? cause.message
+          : "The local model request failed.",
+      );
     } finally {
       setBusy(false);
     }
@@ -210,14 +240,20 @@ export function ChroniumAIPage() {
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">
                 Ted's Lab · Local AI
               </p>
-              <h1 className="font-display text-2xl font-bold text-foreground">Chronium AI</h1>
+              <h1 className="font-display text-2xl font-bold text-foreground">
+                Chronium AI
+              </h1>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <span
               className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs ${modelReady ? "border-green-500/25 bg-green-500/10 text-green-700" : "border-amber-500/30 bg-amber-500/10 text-amber-700"}`}
             >
-              {modelReady ? <Wifi className="size-3.5" /> : <WifiOff className="size-3.5" />}
+              {modelReady ? (
+                <Wifi className="size-3.5" />
+              ) : (
+                <WifiOff className="size-3.5" />
+              )}
               {modelReady
                 ? "Local model ready"
                 : discovering
@@ -261,7 +297,8 @@ export function ChroniumAIPage() {
               />
             </label>
             <label className="space-y-1 text-xs text-muted-foreground">
-              API key <span className="normal-case">(optional, this tab only)</span>
+              API key{" "}
+              <span className="normal-case">(optional, this tab only)</span>
               <Input
                 type="password"
                 autoComplete="new-password"
@@ -276,7 +313,10 @@ export function ChroniumAIPage() {
                 value={config.model}
                 onChange={(event) => {
                   setLoadedModel("");
-                  setConfig((current) => ({ ...current, model: event.target.value }));
+                  setConfig((current) => ({
+                    ...current,
+                    model: event.target.value,
+                  }));
                 }}
                 className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground"
               >
@@ -305,9 +345,13 @@ export function ChroniumAIPage() {
               <Button
                 type="button"
                 onClick={() => void loadSelectedModel()}
-                disabled={!config.model || discovering || loadingModel || modelReady}
+                disabled={
+                  !config.model || discovering || loadingModel || modelReady
+                }
               >
-                {loadingModel ? <LoaderCircle className="size-4 animate-spin" /> : null}
+                {loadingModel ? (
+                  <LoaderCircle className="size-4 animate-spin" />
+                ) : null}
                 {loadingModel
                   ? "Loading model…"
                   : modelReady
@@ -321,8 +365,9 @@ export function ChroniumAIPage() {
               </p>
             </div>
             <p className="text-xs text-muted-foreground md:col-span-3">
-              The desktop app connects to loopback through its native bridge. Browser access
-              requires the oMLX CORS allowlist to include this site's origin.
+              The desktop app connects to loopback through its native bridge.
+              Browser access requires the oMLX CORS allowlist to include this
+              site's origin.
             </p>
           </section>
         )}
@@ -330,9 +375,13 @@ export function ChroniumAIPage() {
         <main className="flex min-h-[28rem] flex-1 flex-col overflow-hidden rounded-xl border border-border bg-card/70">
           <div className="flex items-center justify-between border-b border-border px-4 py-3">
             <div>
-              <p className="text-sm font-semibold text-foreground">Study conversation</p>
+              <p className="text-sm font-semibold text-foreground">
+                Study conversation
+              </p>
               <p className="text-xs text-muted-foreground">
-                {modelReady ? `Local model · ${config.model}` : "Load a model to enable chat."}
+                {modelReady
+                  ? `Local model · ${config.model}`
+                  : "Load a model to enable chat."}
               </p>
             </div>
             {busy && (
@@ -352,7 +401,10 @@ export function ChroniumAIPage() {
                   <span>{message.role === "user" ? "You" : "Chronium AI"}</span>
                   {message.source && (
                     <span className="normal-case tracking-normal">
-                      · {message.source === "omlx" ? "oMLX local model" : "offline knowledge"}
+                      ·{" "}
+                      {message.source === "omlx"
+                        ? "oMLX local model"
+                        : "offline knowledge"}
                     </span>
                   )}
                 </div>
@@ -402,7 +454,9 @@ export function ChroniumAIPage() {
                 }}
                 rows={2}
                 placeholder={
-                  modelReady ? "Ask your local model…" : "Load a local model to start chatting."
+                  modelReady
+                    ? "Ask your local model…"
+                    : "Load a local model to start chatting."
                 }
                 className="max-h-40 min-h-12 flex-1 resize-y bg-transparent px-2 py-1 text-sm text-foreground outline-none placeholder:text-muted-foreground"
               />
@@ -417,7 +471,8 @@ export function ChroniumAIPage() {
             </div>
             <div className="mt-2 flex items-center justify-between gap-2 text-[11px] text-muted-foreground">
               <span>
-                Prompts go to the selected local oMLX server. Chat history stays in this browser.
+                Prompts go to the selected local oMLX server. Chat history stays
+                in this browser.
               </span>
               {error && (
                 <span role="status" className="text-amber-700">

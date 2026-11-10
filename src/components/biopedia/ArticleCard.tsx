@@ -24,16 +24,21 @@ export function ArticleCard({
   link,
   className,
 }: ArticleCardProps) {
-  const imageHeight = variant === "featured" ? "h-32" : variant === "compact" ? "h-20" : "h-40";
+  const imageHeight =
+    variant === "featured" ? "h-32" : variant === "compact" ? "h-20" : "h-40";
   const articleSlug = article.slug?.trim();
-  const destination = link ?? (articleSlug ? `/articles/${articleSlug}` : "/articles");
+  const destination =
+    link ?? (articleSlug ? `/articles/${articleSlug}` : "/articles");
   const topicLabel = article.topic_slug?.replace(/-/g, " ") ?? "Article";
   const subjectLabel = article.subject_slug?.replace(/-/g, " ") ?? "General";
   const summary =
     article.excerpt && article.excerpt.length > 140
       ? `${article.excerpt.slice(0, 140).trim()}…`
       : (article.excerpt ?? "");
-  const metaLine = [subjectLabel, article.minutes ? `${article.minutes} min` : null]
+  const metaLine = [
+    subjectLabel,
+    article.minutes ? `${article.minutes} min` : null,
+  ]
     .filter(Boolean)
     .join(" • ");
 
@@ -81,7 +86,11 @@ export function ArticleCard({
           {metaLine}
         </div>
 
-        {summary && <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{summary}</p>}
+        {summary && (
+          <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+            {summary}
+          </p>
+        )}
 
         <div className="mt-4 flex items-center justify-between gap-3 border-t border-border/80 pt-3">
           <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
@@ -104,7 +113,9 @@ export function ArticleCard({
                 aria-pressed={saved}
                 aria-label={saved ? `Remove bookmark` : `Bookmark`}
                 className={`transition-colors ${
-                  saved ? "text-primary" : "text-muted-foreground hover:text-foreground"
+                  saved
+                    ? "text-primary"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 <Bookmark className={`size-4 ${saved ? "fill-current" : ""}`} />

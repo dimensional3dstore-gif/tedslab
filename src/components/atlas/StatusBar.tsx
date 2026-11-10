@@ -13,7 +13,9 @@ export function StatusBar() {
       <span>{EDGES.length} links</span>
       <span className="hidden sm:inline">{view}</span>
       <span className="ml-auto truncate">
-        {node ? `${node.title}${words ? ` · ${words.toLocaleString()} w` : ""}` : "click a node · double-click to read"}
+        {node
+          ? `${node.title}${words ? ` · ${words.toLocaleString()} w` : ""}`
+          : "click a node · double-click to read"}
       </span>
     </footer>
   );

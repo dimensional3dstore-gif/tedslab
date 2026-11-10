@@ -14,7 +14,9 @@ import { AppShell, PageHeader } from "@/components/biopedia/AppShell";
 import { Input } from "@/components/ui/input";
 import { supabaseAuthConfigured } from "@/integrations/supabase/auth";
 
-export const Route = createFileRoute("/dev-tools")({ component: DeveloperTools });
+export const Route = createFileRoute("/dev-tools")({
+  component: DeveloperTools,
+});
 
 const tools = [
   {
@@ -59,14 +61,18 @@ const categories = ["All", "Content", "Explore", "System"] as const;
 function DeveloperTools() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<(typeof categories)[number]>("All");
-  const [copyState, setCopyState] = useState<"idle" | "copied" | "error">("idle");
+  const [copyState, setCopyState] = useState<"idle" | "copied" | "error">(
+    "idle",
+  );
   const filteredTools = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
     return tools.filter((tool) => {
       const matchesCategory = category === "All" || tool.category === category;
       const matchesQuery =
         !normalizedQuery ||
-        `${tool.title} ${tool.description} ${tool.path}`.toLowerCase().includes(normalizedQuery);
+        `${tool.title} ${tool.description} ${tool.path}`
+          .toLowerCase()
+          .includes(normalizedQuery);
       return matchesCategory && matchesQuery;
     });
   }, [category, query]);
@@ -97,7 +103,10 @@ function DeveloperTools() {
           description="A route-indexed workbench for content, system settings, and knowledge exploration."
         />
 
-        <section className="bio-panel p-4 sm:p-5" aria-label="Find developer tools">
+        <section
+          className="bio-panel p-4 sm:p-5"
+          aria-label="Find developer tools"
+        >
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="relative w-full lg:max-w-sm">
               <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -128,30 +137,45 @@ function DeveloperTools() {
           </div>
         </section>
 
-        <section className="grid gap-3 md:grid-cols-2" aria-label="Developer tools list">
-          {filteredTools.map(({ title, category: toolCategory, description, path, icon: Icon }) => (
-            <Link
-              key={path}
-              to={path}
-              className="bio-panel group flex min-w-0 items-start gap-4 p-5 transition-colors hover:border-primary/50 hover:bg-secondary/30"
-            >
-              <span className="grid size-10 shrink-0 place-items-center rounded-md border border-border bg-secondary text-primary">
-                <Icon className="size-5" />
-              </span>
-              <span className="min-w-0 flex-1">
-                <span className="flex flex-wrap items-center justify-between gap-2">
-                  <span className="font-semibold text-foreground">{title}</span>
-                  <span className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
-                    {toolCategory}
+        <section
+          className="grid gap-3 md:grid-cols-2"
+          aria-label="Developer tools list"
+        >
+          {filteredTools.map(
+            ({
+              title,
+              category: toolCategory,
+              description,
+              path,
+              icon: Icon,
+            }) => (
+              <Link
+                key={path}
+                to={path}
+                className="bio-panel group flex min-w-0 items-start gap-4 p-5 transition-colors hover:border-primary/50 hover:bg-secondary/30"
+              >
+                <span className="grid size-10 shrink-0 place-items-center rounded-md border border-border bg-secondary text-primary">
+                  <Icon className="size-5" />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="flex flex-wrap items-center justify-between gap-2">
+                    <span className="font-semibold text-foreground">
+                      {title}
+                    </span>
+                    <span className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
+                      {toolCategory}
+                    </span>
+                  </span>
+                  <span className="mt-1 block text-sm leading-relaxed text-muted-foreground">
+                    {description}
+                  </span>
+                  <span className="mt-3 block truncate font-mono text-xs text-primary">
+                    {path}
                   </span>
                 </span>
-                <span className="mt-1 block text-sm leading-relaxed text-muted-foreground">
-                  {description}
-                </span>
-                <span className="mt-3 block truncate font-mono text-xs text-primary">{path}</span>
-              </span>
-            </Link>
-          ))}
+              </Link>
+            ),
+          )}
           {filteredTools.length === 0 && (
             <p className="col-span-full rounded-md border border-dashed border-border px-5 py-8 text-center text-sm text-muted-foreground">
               No tools match this search.
@@ -161,13 +185,17 @@ function DeveloperTools() {
 
         <section className="flex flex-col gap-4 border-t border-border pt-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-sm font-semibold text-foreground">Runtime diagnostics</h2>
+            <h2 className="text-sm font-semibold text-foreground">
+              Runtime diagnostics
+            </h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              Copy browser, route, and auth configuration details for a bug report.
+              Copy browser, route, and auth configuration details for a bug
+              report.
             </p>
             {copyState === "error" && (
               <p role="alert" className="mt-2 text-xs text-destructive">
-                Clipboard access failed. Open this page in a secure browser context and retry.
+                Clipboard access failed. Open this page in a secure browser
+                context and retry.
               </p>
             )}
           </div>

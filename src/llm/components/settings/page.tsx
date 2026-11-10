@@ -15,9 +15,12 @@ export default function LlmSettingsPage() {
   return (
     <LlmSettingsLayout>
       <header>
-        <h1 className="font-display text-3xl font-bold text-foreground">AI preferences</h1>
+        <h1 className="font-display text-3xl font-bold text-foreground">
+          AI preferences
+        </h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Choose a preferred provider for this browser. Credentials are never stored here.
+          Choose a preferred provider for this browser. Credentials are never
+          stored here.
         </p>
       </header>
       <label className="grid max-w-sm gap-2 text-sm font-medium text-foreground">

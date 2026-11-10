@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import * as LucideIcons from "lucide-react";
 import {
   Home,
@@ -20,7 +21,13 @@ import {
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { useSubjects, useSections, useArticles, useNavLinks, useSettings } from "@/lib/content";
+import {
+  useSubjects,
+  useSections,
+  useArticles,
+  useNavLinks,
+  useSettings,
+} from "@/lib/content";
 import { getChronosOSDownloadUrl } from "@/lib/chronos-os-download";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AiAssistPanel } from "../atlas/AiAssist";
@@ -56,21 +63,32 @@ export function Sidebar({
   const { data: settings } = useSettings();
   const chronosDownloadUrl = getChronosOSDownloadUrl();
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
-  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(
+    new Set(),
+  );
   const [collapsed, setCollapsed] = useState(false);
 
   const brandName = settings?.["site_name"] ?? "Ted's Lab";
-  const brandTagline = settings?.["site_tagline"] ?? "The Learning Encyclopedia";
+  const brandTagline =
+    settings?.["site_tagline"] ?? "The Learning Encyclopedia";
 
   const toolLinks = navLinks?.filter((n) => n.group_name === "tools") ?? [];
   const resolvedStudyTools = [
     { label: "AI Tutor", icon: BrainCircuit, to: "/ai" },
-    ...toolLinks.map((n) => ({ label: n.label, icon: resolveIcon(n.icon), to: n.href })),
+    ...toolLinks.map((n) => ({
+      label: n.label,
+      icon: resolveIcon(n.icon),
+      to: n.href,
+    })),
     ...studyTools
       .filter((t) => t.to !== "/ai")
       .map((t) => ({ label: t.label, icon: t.icon, to: t.to })),
   ].filter((tool, index, array) => {
-    return array.findIndex((item) => item.to === tool.to && item.label === tool.label) === index;
+    return (
+      array.findIndex(
+        (item) => item.to === tool.to && item.label === tool.label,
+      ) === index
+    );
   });
   const sectionsBySubject = new Map<string, typeof sections>();
   for (const subject of subjects ?? []) {
@@ -134,7 +152,9 @@ export function Sidebar({
                 <p className="font-display text-lg leading-none font-bold text-primary">
                   {brandName}
                 </p>
-                <p className="mt-1 text-xs text-muted-foreground">{brandTagline}</p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {brandTagline}
+                </p>
               </div>
             )}
           </Link>
@@ -151,7 +171,9 @@ export function Sidebar({
           )}
         </div>
 
-        <nav className={`flex-1 overflow-y-auto py-3 ${collapsed ? "px-2" : "px-3"}`}>
+        <nav
+          className={`flex-1 overflow-y-auto py-3 ${collapsed ? "px-2" : "px-3"}`}
+        >
           {collapsed && (
             <button
               type="button"
@@ -169,7 +191,9 @@ export function Sidebar({
             className={`mb-2 flex items-center rounded-lg border border-primary/30 bg-primary/10 font-semibold text-primary transition-colors hover:bg-primary/20 ${collapsed ? "mx-auto size-10 justify-center" : "gap-2 px-3 py-2 text-sm"}`}
           >
             <Sparkles className="size-4 shrink-0" />
-            {!collapsed && <span className="truncate">Generate new branch</span>}
+            {!collapsed && (
+              <span className="truncate">Generate new branch</span>
+            )}
           </Link>
           <ul className="space-y-0.5">
             <li>
@@ -182,10 +206,20 @@ export function Sidebar({
               />
             </li>
             <li>
-              <NavLink label="Home" Icon={Home} to="/" exact collapsed={collapsed} />
+              <NavLink
+                label="Home"
+                Icon={Home}
+                to="/"
+                exact
+                collapsed={collapsed}
+              />
             </li>
             <li>
-              <NavLink label="Lost Planet" Icon={LucideIcons.EarthIcon} to="/lost-atlas" />
+              <NavLink
+                label="Lost Planet"
+                Icon={LucideIcons.EarthIcon}
+                to="/lost-atlas"
+              />
             </li>
             {subjectsLoading || sectionsLoading ? (
               <li className="space-y-1 px-3 py-2">
@@ -209,11 +243,15 @@ export function Sidebar({
                       <span className="shrink-0">
                         {(() => {
                           const Icon = resolveIcon(subject.icon);
-                          return <Icon className="size-4 text-muted-foreground" />;
+                          return (
+                            <Icon className="size-4 text-muted-foreground" />
+                          );
                         })()}
                       </span>
                       {!collapsed && (
-                        <span className="flex-1 truncate text-left">{subject.title}</span>
+                        <span className="flex-1 truncate text-left">
+                          {subject.title}
+                        </span>
                       )}
                       {!collapsed && (
                         <ChevronRight
@@ -230,7 +268,9 @@ export function Sidebar({
                               article.subject_slug === subject.slug &&
                               article.section_slug === section.slug,
                           );
-                          const sectionExpanded = expandedSections.has(section.id);
+                          const sectionExpanded = expandedSections.has(
+                            section.id,
+                          );
                           return (
                             <li key={section.id}>
                               <div className="flex items-center">
@@ -254,22 +294,24 @@ export function Sidebar({
                                   </button>
                                 )}
                               </div>
-                              {!collapsed && sectionExpanded && sectionArticles.length > 0 && (
-                                <ul className="ml-7 space-y-0.5 border-l border-sidebar-border pl-2">
-                                  {sectionArticles.map((article) => (
-                                    <li key={article.id}>
-                                      <Link
-                                        to="/articles/$slug"
-                                        params={{ slug: article.slug }}
-                                        className="block truncate rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:bg-secondary hover:text-foreground"
-                                        title={article.title}
-                                      >
-                                        {article.title}
-                                      </Link>
-                                    </li>
-                                  ))}
-                                </ul>
-                              )}
+                              {!collapsed &&
+                                sectionExpanded &&
+                                sectionArticles.length > 0 && (
+                                  <ul className="ml-7 space-y-0.5 border-l border-sidebar-border pl-2">
+                                    {sectionArticles.map((article) => (
+                                      <li key={article.id}>
+                                        <Link
+                                          to="/articles/$slug"
+                                          params={{ slug: article.slug }}
+                                          className="block truncate rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:bg-secondary hover:text-foreground"
+                                          title={article.title}
+                                        >
+                                          {article.title}
+                                        </Link>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                )}
                             </li>
                           );
                         })}
@@ -279,7 +321,8 @@ export function Sidebar({
                               article.published &&
                               article.subject_slug === subject.slug &&
                               !subjectSections.some(
-                                (section) => section.slug === article.section_slug,
+                                (section) =>
+                                  section.slug === article.section_slug,
                               ),
                           ).length > 0 && (
                             <li className="pt-2">
@@ -292,7 +335,8 @@ export function Sidebar({
                                     article.published &&
                                     article.subject_slug === subject.slug &&
                                     !subjectSections.some(
-                                      (section) => section.slug === article.section_slug,
+                                      (section) =>
+                                        section.slug === article.section_slug,
                                     ),
                                 )
                                 .map((article) => (
@@ -323,10 +367,20 @@ export function Sidebar({
           )}
           <ul className="space-y-0.5 pb-4">
             <li>
-              <NavLink label="All Articles" Icon={BookOpen} to="/articles" collapsed={collapsed} />
+              <NavLink
+                label="All Articles"
+                Icon={BookOpen}
+                to="/articles"
+                collapsed={collapsed}
+              />
             </li>
             <li>
-              <NavLink label="All Pages" Icon={FileText} to="/pages" collapsed={collapsed} />
+              <NavLink
+                label="All Pages"
+                Icon={FileText}
+                to="/pages"
+                collapsed={collapsed}
+              />
             </li>
             <li>
               <NavLink
@@ -346,7 +400,12 @@ export function Sidebar({
           <ul className="space-y-0.5 pb-4">
             {resolvedStudyTools.map((item) => (
               <li key={`${item.label}-${item.to}`}>
-                <NavLink label={item.label} Icon={item.icon} to={item.to} collapsed={collapsed} />
+                <NavLink
+                  label={item.label}
+                  Icon={item.icon}
+                  to={item.to}
+                  collapsed={collapsed}
+                />
               </li>
             ))}
             <li>
@@ -402,7 +461,9 @@ function NavLink({
       <Icon
         className={`size-4 shrink-0 ${featured ? "text-primary" : "text-muted-foreground group-data-[status=active]:text-primary"}`}
       />
-      {(!collapsed || featured) && <span className="truncate">{collapsed ? "Atlas" : label}</span>}
+      {(!collapsed || featured) && (
+        <span className="truncate">{collapsed ? "Atlas" : label}</span>
+      )}
     </Link>
   );
 }

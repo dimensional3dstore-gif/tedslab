@@ -48,7 +48,9 @@ async function signToken(
     .setAudience(options.audience ?? AUDIENCE)
     .setIssuedAt(options.issuedAt ?? now);
   if (!options.omitExp) {
-    jwt.setExpirationTime((options.issuedAt ?? now) + (options.expiresIn ?? 300));
+    jwt.setExpirationTime(
+      (options.issuedAt ?? now) + (options.expiresIn ?? 300),
+    );
   }
   return jwt.sign(key.privateKey);
 }

@@ -4,7 +4,8 @@ import { Plus, Trash2 } from "lucide-react";
 import { AppShell, PageHeader } from "@/components/biopedia/AppShell";
 
 const title = "Custom Lists — Ted's Lab";
-const description = "Group topics into your own study lists and tick them off as you go.";
+const description =
+  "Group topics into your own study lists and tick them off as you go.";
 const KEY = "biopedia:lists";
 
 type List = { id: string; name: string; items: string[] };
@@ -104,7 +105,12 @@ function CustomListsPage() {
                       onClick={() =>
                         save(
                           lists.map((x) =>
-                            x.id === l.id ? { ...x, items: x.items.filter((i) => i !== item) } : x,
+                            x.id === l.id
+                              ? {
+                                  ...x,
+                                  items: x.items.filter((i) => i !== item),
+                                }
+                              : x,
                           ),
                         )
                       }
@@ -122,7 +128,9 @@ function CustomListsPage() {
                   const v = (drafts[l.id] ?? "").trim();
                   if (!v) return;
                   save(
-                    lists.map((x) => (x.id === l.id ? { ...x, items: [...x.items, v] } : x)),
+                    lists.map((x) =>
+                      x.id === l.id ? { ...x, items: [...x.items, v] } : x,
+                    ),
                   );
                   setDrafts({ ...drafts, [l.id]: "" });
                 }}
@@ -130,7 +138,9 @@ function CustomListsPage() {
               >
                 <input
                   value={drafts[l.id] ?? ""}
-                  onChange={(e) => setDrafts({ ...drafts, [l.id]: e.target.value })}
+                  onChange={(e) =>
+                    setDrafts({ ...drafts, [l.id]: e.target.value })
+                  }
                   placeholder="Add a topic"
                   aria-label={`Add a topic to ${l.name}`}
                   className="h-9 flex-1 rounded-md border border-border bg-card px-3 text-xs outline-none focus:border-primary/60"

@@ -1,6 +1,7 @@
 import fs from "node:fs";
 
-const expectedUrl = "https://github.com/dimensional3dstore-gif/tedslab/releases/latest/download/ChronosOS.dmg";
+const expectedUrl =
+  "https://github.com/dimensional3dstore-gif/tedslab/releases/latest/download/ChronosOS.dmg";
 const configPath = "src/lib/chronos-os-download.ts";
 const workflowPath = ".github/workflows/chronosos-release.yml";
 

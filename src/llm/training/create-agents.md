@@ -1,6 +1,7 @@
 # Creating Agents
 
 ## Design checklist
+
 - Give the agent one bounded role and a clear completion condition.
 - Separate trusted instructions from user data and retrieved content.
 - Grant the minimum tools and permissions needed for the task.

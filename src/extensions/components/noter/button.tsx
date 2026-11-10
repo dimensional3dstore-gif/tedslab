@@ -4,7 +4,10 @@ export function NoterButton({
   icon,
   label,
   ...props
-}: ButtonHTMLAttributes<HTMLButtonElement> & { icon: ReactNode; label: string }) {
+}: ButtonHTMLAttributes<HTMLButtonElement> & {
+  icon: ReactNode;
+  label: string;
+}) {
   return (
     <button
       {...props}
