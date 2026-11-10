@@ -21,6 +21,7 @@ import {
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { useSubjects, useSections, useArticles, useNavLinks, useSettings } from "@/lib/content";
+import { getChronosOSDownloadUrl } from "@/lib/chronos-os-download";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AiAssistPanel } from "../atlas/AiAssist";
 
@@ -53,6 +54,7 @@ export function Sidebar({
   const { data: articles } = useArticles();
   const { data: navLinks } = useNavLinks();
   const { data: settings } = useSettings();
+  const chronosDownloadUrl = getChronosOSDownloadUrl();
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
   const [collapsed, setCollapsed] = useState(false);
@@ -358,7 +360,7 @@ export function Sidebar({
             <li>
               {!collapsed && (
                 <a
-                  href="/downloads/ChronosOS.dmg"
+                  href={chronosDownloadUrl}
                   download="ChronosOS.dmg"
                   className="group flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-sidebar-foreground transition-colors hover:bg-secondary"
                 >

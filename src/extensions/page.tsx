@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Download } from "lucide-react";
+import { getChronosOSDownloadUrl } from "@/lib/chronos-os-download";
 import { FontBar } from "./components/noter/font-bar";
 import { FormatBar } from "./components/noter/format-bar";
 import type { NoteFont } from "./components/noter/font-options";
@@ -19,6 +20,8 @@ const extensions = [
 ];
 
 export default function ExtensionsPage() {
+  const chronosDownloadUrl = getChronosOSDownloadUrl();
+
   return (
     <main className="mx-auto w-full max-w-5xl space-y-6 p-6">
       <header>
@@ -45,7 +48,7 @@ export default function ExtensionsPage() {
         ))}
       </div>
       <a
-        href="/downloads/ChronosOS.dmg"
+        href={chronosDownloadUrl}
         download
         className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
       >

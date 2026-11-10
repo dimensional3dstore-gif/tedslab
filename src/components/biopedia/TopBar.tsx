@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/use-auth";
+import { getChronosOSDownloadUrl } from "@/lib/chronos-os-download";
 
 export function TopBar({
   query,
@@ -27,6 +28,8 @@ export function TopBar({
   onToggleSidebar: () => void;
 }) {
   const { user } = useAuth();
+  const chronosDownloadUrl = getChronosOSDownloadUrl();
+
   return (
     <header className="sticky top-0 z-20 flex items-center gap-4 border-b border-border bg-background/90 px-4 py-3 backdrop-blur md:px-6">
       <button
@@ -50,7 +53,7 @@ export function TopBar({
       </label>
 
       <a
-        href="/downloads/ChronosOS.dmg"
+        href={chronosDownloadUrl}
         download="ChronosOS.dmg"
         aria-label="Download ChronosOS DMG"
         title="Download ChronosOS DMG"

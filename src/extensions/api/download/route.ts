@@ -1,3 +1,5 @@
+import { CHRONOSOS_DOWNLOAD_URL } from "@/lib/chronos-os-download";
+
 export function GET(): Response {
   return Response.json(
     {
@@ -5,7 +7,7 @@ export function GET(): Response {
         {
           id: "chronosos-macos",
           name: "ChronosOS for macOS",
-          url: "/downloads/ChronosOS.dmg",
+          url: CHRONOSOS_DOWNLOAD_URL,
           platform: "macOS arm64",
         },
       ],

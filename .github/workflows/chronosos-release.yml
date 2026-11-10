@@ -1,0 +1,54 @@
+name: Build and publish ChronosOS DMG
+
+on:
+  push:
+    tags:
+      - "v*"
+      - "chronosos-*"
+  workflow_dispatch:
+
+jobs:
+  build-macos-dmg:
+    runs-on: macos-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build app
+        run: npm run build
+
+      - name: Create macOS DMG
+        run: npx electron-builder --mac dmg
+
+      - name: Rename DMG for release
+        run: |
+          DMG_PATH=$(find release -name "*.dmg" -type f | head -n 1)
+          if [ -z "$DMG_PATH" ]; then
+            echo "No DMG artifact was created."
+            exit 1
+          fi
+          cp "$DMG_PATH" release/ChronosOS.dmg
+
+      - name: Upload DMG artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: chronosos-dmg
+          path: release/ChronosOS.dmg
+
+      - name: Publish to GitHub release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release/ChronosOS.dmg

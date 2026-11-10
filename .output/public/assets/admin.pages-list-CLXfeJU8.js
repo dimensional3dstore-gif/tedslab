@@ -1,0 +1,1 @@
+import{t as e}from"./jsx-runtime-Cx0BB4qO.js";import{t}from"./AdminPage-DoK1G3A3.js";var n=e(),r=()=>(0,n.jsx)(t,{title:`All pages`,description:`A complete editorial index of site pages.`,children:(0,n.jsx)(`div`,{className:`bio-panel p-5 text-sm text-muted-foreground`,children:`The page index will populate from your persistence layer.`})});export{r as component};

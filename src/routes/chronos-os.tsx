@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { ArrowUpRight, Download, LockKeyhole, Wifi } from "lucide-react";
 import { AuthForm } from "@/components/auth/AuthForm";
 import wallpaper from "@/assets/tech-computing.jpg";
+import { getChronosOSDownloadUrl } from "@/lib/chronos-os-download";
 
 export const Route = createFileRoute("/chronos-os")({
   head: () => ({
@@ -16,6 +17,7 @@ export const Route = createFileRoute("/chronos-os")({
 
 function ChronosOSLogin() {
   const [now, setNow] = useState(() => new Date());
+  const chronosDownloadUrl = getChronosOSDownloadUrl();
 
   useEffect(() => {
     const timer = window.setInterval(() => setNow(new Date()), 30_000);
@@ -97,7 +99,7 @@ function ChronosOSLogin() {
         </span>
         <div className="flex flex-wrap items-center gap-4">
           <a
-            href="/downloads/ChronosOS.dmg"
+            href={chronosDownloadUrl}
             download="ChronosOS.dmg"
             className="inline-flex items-center gap-1.5 hover:text-white"
           >

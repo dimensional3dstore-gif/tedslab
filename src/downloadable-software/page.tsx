@@ -1,7 +1,10 @@
 import { Download, MonitorDown } from "lucide-react";
 import { AppShell, PageHeader } from "@/components/biopedia/AppShell";
+import { getChronosOSDownloadUrl } from "@/lib/chronos-os-download";
 
 export default function DownloadableSoftwarePage() {
+  const chronosDownloadUrl = getChronosOSDownloadUrl();
+
   return (
     <AppShell>
       <div className="mx-auto w-full max-w-4xl space-y-6">
@@ -29,7 +32,7 @@ export default function DownloadableSoftwarePage() {
             </div>
           </div>
           <a
-            href="/downloads/ChronosOS.dmg"
+            href={chronosDownloadUrl}
             download
             className="inline-flex shrink-0 items-center justify-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground"
           >

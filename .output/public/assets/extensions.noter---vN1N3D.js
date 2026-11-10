@@ -1,0 +1,1 @@
+import{n as e}from"./page-MGgh5JXn.js";var t=e;export{t as component};

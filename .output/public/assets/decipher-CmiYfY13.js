@@ -1,1 +1,0 @@
-import{t as e}from"./jsx-runtime-Cx0BB4qO.js";import{t}from"./PlatformPlaceholderPage-B5jH2wKz.js";var n=e(),r=()=>(0,n.jsx)(t,{title:`Decipher`,description:`A planned analysis and interpretation workspace.`,area:`Decipher`,nextSteps:[`Define input formats.`,`Connect local and remote analysis engines.`,`Add result annotations and export.`]});export{r as component};
