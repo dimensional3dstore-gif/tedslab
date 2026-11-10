@@ -1,3 +1,9 @@
+export const CHRONOSOS_GITHUB_RELEASES_URL =
+  "https://github.com/dimensional3dstore-gif/tedslab/releases";
+
+export const CHRONOSOS_LATEST_RELEASE_API_URL =
+  "https://api.github.com/repos/dimensional3dstore-gif/tedslab/releases/latest";
+
 export const CHRONOSOS_DOWNLOAD_URL =
   "https://github.com/dimensional3dstore-gif/tedslab/releases/latest/download/ChronosOS.dmg";
 
