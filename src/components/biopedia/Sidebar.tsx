@@ -409,7 +409,7 @@ export function Sidebar({
               {!collapsed && (
                 <a
                   href={chronosDownloadUrl}
-                  download="ChronosOS.dmg"
+                  download="Chronos.dmg"
                   className="group flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-sidebar-foreground transition-colors hover:bg-secondary"
                 >
                   <Download className="size-4 text-muted-foreground group-hover:text-primary" />

@@ -100,7 +100,7 @@ function ChronosOSLogin() {
         <div className="flex flex-wrap items-center gap-4">
           <a
             href={chronosDownloadUrl}
-            download="ChronosOS.dmg"
+            download="Chronos.dmg"
             className="inline-flex items-center gap-1.5 hover:text-white"
           >
             <Download className="size-3.5" /> Download DMG

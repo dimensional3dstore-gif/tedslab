@@ -53,7 +53,7 @@ export default function DownloadableSoftwarePage() {
   }, []);
 
   const dmg =
-    release?.assets.find((asset) => asset.name === "ChronosOS.dmg") ??
+    release?.assets.find((asset) => asset.name === "Chronos.dmg") ??
     release?.assets.find((asset) => /^ChronosOS.*\.dmg$/i.test(asset.name));
 
   return (
@@ -102,7 +102,7 @@ export default function DownloadableSoftwarePage() {
                 )}
                 {status === "available" &&
                   !dmg &&
-                  "A release is published, but ChronosOS.dmg is not attached yet."}
+                  "A release is published, but Chronos.dmg is not attached yet."}
               </div>
             </div>
             <div className="flex shrink-0 flex-wrap gap-3">

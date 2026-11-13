@@ -28,10 +28,10 @@ export function Hero() {
       <section className="relative overflow-hidden rounded-2xl border border-border bio-hero-bg">
         <div className="grid items-center gap-6 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
           <div className="p-8 md:p-10">
-            <h1 className="font-display text-4xl font-bold md:text-5xl">
+            <h1 className="font-display text-3xl font-bold md:text-4xl">
               Welcome
             </h1>
-            <p className="mt-2 text-xl font-medium text-primary">
+            <p className="mt-2 text-lg font-medium text-primary">
               Explore &amp; Learn
             </p>
           </div>
@@ -91,51 +91,51 @@ export function Hero() {
     <section className="relative overflow-hidden rounded-2xl border border-border bio-hero-bg">
       <div className="grid items-center gap-6 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
         <div className="p-8 md:p-10">
-          <h1 className="font-display text-4xl font-bold md:text-5xl">
+          <h1 className="font-display text-3xl font-bold md:text-4xl">
             {slide.title}
           </h1>
-          <p className="mt-2 text-xl font-medium text-primary">
+          <p className="mt-2 text-lg font-medium text-primary">
             {slide.subtitle}
           </p>
-          <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">
+          <p className="mt-4 max-w-md text-xs leading-relaxed text-muted-foreground">
             {slide.body}
           </p>
 
           <div className="mt-7 flex flex-wrap gap-3">
             <Link
               to={exploreLink}
-              className="rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+              className="rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground transition-opacity hover:opacity-90"
             >
               Explore Topic
             </Link>
             <Link
               to="/download"
-              className="rounded-lg border border-border bg-card/60 px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+              className="rounded-lg border border-border bg-card/60 px-4 py-2 text-xs font-medium text-foreground transition-colors hover:bg-secondary"
             >
               Download App
             </Link>
             <Link
               to="/signup"
-              className="rounded-lg border border-border bg-card/60 px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+              className="rounded-lg border border-border bg-card/60 px-4 py-2 text-xs font-medium text-foreground transition-colors hover:bg-secondary"
             >
               Sign up
             </Link>
             <Link
               to="/auth"
-              className="rounded-lg border border-border bg-card/60 px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+              className="rounded-lg border border-border bg-card/60 px-4 py-2 text-xs font-medium text-foreground transition-colors hover:bg-secondary"
             >
               Log in
             </Link>
             {watchLink ? (
               <Link
                 to={watchLink}
-                className="flex items-center gap-2 rounded-lg border border-border bg-card/60 px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+                className="flex items-center gap-2 rounded-lg border border-border bg-card/60 px-4 py-2 text-xs font-medium text-foreground transition-colors hover:bg-secondary"
               >
                 <PlayCircle className="size-4" />
                 Watch Video
               </Link>
             ) : (
-              <button className="flex items-center gap-2 rounded-lg border border-border bg-card/60 px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-secondary">
+              <button className="flex items-center gap-2 rounded-lg border border-border bg-card/60 px-4 py-2 text-xs font-medium text-foreground transition-colors hover:bg-secondary">
                 <PlayCircle className="size-4" />
                 Watch Video
               </button>
