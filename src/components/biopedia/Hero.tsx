@@ -26,7 +26,7 @@ export function Hero() {
   if (slides.length === 0) {
     return (
       <section className="relative overflow-hidden rounded-2xl border border-border bio-hero-bg">
-        <div className="grid items-center gap-6 md:grid-cols-[1fr_minmax(0,44%)]">
+        <div className="grid items-center gap-6 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
           <div className="p-8 md:p-10">
             <h1 className="font-display text-4xl font-bold md:text-5xl">
               Welcome
@@ -40,7 +40,7 @@ export function Hero() {
             alt="Cross-section render of a living cell with a glowing nucleus and mitochondria"
             width={1024}
             height={768}
-            className="h-full w-full object-cover md:max-h-80"
+            className="h-full w-full object-contain md:max-h-80"
           />
         </div>
       </section>
@@ -89,7 +89,7 @@ export function Hero() {
 
   return (
     <section className="relative overflow-hidden rounded-2xl border border-border bio-hero-bg">
-      <div className="grid items-center gap-6 md:grid-cols-[1fr_minmax(0,44%)]">
+      <div className="grid items-center gap-6 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
         <div className="p-8 md:p-10">
           <h1 className="font-display text-4xl font-bold md:text-5xl">
             {slide.title}
@@ -161,7 +161,7 @@ export function Hero() {
           alt={slide.title}
           width={1024}
           height={768}
-          className="h-full w-full object-cover md:max-h-80"
+          className="h-full w-full object-contain md:max-h-80"
         />
       </div>
     </section>

@@ -14,7 +14,8 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "generate:sitemap": "node scripts/generate-sitemap.mjs",
-    "desktop:mac": "electron-builder --mac dmg",
+    "desktop:app": "electron-builder --mac dir --arm64",
+    "desktop:mac": "node scripts/package-chronosos-macos.mjs",
     "desktop:download": "node scripts/package-chronosos-macos.mjs"
   },
   "dependencies": {
@@ -107,6 +108,9 @@
     "electron": "^40.0.0",
     "electron-builder": "^26.0.12"
   },
+  "optionalDependencies": {
+    "create-dmg": "^8.1.0"
+  },
   "build": {
     "appId": "com.tedslab.chronosos",
     "productName": "ChronosOS",
@@ -120,12 +124,9 @@
     },
     "mac": {
       "target": [
-        "dmg"
+        "dir"
       ],
       "category": "public.app-category.education"
-    },
-    "dmg": {
-      "artifactName": "ChronosOS-${version}-${arch}.${ext}"
     }
   },
   "allowScripts": {
