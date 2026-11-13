@@ -4,13 +4,14 @@ export function QuoteBar() {
   return (
     <footer className="mt-8 flex flex-wrap items-center gap-4 bio-panel px-5 py-4">
       <Sprout className="size-5 text-primary" />
-      <p className="flex-1 text-xs italic text-foreground">
+      <p className="flex-1 text-sm italic text-foreground">
         When observing nature, observe it at a snail's pace.”
-        <span className="ml-3 text-[10px] not-italic text-muted-foreground">
+        <span className="ml-3 text-[xm] not-italic text-muted-foreground">
           – Edwin Way Teale, American naturalist and author (1899-1980)
         </span>
       </p>
-      <div className="flex items-center gap-5 text-xs text-muted-foreground">
+
+      <div className="flex items-center gap-5 text-sm text-muted-foreground">
         <span className="flex items-center gap-2">
           <Quote className="size-4" /> Cite
         </span>
