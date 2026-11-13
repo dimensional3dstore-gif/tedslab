@@ -110,36 +110,7 @@ export function Hero() {
             </Link>
             <Link
               to="/download"
-              className="rounded-lg border border-border bg-card/60 px-4 py-2 text-[11px] font-medium text-foreground transition-colors hover:bg-secondary"
-            >
-              Download App
-            </Link>
-            <Link
-              to="/signup"
-              className="rounded-lg border border-border bg-card/60 px-4 py-2 text-[11px] font-medium text-foreground transition-colors hover:bg-secondary"
-            >
-              Sign up
-            </Link>
-            <Link
-              to="/auth"
-              className="rounded-lg border border-border bg-card/60 px-4 py-2 text-[11px] font-medium text-foreground transition-colors hover:bg-secondary"
-            >
-              Log in
-            </Link>
-            {watchLink ? (
-              <Link
-                to={watchLink}
-                className="flex items-center gap-2 rounded-lg border border-border bg-card/60 px-4 py-2 text-[11px] font-medium text-foreground transition-colors hover:bg-secondary"
-              >
-                <PlayCircle className="size-4" />
-                Watch Video
-              </Link>
-            ) : (
-              <button className="flex items-center gap-2 rounded-lg border border-border bg-card/60 px-4 py-2 text-[11px] font-medium text-foreground transition-colors hover:bg-secondary">
-                <PlayCircle className="size-4" />
-                Watch Video
-              </button>
-            )}
+              className="rounded-lg border border-border bg-card/60 px-4 py-2 text-[11px] font-medium text-foreground transition-colors hover:bg-secondary" />
           </div>
 
           <div className="mt-8 flex gap-2">
