@@ -26,7 +26,7 @@ export function QuoteBar() {
           reserved.
         </span>
         <span className="flex items-center gap-2">
-          <MessageSquare className="size-4" /> Developed by {"Exolab"}.
+          <MessageSquare className="size-4" /> Developed by {"Exolab Developers and IIS Computer Science Divison"}.
         </span>
       </div>
     </footer>
