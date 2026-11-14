@@ -17,13 +17,21 @@ if (!fs.existsSync(workflowPath)) {
 }
 
 const workflowText = fs.readFileSync(workflowPath, "utf8");
+const requiredWorkflowContent = [
+  "npm ci --include=optional",
+  "apple-actions/import-codesign-certs@v3",
+  "npm run desktop:app",
+  "node scripts/package-chronosos-macos.mjs --skip-app-build",
+  "notarytool submit",
+  "stapler staple release/Chronos.dmg",
+  "codesign --verify",
+  "Chronos.dmg",
+];
 if (
-  !workflowText.includes("npm ci --include=optional") ||
-  !workflowText.includes("npm run desktop:download") ||
-  !workflowText.includes("Chronos.dmg")
+  requiredWorkflowContent.some((content) => !workflowText.includes(content))
 ) {
   throw new Error(
-    "Release workflow must install optional dependencies, package the app, and publish Chronos.dmg.",
+    "Release workflow must install dependencies, sign and notarize the app and DMG, and publish Chronos.dmg.",
   );
 }
 
@@ -59,7 +67,9 @@ if (
   ) ||
   packageJson.dependencies?.["create-dmg"] ||
   packageJson.optionalDependencies?.["create-dmg"] ||
-  packageJson.build?.mac?.icon !== "build/ChronosOS.icns"
+  packageJson.build?.mac?.icon !== "build/ChronosOS.icns" ||
+  packageJson.build?.mac?.hardenedRuntime !== true ||
+  packageJson.build?.mac?.notarize !== false
 ) {
   throw new Error(
     "Incomplete vendored create-dmg source, runtime dependencies, ChronosOS icon setup, or macOS packaging script.",

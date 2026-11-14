@@ -10,6 +10,7 @@ const projectRoot = path.resolve(
 const releaseDirectory = path.join(projectRoot, "release");
 const appPath = path.join(releaseDirectory, "mac-arm64", "ChronosOS.app");
 const createDmgCli = path.join(projectRoot, "vendor", "create-dmg", "cli.js");
+const skipAppBuild = process.argv.includes("--skip-app-build");
 
 await stat(createDmgCli).catch((error) => {
   if (error.code === "ENOENT") {
@@ -21,23 +22,25 @@ await stat(createDmgCli).catch((error) => {
   throw error;
 });
 
-execFileSync(
-  process.execPath,
-  [path.join(projectRoot, "scripts", "generate-chronosos-macos-icon.mjs")],
-  { cwd: projectRoot, stdio: "inherit" },
-);
+if (!skipAppBuild) {
+  execFileSync(
+    process.execPath,
+    [path.join(projectRoot, "scripts", "generate-chronosos-macos-icon.mjs")],
+    { cwd: projectRoot, stdio: "inherit" },
+  );
 
-execFileSync("npm", ["run", "desktop:app"], {
-  cwd: projectRoot,
-  stdio: "inherit",
-});
+  execFileSync("npm", ["run", "desktop:app"], {
+    cwd: projectRoot,
+    stdio: "inherit",
+  });
+}
+
+await stat(appPath);
 
 execFileSync("npm", ["rebuild", "macos-alias"], {
   cwd: projectRoot,
   stdio: "inherit",
 });
-
-await stat(appPath);
 
 execFileSync(
   process.execPath,
@@ -45,7 +48,6 @@ execFileSync(
     createDmgCli,
     "--overwrite",
     "--no-version-in-filename",
-    "--no-code-sign",
     "--dmg-title=ChronosOS",
     appPath,
     releaseDirectory,

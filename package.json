@@ -133,7 +133,9 @@
       "target": [
         "dir"
       ],
-      "category": "public.app-category.education"
+      "category": "public.app-category.education",
+      "hardenedRuntime": true,
+      "notarize": false
     }
   },
   "allowScripts": {
