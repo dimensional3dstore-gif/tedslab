@@ -3,49 +3,35 @@ import { queryOptions, useQuery } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
 import { AppShell } from "@/components/biopedia/AppShell";
 import { ArticleCard } from "@/components/biopedia/ArticleCard";
-import { supabase } from "@/integrations/supabase/client";
-import type { SectionRow, Subject, TopicRow } from "@/lib/content";
+import type { ArticleRow, SectionRow, Subject, TopicRow } from "@/lib/content";
+import { fetchCatalogRow, fetchCatalogRows } from "@/lib/content";
+import { ARTICLES, SECTIONS, SUBJECTS, TOPICS } from "@/lib/catalog";
 import { resolveImage } from "@/lib/images";
 import { useBookmarks } from "@/hooks/use-bookmarks";
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const db = supabase as unknown as { from: (table: string) => any };
 
 const subjectQueryOptions = (slug: string) =>
   queryOptions({
     queryKey: ["subject", slug],
-    queryFn: async () => {
-      const { data, error } = await db
-        .from("subjects")
-        .select("*")
-        .eq("slug", slug)
-        .maybeSingle();
-      if (error) throw error;
-      return (data ?? null) as Subject | null;
-    },
+    queryFn: () => fetchCatalogRow<Subject>("subjects", "slug", slug, SUBJECTS),
   });
 
 const sectionQueryOptions = (subjectSlug: string, sectionSlug: string) =>
   queryOptions({
     queryKey: ["section", subjectSlug, sectionSlug],
     queryFn: async () => {
-      const { data, error } = await db
-        .from("sections")
-        .select("*")
-        .eq("slug", sectionSlug)
-        .eq(
-          "subject_id",
-          (
-            await db
-              .from("subjects")
-              .select("id")
-              .eq("slug", subjectSlug)
-              .maybeSingle()
-          )?.data?.id ?? "",
-        )
-        .maybeSingle();
-      if (error) throw error;
-      return (data ?? null) as SectionRow | null;
+      const subject = await fetchCatalogRow<Subject>(
+        "subjects",
+        "slug",
+        subjectSlug,
+        SUBJECTS,
+      );
+      const section = await fetchCatalogRow<SectionRow>(
+        "sections",
+        "slug",
+        sectionSlug,
+        SECTIONS,
+      );
+      return section?.subject_id === subject?.id ? section : null;
     },
   });
 
@@ -53,13 +39,19 @@ const topicQueryOptions = (sectionSlug: string, topicSlug: string) =>
   queryOptions({
     queryKey: ["topic", sectionSlug, topicSlug],
     queryFn: async () => {
-      const { data, error } = await db
-        .from("topics")
-        .select("*")
-        .eq("slug", topicSlug)
-        .maybeSingle();
-      if (error) throw error;
-      return (data ?? null) as TopicRow | null;
+      const section = await fetchCatalogRow<SectionRow>(
+        "sections",
+        "slug",
+        sectionSlug,
+        SECTIONS,
+      );
+      const rows = await fetchCatalogRows<TopicRow>("topics", TOPICS);
+      return (
+        rows.find(
+          (topic) =>
+            topic.section_id === section?.id && topic.slug === topicSlug,
+        ) ?? null
+      );
     },
   });
 
@@ -67,15 +59,10 @@ const topicArticlesQueryOptions = (topicSlug: string) =>
   queryOptions({
     queryKey: ["articles", "by-topic", topicSlug],
     queryFn: async () => {
-      const { data, error } = await db
-        .from("articles")
-        .select("*")
-        .eq("topic_slug", topicSlug)
-        .eq("published", true)
-        .order("sort", { ascending: true });
-      if (error) throw error;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return (data ?? []) as any[];
+      const rows = await fetchCatalogRows<ArticleRow>("articles", ARTICLES);
+      return rows.filter(
+        (article) => article.topic_slug === topicSlug && article.published,
+      );
     },
   });
 

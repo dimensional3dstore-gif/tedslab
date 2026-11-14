@@ -14,8 +14,9 @@ interface DeploymentMetrics {
 async function getDeploymentMetrics(): Promise<DeploymentMetrics> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { count: userCount } = await (supabase as any)
-    .from("profiles")
-    .select("id", { count: "exact", head: true });
+    .from("user_roles")
+    .select("user_id", { count: "exact", head: true })
+    .eq("role", "user");
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data: settings } = await (supabase as any)
@@ -49,23 +50,34 @@ async function getContentStats(): Promise<ContentStats[]> {
   const stats: ContentStats[] = [];
 
   const tables = [
-    { name: "articles", label: "Articles" },
-    { name: "pages", label: "Pages" },
+    { name: "articles", label: "Articles", visibilityColumn: "published" },
+    { name: "pages", label: "Pages", visibilityColumn: "published" },
     { name: "sections", label: "Sections" },
     { name: "topics", label: "Topics" },
-    { name: "videos", label: "Videos" },
-    { name: "hero_slides", label: "Hero Slides" },
+    { name: "videos", label: "Videos", visibilityColumn: "published" },
+    { name: "hero_slides", label: "Hero Slides", visibilityColumn: "active" },
   ];
 
   for (const table of tables) {
     try {
-      const { data: allData } = await db
+      const { data: allData, error } = await db
         .from(table.name)
-        .select("id, published")
-        .returns<{ id: string; published?: boolean | null }[]>();
+        .select(
+          table.visibilityColumn ? `id, ${table.visibilityColumn}` : "id",
+        );
+      if (error) throw error;
 
-      const total = allData?.length ?? 0;
-      const published = allData?.filter((item) => item.published).length ?? 0;
+      const rows = (allData ?? []) as Array<{
+        id: string;
+        published?: boolean | null;
+        active?: boolean | null;
+      }>;
+      const total = rows.length;
+      const published = table.visibilityColumn
+        ? rows.filter(
+            (item) => item[table.visibilityColumn as "published" | "active"],
+          ).length
+        : total;
       const draft = total - published;
 
       stats.push({

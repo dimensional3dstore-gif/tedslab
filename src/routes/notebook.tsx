@@ -1,12 +1,12 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
 import { Trash2 } from "lucide-react";
 import { AppShell, PageHeader } from "@/components/biopedia/AppShell";
+import { useUserCollection } from "@/lib/user-data";
 
 const title = "Notebook — Ted's Lab";
 const description =
-  "Keep your own biology study notes, saved right in your browser.";
-const KEY = "biopedia:notes";
+  "Keep your own biology study notes, synced to your account.";
 
 type Note = { id: string; text: string; created: string };
 
@@ -25,30 +25,39 @@ export const Route = createFileRoute("/notebook")({
 });
 
 function NotebookPage() {
-  const [notes, setNotes] = useState<Note[]>([]);
+  const {
+    value: notes,
+    save,
+    user,
+    isLoading,
+    error,
+  } = useUserCollection<Note[]>("notebook", "notes", []);
   const [draft, setDraft] = useState("");
-
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(KEY);
-      if (raw) setNotes(JSON.parse(raw) as Note[]);
-    } catch {
-      /* ignore */
-    }
-  }, []);
-
-  const save = (next: Note[]) => {
-    setNotes(next);
-    try {
-      localStorage.setItem(KEY, JSON.stringify(next));
-    } catch {
-      /* ignore */
-    }
-  };
 
   return (
     <AppShell>
       <PageHeader title="Notebook" description={description} />
+      {!user && (
+        <p className="mt-4 text-sm text-muted-foreground">
+          Sign in to save notes across your devices.{" "}
+          <Link
+            to="/auth"
+            className="text-primary underline underline-offset-4"
+          >
+            Sign in
+          </Link>
+        </p>
+      )}
+      {error && (
+        <p role="alert" className="mt-4 text-sm text-destructive">
+          Your notes could not be saved.
+        </p>
+      )}
+      {isLoading && (
+        <p role="status" className="mt-4 text-sm text-muted-foreground">
+          Loading your notes…
+        </p>
+      )}
 
       <form
         onSubmit={(e) => {
@@ -77,10 +86,12 @@ function NotebookPage() {
           rows={4}
           placeholder="Write what you learned today..."
           className="mt-2 w-full rounded-lg border border-border bg-card p-3 text-sm outline-none focus:border-primary/60"
+          disabled={!user}
         />
         <button
           type="submit"
-          className="mt-3 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
+          disabled={!user}
+          className="mt-3 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground disabled:opacity-50"
         >
           Add note
         </button>
@@ -101,6 +112,7 @@ function NotebookPage() {
               <button
                 type="button"
                 aria-label="Delete note"
+                disabled={!user}
                 onClick={() => save(notes.filter((x) => x.id !== n.id))}
                 className="text-muted-foreground hover:text-destructive"
               >

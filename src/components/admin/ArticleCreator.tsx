@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { ArticleTemplate } from "@/components/biopedia/ArticleTemplate";
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,7 @@ function cloneDefault(): ArticleLayout {
 
 export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const initialLayout = existing ? undefined : cloneDefault();
   const [title, setTitle] = useState(existing?.title ?? "Untitled article");
   const [excerpt, setExcerpt] = useState(
@@ -35,6 +37,8 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
   const [status, setStatus] = useState<"draft" | "published">(
     existing?.published ? "published" : "draft",
   );
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState("");
 
   void initialLayout;
 
@@ -60,15 +64,26 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
     [existing?.id, title, excerpt, layout, subject, section, imageKey, status],
   );
 
-  const save = (publish: boolean) => {
+  const save = async (publish: boolean) => {
+    setSaving(true);
+    setSaveError("");
     const row: ArticleRow = {
       ...previewArticle,
       id: existing?.id ?? `custom-${Date.now()}`,
       published: publish,
       status: publish ? "published" : "draft",
     };
-    upsertCustomArticle(row);
-    navigate({ to: "/admin/articles" });
+    try {
+      await upsertCustomArticle(row);
+      await queryClient.invalidateQueries({ queryKey: ["articles"] });
+      await navigate({ to: "/admin/articles" });
+    } catch {
+      setSaveError(
+        "Unable to save this article. Confirm your admin access and try again.",
+      );
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -77,7 +92,7 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
         className="bio-panel space-y-4 p-4"
         onSubmit={(e) => {
           e.preventDefault();
-          save(true);
+          void save(true);
         }}
       >
         <h2 className="font-display text-lg font-semibold">Create article</h2>
@@ -157,11 +172,23 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
             }
           />
         </label>
+        {saveError && (
+          <p role="alert" className="text-sm text-destructive">
+            {saveError}
+          </p>
+        )}
         <div className="flex flex-wrap gap-2">
-          <Button type="button" variant="outline" onClick={() => save(false)}>
-            Save draft
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => void save(false)}
+            disabled={saving}
+          >
+            {saving ? "Saving…" : "Save draft"}
           </Button>
-          <Button type="submit">Publish</Button>
+          <Button type="submit" disabled={saving}>
+            {saving ? "Saving…" : "Publish"}
+          </Button>
           <Button
             type="button"
             variant="ghost"

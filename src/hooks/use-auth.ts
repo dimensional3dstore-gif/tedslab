@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import type { Session, User } from "@supabase/supabase-js";
 import {
   getSupabaseAuthClient,
@@ -54,6 +55,22 @@ export function useAuth() {
     };
   }, []);
 
+  const roleQuery = useQuery({
+    queryKey: ["user-role", state.user?.id ?? null],
+    enabled: Boolean(state.user),
+    queryFn: async () => {
+      if (!state.user) return false;
+      const { data, error } = await getSupabaseAuthClient()
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", state.user.id)
+        .eq("role", "admin")
+        .maybeSingle();
+      if (error) throw error;
+      return Boolean(data);
+    },
+  });
+
   const signOut = async () => {
     if (!supabaseAuthConfigured) return;
     const { error } = await getSupabaseAuthClient().auth.signOut();
@@ -61,13 +78,25 @@ export function useAuth() {
   };
 
   const updateProfile = async (displayName: string) => {
-    if (!supabaseAuthConfigured)
-      throw new Error("Account authentication is not configured.");
-    const { error } = await getSupabaseAuthClient().auth.updateUser({
-      data: { full_name: displayName.trim(), display_name: displayName.trim() },
+    if (!supabaseAuthConfigured || !state.user)
+      throw new Error("Sign in before updating your profile.");
+    const cleanName = displayName.trim();
+    const client = getSupabaseAuthClient();
+    const { error: authError } = await client.auth.updateUser({
+      data: { full_name: cleanName, display_name: cleanName },
     });
-    if (error) throw error;
+    if (authError) throw authError;
+    const { error: profileError } = await client
+      .from("profiles")
+      .update({ display_name: cleanName, updated_at: new Date().toISOString() })
+      .eq("id", state.user.id);
+    if (profileError) throw profileError;
   };
 
-  return { ...state, isAdmin: false, signOut, updateProfile };
+  return {
+    ...state,
+    isAdmin: roleQuery.data === true,
+    signOut,
+    updateProfile,
+  };
 }

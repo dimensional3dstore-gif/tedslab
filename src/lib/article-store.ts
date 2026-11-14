@@ -1,36 +1,19 @@
+import { supabase } from "@/integrations/supabase/client";
 import type { ArticleRow } from "@/lib/content";
 
-const KEY = "tedslab-custom-articles-v1";
-
-export function loadCustomArticles(): ArticleRow[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = localStorage.getItem(KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw) as ArticleRow[];
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
+export async function upsertCustomArticle(article: ArticleRow) {
+  const { data, error } = await supabase
+    .from("articles")
+    .upsert(article, { onConflict: "slug" })
+    .select("*")
+    .single();
+  if (error) throw error;
+  return data as unknown as ArticleRow;
 }
 
-export function saveCustomArticles(articles: ArticleRow[]) {
-  localStorage.setItem(KEY, JSON.stringify(articles));
-}
-
-export function upsertCustomArticle(article: ArticleRow) {
-  const all = loadCustomArticles();
-  const idx = all.findIndex(
-    (a) => a.id === article.id || a.slug === article.slug,
-  );
-  if (idx >= 0) all[idx] = article;
-  else all.unshift(article);
-  saveCustomArticles(all);
-  return article;
-}
-
-export function deleteCustomArticle(id: string) {
-  saveCustomArticles(loadCustomArticles().filter((a) => a.id !== id));
+export async function deleteCustomArticle(id: string) {
+  const { error } = await supabase.from("articles").delete().eq("id", id);
+  if (error) throw error;
 }
 
 export function slugifyTitle(title: string) {

@@ -1,7 +1,10 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
-const baseUrl = (process.env.SITE_URL || "https://teds-lab.com").replace(/\/$/, "");
+const baseUrl = (process.env.SITE_URL || "https://teds-lab.com").replace(
+  /\/$/,
+  "",
+);
 const staticRoutes = [
   "/",
   "/categories",

@@ -1,38 +1,23 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import { AppShell, PageHeader } from "@/components/biopedia/AppShell";
-import { supabase } from "@/integrations/supabase/client";
 import type { SectionRow, Subject } from "@/lib/content";
+import { fetchCatalogRow, fetchCatalogRows } from "@/lib/content";
+import { SECTIONS, SUBJECTS } from "@/lib/catalog";
 import { resolveImage } from "@/lib/images";
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const db = supabase as unknown as { from: (table: string) => any };
 
 const subjectQueryOptions = (slug: string) =>
   queryOptions({
     queryKey: ["subject", slug],
-    queryFn: async () => {
-      const { data, error } = await db
-        .from("subjects")
-        .select("*")
-        .eq("slug", slug)
-        .maybeSingle();
-      if (error) throw error;
-      return (data ?? null) as Subject | null;
-    },
+    queryFn: () => fetchCatalogRow<Subject>("subjects", "slug", slug, SUBJECTS),
   });
 
 const subjectSectionsQueryOptions = (subjectId: string) =>
   queryOptions({
     queryKey: ["sections", "by-subject", subjectId],
     queryFn: async () => {
-      const { data, error } = await db
-        .from("sections")
-        .select("*")
-        .eq("subject_id", subjectId)
-        .order("sort", { ascending: true });
-      if (error) throw error;
-      return (data ?? []) as SectionRow[];
+      const rows = await fetchCatalogRows<SectionRow>("sections", SECTIONS);
+      return rows.filter((row) => row.subject_id === subjectId);
     },
   });
 

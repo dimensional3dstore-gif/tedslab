@@ -1,12 +1,12 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { AppShell, PageHeader } from "@/components/biopedia/AppShell";
+import { useUserCollection } from "@/lib/user-data";
 
 const title = "Custom Lists — Ted's Lab";
 const description =
   "Group topics into your own study lists and tick them off as you go.";
-const KEY = "biopedia:lists";
 
 type List = { id: string; name: string; items: string[] };
 
@@ -25,31 +25,40 @@ export const Route = createFileRoute("/custom-lists")({
 });
 
 function CustomListsPage() {
-  const [lists, setLists] = useState<List[]>([]);
+  const {
+    value: lists,
+    save,
+    user,
+    isLoading,
+    error,
+  } = useUserCollection<List[]>("custom-lists", "lists", []);
   const [name, setName] = useState("");
   const [drafts, setDrafts] = useState<Record<string, string>>({});
-
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(KEY);
-      if (raw) setLists(JSON.parse(raw) as List[]);
-    } catch {
-      /* ignore */
-    }
-  }, []);
-
-  const save = (next: List[]) => {
-    setLists(next);
-    try {
-      localStorage.setItem(KEY, JSON.stringify(next));
-    } catch {
-      /* ignore */
-    }
-  };
 
   return (
     <AppShell>
       <PageHeader title="Create Custom List" description={description} />
+      {!user && (
+        <p className="mt-4 text-sm text-muted-foreground">
+          Sign in to save study lists across your devices.{" "}
+          <Link
+            to="/auth"
+            className="text-primary underline underline-offset-4"
+          >
+            Sign in
+          </Link>
+        </p>
+      )}
+      {isLoading && (
+        <p role="status" className="mt-4 text-sm text-muted-foreground">
+          Loading your lists…
+        </p>
+      )}
+      {error && (
+        <p role="alert" className="mt-4 text-sm text-destructive">
+          Your lists could not be saved.
+        </p>
+      )}
 
       <form
         onSubmit={(e) => {
@@ -64,13 +73,15 @@ function CustomListsPage() {
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
+          disabled={!user}
           placeholder="List name, e.g. Exam revision"
           aria-label="List name"
           className="h-11 flex-1 rounded-lg border border-border bg-card px-4 text-sm outline-none focus:border-primary/60"
         />
         <button
           type="submit"
-          className="flex items-center gap-2 rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground"
+          disabled={!user}
+          className="flex items-center gap-2 rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground disabled:opacity-50"
         >
           <Plus className="size-4" /> Create
         </button>
@@ -87,6 +98,7 @@ function CustomListsPage() {
                 <button
                   type="button"
                   aria-label={`Delete ${l.name}`}
+                  disabled={!user}
                   onClick={() => save(lists.filter((x) => x.id !== l.id))}
                   className="text-muted-foreground hover:text-destructive"
                 >
@@ -101,6 +113,7 @@ function CustomListsPage() {
                     <span className="flex-1">{item}</span>
                     <button
                       type="button"
+                      disabled={!user}
                       aria-label={`Remove ${item}`}
                       onClick={() =>
                         save(
@@ -138,6 +151,7 @@ function CustomListsPage() {
               >
                 <input
                   value={drafts[l.id] ?? ""}
+                  disabled={!user}
                   onChange={(e) =>
                     setDrafts({ ...drafts, [l.id]: e.target.value })
                   }
@@ -147,7 +161,8 @@ function CustomListsPage() {
                 />
                 <button
                   type="submit"
-                  className="rounded-md border border-border bg-secondary px-3 text-xs font-medium"
+                  disabled={!user}
+                  className="rounded-md border border-border bg-secondary px-3 text-xs font-medium disabled:opacity-50"
                 >
                   Add
                 </button>

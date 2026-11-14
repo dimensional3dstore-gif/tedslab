@@ -1,23 +1,15 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { queryOptions } from "@tanstack/react-query";
 import { AppShell, PageHeader } from "@/components/biopedia/AppShell";
-import { supabase } from "@/integrations/supabase/client";
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const db = supabase as unknown as { from: (table: string) => any };
+import { fetchCatalogRow, type PageRow } from "@/lib/content";
+import { PAGES } from "@/lib/catalog";
 
 const pageQueryOptions = (slug: string) =>
   queryOptions({
     queryKey: ["page", slug],
     queryFn: async () => {
-      const { data, error } = await db
-        .from("pages")
-        .select("*")
-        .eq("slug", slug)
-        .eq("published", true)
-        .maybeSingle();
-      if (error) throw error;
-      return data ?? null;
+      const page = await fetchCatalogRow<PageRow>("pages", "slug", slug, PAGES);
+      return page?.published ? page : null;
     },
   });
 
