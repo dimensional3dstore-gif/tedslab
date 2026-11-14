@@ -50,6 +50,14 @@ Ensure all Supabase tables exist:
 - `nav_links`
 - `site_settings`
 
+Apply `supabase/migrations/20261114080500_chronosos_download_events.sql` to
+enable anonymous ChronosOS download-event inserts. The page records only the
+release tag, platform, and database timestamp; row-level security denies reads
+and limits inserts to those columns. Configure `VITE_SUPABASE_URL` and the
+project's publishable/anon key as `VITE_SUPABASE_ANON_KEY` for the site build.
+Publishable keys are intended for browser use; never put a Supabase secret or
+service-role key in a `VITE_` variable or client-side code.
+
 ## Build Process
 
 ### Development Build
@@ -121,14 +129,16 @@ Verify that only published content shows on public pages:
 
 ### Option 1: Cloudflare Workers (Recommended)
 
-```bash
-# Install Wrangler
-npm install -D wrangler
+The GitHub Actions workflow in `.github/workflows/deploy-cloudflare.yml` builds and deploys the Cloudflare Worker after every push to `main`. It can also be started manually from the Actions tab.
 
-# Deploy
-npm run build:prod
-wrangler publish
-```
+Add these repository Actions secrets before the first deployment:
+
+- `CLOUDFLARE_API_TOKEN`: a Cloudflare API token authorized to deploy Workers for the account.
+- `CLOUDFLARE_ACCOUNT_ID`: the Cloudflare account ID that owns the Worker.
+- `VITE_SUPABASE_URL`: the production Supabase project URL.
+- `VITE_SUPABASE_ANON_KEY`: the production Supabase anon key used by the browser client.
+
+The workflow runs strict lint, builds with Nitro's Cloudflare preset, then deploys `.output/server/wrangler.json` with Wrangler. The Supabase values are embedded into the client build, so use the production project values here.
 
 ### Option 2: Vercel
 

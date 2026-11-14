@@ -14,7 +14,6 @@ import {
   Download,
   Network,
   FilePenLine,
-  Sparkles,
   PanelLeftClose,
   PanelLeftOpen,
   type LucideIcon,
@@ -185,16 +184,6 @@ export function Sidebar({
               <PanelLeftOpen className="size-4" />
             </button>
           )}
-          <Link
-            to="/knowledge-atlas"
-            title="Generate new branch · Open Knowledge Atlas"
-            className={`mb-2 flex items-center rounded-lg border border-primary/30 bg-primary/10 font-semibold text-primary transition-colors hover:bg-primary/20 ${collapsed ? "mx-auto size-10 justify-center" : "gap-2 px-3 py-2 text-sm"}`}
-          >
-            <Sparkles className="size-4 shrink-0" />
-            {!collapsed && (
-              <span className="truncate">Generate new branch</span>
-            )}
-          </Link>
           <ul className="space-y-0.5">
             <li>
               <NavLink
@@ -420,7 +409,7 @@ export function Sidebar({
               {!collapsed && (
                 <a
                   href={chronosDownloadUrl}
-                  download="ChronosOS.dmg"
+                  download="Chronos.dmg"
                   className="group flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-sidebar-foreground transition-colors hover:bg-secondary"
                 >
                   <Download className="size-4 text-muted-foreground group-hover:text-primary" />

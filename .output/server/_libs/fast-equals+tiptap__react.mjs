@@ -1,6 +1,6 @@
 import { r as __toESM } from "../_runtime.mjs";
 import { l as require_react_dom, u as require_react } from "./@floating-ui/react-dom+[...].mjs";
-import { b as require_shim, y as require_with_selector } from "./@tanstack/react-router+[...].mjs";
+import { C as require_with_selector, w as require_shim } from "./@tanstack/react-router+[...].mjs";
 import { o as require_jsx_runtime } from "./@radix-ui/react-collection+[...].mjs";
 import { n as Editor } from "./@tiptap/core+[...].mjs";
 //#region node_modules/fast-equals/dist/es/index.mjs

@@ -241,4 +241,4 @@ See [DEPLOYMENT.md](./DEPLOYMENT.md) for production troubleshooting.
 
 ---
 
-Built with ❤️ for biology education.
+Bulit for educational purposes

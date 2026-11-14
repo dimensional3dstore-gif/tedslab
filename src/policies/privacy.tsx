@@ -17,6 +17,13 @@ export default function PrivacyPolicyPage() {
           logging before describing this service as private or local-only.
         </p>
       </PolicySection>
+      <PolicySection title="ChronosOS downloads">
+        <p>
+          When someone selects the ChronosOS installer, the site records the
+          release tag, platform, and timestamp in Supabase for download
+          reporting. The event does not include an account identifier.
+        </p>
+      </PolicySection>
       <PolicySection title="Before publication">
         <p>
           Document the production database, analytics, cookies, retention

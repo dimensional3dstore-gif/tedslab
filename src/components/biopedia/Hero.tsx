@@ -26,12 +26,12 @@ export function Hero() {
   if (slides.length === 0) {
     return (
       <section className="relative overflow-hidden rounded-2xl border border-border bio-hero-bg">
-        <div className="grid items-center gap-6 md:grid-cols-[1fr_minmax(0,44%)]">
+        <div className="grid items-center gap-6 md:grid-cols-[minmax(0,9fr)_minmax(0,11fr)]">
           <div className="p-8 md:p-10">
-            <h1 className="font-display text-4xl font-bold md:text-5xl">
+            <h1 className="font-display text-2xl font-bold md:text-3xl">
               Welcome
             </h1>
-            <p className="mt-2 text-xl font-medium text-primary">
+            <p className="mt-2 text-base font-medium text-primary">
               Explore &amp; Learn
             </p>
           </div>
@@ -40,7 +40,7 @@ export function Hero() {
             alt="Cross-section render of a living cell with a glowing nucleus and mitochondria"
             width={1024}
             height={768}
-            className="h-full w-full object-cover md:max-h-80"
+            className="h-full w-full object-contain md:max-h-72"
           />
         </div>
       </section>
@@ -89,59 +89,32 @@ export function Hero() {
 
   return (
     <section className="relative overflow-hidden rounded-2xl border border-border bio-hero-bg">
-      <div className="grid items-center gap-6 md:grid-cols-[1fr_minmax(0,44%)]">
+      <div className="grid items-center gap-6 md:grid-cols-[minmax(0,9fr)_minmax(0,11fr)]">
         <div className="p-8 md:p-10">
-          <h1 className="font-display text-4xl font-bold md:text-5xl">
+          <h1 className="font-display text-2xl font-bold md:text-3xl">
             {slide.title}
           </h1>
-          <p className="mt-2 text-xl font-medium text-primary">
+          <p className="mt-2 text-base font-medium text-primary">
             {slide.subtitle}
           </p>
-          <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">
+          <p className="mt-4 max-w-md text-[11px] leading-relaxed text-muted-foreground">
             {slide.body}
           </p>
 
           <div className="mt-7 flex flex-wrap gap-3">
             <Link
               to={exploreLink}
-              className="rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+              className="rounded-lg bg-primary px-4 py-2 text-[11px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
             >
               Explore Topic
             </Link>
             <Link
               to="/download"
-              className="rounded-lg border border-border bg-card/60 px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+              className="rounded-lg border border-border bg-card/60 px-4 py-2 text-[11px] font-medium text-foreground transition-colors hover:bg-secondary"            
             >
-              Download App
+              Download Software
             </Link>
-            <Link
-              to="/signup"
-              className="rounded-lg border border-border bg-card/60 px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
-            >
-              Sign up
-            </Link>
-            <Link
-              to="/auth"
-              className="rounded-lg border border-border bg-card/60 px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
-            >
-              Log in
-            </Link>
-            {watchLink ? (
-              <Link
-                to={watchLink}
-                className="flex items-center gap-2 rounded-lg border border-border bg-card/60 px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
-              >
-                <PlayCircle className="size-4" />
-                Watch Video
-              </Link>
-            ) : (
-              <button className="flex items-center gap-2 rounded-lg border border-border bg-card/60 px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-secondary">
-                <PlayCircle className="size-4" />
-                Watch Video
-              </button>
-            )}
           </div>
-
           <div className="mt-8 flex gap-2">
             {slides.map((s, i) => (
               <button
@@ -161,7 +134,7 @@ export function Hero() {
           alt={slide.title}
           width={1024}
           height={768}
-          className="h-full w-full object-cover md:max-h-80"
+          className="h-full w-full object-contain md:max-h-72"
         />
       </div>
     </section>

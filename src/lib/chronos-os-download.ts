@@ -1,7 +1,13 @@
-export const CHRONOSOS_DOWNLOAD_URL =
-  "https://github.com/dimensional3dstore-gif/tedslab/releases/latest/download/ChronosOS.dmg";
+export const CHRONOSOS_GITHUB_RELEASES_URL =
+  "https://github.com/dimensional3dstore-gif/tedslab/releases";
 
-export const CHRONOSOS_LOCAL_DOWNLOAD_URL = "/downloads/ChronosOS.dmg";
+export const CHRONOSOS_LATEST_RELEASE_API_URL =
+  "https://api.github.com/repos/dimensional3dstore-gif/tedslab/releases/latest";
+
+export const CHRONOSOS_DOWNLOAD_URL =
+  "https://github.com/dimensional3dstore-gif/tedslab/releases/latest/download/Chronos.dmg";
+
+export const CHRONOSOS_LOCAL_DOWNLOAD_URL = "/downloads/Chronos.dmg";
 
 export function getChronosOSDownloadUrl() {
   if (typeof window === "undefined") {
