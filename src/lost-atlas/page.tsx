@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowUpRight, Search } from "lucide-react";
+import { ArrowUpRight, Search, Leaf } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { EXTINCT_SPECIES } from "@/data/lost-atlas-species";
 import { resolveImage } from "@/lib/images";
@@ -33,7 +33,7 @@ export default function LostAtlasPage() {
     <LostAtlasLayout>
       <header className="grid gap-6 border-b border-border pb-7 md:grid-cols-[1fr_280px] md:items-end">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-emerald-600">
             Natural history · extinction records
           </p>
           <h1 className="mt-3 font-display text-4xl font-bold text-foreground">
@@ -61,24 +61,24 @@ export default function LostAtlasPage() {
       </header>
 
       {featured && (
-        <section className="grid overflow-hidden rounded-lg border border-border bg-card md:grid-cols-[1.1fr_0.9fr]">
+        <section className="grid overflow-hidden rounded-2xl border border-emerald-900/30 bg-[linear-gradient(135deg,rgba(5,25,18,.98),rgba(12,31,24,.96))] md:grid-cols-[1.1fr_0.9fr]">
           <div className="p-5 sm:p-7">
             <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">
               Field note · first profile
             </p>
-            <h2 className="mt-3 font-display text-2xl font-bold text-foreground">
+            <h2 className="mt-3 font-display text-2xl font-bold text-emerald-50">
               {featured.common_name}
             </h2>
             <p className="mt-1 font-serif italic text-sm text-muted-foreground">
               {featured.scientific_name}
             </p>
-            <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground">
+            <p className="mt-4 max-w-xl text-sm leading-relaxed text-emerald-100/70">
               {featured.summary}
             </p>
             <Link
               to="/lost-atlas/$slug"
               params={{ slug: featured.slug }}
-              className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
+              className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-emerald-300 hover:underline"
             >
               Open species record <ArrowUpRight className="size-4" />
             </Link>
@@ -142,7 +142,7 @@ export default function LostAtlasPage() {
                 key={species.slug}
                 to="/lost-atlas/$slug"
                 params={{ slug: species.slug }}
-                className="group grid min-w-0 grid-cols-[88px_1fr] overflow-hidden rounded-md border border-border bg-card transition-colors hover:border-primary/50"
+                className="group grid min-w-0 grid-cols-[88px_1fr] overflow-hidden rounded-xl border border-border bg-card transition-colors hover:border-emerald-500/50"
               >
                 <img
                   src={resolveImage(null, species.image_key)}
@@ -162,7 +162,7 @@ export default function LostAtlasPage() {
                     </span>
                     <ArrowUpRight className="size-4 shrink-0 text-muted-foreground group-hover:text-primary" />
                   </span>
-                  <span className="mt-2 block truncate text-xs text-primary">
+                  <span className="mt-2 block truncate text-xs text-emerald-600">
                     {species.region}
                   </span>
                   <span className="mt-1 block line-clamp-2 text-xs leading-relaxed text-muted-foreground">
