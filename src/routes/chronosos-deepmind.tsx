@@ -29,7 +29,7 @@ const portfolio = [
   { icon: Orbit, name: "Lost Atlas", type: "3D planetary exploration", description: "An immersive exploration experience for discovering ecosystems, terrain, organisms, and connected natural systems.", to: "/lost-atlas", action: "Explore Lost Atlas" },
   { icon: Atom, name: "MicroAtlas", type: "Microscopic life explorer", description: "A scientific learning environment for exploring microorganisms, cellular structures, and foundational microbiology.", to: "/microatlas", action: "Explore MicroAtlas" },
   { icon: FlaskConical, name: "Ted's Lab", type: "Knowledge and learning platform", description: "The curated learning encyclopedia bringing articles, topics, visual resources, and interactive study tools together.", to: "/", action: "Visit Ted's Lab" },
-];
+] as const;
 
 const lifecycle = [
   { icon: Compass, title: "Investigate", text: "Define the problem, examine existing research, identify users, and establish measurable questions." },
