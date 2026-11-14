@@ -13,6 +13,7 @@ import {
   CHRONOSOS_GITHUB_RELEASES_URL,
   CHRONOSOS_LATEST_RELEASE_API_URL,
 } from "@/lib/chronos-os-download";
+import { trackChronosOSDownload } from "@/lib/chronos-download-tracking";
 
 type GitHubRelease = {
   html_url: string;
@@ -32,6 +33,7 @@ type ReleaseStatus = "loading" | "available" | "empty" | "error";
 export default function DownloadableSoftwarePage() {
   const [release, setRelease] = useState<GitHubRelease | null>(null);
   const [status, setStatus] = useState<ReleaseStatus>("loading");
+  const [trackingError, setTrackingError] = useState(false);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -68,6 +70,15 @@ export default function DownloadableSoftwarePage() {
     ? new Date(release.published_at)
     : null;
   const releaseName = release?.name || release?.tag_name;
+
+  function recordDownloadClick() {
+    if (!release?.tag_name) return;
+
+    void trackChronosOSDownload(release.tag_name).catch((error: unknown) => {
+      console.error("[ChronosOS download tracking]", error);
+      setTrackingError(true);
+    });
+  }
 
   return (
     <AppShell>
@@ -185,6 +196,7 @@ export default function DownloadableSoftwarePage() {
               {dmg ? (
                 <a
                   href={dmg.browser_download_url}
+                  onClick={recordDownloadClick}
                   className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
                 >
                   <ArrowDownToLine className="size-4" />
@@ -195,6 +207,15 @@ export default function DownloadableSoftwarePage() {
                   {status === "loading"
                     ? "Looking for the latest installer…"
                     : "Installer not available"}
+                </p>
+              )}
+              {trackingError && (
+                <p
+                  role="status"
+                  className="mt-2 text-center text-xs text-destructive"
+                >
+                  Download tracking failed; the installer download can still
+                  continue.
                 </p>
               )}
               {dmg && (
