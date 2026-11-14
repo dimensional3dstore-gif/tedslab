@@ -17,7 +17,7 @@ export type ArticleLayout = {
 
 export const DEFAULT_ARTICLE_LAYOUT: ArticleLayout = {
   version: 1,
-  tags: ["Encyclopedia", "Study", "Ted's Lab"],
+  tags: ["Scientific reference", "Ted's Lab"],
   facts: [
     { label: "Type", value: "Encyclopedia article" },
     { label: "Level", value: "Introductory" },
@@ -25,16 +25,16 @@ export const DEFAULT_ARTICLE_LAYOUT: ArticleLayout = {
     { label: "Reviewed", value: "Editorial desk" },
   ],
   overview: [
-    "This article introduces the topic with a clear first map: what it is, why it matters, and how the pieces fit together.",
-    "Read the key concepts, then the process steps. Use the facts rail to lock the essentials before you jump to related articles or the Knowledge Atlas.",
+    "This reference introduces the subject through an evidence-led overview of its definition, scope, principal mechanisms, and significance.",
+    "The following sections distinguish established observations from interpretation and identify the concepts required to understand the subject.",
   ],
   equation: {
-    formula: "idea + evidence → understanding",
-    caption: "A working rule for every Ted's Lab article",
+    formula: "observation + method + evidence → scientific explanation",
+    caption: "Editorial principle for Ted's Lab scientific references",
   },
   sections: [
     {
-      heading: "Key Concepts",
+      heading: "Core concepts and terminology",
       cards: [
         {
           title: "Definition",
@@ -48,7 +48,7 @@ export const DEFAULT_ARTICLE_LAYOUT: ArticleLayout = {
       ],
     },
     {
-      heading: "Process Steps",
+      heading: "Mechanisms and processes",
       paragraphs: [
         "Start with the observation or question. Gather the structures involved. Trace cause and effect in order. End with a check: what would change if one part failed?",
       ],
@@ -68,9 +68,9 @@ export const DEFAULT_ARTICLE_LAYOUT: ArticleLayout = {
       ],
     },
     {
-      heading: "Importance",
+      heading: "Applications and significance",
       paragraphs: [
-        "A well-formed article lets a student teach the idea back. That is the test. If you can explain it to someone else without the page open, the layout did its job.",
+        "Scientific understanding depends on precise terminology, coherent causal explanations, and the evaluation of claims against observable evidence.",
       ],
     },
   ],
@@ -223,7 +223,7 @@ export function buildTopicLayout(opts: {
   const { title, blurb, subject, section } = opts;
   return {
     version: 1,
-    tags: [subject, section, title],
+    tags: [subject, section, "Scientific reference"],
     facts: [
       { label: "Subject", value: subject },
       { label: "Section", value: section },
@@ -232,8 +232,8 @@ export function buildTopicLayout(opts: {
     ],
     overview: [
       `${title}: ${blurb}`,
-      `${title} is a core idea in ${section} (${subject}). This article gives a learner-ready map: definition, working parts, and a path into related Ted's Lab entries and the Knowledge Atlas.`,
-      `As you read, keep one question in view: what would the system look like if this idea were missing? That question turns a definition into understanding.`,
+      `${title} is examined within ${section} (${subject}). This reference establishes its definition, conceptual boundaries, principal components, and relationship to related topics.`,
+      `Interpretive claims should be evaluated against relevant observations, reproducible methods, and the limits of available evidence.`,
     ],
     sections: [
       {
@@ -254,7 +254,7 @@ export function buildTopicLayout(opts: {
         ],
       },
       {
-        heading: "A working sequence",
+        heading: "Mechanisms and analytical approach",
         paragraphs: [
           `Approach ${title.toLowerCase()} in three moves. First, state the phenomenon without jargon. Second, name the parts that must be present. Third, run a mental experiment: change one part and predict the result.`,
         ],
@@ -274,7 +274,7 @@ export function buildTopicLayout(opts: {
         ],
       },
       {
-        heading: "Why it matters",
+        heading: "Applications and significance",
         paragraphs: [
           `${title} is not trivia. It is a lever inside ${section}: once you hold it, other articles in ${subject} become easier to read because you already know the local grammar of the field.`,
           `Continue with related articles, flashcards, and Atlas neighbours. The encyclopedia is built so each entry is a door, not a dead end.`,
