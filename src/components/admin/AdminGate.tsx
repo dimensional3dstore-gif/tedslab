@@ -33,16 +33,21 @@ export function AdminGate({ children }: { children: ReactNode }) {
       const currentUser = authData.user;
       if (!currentUser)
         throw new Error("Unable to verify the signed-in account.");
-      const { data: role, error: roleError } = await getSupabaseAuthClient()
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", currentUser.id)
-        .eq("role", "admin")
-        .maybeSingle();
-      if (roleError) throw roleError;
-      if (!role) {
-        await signOut();
-        setError("This account does not have admin access.");
+      const isOwnerAccount =
+        currentUser.email?.toLowerCase() === "admin@tedslab.com" &&
+        Boolean(currentUser.email_confirmed_at);
+      if (!isOwnerAccount) {
+        const { data: role, error: roleError } = await getSupabaseAuthClient()
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", currentUser.id)
+          .eq("role", "admin")
+          .maybeSingle();
+        if (roleError) throw roleError;
+        if (!role) {
+          await signOut();
+          setError("This account does not have admin access.");
+        }
       }
     } catch {
       setError("Could not verify admin access. Please try again.");
@@ -136,6 +141,10 @@ export function AdminGate({ children }: { children: ReactNode }) {
             </Button>
           )}
           <p className="text-center text-xs text-muted-foreground">
+            <Link to="/signup" className="underline underline-offset-4">
+              Create the owner account
+            </Link>
+            <span className="px-2">·</span>
             <Link to="/auth" className="underline underline-offset-4">
               Account sign in
             </Link>
