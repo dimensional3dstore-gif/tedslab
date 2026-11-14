@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowUpRight, Search, Leaf } from "lucide-react";
+import { ArrowUpRight, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { EXTINCT_SPECIES } from "@/data/lost-atlas-species";
 import { resolveImage } from "@/lib/images";
