@@ -1,43 +1,25 @@
-import { useCallback, useEffect, useState } from "react";
-
-const KEY = "biopedia:bookmarks";
+import { useCallback } from "react";
+import { useUserCollection } from "@/lib/user-data";
 
 export function useBookmarks() {
-  const [bookmarks, setBookmarks] = useState<string[]>([]);
+  const {
+    value: bookmarks,
+    save,
+    user,
+    error,
+  } = useUserCollection<string[]>("bookmarks", "articles", []);
 
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(KEY);
-      if (raw) setBookmarks(JSON.parse(raw) as string[]);
-    } catch {
-      /* ignore */
-    }
-  }, []);
-
-  const persist = useCallback((next: string[]) => {
-    setBookmarks(next);
-    try {
-      localStorage.setItem(KEY, JSON.stringify(next));
-    } catch {
-      /* ignore */
-    }
-  }, []);
-
+  const persist = useCallback((next: string[]) => save(next), [save]);
   const toggleBookmark = useCallback(
-    (slug: string) =>
-      setBookmarks((prev) => {
-        const next = prev.includes(slug)
-          ? prev.filter((s) => s !== slug)
-          : [...prev, slug];
-        try {
-          localStorage.setItem(KEY, JSON.stringify(next));
-        } catch {
-          /* ignore */
-        }
-        return next;
-      }),
-    [],
+    (slug: string) => {
+      if (!user) return;
+      const next = bookmarks.includes(slug)
+        ? bookmarks.filter((item) => item !== slug)
+        : [...bookmarks, slug];
+      save(next);
+    },
+    [bookmarks, save, user],
   );
 
-  return { bookmarks, toggleBookmark, persist };
+  return { bookmarks, toggleBookmark, persist, user, error };
 }

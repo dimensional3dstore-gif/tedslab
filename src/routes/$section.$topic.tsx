@@ -3,27 +3,31 @@ import { queryOptions, useQuery } from "@tanstack/react-query";
 import { ContentLayout } from "@/components/biopedia/ContentLayout";
 import { ArticleCard } from "@/components/biopedia/ArticleCard";
 import { AppShell } from "@/components/biopedia/AppShell";
-import { supabase } from "@/integrations/supabase/client";
-import type { TopicRow } from "@/lib/content";
+import type { ArticleRow, SectionRow, TopicRow } from "@/lib/content";
+import { fetchCatalogRow, fetchCatalogRows } from "@/lib/content";
+import { ARTICLES, SECTIONS, TOPICS } from "@/lib/catalog";
 import { resolveImage } from "@/lib/images";
 import { useBookmarks } from "@/hooks/use-bookmarks";
 import { Link } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const db = supabase as unknown as { from: (table: string) => any };
-
 const topicQueryOptions = (sectionSlug: string, topicSlug: string) =>
   queryOptions({
     queryKey: ["topic", sectionSlug, topicSlug],
     queryFn: async () => {
-      const { data, error } = await db
-        .from("topics")
-        .select("*")
-        .eq("slug", topicSlug)
-        .maybeSingle();
-      if (error) throw error;
-      return (data ?? null) as TopicRow | null;
+      const section = await fetchCatalogRow<SectionRow>(
+        "sections",
+        "slug",
+        sectionSlug,
+        SECTIONS,
+      );
+      const rows = await fetchCatalogRows<TopicRow>("topics", TOPICS);
+      return (
+        rows.find(
+          (topic) =>
+            topic.section_id === section?.id && topic.slug === topicSlug,
+        ) ?? null
+      );
     },
   });
 
@@ -31,31 +35,18 @@ const topicArticlesQueryOptions = (topicSlug: string) =>
   queryOptions({
     queryKey: ["articles", "by-topic", topicSlug],
     queryFn: async () => {
-      const { data, error } = await db
-        .from("articles")
-        .select("*")
-        .eq("topic_slug", topicSlug)
-        .eq("published", true)
-        .order("sort", { ascending: true });
-      if (error) throw error;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return (data ?? []) as any[];
+      const rows = await fetchCatalogRows<ArticleRow>("articles", ARTICLES);
+      return rows.filter(
+        (article) => article.topic_slug === topicSlug && article.published,
+      );
     },
   });
 
 const sectionQueryOptions = (sectionSlug: string) =>
   queryOptions({
     queryKey: ["section", sectionSlug],
-    queryFn: async () => {
-      const { data, error } = await db
-        .from("sections")
-        .select("*")
-        .eq("slug", sectionSlug)
-        .maybeSingle();
-      if (error) throw error;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return (data ?? null) as any;
-    },
+    queryFn: () =>
+      fetchCatalogRow<SectionRow>("sections", "slug", sectionSlug, SECTIONS),
   });
 
 export const Route = createFileRoute("/$section/$topic")({

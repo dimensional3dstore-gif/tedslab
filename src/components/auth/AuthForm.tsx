@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import {
   getSupabaseAuthClient,
   supabaseAuthConfigured,
+  supabaseEmailRedirectUrl,
 } from "@/integrations/supabase/auth";
 
 export function AuthForm({
@@ -54,11 +55,36 @@ export function AuthForm({
             email: email.trim(),
             password,
             options: {
+              emailRedirectTo:
+                supabaseEmailRedirectUrl ??
+                `${window.location.origin}/auth/callback`,
               data: { full_name: name.trim(), display_name: name.trim() },
             },
           })
         : await auth.auth.signInWithPassword({ email: email.trim(), password });
-      if (result.error) throw result.error;
+      if (result.error) {
+        const code = "code" in result.error ? result.error.code : undefined;
+        if (
+          ["invalid_credentials", "user_not_found", "email_exists"].includes(
+            code ?? "",
+          )
+        ) {
+          setError(
+            "Unable to sign in or create an account with those details.",
+          );
+        } else if (code === "email_not_confirmed") {
+          setError("Confirm your email using the link we sent, then sign in.");
+        } else if (result.error.status === 429) {
+          setError("Too many attempts. Wait a moment and try again.");
+        } else if (isSignup && /password/i.test(result.error.message)) {
+          setError(result.error.message);
+        } else {
+          setError(
+            "An unexpected authentication error occurred. Please try again.",
+          );
+        }
+        return;
+      }
 
       if (isSignup && !result.data.session) {
         setNotice(
@@ -69,11 +95,9 @@ export function AuthForm({
       } else {
         setNotice("Signed in successfully. Your session is active.");
       }
-    } catch (cause) {
+    } catch {
       setError(
-        cause instanceof Error
-          ? cause.message
-          : "Authentication failed. Please try again.",
+        "An unexpected authentication error occurred. Please try again.",
       );
     } finally {
       setBusy(false);
@@ -103,9 +127,7 @@ export function AuthForm({
           role="status"
           className="mt-5 rounded-md border border-bio-amber/30 bg-bio-amber/10 p-3 text-sm text-foreground"
         >
-          Set <code>VITE_SUPABASE_URL</code> and{" "}
-          <code>VITE_SUPABASE_ANON_KEY</code> for this deployment to enable real
-          account authentication.
+          Connect the Supabase integration to enable account authentication.
         </div>
       )}
 

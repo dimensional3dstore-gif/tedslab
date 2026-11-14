@@ -1,6 +1,7 @@
 import { useQuery, queryOptions } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { supabaseAuthConfigured } from "@/integrations/supabase/auth";
 import {
-  TABLES,
   SUBJECTS,
   SECTIONS,
   TOPICS,
@@ -116,51 +117,130 @@ export type NavLinkRow = {
   sort: number | null;
 };
 
-void TABLES;
+export async function fetchCatalogRows<T extends { id: string }>(
+  table: string,
+  fallback: T[],
+): Promise<T[]> {
+  if (!supabaseAuthConfigured) return fallback;
+  let data: unknown[] | null = null;
+  try {
+    const result = await supabase
+      .from(table)
+      .select("*")
+      .order("sort", { ascending: true });
+    if (result.error) return fallback;
+    data = result.data;
+  } catch {
+    return fallback;
+  }
+  if (!data?.length) return fallback;
+
+  const remoteRows = data as unknown as T[];
+  const remoteById = new Map(remoteRows.map((row) => [row.id, row]));
+  const fallbackIds = new Set(fallback.map((row) => row.id));
+  return [
+    ...fallback.map((row) => remoteById.get(row.id) ?? row),
+    ...remoteRows.filter((row) => !fallbackIds.has(row.id)),
+  ];
+}
+
+export async function fetchCatalogRow<T>(
+  table: string,
+  column: string,
+  value: string,
+  fallback: T[],
+): Promise<T | null> {
+  if (!supabaseAuthConfigured) {
+    return (
+      fallback.find(
+        (row) => (row as Record<string, unknown>)[column] === value,
+      ) ?? null
+    );
+  }
+  try {
+    const { data, error } = await supabase
+      .from(table)
+      .select("*")
+      .eq(column, value);
+    if (!error && data?.length) return data[0] as unknown as T;
+  } catch {
+    // Keep the bundled catalog available when the backing service is offline.
+  }
+  return (
+    fallback.find(
+      (row) => (row as Record<string, unknown>)[column] === value,
+    ) ?? null
+  );
+}
 
 export const subjectsQueryOptions = queryOptions({
   queryKey: ["subjects"],
-  queryFn: async () => SUBJECTS,
+  queryFn: () => fetchCatalogRows("subjects", SUBJECTS),
+  initialData: SUBJECTS,
 });
 
 export const sectionsQueryOptions = queryOptions({
   queryKey: ["sections"],
-  queryFn: async () => SECTIONS,
+  queryFn: () => fetchCatalogRows("sections", SECTIONS),
+  initialData: SECTIONS,
 });
 
 export const topicsQueryOptions = queryOptions({
   queryKey: ["topics"],
-  queryFn: async () => TOPICS,
+  queryFn: () => fetchCatalogRows("topics", TOPICS),
+  initialData: TOPICS,
 });
 
 export const articlesQueryOptions = queryOptions({
   queryKey: ["articles"],
-  queryFn: async () => ARTICLES,
+  queryFn: () => fetchCatalogRows("articles", ARTICLES),
+  initialData: ARTICLES,
 });
 
 export const heroSlidesQueryOptions = queryOptions({
   queryKey: ["hero_slides"],
-  queryFn: async () => HERO_SLIDES,
+  queryFn: () => fetchCatalogRows("hero_slides", HERO_SLIDES),
+  initialData: HERO_SLIDES,
 });
 
 export const videosQueryOptions = queryOptions({
   queryKey: ["videos"],
-  queryFn: async () => VIDEOS,
+  queryFn: () => fetchCatalogRows("videos", VIDEOS),
+  initialData: VIDEOS,
 });
 
 export const pagesQueryOptions = queryOptions({
   queryKey: ["pages"],
-  queryFn: async () => PAGES,
+  queryFn: () => fetchCatalogRows("pages", PAGES),
+  initialData: PAGES,
 });
 
 export const navLinksQueryOptions = queryOptions({
   queryKey: ["nav_links"],
-  queryFn: async () => NAV_LINKS,
+  queryFn: () => fetchCatalogRows("nav_links", NAV_LINKS),
+  initialData: NAV_LINKS,
 });
 
 export const settingsQueryOptions = queryOptions({
   queryKey: ["site_settings"],
-  queryFn: async () => SETTINGS,
+  queryFn: async () => {
+    if (!supabaseAuthConfigured) return SETTINGS;
+    try {
+      const { data, error } = await supabase
+        .from("site_settings")
+        .select("key, value");
+      if (!error && data?.length) {
+        return {
+          ...SETTINGS,
+          ...Object.fromEntries(data.map(({ key, value }) => [key, value])),
+        };
+      }
+    } catch {
+      // Keep the bundled settings available when the backing service is offline.
+    }
+    return SETTINGS;
+  },
+  initialData: SETTINGS,
 });
 
 export function useSubjects() {

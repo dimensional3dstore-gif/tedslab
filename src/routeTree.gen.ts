@@ -84,6 +84,7 @@ import { Route as ArticlesHumanAnatomySystemsRouteImport } from './routes/articl
 import { Route as ArticlesMeiosisGameteFormationRouteImport } from './routes/articles.meiosis-gamete-formation'
 import { Route as ArticlesMitosisCellDivisionRouteImport } from './routes/articles.mitosis-cell-division'
 import { Route as ArticlesPhotosynthesisLightReactionsRouteImport } from './routes/articles.photosynthesis-light-reactions'
+import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as ExtensionsNoterRouteImport } from './routes/extensions.noter'
 import { Route as LostAtlasSlugRouteImport } from './routes/lost-atlas.$slug'
 import { Route as PagesSlugRouteImport } from './routes/pages.$slug'
@@ -474,6 +475,11 @@ const ArticlesPhotosynthesisLightReactionsRoute =
     path: '/photosynthesis-light-reactions',
     getParentRoute: () => ArticlesRoute,
   } as any)
+const AuthCallbackRoute = AuthCallbackRouteImport.update({
+  id: '/callback',
+  path: '/callback',
+  getParentRoute: () => AuthRoute,
+} as any)
 const ExtensionsNoterRoute = ExtensionsNoterRouteImport.update({
   id: '/noter',
   path: '/noter',
@@ -520,7 +526,7 @@ export interface FileRoutesByFullPath {
   '/annotation-sys': typeof AnnotationSysRoute
   '/articles': typeof ArticlesRouteWithChildren
   '/articles-debug': typeof ArticlesDebugRoute
-  '/auth': typeof AuthRoute
+  '/auth': typeof AuthRouteWithChildren
   '/biological-processes': typeof BiologicalProcessesRoute
   '/biotechnology': typeof BiotechnologyRoute
   '/categories': typeof CategoriesRoute
@@ -586,6 +592,7 @@ export interface FileRoutesByFullPath {
   '/articles/meiosis-gamete-formation': typeof ArticlesMeiosisGameteFormationRoute
   '/articles/mitosis-cell-division': typeof ArticlesMitosisCellDivisionRoute
   '/articles/photosynthesis-light-reactions': typeof ArticlesPhotosynthesisLightReactionsRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/extensions/noter': typeof ExtensionsNoterRoute
   '/lost-atlas/$slug': typeof LostAtlasSlugRoute
   '/pages/$slug': typeof PagesSlugRoute
@@ -604,7 +611,7 @@ export interface FileRoutesByTo {
   '/annotation-sys': typeof AnnotationSysRoute
   '/articles': typeof ArticlesRouteWithChildren
   '/articles-debug': typeof ArticlesDebugRoute
-  '/auth': typeof AuthRoute
+  '/auth': typeof AuthRouteWithChildren
   '/biological-processes': typeof BiologicalProcessesRoute
   '/biotechnology': typeof BiotechnologyRoute
   '/categories': typeof CategoriesRoute
@@ -670,6 +677,7 @@ export interface FileRoutesByTo {
   '/articles/meiosis-gamete-formation': typeof ArticlesMeiosisGameteFormationRoute
   '/articles/mitosis-cell-division': typeof ArticlesMitosisCellDivisionRoute
   '/articles/photosynthesis-light-reactions': typeof ArticlesPhotosynthesisLightReactionsRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/extensions/noter': typeof ExtensionsNoterRoute
   '/lost-atlas/$slug': typeof LostAtlasSlugRoute
   '/pages/$slug': typeof PagesSlugRoute
@@ -689,7 +697,7 @@ export interface FileRoutesById {
   '/annotation-sys': typeof AnnotationSysRoute
   '/articles': typeof ArticlesRouteWithChildren
   '/articles-debug': typeof ArticlesDebugRoute
-  '/auth': typeof AuthRoute
+  '/auth': typeof AuthRouteWithChildren
   '/biological-processes': typeof BiologicalProcessesRoute
   '/biotechnology': typeof BiotechnologyRoute
   '/categories': typeof CategoriesRoute
@@ -755,6 +763,7 @@ export interface FileRoutesById {
   '/articles/meiosis-gamete-formation': typeof ArticlesMeiosisGameteFormationRoute
   '/articles/mitosis-cell-division': typeof ArticlesMitosisCellDivisionRoute
   '/articles/photosynthesis-light-reactions': typeof ArticlesPhotosynthesisLightReactionsRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/extensions/noter': typeof ExtensionsNoterRoute
   '/lost-atlas/$slug': typeof LostAtlasSlugRoute
   '/pages/$slug': typeof PagesSlugRoute
@@ -841,6 +850,7 @@ export interface FileRouteTypes {
     | '/articles/meiosis-gamete-formation'
     | '/articles/mitosis-cell-division'
     | '/articles/photosynthesis-light-reactions'
+    | '/auth/callback'
     | '/extensions/noter'
     | '/lost-atlas/$slug'
     | '/pages/$slug'
@@ -925,6 +935,7 @@ export interface FileRouteTypes {
     | '/articles/meiosis-gamete-formation'
     | '/articles/mitosis-cell-division'
     | '/articles/photosynthesis-light-reactions'
+    | '/auth/callback'
     | '/extensions/noter'
     | '/lost-atlas/$slug'
     | '/pages/$slug'
@@ -1009,6 +1020,7 @@ export interface FileRouteTypes {
     | '/articles/meiosis-gamete-formation'
     | '/articles/mitosis-cell-division'
     | '/articles/photosynthesis-light-reactions'
+    | '/auth/callback'
     | '/extensions/noter'
     | '/lost-atlas/$slug'
     | '/pages/$slug'
@@ -1028,7 +1040,7 @@ export interface RootRouteChildren {
   AnnotationSysRoute: typeof AnnotationSysRoute
   ArticlesRoute: typeof ArticlesRouteWithChildren
   ArticlesDebugRoute: typeof ArticlesDebugRoute
-  AuthRoute: typeof AuthRoute
+  AuthRoute: typeof AuthRouteWithChildren
   BiologicalProcessesRoute: typeof BiologicalProcessesRoute
   BiotechnologyRoute: typeof BiotechnologyRoute
   CategoriesRoute: typeof CategoriesRoute
@@ -1608,6 +1620,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ArticlesPhotosynthesisLightReactionsRouteImport
       parentRoute: typeof ArticlesRoute
     }
+    '/auth/callback': {
+      id: '/auth/callback'
+      path: '/callback'
+      fullPath: '/auth/callback'
+      preLoaderRoute: typeof AuthCallbackRouteImport
+      parentRoute: typeof AuthRoute
+    }
     '/extensions/noter': {
       id: '/extensions/noter'
       path: '/noter'
@@ -1743,6 +1762,16 @@ const ArticlesRouteWithChildren = ArticlesRoute._addFileChildren(
   ArticlesRouteChildren,
 )
 
+interface AuthRouteChildren {
+  AuthCallbackRoute: typeof AuthCallbackRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthCallbackRoute: AuthCallbackRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 interface ExtensionsRouteChildren {
   ExtensionsNoterRoute: typeof ExtensionsNoterRoute
 }
@@ -1810,7 +1839,7 @@ const rootRouteChildren: RootRouteChildren = {
   AnnotationSysRoute: AnnotationSysRoute,
   ArticlesRoute: ArticlesRouteWithChildren,
   ArticlesDebugRoute: ArticlesDebugRoute,
-  AuthRoute: AuthRoute,
+  AuthRoute: AuthRouteWithChildren,
   BiologicalProcessesRoute: BiologicalProcessesRoute,
   BiotechnologyRoute: BiotechnologyRoute,
   CategoriesRoute: CategoriesRoute,
