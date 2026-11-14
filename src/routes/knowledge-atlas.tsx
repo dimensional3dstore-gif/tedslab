@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/biopedia/AppShell";
 import { AtlasApp } from "@/components/atlas/AtlasApp";
-import { AiAssistPanel } from "@/components/atlas/AiAssist";
 
 export const Route = createFileRoute("/knowledge-atlas")({
   component: KnowledgeAtlasPage,
@@ -19,7 +18,7 @@ export const Route = createFileRoute("/knowledge-atlas")({
 
 function KnowledgeAtlasPage() {
   return (
-    <AppShell rail={<AiAssistPanel />}>
+    <AppShell>
       <div
         className="bio-panel overflow-hidden p-0"
         style={{ minHeight: "calc(100vh - 10rem)" }}
