@@ -55,15 +55,15 @@ export const DEFAULT_ARTICLE_LAYOUT: ArticleLayout = {
       cards: [
         {
           title: "1. Observe",
-          text: "What is actually happening, in plain language?",
+          text: "What phenomenon is observed, and under which conditions?",
         },
         {
           title: "2. Name the parts",
-          text: "List the actors, forces, or terms that must be kept distinct.",
+          text: "Identify the entities, variables, and terminology required for an unambiguous description.",
         },
         {
           title: "3. Follow the sequence",
-          text: "Put the process in time. First, then, finally.",
+          text: "Describe the sequence of events and the causal relationships between stages.",
         },
       ],
     },
@@ -278,6 +278,13 @@ export function buildTopicLayout(opts: {
         paragraphs: [
           `${title} is significant within ${section} because it contributes to the interpretation of related phenomena and supports further analysis across ${subject}.`,
           `Further study should consider related concepts, primary literature, and relevant empirical findings. Interpret conclusions in light of the scope and limitations of the available evidence.`,
+        ],
+      },
+      {
+        heading: "Evidence, limitations, and references",
+        paragraphs: [
+          "Cite authoritative textbooks, peer-reviewed literature, primary datasets, or recognised institutional sources. Include author or organisation, publication date, title, and a persistent link where available.",
+          "Distinguish consensus findings from active areas of investigation. State relevant uncertainty, methodological limitations, and the date on which time-sensitive information was checked.",
         ],
       },
     ],
