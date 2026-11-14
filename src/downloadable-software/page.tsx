@@ -322,8 +322,7 @@ export default function DownloadableSoftwarePage() {
                 Internet connection required for sign-in
               </li>
               <li>
-                The app is currently unsigned; macOS may show a security warning
-                on first launch.
+                Official releases are signed and notarized before publication.
               </li>
             </ul>
           </div>
