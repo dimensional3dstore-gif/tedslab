@@ -3,6 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { ArticleTemplate } from "@/components/biopedia/ArticleTemplate";
 import { Button } from "@/components/ui/button";
+import { deleteCustomArticle } from "@/lib/article-store";
 import { Input } from "@/components/ui/input";
 import {
   DEFAULT_ARTICLE_LAYOUT,
@@ -26,6 +27,7 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
   const { data: allSections = [] } = useSections();
   const { data: allTopics = [] } = useTopics();
   const [title, setTitle] = useState(existing?.title ?? "Untitled article");
+  const [slug, setSlug] = useState(existing?.slug ?? "");
   const [excerpt, setExcerpt] = useState(
     existing?.excerpt ?? DEFAULT_ARTICLE_LAYOUT.overview[0] ?? "",
   );
@@ -60,13 +62,15 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
   };
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState("");
+  const [sectionEditor, setSectionEditor] = useState(JSON.stringify(layout.sections, null, 2));
+  const [sectionEditorError, setSectionEditorError] = useState("");
 
   void initialLayout;
 
   const previewArticle: ArticleRow = useMemo(
     () => ({
       id: existing?.id ?? "preview",
-      slug: slugifyTitle(title),
+      slug: slugifyTitle(slug || title),
       title,
       excerpt,
       body: JSON.stringify(layout),
@@ -82,7 +86,7 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
       status,
       sort: 0,
     }),
-    [existing?.id, title, excerpt, layout, subject, section, topic, imageKey, status],
+    [existing?.id, title, slug, excerpt, layout, subject, section, topic, imageKey, status],
   );
 
   const save = async (publish: boolean) => {
@@ -90,18 +94,25 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
     setSaveError("");
     const row: ArticleRow = {
       ...previewArticle,
-      id: existing?.id ?? `custom-${Date.now()}`,
+      id: existing?.id ?? "custom-" + crypto.randomUUID(),
+      slug: slugifyTitle(slug || title),
+      title: title.trim(),
       published: publish,
       status: publish ? "published" : "draft",
+      body: JSON.stringify(layout),
     };
+    if (!row.title || !row.slug) {
+      setSaveError("Add an article title before saving.");
+      setSaving(false);
+      return;
+    }
     try {
-      await upsertCustomArticle(row);
+      const saved = await upsertCustomArticle(row);
       await queryClient.invalidateQueries({ queryKey: ["articles"] });
+      await queryClient.invalidateQueries({ queryKey: ["article", saved.slug] });
       await navigate({ to: "/admin/articles" });
-    } catch {
-      setSaveError(
-        "Unable to save this article. Confirm your admin access and try again.",
-      );
+    } catch (error) {
+      setSaveError(error instanceof Error ? error.message : "Unable to save this article. Check your admin access and database connection.");
     } finally {
       setSaving(false);
     }
@@ -116,13 +127,17 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
           void save(true);
         }}
       >
-        <h2 className="font-display text-lg font-semibold">Create article</h2>
+        <div className="flex items-center justify-between gap-3"><h2 className="font-display text-lg font-semibold">{existing ? "Edit article" : "Create article"}</h2>{existing && <span className={existing.published ? "rounded-full bg-emerald-500/10 px-2 py-1 text-xs text-emerald-600" : "rounded-full bg-amber-500/10 px-2 py-1 text-xs text-amber-600"}>{existing.published ? "Published" : "Draft"}</span>}</div>
         <p className="text-xs text-muted-foreground">
           A structured scientific-reference layout is loaded. Use precise terminology, distinguish evidence from interpretation, and include relevant sources in the final section.
         </p>
         <label className="block space-y-1 text-xs text-muted-foreground">
           Title
           <Input value={title} onChange={(e) => setTitle(e.target.value)} />
+        </label>
+        <label className="block space-y-1 text-xs text-muted-foreground">
+          URL slug
+          <Input value={slug} placeholder={slugifyTitle(title)} onChange={(e) => setSlug(e.target.value)} />
         </label>
         <label className="block space-y-1 text-xs text-muted-foreground">
           Excerpt
@@ -197,6 +212,21 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
           />
         </label>
         <label className="block space-y-1 text-xs text-muted-foreground">
+          Article sections (JSON)
+          <textarea className="min-h-48 w-full rounded-md border border-input bg-background px-3 py-2 font-mono text-xs text-foreground" value={sectionEditor} onChange={(e) => {
+            setSectionEditor(e.target.value);
+            try {
+              const parsed = JSON.parse(e.target.value);
+              if (!Array.isArray(parsed) || parsed.some((item) => typeof item.heading !== "string" || !Array.isArray(item.paragraphs))) throw new Error("Each section needs a heading and paragraphs array.");
+              setLayout({ ...layout, sections: parsed });
+              setSectionEditorError("");
+            } catch (error) {
+              setSectionEditorError(error instanceof Error ? error.message : "Invalid section JSON.");
+            }
+          }} />
+          {sectionEditorError && <span role="alert" className="text-destructive">{sectionEditorError}</span>}
+        </label>
+        <label className="block space-y-1 text-xs text-muted-foreground">
           Tags (comma separated)
           <Input
             value={layout.tags.join(", ")}
@@ -223,11 +253,22 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
             onClick={() => void save(false)}
             disabled={saving}
           >
-            {saving ? "Saving…" : "Save draft"}
+            {saving ? "Saving…" : existing?.published ? "Unpublish & save draft" : "Save draft"}
           </Button>
-          <Button type="submit" disabled={saving}>
-            {saving ? "Saving…" : "Publish"}
+          <Button type="submit" disabled={saving || Boolean(sectionEditorError)}>
+            {saving ? "Saving…" : existing?.published ? "Save & republish" : "Publish"}
           </Button>
+          {existing && <Button type="button" variant="destructive" disabled={saving} onClick={async () => {
+            if (!window.confirm("Permanently delete " + existing.title + "?")) return;
+            setSaving(true);
+            try {
+              await deleteCustomArticle(existing.id);
+              await queryClient.invalidateQueries({ queryKey: ["articles"] });
+              await navigate({ to: "/admin/articles" });
+            } catch (error) {
+              setSaveError(error instanceof Error ? error.message : "Unable to delete this article.");
+            } finally { setSaving(false); }
+          }}>Delete</Button>}
           <Button
             type="button"
             variant="ghost"
