@@ -25,10 +25,10 @@ function PeoplePage() {
   return (
     <AppShell>
       <div className="mx-auto w-full max-w-5xl space-y-6">
-        <PageHeader title="People" description="Discover people with profiles on Ted's Lab." />
+        <PageHeader title="People" description="Discover people with profiles in the Ted's Lab community." />
         {!user && !loading ? (
           <div className="bio-panel p-6 text-sm text-muted-foreground">
-            <p>Sign in to view People.</p>
+            <p>Sign in to view the community directory.</p>
           </div>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
