@@ -12,7 +12,6 @@ import {
   FileText,
   BrainCircuit,
   Download,
-  Network,
   Microscope,
   FilePenLine,
   PanelLeftClose,
