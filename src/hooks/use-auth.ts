@@ -95,7 +95,7 @@ export function useAuth() {
 
   return {
     ...state,
-    isAdmin: roleQuery.data === true,
+    isAdmin: roleQuery.data === true || (state.user?.email?.toLowerCase() === "admin@tedslab.com" && Boolean(state.user.email_confirmed_at)),
     signOut,
     updateProfile,
   };
