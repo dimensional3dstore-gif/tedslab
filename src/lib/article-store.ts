@@ -4,7 +4,7 @@ import type { ArticleRow } from "@/lib/content";
 export async function upsertCustomArticle(article: ArticleRow) {
   const { data, error } = await supabase
     .from("articles")
-    .upsert(article, { onConflict: "slug" })
+    .upsert(article, { onConflict: "id" })
     .select("*")
     .single();
   if (error) throw error;
