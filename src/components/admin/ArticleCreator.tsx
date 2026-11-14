@@ -9,7 +9,7 @@ import {
   layoutFromArticleBody,
   type ArticleLayout,
 } from "@/lib/article-layout";
-import { deleteCustomArticle, slugifyTitle, upsertCustomArticle } from "@/lib/article-store";
+import { slugifyTitle, upsertCustomArticle } from "@/lib/article-store";
 import { imageKeys } from "@/lib/images";
 import { useSections, useSubjects, useTopics } from "@/lib/content";
 import type { ArticleRow } from "@/lib/content";
@@ -254,17 +254,6 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
           <Button type="submit" disabled={saving || Boolean(sectionEditorError)}>
             {saving ? "Saving…" : existing?.published ? "Save & republish" : "Publish"}
           </Button>
-          {existing && <Button type="button" variant="destructive" disabled={saving} onClick={async () => {
-            if (!window.confirm("Permanently delete " + existing.title + "?")) return;
-            setSaving(true);
-            try {
-              await deleteCustomArticle(existing.id);
-              await queryClient.invalidateQueries({ queryKey: ["articles"] });
-              await navigate({ to: "/admin/articles" });
-            } catch (error) {
-              setSaveError(error instanceof Error ? error.message : "Unable to delete this article.");
-            } finally { setSaving(false); }
-          }}>Delete</Button>}
           <Button
             type="button"
             variant="ghost"
