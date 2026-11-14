@@ -22,7 +22,7 @@ export const DEFAULT_ARTICLE_LAYOUT: ArticleLayout = {
     { label: "Type", value: "Encyclopedia article" },
     { label: "Level", value: "Introductory" },
     { label: "Read time", value: "8 minutes" },
-    { label: "Reviewed", value: "Editorial desk" },
+    { label: "Editorial status", value: "Scientific reference" },
   ],
   overview: [
     "This reference introduces the subject through an evidence-led overview of its definition, scope, principal mechanisms, and significance.",
@@ -50,7 +50,7 @@ export const DEFAULT_ARTICLE_LAYOUT: ArticleLayout = {
     {
       heading: "Mechanisms and processes",
       paragraphs: [
-        "Start with the observation or question. Gather the structures involved. Trace cause and effect in order. End with a check: what would change if one part failed?",
+        "Define the research question, identify relevant variables, describe the mechanism in sequence, and evaluate the explanation against available observations.",
       ],
       cards: [
         {
@@ -237,47 +237,47 @@ export function buildTopicLayout(opts: {
     ],
     sections: [
       {
-        heading: "Key Concepts",
+        heading: "Core concepts and terminology",
         cards: [
           {
             title: "What it is",
-            text: `${title} names a pattern you can recognise again. ${blurb}`,
+            text: `${title} refers to the subject described by the following scope: ${blurb}`,
           },
           {
             title: "Where it lives",
-            text: `In ${section}, ${title.toLowerCase()} sits among neighbouring ideas. Follow those neighbours in the sidebar and Atlas graph.`,
+            text: `Within ${section}, ${title.toLowerCase()} is related to adjacent concepts in ${subject}. These relationships provide the appropriate disciplinary context.`,
           },
           {
             title: "How to use it",
-            text: `Explain ${title.toLowerCase()} in one sentence, then give one example from ${subject.toLowerCase()}. If both are solid, you have the concept.`,
+            text: `A complete account should define ${title.toLowerCase()}, identify its governing principles, and provide an example supported by evidence from ${subject.toLowerCase()}.`,
           },
         ],
       },
       {
         heading: "Mechanisms and analytical approach",
         paragraphs: [
-          `Approach ${title.toLowerCase()} in three moves. First, state the phenomenon without jargon. Second, name the parts that must be present. Third, run a mental experiment: change one part and predict the result.`,
+          `Analyse ${title.toLowerCase()} by defining the phenomenon, identifying its constituent components, and evaluating how changes in relevant variables affect the observed outcome.`,
         ],
         cards: [
           {
             title: "1. Frame",
-            text: `Restate ${title} as a question a curious student would actually ask.`,
+            text: `Formulate a precise question that defines the phenomenon and its scope.`,
           },
           {
             title: "2. Structure",
-            text: `List the components, forces, or terms that ${title.toLowerCase()} depends on.`,
+            text: `Identify the components, variables, and boundary conditions that govern ${title.toLowerCase()}.`,
           },
           {
             title: "3. Test",
-            text: `Ask what evidence would confirm or break your account of ${title.toLowerCase()}.`,
+            text: `Specify the observations or experimental results that would support or falsify the proposed explanation of ${title.toLowerCase()}.`,
           },
         ],
       },
       {
         heading: "Applications and significance",
         paragraphs: [
-          `${title} is not trivia. It is a lever inside ${section}: once you hold it, other articles in ${subject} become easier to read because you already know the local grammar of the field.`,
-          `Continue with related articles, flashcards, and Atlas neighbours. The encyclopedia is built so each entry is a door, not a dead end.`,
+          `${title} is significant within ${section} because it contributes to the interpretation of related phenomena and supports further analysis across ${subject}.`,
+          `Further study should consider related concepts, primary literature, and relevant empirical findings. Interpret conclusions in light of the scope and limitations of the available evidence.`,
         ],
       },
     ],
