@@ -32,6 +32,11 @@ execFileSync("npm", ["run", "desktop:app"], {
   stdio: "inherit",
 });
 
+execFileSync("npm", ["rebuild", "macos-alias"], {
+  cwd: projectRoot,
+  stdio: "inherit",
+});
+
 await stat(appPath);
 
 execFileSync(
