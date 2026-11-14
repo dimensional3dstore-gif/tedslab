@@ -37,7 +37,7 @@ export default function LostAtlasPage() {
             Natural history · extinction records
           </p>
           <h1 className="mt-3 font-display text-4xl font-bold text-foreground">
-            Lost Planet
+            Lost Atlas
           </h1>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
             A field atlas of extinct species: where they lived, what changed,
