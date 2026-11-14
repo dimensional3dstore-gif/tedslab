@@ -94,6 +94,22 @@ export function TopBar({
             )}
           </span>
         </button>
+        {!user && (
+          <div className="flex items-center gap-2">
+            <Link
+              to="/login"
+              className="inline-flex h-10 items-center justify-center rounded-md border border-border px-3 text-sm font-semibold text-foreground transition hover:bg-secondary"
+            >
+              Sign in
+            </Link>
+            <Link
+              to="/signup"
+              className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
+            >
+              Create account
+            </Link>
+          </div>
+        )}
         {user && (
           <div className="flex items-center gap-2 border-l border-border pl-4">
             <Link to="/dashboard" className="flex items-center gap-2">
