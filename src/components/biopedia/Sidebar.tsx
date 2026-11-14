@@ -42,6 +42,74 @@ export const studyTools = [
   { label: "Translate", icon: LucideIcons.SpeakerIcon, to: "/translate" },
 ] as const;
 
+export const notableFigures: {
+  name: string;
+  field: string;
+  icon: string;
+  to: string;
+}[] = [
+  {
+    name: "Charles Darwin",
+    field: "Evolution",
+    icon: "Bird",
+    to: "/biology/evolution",
+  },
+  {
+    name: "Gregor Mendel",
+    field: "Genetics",
+    icon: "Dna",
+    to: "/biology/genetics-dna",
+  },
+  {
+    name: "Rosalind Franklin",
+    field: "DNA structure",
+    icon: "Dna",
+    to: "/biology/genetics-dna",
+  },
+  {
+    name: "Carl Linnaeus",
+    field: "Taxonomy",
+    icon: "Sprout",
+    to: "/biology/organisms",
+  },
+  {
+    name: "Rachel Carson",
+    field: "Ecology",
+    icon: "Leaf",
+    to: "/biology/ecology-environment",
+  },
+  {
+    name: "Isaac Newton",
+    field: "Physics",
+    icon: "Atom",
+    to: "/science/physics",
+  },
+  {
+    name: "Marie Curie",
+    field: "Chemistry",
+    icon: "FlaskConical",
+    to: "/science/chemistry",
+  },
+  {
+    name: "Alan Turing",
+    field: "Computing",
+    icon: "Cpu",
+    to: "/technology/computing",
+  },
+  {
+    name: "Ada Lovelace",
+    field: "Computing",
+    icon: "Code",
+    to: "/technology/computing",
+  },
+  {
+    name: "William Shakespeare",
+    field: "Literature",
+    icon: "BookOpen",
+    to: "/english/literature",
+  },
+];
+
 function resolveIcon(name: string | null | undefined): LucideIcon {
   if (!name) return Sprout;
   const icons = LucideIcons as unknown as Record<string, LucideIcon>;
@@ -379,6 +447,39 @@ export function Sidebar({
                 collapsed={collapsed}
               />
             </li>
+          </ul>
+
+          {!collapsed && (
+            <p className="px-3 pt-6 pb-2 text-[11px] font-semibold tracking-widest text-primary/80">
+              PEOPLE
+            </p>
+          )}
+          <ul className="space-y-0.5 pb-4">
+            {notableFigures.map((figure) => (
+              <li key={figure.name}>
+                <Link
+                  to={figure.to}
+                  title={`${figure.name} — ${figure.field}`}
+                  aria-label={`${figure.name}, ${figure.field}`}
+                  className={`group flex w-full items-center rounded-lg py-2 text-sm text-sidebar-foreground transition-colors hover:bg-secondary data-[status=active]:bg-sidebar-accent data-[status=active]:font-medium data-[status=active]:text-primary ${collapsed ? "justify-center px-0" : "gap-3 px-3"}`}
+                >
+                  {(() => {
+                    const Icon = resolveIcon(figure.icon);
+                    return (
+                      <Icon className="size-4 shrink-0 text-muted-foreground group-data-[status=active]:text-primary" />
+                    );
+                  })()}
+                  {!collapsed && (
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate">{figure.name}</span>
+                      <span className="block truncate text-[11px] text-muted-foreground">
+                        {figure.field}
+                      </span>
+                    </span>
+                  )}
+                </Link>
+              </li>
+            ))}
           </ul>
 
           {!collapsed && (
