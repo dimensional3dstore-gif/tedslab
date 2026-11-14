@@ -53,9 +53,10 @@ Ensure all Supabase tables exist:
 Apply `supabase/migrations/20261114080500_chronosos_download_events.sql` to
 enable anonymous ChronosOS download-event inserts. The page records only the
 release tag, platform, and database timestamp; row-level security denies reads
-and limits inserts to those columns. The browser uses only
-`VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`. Never put a Supabase secret
-or service-role key in a `VITE_` variable or client-side code.
+and limits inserts to those columns. Configure `VITE_SUPABASE_URL` and the
+project's publishable/anon key as `VITE_SUPABASE_ANON_KEY` for the site build.
+Publishable keys are intended for browser use; never put a Supabase secret or
+service-role key in a `VITE_` variable or client-side code.
 
 ## Build Process
 
