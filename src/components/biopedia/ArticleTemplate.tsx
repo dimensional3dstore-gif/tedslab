@@ -18,15 +18,6 @@ import {
 } from "@/lib/article-layout";
 import { resolveImage } from "@/lib/images";
 
-const TABS = [
-  "Overview",
-  "Key Concepts",
-  "Process Steps",
-  "Energy Yield",
-  "Importance",
-  "References",
-] as const;
-
 export function ArticleTemplate({
   article,
   related = [],
@@ -58,6 +49,7 @@ export function ArticleTemplate({
       sections: [],
     } satisfies ArticleLayout);
 
+  const tabs = ["Scientific overview", ...layout.sections.map((section) => section.heading)];
   const image = resolveImage(article.image_url, article.image_key);
   const crumbs = [
     "Home",
@@ -96,7 +88,7 @@ export function ArticleTemplate({
             </h1>
             <div className="mt-3 inline-flex items-center gap-2 rounded-md border border-primary/30 bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary">
               <CheckCircle2 className="size-3.5" />
-              Reviewed by Experts
+              Scientific reference
             </div>
             <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground">
               {article.excerpt || layout.overview[0]}
@@ -123,7 +115,7 @@ export function ArticleTemplate({
       </header>
 
       <div className="mt-6 flex flex-wrap gap-2 rounded-2xl border border-border bg-card/80 p-2">
-        {TABS.map((tab, index) => (
+        {tabs.map((tab, index) => (
           <a
             key={tab}
             href={preview ? undefined : `#section-${index}`}
@@ -146,7 +138,7 @@ export function ArticleTemplate({
         id="section-0"
         className="mt-8 rounded-2xl border border-border bg-card/80 p-6"
       >
-        <h2 className="text-3xl font-bold text-foreground">Overview</h2>
+        <h2 className="text-3xl font-bold text-foreground">Scientific overview</h2>
         <div className="mt-6 space-y-5 text-base leading-relaxed text-muted-foreground">
           {layout.overview.map((p) => (
             <p key={p.slice(0, 48)}>{p}</p>
@@ -200,7 +192,7 @@ export function ArticleTemplate({
       ))}
 
       <div className="mt-8 flex items-center justify-between gap-3 rounded-xl border border-border bg-card/80 p-3 text-sm text-muted-foreground">
-        <span>Was this article helpful?</span>
+        <span>Was this reference useful?</span>
         <div className="flex items-center gap-2">
           <button
             type="button"
@@ -233,7 +225,7 @@ export function ArticleTemplate({
         <div className="border-b border-border px-4 py-3">
           <h2 className="flex items-center gap-2 text-sm font-semibold text-foreground">
             <BookOpenText className="size-4 text-primary" />
-            Article Contents
+            Article contents
           </h2>
         </div>
         <nav className="space-y-1 p-2 text-sm">
@@ -259,7 +251,7 @@ export function ArticleTemplate({
         <div className="border-b border-border px-4 py-3">
           <h2 className="flex items-center gap-2 text-sm font-semibold text-foreground">
             <Sparkles className="size-4 text-primary" />
-            Quick Facts
+            Article metadata
           </h2>
         </div>
         <div className="grid grid-cols-2 gap-3 p-4 text-sm">
