@@ -13,6 +13,9 @@ const staticRoutes = [
   "/flashcards",
   "/quizzes",
   "/videos",
+  "/chronosos-deepmind",
+  "/lost-atlas",
+  "/microatlas",
 ];
 
 const escapeXml = (value) =>
