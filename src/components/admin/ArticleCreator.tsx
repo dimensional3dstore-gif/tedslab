@@ -37,6 +37,20 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
   const [status, setStatus] = useState<"draft" | "published">(
     existing?.published ? "published" : "draft",
   );
+  const evidenceSection = layout.sections.find((section) =>
+    /evidence|reference/i.test(section.heading),
+  );
+  const evidenceText = evidenceSection?.paragraphs?.join("\n") ?? "";
+  const updateEvidence = (value: string) => {
+    const nextSections = layout.sections.filter(
+      (section) => !/evidence|reference/i.test(section.heading),
+    );
+    nextSections.push({
+      heading: "Evidence, limitations, and references",
+      paragraphs: value.split("\n").filter((line) => line.trim().length > 0),
+    });
+    setLayout({ ...layout, sections: nextSections });
+  };
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState("");
 
@@ -154,6 +168,15 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
                 overview: e.target.value.split("\n").filter(Boolean),
               })
             }
+          />
+        </label>
+        <label className="block space-y-1 text-xs text-muted-foreground">
+          Evidence and references (one source or limitation per line)
+          <textarea
+            className="min-h-28 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground"
+            value={evidenceText}
+            onChange={(event) => updateEvidence(event.target.value)}
+            placeholder="Author or organisation — publication title — year — DOI or URL"
           />
         </label>
         <label className="block space-y-1 text-xs text-muted-foreground">
