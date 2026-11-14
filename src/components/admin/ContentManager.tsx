@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, type FormEvent } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { usePages, useSections, useSubjects, useTopics } from "@/lib/content";
@@ -51,7 +51,7 @@ export function ContentManager({ mode }: { mode: Mode }) {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const save = async (event: React.FormEvent) => {
+  const save = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault(); setBusy(true); setError("");
     const base: Row = { id: editing?.id ?? `${mode.slice(0, -1)}-${crypto.randomUUID()}`, slug: slugify(slug || title), title, sort: editing?.sort ?? config.rows.length };
     if (mode === "pages") Object.assign(base, { description, body, published, status: published ? "published" : "draft", show_in_nav: showInNav, image_url: editing?.image_url ?? null });
