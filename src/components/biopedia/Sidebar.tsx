@@ -13,6 +13,7 @@ import {
   BrainCircuit,
   Download,
   Network,
+  Microscope,
   FilePenLine,
   PanelLeftClose,
   PanelLeftOpen,
@@ -187,9 +188,9 @@ export function Sidebar({
           <ul className="space-y-0.5">
             <li>
               <NavLink
-                label="Knowledge Atlas"
-                Icon={Network}
-                to="/knowledge-atlas"
+                label="ChronosOS Deepmind"
+                Icon={BrainCircuit}
+                to="/chronosos-deepmind"
                 collapsed={collapsed}
                 featured
               />
@@ -205,9 +206,16 @@ export function Sidebar({
             </li>
             <li>
               <NavLink
-                label="Lost Planet"
+                label="Lost Atlas"
                 Icon={LucideIcons.EarthIcon}
                 to="/lost-atlas"
+              />
+            </li>
+            <li>
+              <NavLink
+                label="MicroAtlas"
+                Icon={Microscope}
+                to="/microatlas"
               />
             </li>
             {subjectsLoading || sectionsLoading ? (
