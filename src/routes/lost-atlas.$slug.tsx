@@ -23,7 +23,7 @@ function SpeciesRecordPage() {
           to="/lost-atlas"
           className="text-sm font-medium text-primary hover:underline"
         >
-          Return to Lost Planet
+          Return to Lost Atlas
         </Link>
       </LostAtlasLayout>
     );
@@ -43,7 +43,7 @@ function SpeciesRecordPage() {
         to="/lost-atlas"
         className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground"
       >
-        <ArrowLeft className="size-3.5" /> Lost Planet index
+        <ArrowLeft className="size-3.5" /> Lost Atlas index
       </Link>
 
       <article className="overflow-hidden rounded-lg border border-border bg-card">
