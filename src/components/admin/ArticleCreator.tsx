@@ -213,7 +213,7 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
             setSectionEditor(e.target.value);
             try {
               const parsed = JSON.parse(e.target.value);
-              if (!Array.isArray(parsed) || parsed.some((item) => typeof item.heading !== "string" || !Array.isArray(item.paragraphs))) throw new Error("Each section needs a heading and paragraphs array.");
+              if (!Array.isArray(parsed) || parsed.some((item) => typeof item.heading !== "string" || (item.paragraphs !== undefined && !Array.isArray(item.paragraphs)) || (item.cards !== undefined && !Array.isArray(item.cards)) || (item.paragraphs === undefined && item.cards === undefined))) throw new Error("Each section needs a heading and paragraphs or cards.");
               setLayout({ ...layout, sections: parsed });
               setSectionEditorError("");
             } catch (error) {
