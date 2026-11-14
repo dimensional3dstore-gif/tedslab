@@ -50,7 +50,7 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
       excerpt,
       body: JSON.stringify(layout),
       minutes: 8,
-      tone: "educational",
+      tone: "scientific",
       subject_slug: subject,
       section_slug: section,
       topic_slug: slugifyTitle(title),
@@ -97,8 +97,7 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
       >
         <h2 className="font-display text-lg font-semibold">Create article</h2>
         <p className="text-xs text-muted-foreground">
-          The default encyclopedia layout is already loaded. Edit fields and
-          watch the live preview.
+          A structured scientific-reference layout is loaded. Use precise terminology, distinguish evidence from interpretation, and include relevant sources in the final section.
         </p>
         <label className="block space-y-1 text-xs text-muted-foreground">
           Title
