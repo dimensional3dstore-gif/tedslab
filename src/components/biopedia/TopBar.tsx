@@ -63,39 +63,41 @@ export function TopBar({
         <span className="hidden sm:inline">Download DMG</span>
       </a>
 
-      <div className="ml-auto hidden items-center gap-5 md:flex">
-        <span className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Bookmark className="size-4" />
-          Bookmarks
-          <span className="rounded-full bg-secondary px-2 py-0.5 text-xs text-foreground">
-            {bookmarkCount}
+      <div className="ml-auto flex items-center gap-3 md:gap-5">
+        <div className="hidden items-center gap-5 md:flex">
+          <span className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Bookmark className="size-4" />
+            Bookmarks
+            <span className="rounded-full bg-secondary px-2 py-0.5 text-xs text-foreground">
+              {bookmarkCount}
+            </span>
           </span>
-        </span>
-        <span className="flex items-center gap-2 text-sm text-muted-foreground">
-          <History className="size-4" />
-          History
-        </span>
-        <button
-          type="button"
-          onClick={onToggleCompact}
-          aria-pressed={compact}
-          aria-label="Toggle compact reading mode"
-          className="flex h-8 w-14 items-center rounded-full border border-border bg-secondary px-1 transition-colors"
-        >
-          <span
-            className={`flex size-6 items-center justify-center rounded-full bg-primary text-primary-foreground transition-transform ${
-              compact ? "translate-x-6" : "translate-x-0"
-            }`}
+          <span className="flex items-center gap-2 text-sm text-muted-foreground">
+            <History className="size-4" />
+            History
+          </span>
+          <button
+            type="button"
+            onClick={onToggleCompact}
+            aria-pressed={compact}
+            aria-label="Toggle compact reading mode"
+            className="flex h-8 w-14 items-center rounded-full border border-border bg-secondary px-1 transition-colors"
           >
-            {compact ? (
-              <Moon className="size-3.5" />
-            ) : (
-              <Sun className="size-3.5" />
-            )}
-          </span>
-        </button>
-        {user && (
-          <div className="flex items-center gap-2 border-l border-border pl-4">
+            <span
+              className={`flex size-6 items-center justify-center rounded-full bg-primary text-primary-foreground transition-transform ${
+                compact ? "translate-x-6" : "translate-x-0"
+              }`}
+            >
+              {compact ? (
+                <Moon className="size-3.5" />
+              ) : (
+                <Sun className="size-3.5" />
+              )}
+            </span>
+          </button>
+        </div>
+        {user ? (
+          <div className="hidden items-center gap-2 border-l border-border pl-4 md:flex">
             <Link to="/dashboard" className="flex items-center gap-2">
               <span className="flex size-9 items-center justify-center rounded-full bg-primary/15">
                 <User className="size-4 text-primary" />
@@ -106,6 +108,21 @@ export function TopBar({
                   {user.email}
                 </p>
               </div>
+            </Link>
+          </div>
+        ) : (
+          <div className="flex shrink-0 items-center gap-2 border-l border-border pl-3 md:pl-4">
+            <Link
+              to="/auth"
+              className="inline-flex h-9 items-center rounded-md border border-border px-3 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+            >
+              Sign in
+            </Link>
+            <Link
+              to="/signup"
+              className="inline-flex h-9 items-center rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            >
+              Create account
             </Link>
           </div>
         )}
