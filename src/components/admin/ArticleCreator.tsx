@@ -3,14 +3,13 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { ArticleTemplate } from "@/components/biopedia/ArticleTemplate";
 import { Button } from "@/components/ui/button";
-import { deleteCustomArticle } from "@/lib/article-store";
 import { Input } from "@/components/ui/input";
 import {
   DEFAULT_ARTICLE_LAYOUT,
   layoutFromArticleBody,
   type ArticleLayout,
 } from "@/lib/article-layout";
-import { slugifyTitle, upsertCustomArticle } from "@/lib/article-store";
+import { deleteCustomArticle, slugifyTitle, upsertCustomArticle } from "@/lib/article-store";
 import { imageKeys } from "@/lib/images";
 import { useSections, useSubjects, useTopics } from "@/lib/content";
 import type { ArticleRow } from "@/lib/content";
@@ -22,7 +21,6 @@ function cloneDefault(): ArticleLayout {
 export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const initialLayout = existing ? undefined : cloneDefault();
   const { data: subjects = [] } = useSubjects();
   const { data: allSections = [] } = useSections();
   const { data: allTopics = [] } = useTopics();
@@ -43,9 +41,7 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
       ? (layoutFromArticleBody(existing.body) ?? cloneDefault())
       : cloneDefault(),
   );
-  const [status, setStatus] = useState<"draft" | "published">(
-    existing?.published ? "published" : "draft",
-  );
+  const status = existing?.published ? "published" : "draft";
   const evidenceSection = layout.sections.find((section) =>
     /evidence|reference/i.test(section.heading),
   );
@@ -59,13 +55,13 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
       paragraphs: value.split("\n").filter((line) => line.trim().length > 0),
     });
     setLayout({ ...layout, sections: nextSections });
+    setSectionEditor(JSON.stringify(nextSections, null, 2));
+    setSectionEditorError("");
   };
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState("");
   const [sectionEditor, setSectionEditor] = useState(JSON.stringify(layout.sections, null, 2));
   const [sectionEditorError, setSectionEditorError] = useState("");
-
-  void initialLayout;
 
   const previewArticle: ArticleRow = useMemo(
     () => ({
@@ -251,7 +247,7 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
             type="button"
             variant="outline"
             onClick={() => void save(false)}
-            disabled={saving}
+            disabled={saving || Boolean(sectionEditorError)}
           >
             {saving ? "Saving…" : existing?.published ? "Unpublish & save draft" : "Save draft"}
           </Button>
@@ -272,7 +268,12 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
           <Button
             type="button"
             variant="ghost"
-            onClick={() => setLayout(cloneDefault())}
+            onClick={() => {
+              const next = cloneDefault();
+              setLayout(next);
+              setSectionEditor(JSON.stringify(next.sections, null, 2));
+              setSectionEditorError("");
+            }}
           >
             Reset layout
           </Button>
@@ -281,7 +282,7 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
 
       <div className="min-w-0 overflow-auto rounded-2xl border border-border bg-background p-4">
         <p className="mb-3 text-[11px] font-semibold uppercase tracking-widest text-primary">
-          Default layout preview
+          Live article preview
         </p>
         <ArticleTemplate
           article={previewArticle}
