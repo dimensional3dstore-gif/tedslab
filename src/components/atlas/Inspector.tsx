@@ -11,6 +11,8 @@ import {
 import { extractHeadings } from "@/lib/wiki";
 import { cn } from "@/lib/utils";
 import { useAtlas } from "@/store/atlas";
+import { useArticles } from "@/lib/content";
+import { toCMSGraphNodes } from "@/lib/atlas-cms";
 import { clusterColor } from "./GraphCanvas";
 
 function Section({
@@ -86,12 +88,16 @@ function LinkList({
 }
 
 export function Inspector() {
+  const { data: cmsArticles = [] } = useArticles();
+  const cmsNodes = useMemo(() => toCMSGraphNodes(cmsArticles), [cmsArticles]);
   const selectedId = useAtlas((s) => s.selectedId);
   const select = useAtlas((s) => s.select);
   const openArticle = useAtlas((s) => s.openArticle);
   const bookmarks = useAtlas((s) => s.bookmarks);
   const toggleBookmark = useAtlas((s) => s.toggleBookmark);
-  const node = selectedId ? NODE_BY_ID[selectedId] : undefined;
+  const node = selectedId
+    ? NODE_BY_ID[selectedId] ?? cmsNodes.find((item) => item.id === selectedId)
+    : undefined;
   const article = selectedId ? ARTICLES[selectedId] : undefined;
 
   const outgoing = node?.related.filter((id) => NODE_BY_ID[id]) ?? [];
