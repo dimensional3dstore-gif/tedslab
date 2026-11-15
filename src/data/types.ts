@@ -9,7 +9,7 @@ export type ClusterId =
   | "mind"
   | "systems";
 
-export type NodeKind = "atlas" | "hub" | "topic" | "figure" | "concept";
+export type NodeKind = "atlas" | "hub" | "topic" | "article" | "figure" | "concept";
 
 export type ClusterIdOrAtlas = ClusterId | "atlas";
 
