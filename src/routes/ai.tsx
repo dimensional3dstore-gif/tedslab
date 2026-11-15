@@ -21,6 +21,7 @@ export const Route = createFileRoute("/ai")({
 });
 
 function AIPage() {
+  const permissions = useStudentPermissions();
   return (
     <AppShell>
       <PageHeader
@@ -28,7 +29,7 @@ function AIPage() {
         description="Ask a question and I will respond using the built-in study and biology knowledge files."
       />
       <div className="mt-6">
-        <Pate />
+        {permissions.loading ? <div className="bio-panel p-5 text-sm text-muted-foreground">Checking parental permissions…</div> : permissions.aiAssistanceAllowed ? <Pate /> : <div className="bio-panel p-5"><h2 className="font-semibold text-foreground">AI assistance is not enabled</h2><p className="mt-2 text-sm text-muted-foreground">A parent or guardian has not enabled AI assistance for this learner. Ask them to review the permission in the Parent Portal.</p></div>}
       </div>
     </AppShell>
   );
