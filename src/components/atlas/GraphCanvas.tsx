@@ -12,6 +12,7 @@ const CLUSTER_COLOR: Record<string, string> = {
   biology: "#6ee7d8",
   computing: "#67e8f9",
   history: "#7dd3fc",
+  english: "#f0c6a2",
   mind: "#a5f3fc",
   systems: "#67e8f9",
 };
