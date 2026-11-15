@@ -32,7 +32,7 @@ export function toCMSGraphNodes(articles: ArticleRow[]): AtlasNode[] {
         id: "cms-article-" + article.id,
         title: article.title,
         cluster,
-        kind: "topic",
+        kind: "article",
         tags: [article.topic_slug, "article", "cms"],
         summary: article.excerpt ?? "Published Ted's Lab article.",
         related: [cluster],
