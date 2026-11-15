@@ -4,6 +4,8 @@ import { NODES } from "@/data/catalog";
 import { cn } from "@/lib/utils";
 import type { NodeKind } from "@/data/types";
 import { useAtlas } from "@/store/atlas";
+import { useArticles } from "@/lib/content";
+import { toCMSGraphNodes } from "@/lib/atlas-cms";
 
 function icon(kind: NodeKind) {
   if (kind === "hub" || kind === "atlas") return Hexagon;
@@ -13,6 +15,9 @@ function icon(kind: NodeKind) {
 }
 
 export function SearchModal() {
+  const { data: articles = [] } = useArticles();
+  const cmsNodes = useMemo(() => toCMSGraphNodes(articles), [articles]);
+  const allNodes = useMemo(() => [...NODES, ...cmsNodes], [cmsNodes]);
   const open = useAtlas((s) => s.searchOpen);
   const setOpen = useAtlas((s) => s.setSearchOpen);
   const select = useAtlas((s) => s.select);
@@ -43,15 +48,15 @@ export function SearchModal() {
 
   const results = useMemo(() => {
     const s = q.trim().toLowerCase();
-    if (!s) return NODES.slice(0, 12);
-    return NODES.filter(
+    if (!s) return allNodes.slice(0, 12);
+    return allNodes.filter(
       (n) =>
         n.title.toLowerCase().includes(s) ||
         n.summary.toLowerCase().includes(s) ||
         n.tags.some((t) => t.includes(s)) ||
         n.id.includes(s),
     ).slice(0, 24);
-  }, [q]);
+  }, [q, allNodes]);
 
   if (!open) return null;
 
