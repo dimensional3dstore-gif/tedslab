@@ -77,7 +77,7 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
       tone: "scientific",
       subject_slug: subject,
       section_slug: section,
-      topic_slug: topic || null,
+      topic_slug: topic,
       image_key: imageKey,
       image_url: imageUrl.trim() || null,
       video_url: videoUrl.trim() || null,
