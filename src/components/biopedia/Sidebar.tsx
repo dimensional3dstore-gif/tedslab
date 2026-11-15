@@ -30,6 +30,7 @@ import {
 import { getChronosOSDownloadUrl } from "@/lib/chronos-os-download";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AiAssistPanel } from "../atlas/AiAssist";
+import { useAuth } from "@/hooks/use-auth";
 
 export const studyTools = [
   { label: "AI Tutor", icon: BrainCircuit, to: "/ai" },
@@ -60,6 +61,7 @@ export function Sidebar({
   const { data: articles } = useArticles();
   const { data: navLinks } = useNavLinks();
   const { data: settings } = useSettings();
+  const { isAdmin } = useAuth();
   const chronosDownloadUrl = getChronosOSDownloadUrl();
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [expandedSections, setExpandedSections] = useState<Set<string>>(
@@ -387,6 +389,27 @@ export function Sidebar({
               />
             </li>
           </ul>
+
+          {isAdmin && (
+            <>
+              {!collapsed && (
+                <p className="px-3 pt-6 pb-2 text-[11px] font-semibold tracking-widest text-primary/80">
+                  ADMIN STUDIO
+                </p>
+              )}
+              <ul className="space-y-0.5 pb-4">
+                <li><NavLink label="Admin dashboard" Icon={LucideIcons.LayoutDashboard} to="/admin" collapsed={collapsed} /></li>
+                <li><NavLink label="Edit articles" Icon={FilePenLine} to="/admin/articles" collapsed={collapsed} /></li>
+                <li><NavLink label="Add article" Icon={Plus} to="/admin/articles/new" collapsed={collapsed} /></li>
+                <li><NavLink label="Add topic" Icon={LucideIcons.Tag} to="/admin/topics" collapsed={collapsed} /></li>
+                <li><NavLink label="Add section" Icon={LucideIcons.Folders} to="/admin/sections" collapsed={collapsed} /></li>
+                <li><NavLink label="Add video" Icon={LucideIcons.Video} to="/admin/videos/new" collapsed={collapsed} /></li>
+                <li><NavLink label="Add quiz" Icon={LucideIcons.ListChecks} to="/admin/quizzes/new" collapsed={collapsed} /></li>
+                <li><NavLink label="Add flashcard" Icon={Layers} to="/admin/flashcards/new" collapsed={collapsed} /></li>
+                <li><NavLink label="Annotations" Icon={LucideIcons.Highlighter} to="/admin/articles" collapsed={collapsed} /></li>
+              </ul>
+            </>
+          )}
 
           {!collapsed && (
             <p className="px-3 pt-6 pb-2 text-[11px] font-semibold tracking-widest text-primary/80">
