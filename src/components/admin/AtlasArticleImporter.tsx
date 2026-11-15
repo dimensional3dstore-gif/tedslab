@@ -19,29 +19,29 @@ const SUBJECTS_BY_CLUSTER: Record<string, { slug: string; title: string; descrip
 
 function plainText(value: string) {
   return value
-    .replace(/\\[\\[([^|\\]]+)\\|([^\\]]+)\\]\\]/g, "$2")
-    .replace(/\\[\\[([^\\]]+)\\]\\]/g, "$1")
+    .replace(/\[\[([^|\]]+)\|([^\]]+)\]\]/g, "$2")
+    .replace(/\[\[([^\]]+)\]\]/g, "$1")
     .replace(/[*_`]/g, "")
     .trim();
 }
 
 function toArticleLayout(node: AtlasNode, sourceBody: string, subjectTitle: string, sectionTitle: string) {
-  const blocks = sourceBody.split(/\\r?\\n/);
+  const blocks = sourceBody.split(/\r?\n/);
   const overview: string[] = [];
   const sections: { heading: string; paragraphs: string[] }[] = [];
   let current: { heading: string; paragraphs: string[] } | null = null;
   let paragraph: string[] = [];
   const flush = () => {
-    const value = plainText(paragraph.join(" ").replace(/\\s+/g, " "));
+    const value = plainText(paragraph.join(" ").replace(/\s+/g, " "));
     if (value) (current ? current.paragraphs : overview).push(value);
     paragraph = [];
   };
   for (const raw of blocks) {
     const line = raw.trim();
     if (!line) { flush(); continue; }
-    if (/^#{1,6}\\s+/.test(line)) {
+    if (/^#{1,6}\s+/.test(line)) {
       flush();
-      current = { heading: plainText(line.replace(/^#{1,6}\\s+/, "")), paragraphs: [] };
+      current = { heading: plainText(line.replace(/^#{1,6}\s+/, "")), paragraphs: [] };
       sections.push(current);
     } else {
       paragraph.push(line);
