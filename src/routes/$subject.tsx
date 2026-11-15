@@ -1,9 +1,9 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import { AppShell, PageHeader } from "@/components/biopedia/AppShell";
-import type { SectionRow, Subject } from "@/lib/content";
+import type { Subject, TopicRow } from "@/lib/content";
 import { fetchCatalogRow, fetchCatalogRows } from "@/lib/content";
-import { SECTIONS, SUBJECTS } from "@/lib/catalog";
+import { TOPICS, SUBJECTS } from "@/lib/catalog";
 import { resolveImage } from "@/lib/images";
 
 const subjectQueryOptions = (slug: string) =>
@@ -12,11 +12,11 @@ const subjectQueryOptions = (slug: string) =>
     queryFn: () => fetchCatalogRow<Subject>("subjects", "slug", slug, SUBJECTS),
   });
 
-const subjectSectionsQueryOptions = (subjectId: string) =>
+const subjectTopicsQueryOptions = (subjectId: string) =>
   queryOptions({
-    queryKey: ["sections", "by-subject", subjectId],
+    queryKey: ["topics", "by-subject", subjectId],
     queryFn: async () => {
-      const rows = await fetchCatalogRows<SectionRow>("sections", SECTIONS);
+      const rows = await fetchCatalogRows<TopicRow>("topics", TOPICS);
       return rows.filter((row) => row.subject_id === subjectId);
     },
   });
@@ -27,10 +27,10 @@ export const Route = createFileRoute("/$subject")({
       subjectQueryOptions(params.subject),
     );
     if (!subject) throw notFound();
-    const sections = await context.queryClient.ensureQueryData(
-      subjectSectionsQueryOptions(subject.id),
+    const topics = await context.queryClient.ensureQueryData(
+      subjectTopicsQueryOptions(subject.id),
     );
-    return { subject, sections };
+    return { subject, topics };
   },
   head: ({ loaderData }) => {
     const title = loaderData
@@ -57,9 +57,9 @@ function SubjectPage() {
     ...subjectQueryOptions(initialSubject.slug),
     initialData: initialSubject,
   });
-  const { data: sections } = useQuery({
-    ...subjectSectionsQueryOptions(subject!.id),
-    initialData: Route.useLoaderData().sections,
+  const { data: topics } = useQuery({
+    ...subjectTopicsQueryOptions(subject!.id),
+    initialData: Route.useLoaderData().topics,
   });
 
   return (
@@ -71,7 +71,7 @@ function SubjectPage() {
             description={subject!.description ?? ""}
           />
           <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-            {(sections ?? [])
+            {(topics ?? [])
               .filter(
                 (s) =>
                   !q ||
@@ -84,7 +84,7 @@ function SubjectPage() {
                   className="block overflow-hidden bio-panel transition-colors hover:border-primary/50"
                 >
                   <img
-                    src={resolveImage(s.image_url, s.image_key)}
+                    src={resolveImage(s.image_url, null)}
                     alt={s.title}
                     loading="lazy"
                     width={512}
@@ -94,7 +94,7 @@ function SubjectPage() {
                   <div className="p-4">
                     <h2 className="text-sm font-semibold">{s.title}</h2>
                     <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-                      {s.description}
+                      {s.blurb}
                     </p>
                   </div>
                 </Link>
