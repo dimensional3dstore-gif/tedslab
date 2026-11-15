@@ -53,7 +53,7 @@ function ArticleAnnotationPage() {
   }
 
   return (
-    <AdminPage title="Annotate article" description={\`Add scientific, editorial, citation, or fact-check notes to “\${articleTitle}”.\`}>
+    <AdminPage title="Annotate article" description={`Add scientific, editorial, citation, or fact-check notes to “${articleTitle}”.`}>
       <div className="mb-5 flex flex-wrap items-center gap-2 text-sm">
         <Link to="/admin/articles" className="text-primary hover:underline">Manage articles</Link>
         <span className="text-muted-foreground">/</span>
