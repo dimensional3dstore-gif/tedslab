@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell, PageHeader } from "@/components/biopedia/AppShell";
 import { Pate } from "@/ai/page";
+import { useStudentPermissions } from "@/hooks/use-student-permissions";
 
 const title = "AI Tutor — Ted's Lab";
 const description =
