@@ -105,8 +105,8 @@ function FilesPane() {
   const settings = useAtlas((s) => s.settings);
   const grouped = useMemo(() => {
     const match = (n: AtlasNode) =>
-      (settings.subjectFilter === "all" || n.cluster === settings.subjectFilter) &&
-      (settings.kindFilter === "all" || n.kind === settings.kindFilter) &&
+      ((settings.subjectFilter ?? "all") === "all" || n.cluster === settings.subjectFilter) &&
+      ((settings.kindFilter ?? "all") === "all" || n.kind === settings.kindFilter) &&
       (!filter || n.title.toLowerCase().includes(filter) || n.tags.some((t) => t.includes(filter)));
     return CLUSTERS.map((c) => {
       const all = NODES.filter((n) => n.cluster === c.id && match(n));
@@ -128,7 +128,7 @@ function FilesPane() {
       </Folder>
       {grouped.map(({ cluster, topics, figures, concepts }) => {
         const total = topics.length + figures.length + concepts.length;
-        if ((filter || settings.subjectFilter !== "all" || settings.kindFilter !== "all") && total === 0) return null;
+        if ((filter || (settings.subjectFilter ?? "all") !== "all" || (settings.kindFilter ?? "all") !== "all") && total === 0) return null;
         return (
           <Folder
             key={cluster.id}
@@ -282,13 +282,13 @@ export function Explorer() {
       {rail !== "tags" && rail !== "starred" && (
         <div className="grid grid-cols-2 gap-2 border-b border-border px-2 py-2">
           <label className="min-w-0 text-[10px] text-fg-subtle">Subject
-            <select aria-label="Filter graph by subject" value={settings.subjectFilter} onChange={(event) => patchSettings({ subjectFilter: event.target.value })} className="mt-1 h-8 w-full rounded-sm border border-border bg-bg px-2 text-[11px] text-fg">
+            <select aria-label="Filter graph by subject" value={settings.subjectFilter ?? "all"} onChange={(event) => patchSettings({ subjectFilter: event.target.value })} className="mt-1 h-8 w-full rounded-sm border border-border bg-bg px-2 text-[11px] text-fg">
               <option value="all">All subjects</option>
               {CLUSTERS.map((cluster) => <option key={cluster.id} value={cluster.id}>{cluster.title}</option>)}
             </select>
           </label>
           <label className="min-w-0 text-[10px] text-fg-subtle">Type
-            <select aria-label="Filter graph by article type" value={settings.kindFilter} onChange={(event) => patchSettings({ kindFilter: event.target.value })} className="mt-1 h-8 w-full rounded-sm border border-border bg-bg px-2 text-[11px] text-fg">
+            <select aria-label="Filter graph by article type" value={settings.kindFilter ?? "all"} onChange={(event) => patchSettings({ kindFilter: event.target.value })} className="mt-1 h-8 w-full rounded-sm border border-border bg-bg px-2 text-[11px] text-fg">
               <option value="all">All types</option><option value="hub">Subjects</option><option value="topic">Topics</option><option value="concept">Concepts</option><option value="figure">People</option>
             </select>
           </label>
