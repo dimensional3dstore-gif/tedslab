@@ -112,7 +112,8 @@ function FilesPane() {
       const all = NODES.filter((n) => n.cluster === c.id && match(n));
       return {
         cluster: c,
-        topics: all.filter((n) => n.kind === "topic" || n.kind === "hub"),
+        subject: all.find((n) => n.kind === "hub"),
+        topics: all.filter((n) => n.kind === "topic"),
         figures: all.filter((n) => n.kind === "figure"),
         concepts: all.filter((n) => n.kind === "concept"),
       };
@@ -126,8 +127,8 @@ function FilesPane() {
           <NodeRow node={NODE_BY_ID["knowledge-atlas"]} depth={1} />
         )}
       </Folder>
-      {grouped.map(({ cluster, topics, figures, concepts }) => {
-        const total = topics.length + figures.length + concepts.length;
+      {grouped.map(({ cluster, subject, topics, figures, concepts }) => {
+        const total = topics.length + figures.length + concepts.length + (subject ? 1 : 0);
         if (filter && total === 0) return null;
         return (
           <Folder
@@ -137,6 +138,7 @@ function FilesPane() {
             color={cluster.accent}
             count={total}
           >
+            {subject && <NodeRow node={subject} depth={1} />}
             <Folder
               id={`${cluster.id}-topics`}
               title="Topics"
