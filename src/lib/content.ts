@@ -64,6 +64,7 @@ export type ArticleRow = {
   image_url: string | null;
   video_url: string | null;
   published: boolean | null;
+  expert_reviewed?: boolean | null;
   status?: "draft" | "review" | "published" | null;
   sort: number | null;
 };
