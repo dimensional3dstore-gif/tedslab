@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell, PageHeader } from "@/components/biopedia/AppShell";
 import {
@@ -13,6 +13,8 @@ import {
   PlayCircle,
   Target,
   Trophy,
+  Archive,
+  Clock3,
 } from "lucide-react";
 import {
   EXAM_PATHWAYS,
@@ -27,6 +29,8 @@ type DailySubject = {
   lessons: string[];
   quiz: string[];
 };
+
+const LESSON_DURATION_MINUTES = 60;
 
 const LESSON_SEQUENCE = [
   "Concept briefing",
@@ -76,6 +80,24 @@ function StudySubjectCard({
 }) {
   const [lessonIndex, setLessonIndex] = useState(0);
   const [quizOpen, setQuizOpen] = useState(false);
+  const [secondsRemaining, setSecondsRemaining] = useState(LESSON_DURATION_MINUTES * 60);
+
+  useEffect(() => {
+    if (completed || quizOpen) return;
+    const timer = window.setInterval(() => {
+      setSecondsRemaining((value) => Math.max(0, value - 1));
+    }, 1000);
+    return () => window.clearInterval(timer);
+  }, [completed, quizOpen, lessonIndex]);
+
+  useEffect(() => {
+    setSecondsRemaining(LESSON_DURATION_MINUTES * 60);
+  }, [lessonIndex]);
+
+  const hours = Math.floor(secondsRemaining / 3600);
+  const minutes = Math.floor((secondsRemaining % 3600) / 60);
+  const seconds = secondsRemaining % 60;
+  const lessonTime = hours.toString().padStart(2, "0") + ":" + minutes.toString().padStart(2, "0") + ":" + seconds.toString().padStart(2, "0");
 
   const nextLesson = () => {
     if (lessonIndex < item.lessons.length - 1) {
@@ -152,6 +174,19 @@ function StudySubjectCard({
           </div>
         </div>
 
+        <div className="mt-5 rounded-xl border border-border bg-secondary/30 p-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-2 text-sm font-bold text-foreground">
+              <Clock3 className="size-4 text-primary" />
+              60-minute lesson block
+            </div>
+            <span className="font-mono text-sm font-bold text-primary">{lessonTime}</span>
+          </div>
+          <p className="mt-2 text-xs text-muted-foreground">
+            Every lesson is designed as a full one-hour study block for teaching, notes, examples, practice and retrieval.
+          </p>
+        </div>
+
         {!quizOpen && !completed && (
           <button
             type="button"
@@ -198,6 +233,25 @@ function StudyEnlistPage() {
   const [day, setDay] = useState(1);
   const [showAllWeeks, setShowAllWeeks] = useState(false);
   const [completedSubjects, setCompletedSubjects] = useState<number[]>([]);
+  const [archivedDays, setArchivedDays] = useState<number[]>([]);
+
+  useEffect(() => {
+    try {
+      const saved = window.localStorage.getItem("teds-lab-study-archive");
+      if (saved) setArchivedDays(JSON.parse(saved));
+    } catch {
+      // Ignore unavailable or malformed local archive data.
+    }
+  }, []);
+
+  const archiveCurrentDay = () => {
+    if (completedSubjects.length !== 3) return;
+    setArchivedDays((current) => {
+      const next = current.includes(day) ? current : [...current, day].sort((a, b) => a - b);
+      window.localStorage.setItem("teds-lab-study-archive", JSON.stringify(next));
+      return next;
+    });
+  };
   const level = GRADE_LEVELS.find((item) => item.grade === grade)!;
   const today = getStudyDay(grade, day);
   const weeks = useMemo(() => getYearStructure(grade), [grade]);
@@ -426,6 +480,46 @@ function StudyEnlistPage() {
             <Target className="size-4" />
             Start End Of Lessons Quiz
           </button>
+          <button
+            type="button"
+            disabled={!allSubjectsComplete}
+            onClick={archiveCurrentDay}
+            className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-secondary/30 px-4 py-3 text-sm font-bold text-foreground disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            <Archive className="size-4" />
+            {archivedDays.includes(day) ? "Day archived" : "Archive completed study"}
+          </button>
+        </section>
+
+        <section className="bio-panel p-5">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+                Study Archive
+              </p>
+              <h2 className="mt-1 text-xl font-bold text-foreground">
+                Completed study days
+              </h2>
+            </div>
+            <Archive className="size-5 text-primary" />
+          </div>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Completed days are kept in the learner's local Study Archive so finished work is separated from the active programme.
+          </p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {archivedDays.length ? archivedDays.map((archivedDay) => (
+              <button
+                key={archivedDay}
+                type="button"
+                onClick={() => setDay(archivedDay)}
+                className="rounded-full border border-primary/20 bg-primary/5 px-3 py-1.5 text-xs font-semibold text-primary"
+              >
+                Day {archivedDay}
+              </button>
+            )) : (
+              <span className="text-xs text-muted-foreground">No completed days archived yet.</span>
+            )}
+          </div>
         </section>
 
         <section className="grid gap-5 xl:grid-cols-[1.15fr_.85fr]">
