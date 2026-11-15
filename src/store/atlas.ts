@@ -55,6 +55,7 @@ const DEFAULT_FOLDERS = [
   "biology",
   "computing",
   "history",
+  "english",
   "mind",
   "systems",
   "geography",
