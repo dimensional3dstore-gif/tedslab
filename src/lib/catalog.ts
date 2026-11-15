@@ -488,6 +488,8 @@ function buildSectionsAndTopics() {
       topicRows.push({
         id: `top-${sec.slug}-${slugify(t.title)}`,
         section_id: id,
+        subject_id: "sub-biology",
+        subject_slug: "biology",
         slug: slugify(t.title),
         title: t.title,
         blurb: t.blurb,
@@ -517,6 +519,8 @@ function buildSectionsAndTopics() {
       topicRows.push({
         id: `top-${sec.slug}-${slugify(t.title)}`,
         section_id: id,
+        subject_id: sec.subjectId,
+        subject_slug: SUBJECTS.find((subject) => subject.id === sec.subjectId)?.slug ?? "biology",
         slug: slugify(t.title),
         title: t.title,
         blurb: t.blurb,
@@ -536,7 +540,7 @@ export const TOPICS: TopicRow[] = built.topicRows;
 
 export const ARTICLES: ArticleRow[] = TOPICS.map((t, i) => {
   const section = SECTIONS.find((s) => s.id === t.section_id);
-  const subject = SUBJECTS.find((s) => s.id === section?.subject_id);
+  const subject = SUBJECTS.find((s) => s.id === t.subject_id);
   const layout = buildTopicLayout({
     title: t.title,
     blurb: t.blurb ?? "",
