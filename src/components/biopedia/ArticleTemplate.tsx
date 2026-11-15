@@ -90,6 +90,12 @@ export function ArticleTemplate({
               <CheckCircle2 className="size-3.5" />
               Scientific reference
             </div>
+            {article.published && article.expert_reviewed && (
+              <div className="mt-2 inline-flex items-center gap-2 rounded-md border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-xs font-semibold text-emerald-600">
+                <CheckCircle2 className="size-3.5" />
+                Expert reviewed
+              </div>
+            )}
             <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground">
               {article.excerpt || layout.overview[0]}
             </p>
