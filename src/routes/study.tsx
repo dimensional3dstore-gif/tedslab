@@ -6,6 +6,7 @@ import { EXAM_PATHWAYS, GRADE_LEVELS, getDailyLessons, getStudyDay, getYearStruc
 import { DailyLessonCard } from "@/components/study/DailyLessonCard";
 import { useAuth } from "@/hooks/use-auth";
 import { getSupabaseAuthClient } from "@/integrations/supabase/auth";
+import { useStudentPermissions } from "@/hooks/use-student-permissions";
 
 export const Route = createFileRoute("/study")({
   head: () => ({ meta: [{ title: "Study Enlist · 365-day curriculum — Ted's Lab" }, { name: "description", content: "A rigorous 365-day Australian learning programme for Grades 1–13, with daily lessons, weekly mastery tests and exam preparation." }] }),
@@ -20,6 +21,7 @@ function StudyEnlistPage() {
   const [onboarding, setOnboarding] = useState<"loading" | "pending" | "ready">("loading");
   const [progressError, setProgressError] = useState("");
   const { user, loading: authLoading } = useAuth();
+  const permissions = useStudentPermissions();
   const level = GRADE_LEVELS.find((item) => item.grade === grade)!;
   const today = getStudyDay(grade, day);
   const weeks = useMemo(() => getYearStructure(grade), [grade]);
@@ -77,6 +79,8 @@ function StudyEnlistPage() {
   return (
     <AppShell>
       <div className="space-y-7">
+        {permissions.browserLockEnabled && <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-primary/30 bg-primary/5 p-4"><div><p className="font-semibold text-foreground">Supervised study mode is enabled</p><p className="mt-1 text-xs text-muted-foreground">Ted’s Lab will keep the learner focused within this study experience. Full-screen mode is optional and does not block other browser tabs or device applications.</p></div><button type="button" onClick={() => { if (document.fullscreenElement) void document.exitFullscreen(); else void document.documentElement.requestFullscreen?.(); }} className="rounded-lg bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground">{typeof document !== "undefined" && document.fullscreenElement ? "Exit full screen" : "Start focus session"}</button></div>}
+
         <PageHeader title="Study Enlist" description="A disciplined, 365-day learning programme built into Ted’s Lab. Every day has a defined learning task; every seventh day is a mastery assessment; Day 365 is the cumulative final examination and portfolio." />
         <section className="overflow-hidden rounded-2xl border border-primary/25 bg-card">
           <div className="grid gap-6 p-6 lg:grid-cols-[1.3fr_1fr] lg:items-center">
