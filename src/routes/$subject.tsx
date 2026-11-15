@@ -1,8 +1,9 @@
+import { useMemo, useState } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import { AppShell, PageHeader } from "@/components/biopedia/AppShell";
-import type { Subject, TopicRow } from "@/lib/content";
-import { fetchCatalogRow, fetchCatalogRows } from "@/lib/content";
+import type { ArticleRow, Subject, TopicRow } from "@/lib/content";
+import { fetchCatalogRow, fetchCatalogRows, useArticles } from "@/lib/content";
 import { TOPICS, SUBJECTS } from "@/lib/catalog";
 import { resolveImage } from "@/lib/images";
 
@@ -53,6 +54,9 @@ export const Route = createFileRoute("/$subject")({
 
 function SubjectPage() {
   const { subject: initialSubject } = Route.useLoaderData();
+  const { data: allArticles = [] } = useArticles();
+  const [articleSearch, setArticleSearch] = useState("");
+  const [topicFilter, setTopicFilter] = useState("all");
   const { data: subject } = useQuery({
     ...subjectQueryOptions(initialSubject.slug),
     initialData: initialSubject,
@@ -60,6 +64,16 @@ function SubjectPage() {
   const { data: topics } = useQuery({
     ...subjectTopicsQueryOptions(subject!.id),
     initialData: Route.useLoaderData().topics,
+  });
+  const subjectArticles = useMemo(
+    () => (allArticles as ArticleRow[]).filter((article) => article.subject_slug === subject!.slug && article.published),
+    [allArticles, subject],
+  );
+  const visibleArticles = subjectArticles.filter((article) => {
+    const matchesTopic = topicFilter === "all" || article.topic_slug === topicFilter;
+    const term = articleSearch.trim().toLowerCase();
+    const matchesSearch = !term || (article.title + " " + (article.excerpt ?? "")).toLowerCase().includes(term);
+    return matchesTopic && matchesSearch;
   });
 
   return (
@@ -70,7 +84,32 @@ function SubjectPage() {
             title={subject!.title}
             description={subject!.description ?? ""}
           />
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          <section className="mt-6">
+            <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <h2 className="text-base font-semibold">Articles</h2>
+                <p className="text-xs text-muted-foreground">{visibleArticles.length} of {subjectArticles.length} published articles</p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <input aria-label="Search subject articles" value={articleSearch} onChange={(event) => setArticleSearch(event.target.value)} placeholder="Search articles…" className="h-9 w-48 rounded-md border border-input bg-background px-3 text-sm" />
+                <select aria-label="Filter articles by topic" value={topicFilter} onChange={(event) => setTopicFilter(event.target.value)} className="h-9 rounded-md border border-input bg-background px-3 text-sm">
+                  <option value="all">All topics</option>
+                  {(topics ?? []).map((topic) => <option key={topic.id} value={topic.slug}>{topic.title}</option>)}
+                </select>
+              </div>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+              {visibleArticles.map((article) => (
+                <Link key={article.id} to={"/" + subject!.slug + "/" + article.topic_slug} className="bio-panel block p-4 transition-colors hover:border-primary/50">
+                  <p className="text-[11px] uppercase tracking-wide text-muted-foreground">{(topics ?? []).find((topic) => topic.slug === article.topic_slug)?.title ?? article.topic_slug}</p>
+                  <h3 className="mt-1 text-sm font-semibold">{article.title}</h3>
+                  <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-muted-foreground">{article.excerpt}</p>
+                </Link>
+              ))}
+              {!visibleArticles.length && <p className="bio-panel p-4 text-sm text-muted-foreground">No published articles match these filters.</p>}
+            </div>
+          </section>
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {(topics ?? [])
               .filter(
                 (s) =>
