@@ -101,7 +101,7 @@ export const useAtlas = create<AtlasState>()(
       },
       hover: (id) => set({ hoveredId: id }),
       openArticle: (id) => {
-        if (!NODE_BY_ID[id]) return;
+        if (!NODE_BY_ID[id] && !id.startsWith("cms-article-")) return;
         const recent = [id, ...get().recent.filter((x) => x !== id)].slice(
           0,
           24,
