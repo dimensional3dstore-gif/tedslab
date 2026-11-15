@@ -40,7 +40,9 @@ export type SectionRow = {
 
 export type TopicRow = {
   id: string;
-  section_id: string;
+  section_id: string | null;
+  subject_id: string;
+  subject_slug: string;
   slug: string;
   title: string;
   blurb: string | null;
@@ -59,7 +61,7 @@ export type ArticleRow = {
   tone: string | null;
   subject_slug: string | null;
   section_slug: string | null;
-  topic_slug: string | null;
+  topic_slug: string;
   image_key: string | null;
   image_url: string | null;
   video_url: string | null;
