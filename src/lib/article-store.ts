@@ -2,6 +2,10 @@ import { supabase } from "@/integrations/supabase/client";
 import type { ArticleRow } from "@/lib/content";
 
 export async function upsertCustomArticle(article: ArticleRow) {
+  if (!article.subject_slug?.trim()) {
+    throw new Error("Every article must be assigned to a subject before it can be saved.");
+  }
+
   const { data: sessionData, error: sessionError } =
     await supabase.auth.getSession();
 
