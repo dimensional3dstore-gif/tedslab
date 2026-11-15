@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AdminPage } from "@/components/admin/AdminPage";
 import { ArticleCreator } from "@/components/admin/ArticleCreator";
-import { useArticles } from "@/lib/content";
+import { useArticleById } from "@/lib/content";
 
 export const Route = createFileRoute("/admin/articles/$id")({
   head: () => ({ meta: [{ title: "Edit Article — Ted's Lab" }] }),
@@ -10,13 +10,17 @@ export const Route = createFileRoute("/admin/articles/$id")({
 
 function EditAdminArticlePage() {
   const { id } = Route.useParams();
-  const { data: articles = [], isLoading } = useArticles();
-  const article = articles.find((item) => item.id === id);
+  const { data: article, isLoading, error } = useArticleById(id);
 
   return (
     <AdminPage title="Edit article" description="Update the article, save a draft, or publish the latest revision.">
       <Link to="/admin/articles" className="mb-4 inline-flex text-sm font-medium text-primary hover:underline">← Back to articles</Link>
-      {isLoading ? (
+      {error ? (
+        <div className="bio-panel space-y-3 p-5">
+          <p className="text-sm text-destructive">Unable to load this article from Supabase. Check your admin session and database permissions.</p>
+          <a href="/admin/articles" className="text-sm font-medium text-primary underline">Return to articles</a>
+        </div>
+      ) : isLoading ? (
         <p className="text-sm text-muted-foreground">Loading article…</p>
       ) : article ? (
         <ArticleCreator key={article.id} existing={article} />
