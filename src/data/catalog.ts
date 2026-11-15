@@ -10,8 +10,8 @@ export const CLUSTERS: ClusterMeta[] = [
   },
   {
     id: "physics",
-    title: "Physics",
-    subtitle: "Matter, energy, spacetime",
+    title: "Science",
+    subtitle: "Matter, energy, life and Earth systems",
     accent: "#5ce1ff",
   },
   {
@@ -28,8 +28,8 @@ export const CLUSTERS: ClusterMeta[] = [
   },
   {
     id: "computing",
-    title: "Computing",
-    subtitle: "Information and machines",
+    title: "Technology",
+    subtitle: "Computing, algorithms and digital systems",
     accent: "#67e8f9",
   },
   {
@@ -37,6 +37,12 @@ export const CLUSTERS: ClusterMeta[] = [
     title: "History",
     subtitle: "Civilizations in time",
     accent: "#7dd3fc",
+  },
+  {
+    id: "english",
+    title: "English",
+    subtitle: "Literature, language and writing",
+    accent: "#f0c6a2",
   },
   {
     id: "mind",
@@ -366,7 +372,7 @@ const byCluster: Record<ClusterId, Seed[]> = {
   physics: [
     {
       id: "physics",
-      title: "Physics",
+      title: "Science",
       kind: "hub",
       tags: ["hub", "nature"],
       summary:
@@ -1171,7 +1177,7 @@ const byCluster: Record<ClusterId, Seed[]> = {
   computing: [
     {
       id: "computing",
-      title: "Computing",
+      title: "Technology",
       kind: "hub",
       tags: ["hub", "machines"],
       summary:
@@ -1631,6 +1637,13 @@ const byCluster: Record<ClusterId, Seed[]> = {
         "The Neolithic turn to farming that made cities, states, and specialists possible.",
       related: ["ancient-civilizations", "ecology", "history", "biodiversity"],
     },
+  ],
+  english: [
+    { id: "english", title: "English", kind: "hub", tags: ["hub", "language", "literature"], summary: "The study and craft of language: reading, writing, rhetoric, literature and meaning.", related: ["literature", "grammar", "writing", "language", "rhetoric", "poetry", "knowledge-atlas"] },
+    { id: "literature", title: "Literature", kind: "topic", tags: ["reading", "narrative", "interpretation"], summary: "The close study of stories, drama, poetry and the forms through which people make meaning.", related: ["poetry", "writing", "rhetoric", "history", "philosophy"] },
+    { id: "grammar", title: "Grammar", kind: "topic", tags: ["language", "syntax", "structure"], summary: "The patterns that organize words into meaningful sentences.", related: ["language", "writing", "logic", "linguistics"] },
+    { id: "writing", title: "Writing", kind: "topic", tags: ["composition", "argument", "communication"], summary: "The practice of shaping ideas into clear, persuasive and expressive text.", related: ["rhetoric", "literature", "grammar", "knowledge-representation"] },
+    { id: "poetry", title: "Poetry", kind: "topic", tags: ["verse", "imagery", "form"], summary: "Language shaped by rhythm, image, sound and deliberate form.", related: ["literature", "writing", "rhetoric"] },
   ],
   mind: [
     {
