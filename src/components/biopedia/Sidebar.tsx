@@ -1,7 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import * as LucideIcons from "lucide-react";
 import {
-  Home,
   Sprout,
   NotebookPen,
   Layers,
