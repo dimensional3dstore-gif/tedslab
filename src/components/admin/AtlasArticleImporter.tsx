@@ -195,7 +195,7 @@ export function AtlasArticleImporter() {
         queryClient.invalidateQueries({ queryKey: ["sections"] }),
         queryClient.invalidateQueries({ queryKey: ["topics"] }),
       ]);
-      setResult(`Transferred ${imported} Knowledge Atlas entries into Ted's Lab articles. Added or updated 8 subject records and 9 Atlas collection sections. Existing Ted's Lab articles outside the atlas-* ID namespace were left untouched. Imported entries are published but are not marked expert reviewed.`);
+      setResult(`Transferred ${imported} Knowledge Atlas entries into Ted's Lab articles. Verified 8 subject records, 9 Atlas collection sections, and 8 subject-owned Knowledge Atlas topics. Existing Ted's Lab articles outside the atlas-* ID namespace were left untouched. Imported entries are published but are not marked expert reviewed.`);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "The Atlas transfer could not be completed. Check admin database permissions and try again.");
     } finally {
