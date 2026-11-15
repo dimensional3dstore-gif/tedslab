@@ -79,6 +79,7 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
       image_url: null,
       video_url: null,
       published: status === "published",
+      expert_reviewed: status === "published",
       status,
       sort: 0,
     }),
@@ -121,7 +122,7 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">Ted's Lab Publishing Studio</p>
           <h2 className="mt-1 font-display text-2xl font-semibold text-foreground">{existing ? "Edit scientific article" : "Create scientific article"}</h2>
-          <p className="mt-1 max-w-2xl text-sm text-muted-foreground">Build a structured, publication-ready article, verify the reader view, then save it as a draft or publish it.</p>
+          <p className="mt-1 max-w-2xl text-sm text-muted-foreground">Build a structured, publication-ready article, verify the reader view, then save it as a draft or publish it as expert reviewed.</p>
         </div>
         <div className="rounded-lg border border-border bg-background/70 px-3 py-2 text-xs text-muted-foreground">
           <span className="font-medium text-foreground">Status:</span> {existing?.published ? "Published" : "Draft"}
@@ -264,7 +265,7 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
             {saving ? "Saving…" : existing?.published ? "Unpublish & save draft" : "Save draft"}
           </Button>
           <Button type="submit" disabled={saving || Boolean(sectionEditorError)}>
-            {saving ? "Saving…" : existing?.published ? "Save & republish" : "Publish"}
+            {saving ? "Publishing…" : existing?.published ? "✓ Expert reviewed · Republish" : "✓ Expert reviewed · Publish"}
           </Button>
           <Button
             type="button"
