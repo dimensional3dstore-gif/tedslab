@@ -82,7 +82,7 @@ function ParentPortal() {
     setProgress((progressResult.data ?? []) as ProgressRow[]);
     setGradeChoice((current) => {
       const next = { ...current };
-      for (const profile of Object.values(profileMap)) if (next[profile.student_id] === undefined) next[profile.student_id] = profile.grade_level;
+      for (const profile of Object.values(profileMap)) if (next[profile.student_id] === undefined && profile.grade_level !== null) next[profile.student_id] = profile.grade_level;
       return next;
     });
   }, [user]);
