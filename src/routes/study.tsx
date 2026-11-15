@@ -1,8 +1,11 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell, PageHeader } from "@/components/biopedia/AppShell";
 import { CalendarDays, CheckCircle2, ChevronLeft, ChevronRight, GraduationCap, LockKeyhole, Target } from "lucide-react";
-import { EXAM_PATHWAYS, GRADE_LEVELS, getStudyDay, getYearStructure } from "@/lib/study-enlist";
+import { EXAM_PATHWAYS, GRADE_LEVELS, getDailyLessons, getStudyDay, getYearStructure } from "@/lib/study-enlist";
+import { DailyLessonCard } from "@/components/study/DailyLessonCard";
+import { useAuth } from "@/hooks/use-auth";
+import { getSupabaseAuthClient } from "@/integrations/supabase/auth";
 
 export const Route = createFileRoute("/study")({
   head: () => ({ meta: [{ title: "Study Enlist · 365-day curriculum — Ted's Lab" }, { name: "description", content: "A rigorous 365-day Australian learning programme for Grades 1–13, with daily lessons, weekly mastery tests and exam preparation." }] }),
@@ -13,12 +16,63 @@ function StudyEnlistPage() {
   const [grade, setGrade] = useState(7);
   const [day, setDay] = useState(1);
   const [showAllWeeks, setShowAllWeeks] = useState(false);
+  const [completedSubjects, setCompletedSubjects] = useState<string[]>([]);
+  const [onboarding, setOnboarding] = useState<"loading" | "pending" | "ready">("loading");
+  const [progressError, setProgressError] = useState("");
+  const { user, loading: authLoading } = useAuth();
   const level = GRADE_LEVELS.find((item) => item.grade === grade)!;
   const today = getStudyDay(grade, day);
   const weeks = useMemo(() => getYearStructure(grade), [grade]);
+  const lessons = useMemo(() => getDailyLessons(grade, day), [grade, day]);
   const visibleWeeks = showAllWeeks ? weeks : weeks.slice(0, 12);
   const setGradeLevel = (value: number) => { setGrade(value); setDay(1); };
   const moveDay = (delta: number) => setDay((value) => Math.min(365, Math.max(1, value + delta)));
+
+  useEffect(() => {
+    if (authLoading) return;
+    if (!user) { setOnboarding("ready"); setCompletedSubjects([]); return; }
+    let active = true;
+    const loadProgress = async () => {
+      try {
+        const client = getSupabaseAuthClient();
+        const { data: profile, error: profileError } = await client.from("student_profiles").select("grade_level,onboarding_complete").eq("student_id", user.id).maybeSingle();
+        if (profileError) throw profileError;
+        if (profile && !profile.onboarding_complete) {
+          if (active) { setOnboarding("pending"); setCompletedSubjects([]); }
+          return;
+        }
+        const activeGrade = profile?.grade_level ?? grade;
+        if (profile?.grade_level && active) setGrade(profile.grade_level);
+        const { data, error } = await client.from("study_progress").select("subject,status").eq("student_id", user.id).eq("grade_level", activeGrade).eq("curriculum_day", day);
+        if (error) throw error;
+        if (active) {
+          setCompletedSubjects((data ?? []).filter((item) => item.status === "completed").map((item) => item.subject));
+          setOnboarding("ready");
+          setProgressError("");
+        }
+      } catch (error) {
+        if (active) { setProgressError(error instanceof Error ? error.message : "Unable to load study progress."); setOnboarding("ready"); }
+      }
+    };
+    void loadProgress();
+    return () => { active = false; };
+  }, [user, authLoading, grade, day]);
+
+  const completeLesson = async (subject: string) => {
+    if (!user) return;
+    try {
+      const now = new Date().toISOString();
+      const { error } = await getSupabaseAuthClient().from("study_progress").upsert({
+        student_id: user.id, grade_level: grade, curriculum_day: day, subject,
+        status: "completed", completed_at: now, updated_at: now,
+      }, { onConflict: "student_id,grade_level,curriculum_day,subject" });
+      if (error) throw error;
+      setCompletedSubjects((current) => current.includes(subject) ? current : [...current, subject]);
+      setProgressError("");
+    } catch (error) {
+      setProgressError(error instanceof Error ? error.message : "Unable to save lesson progress.");
+    }
+  };
 
   return (
     <AppShell>
@@ -41,7 +95,7 @@ function StudyEnlistPage() {
           <div className="bio-panel p-5">
             <div className="flex flex-wrap items-center justify-between gap-3"><div><p className="text-xs font-semibold uppercase tracking-wider text-primary">Daily lesson planner</p><h2 className="mt-1 text-xl font-bold text-foreground">Day {day} of 365</h2></div><div className="flex items-center gap-2"><button type="button" onClick={() => moveDay(-1)} disabled={day === 1} className="rounded-lg border border-border p-2 disabled:opacity-30" aria-label="Previous day"><ChevronLeft className="size-4" /></button><button type="button" onClick={() => moveDay(1)} disabled={day === 365} className="rounded-lg border border-border p-2 disabled:opacity-30" aria-label="Next day"><ChevronRight className="size-4" /></button></div></div>
             <div className="mt-4 flex flex-wrap gap-2"><span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">Week {today.week}</span><span className="rounded-full bg-secondary px-3 py-1 text-xs text-muted-foreground">{today.type}</span></div>
-            <h3 className="mt-4 font-display text-2xl font-bold text-foreground">{today.topic}</h3><p className="mt-1 text-sm font-medium text-primary">{today.subject}</p><p className="mt-3 text-sm leading-relaxed text-muted-foreground">{today.description}</p>
+            <h3 className="mt-4 font-display text-2xl font-bold text-foreground">{today.topic}</h3><p className="mt-1 text-sm font-medium text-primary">Five daily subjects: {lessons.map((lesson) => lesson.subject).join(" · ")}</p><p className="mt-3 text-sm leading-relaxed text-muted-foreground">{today.description}</p>
             <div className="mt-4 rounded-xl border border-border bg-secondary/30 p-4"><p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Required evidence of learning</p><p className="mt-2 text-sm text-foreground">{today.assessment}</p></div>
             <div className="mt-4 grid grid-cols-7 gap-1.5">{Array.from({length:7},(_,index)=>{const n=(Math.ceil(day/7)-1)*7+index+1;return <button key={n} type="button" onClick={()=>setDay(n)} className={`rounded-lg py-2 text-xs font-semibold ${day===n?"bg-primary text-primary-foreground":n>365?"bg-transparent text-muted-foreground/30":"bg-secondary text-muted-foreground hover:bg-primary/10"}`} disabled={n>365}>{n<=365?n:"—"}</button>})}</div>
           </div>
@@ -50,6 +104,16 @@ function StudyEnlistPage() {
             <ol className="mt-4 space-y-3">{["Explicit teaching and vocabulary","Deep understanding and misconceptions","Worked examples and modelling","Guided practice with feedback","Independent application","Cumulative retrieval and extension","Weekly mastery test (80% target)"].map((item,index)=><li key={item} className="flex items-start gap-3"><span className="grid size-7 shrink-0 place-items-center rounded-full bg-primary/10 text-xs font-bold text-primary">{index+1}</span><span className="pt-1 text-sm text-muted-foreground">{item}</span></li>)}</ol>
             <div className="mt-5 rounded-xl border border-amber-500/30 bg-amber-500/5 p-4"><p className="flex items-center gap-2 text-sm font-semibold text-foreground"><LockKeyhole className="size-4 text-amber-600" /> Mastery gate</p><p className="mt-2 text-xs leading-relaxed text-muted-foreground">A weekly score below 80% triggers a required correction session: review errors, revisit prerequisite concepts, complete a fresh practice set and retest before marking the week mastered.</p></div>
           </div>
+        </section>
+
+        <section className="space-y-5">
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div><p className="text-xs font-semibold uppercase tracking-wider text-primary">Five-subject learning day</p><h2 className="mt-1 text-2xl font-bold text-foreground">Day {day} · Five subject lessons</h2><p className="mt-1 text-sm text-muted-foreground">Each lesson includes explicit teaching, a flashcard deck, a mastery quiz, related Knowledge Atlas articles and a video resource.</p></div>
+            <span className="rounded-full border border-border px-3 py-1.5 text-xs font-semibold text-foreground">{completedSubjects.length}/5 completed</span>
+          </div>
+          {onboarding === "pending" && <div className="rounded-xl border border-amber-500/30 bg-amber-500/5 p-4"><p className="font-semibold text-foreground">Waiting for parent or guardian approval</p><p className="mt-1 text-sm text-muted-foreground">Your parent must complete the secure invitation and approve your learning settings before Study Enlist can be used.</p><a href="/parent" className="mt-3 inline-flex rounded-lg bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground">Open parent portal</a></div>}
+          {progressError && <p role="alert" className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">{progressError}</p>}
+          {onboarding !== "pending" && <div className="grid gap-5 xl:grid-cols-2">{lessons.map((lesson) => <DailyLessonCard key={lesson.id} lesson={lesson} completed={completedSubjects.includes(lesson.subject)} onComplete={() => void completeLesson(lesson.subject)} signedIn={Boolean(user)} />)}</div>}
         </section>
 
         <section className="bio-panel p-5">
