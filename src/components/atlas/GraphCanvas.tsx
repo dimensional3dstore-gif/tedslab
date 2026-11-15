@@ -129,11 +129,8 @@ export function GraphCanvas() {
       };
     };
 
-    const home = () => {
-      panTo.current = null;
-      cam.current = { x: 0, y: 0, k: 0.56 };
-    };
-    home();
+    // Start with the complete network centred and fitted to the available viewport.
+    requestAnimationFrame(fit);
 
     const onFit = () => fit();
     window.addEventListener("atlas:fit", onFit);
