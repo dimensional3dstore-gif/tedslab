@@ -24,12 +24,13 @@ const topicQueryOptions = (subjectSlug: string, topicSlug: string) =>
     },
   });
 
-const topicArticlesQueryOptions = (subjectSlug: string, topicSlug: string) =>
+const topicArticlesQueryOptions = (topicSlug: string) =>
   queryOptions({
-    queryKey: ["articles", "by-topic", subjectSlug, topicSlug],
+    queryKey: ["articles", "by-category", topicSlug],
     queryFn: async () => {
       const rows = await fetchCatalogRows<ArticleRow>("articles", ARTICLES);
-      return rows.filter((article) => article.subject_slug === subjectSlug && article.topic_slug === topicSlug && article.published);
+      // A topic slug represents a shared category across the whole knowledge base.
+      return rows.filter((article) => article.topic_slug === topicSlug && article.published);
     },
   });
 
@@ -39,7 +40,7 @@ export const Route = createFileRoute("/$subject/$topic")({
     if (!subject) throw notFound();
     const topic = await context.queryClient.ensureQueryData(topicQueryOptions(params.subject, params.topic));
     if (!topic) throw notFound();
-    const articles = await context.queryClient.ensureQueryData(topicArticlesQueryOptions(params.subject, params.topic));
+    const articles = await context.queryClient.ensureQueryData(topicArticlesQueryOptions(params.topic));
     return { subject, topic, articles };
   },
   head: ({ loaderData }) => {
@@ -72,7 +73,7 @@ function TopicPage() {
     initialData: initialTopic,
   });
   const { data: articles = initialArticles } = useQuery({
-    ...topicArticlesQueryOptions(subjectSlug, topicSlug),
+    ...topicArticlesQueryOptions(topicSlug),
     initialData: initialArticles,
   });
 
@@ -106,8 +107,8 @@ function TopicPage() {
             <section className="mt-8">
               <div className="mb-4 flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">Topic library</p>
-                  <h2 className="mt-1 font-display text-xl font-semibold text-foreground">Articles in {topic.title}</h2>
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">Category library</p>
+                  <h2 className="mt-1 font-display text-xl font-semibold text-foreground">All articles in {topic.title}</h2>
                 </div>
                 <span className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground">{filtered.length} {filtered.length === 1 ? "article" : "articles"}</span>
               </div>
@@ -121,7 +122,7 @@ function TopicPage() {
                 <div className="bio-panel flex flex-col items-center px-6 py-12 text-center">
                   <BookOpen className="size-8 text-muted-foreground" />
                   <h3 className="mt-3 font-display text-lg font-semibold">No published articles yet</h3>
-                  <p className="mt-1 max-w-md text-sm text-muted-foreground">Articles assigned to this topic will appear here once they are published.</p>
+                  <p className="mt-1 max-w-md text-sm text-muted-foreground">Published articles in this category will appear here, including articles filed under other subjects.</p>
                   <Link to="/articles" className="mt-4 text-sm font-semibold text-primary hover:underline">Browse all articles</Link>
                 </div>
               )}
