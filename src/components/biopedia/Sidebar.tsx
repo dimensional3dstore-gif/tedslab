@@ -16,6 +16,7 @@ import {
   FilePenLine,
   PanelLeftClose,
   PanelLeftOpen,
+  ShieldCheck,
   type LucideIcon,
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
@@ -41,6 +42,7 @@ export const studyTools = [
   { label: "Saved Content", icon: Bookmark, to: "/saved" },
   { label: "Create Custom List", icon: Plus, to: "/custom-lists" },
   { label: "Translate", icon: LucideIcons.SpeakerIcon, to: "/translate" },
+  { label: "Parent Portal", icon: ShieldCheck, to: "/parent" },
 ] as const;
 
 function resolveIcon(name: string | null | undefined): LucideIcon {
