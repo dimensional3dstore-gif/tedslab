@@ -54,7 +54,7 @@ export const Route = createFileRoute("/$subject")({
 
 function SubjectPage() {
   const { subject: initialSubject } = Route.useLoaderData();
-  const { data: allArticles = [] } = useArticles();
+  const { data: allArticles = [], error: articlesError } = useArticles();
   const [articleSearch, setArticleSearch] = useState("");
   const [topicFilter, setTopicFilter] = useState("all");
   const { data: subject } = useQuery({
@@ -89,6 +89,7 @@ function SubjectPage() {
               <div>
                 <h2 className="text-base font-semibold">Articles</h2>
                 <p className="text-xs text-muted-foreground">{visibleArticles.length} of {subjectArticles.length} published articles</p>
+                {articlesError && <p role="alert" className="mt-1 text-xs text-destructive">Unable to load saved articles from the database: {articlesError instanceof Error ? articlesError.message : "Database query failed."}</p>}
               </div>
               <div className="flex flex-wrap gap-2">
                 <input aria-label="Search subject articles" value={articleSearch} onChange={(event) => setArticleSearch(event.target.value)} placeholder="Search articles…" className="h-9 w-48 rounded-md border border-input bg-background px-3 text-sm" />
