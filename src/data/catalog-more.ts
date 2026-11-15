@@ -933,6 +933,7 @@ export const MORE_BY_CLUSTER: Record<ClusterId, MoreSeed[]> = {
       related: ["silk-road", "internet", "capitalism", "climate-system"],
     },
   ],
+  english: [],
   mind: [
     {
       id: "piaget",
