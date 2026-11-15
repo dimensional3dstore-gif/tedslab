@@ -401,6 +401,7 @@ export function Sidebar({
                 <li><NavLink label="Admin dashboard" Icon={LucideIcons.LayoutDashboard} to="/admin" collapsed={collapsed} /></li>
                 <li><NavLink label="Edit articles" Icon={FilePenLine} to="/admin/articles" collapsed={collapsed} /></li>
                 <li><NavLink label="Add article" Icon={Plus} to="/admin/articles/new" collapsed={collapsed} /></li>
+                <li><NavLink label="Manage subjects" Icon={LucideIcons.BookOpen} to="/admin/subjects" collapsed={collapsed} /></li>
                 <li><NavLink label="Add topic" Icon={LucideIcons.Tag} to="/admin/topics" collapsed={collapsed} /></li>
                 <li><NavLink label="Add section" Icon={LucideIcons.Folders} to="/admin/sections" collapsed={collapsed} /></li>
                 <li><NavLink label="Add video" Icon={LucideIcons.Video} to="/admin/videos/new" collapsed={collapsed} /></li>

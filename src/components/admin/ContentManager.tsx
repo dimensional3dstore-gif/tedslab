@@ -5,7 +5,7 @@ import { usePages, useSections, useSubjects, useTopics } from "@/lib/content";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-type Mode = "pages" | "sections" | "topics";
+type Mode = "pages" | "subjects" | "sections" | "topics";
 type Row = Record<string, any>;
 
 const db = supabase as unknown as { from: (table: string) => any };
@@ -25,6 +25,8 @@ export function ContentManager({ mode }: { mode: Mode }) {
   const [parentId, setParentId] = useState("");
   const [published, setPublished] = useState(false);
   const [showInNav, setShowInNav] = useState(false);
+  const [icon, setIcon] = useState("BookOpen");
+  const [imageUrl, setImageUrl] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -32,6 +34,7 @@ export function ContentManager({ mode }: { mode: Mode }) {
     pages: { table: "pages", title: "Pages", rows: pages as Row[] },
     sections: { table: "sections", title: "Sections", rows: sections as Row[] },
     topics: { table: "topics", title: "Topics", rows: topics as Row[] },
+    subjects: { table: "subjects", title: "Subjects", rows: subjects as Row[] },
   }[mode];
 
   const parentOptions = mode === "sections" ? subjects : sections;
@@ -40,14 +43,14 @@ export function ContentManager({ mode }: { mode: Mode }) {
 
   const reset = () => {
     setEditing(null); setTitle(""); setSlug(""); setDescription(""); setBody("");
-    setParentId(""); setPublished(false); setShowInNav(false); setError("");
+    setParentId(""); setPublished(false); setShowInNav(false); setIcon("BookOpen"); setImageUrl(""); setError("");
   };
 
   const startEdit = (row: Row) => {
     setEditing(row); setTitle(row.title ?? ""); setSlug(row.slug ?? "");
     setDescription(row.description ?? row.blurb ?? "");
     setBody(row.body ?? ""); setParentId(row.subject_id ?? row.section_id ?? "");
-    setPublished(Boolean(row.published)); setShowInNav(Boolean(row.show_in_nav)); setError("");
+    setPublished(Boolean(row.published)); setShowInNav(Boolean(row.show_in_nav)); setIcon(row.icon ?? "BookOpen"); setImageUrl(row.image_url ?? ""); setError("");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -55,9 +58,10 @@ export function ContentManager({ mode }: { mode: Mode }) {
     event.preventDefault(); setBusy(true); setError("");
     const base: Row = { id: editing?.id ?? `${mode.slice(0, -1)}-${crypto.randomUUID()}`, slug: slugify(slug || title), title, sort: editing?.sort ?? config.rows.length };
     if (mode === "pages") Object.assign(base, { description, body, published, status: published ? "published" : "draft", show_in_nav: showInNav, image_url: editing?.image_url ?? null });
+    if (mode === "subjects") Object.assign(base, { description, icon: icon.trim() || null, image_key: editing?.image_key ?? null, image_url: imageUrl.trim() || null });
     if (mode === "sections") Object.assign(base, { subject_id: parentValue, label: title, description, body, icon: editing?.icon ?? null, image_key: editing?.image_key ?? null, image_url: editing?.image_url ?? null });
     if (mode === "topics") Object.assign(base, { section_id: parentValue, blurb: description, body, image_url: editing?.image_url ?? null });
-    if (!title.trim() || !base.slug || (mode !== "pages" && !parentValue)) { setError("Complete the title, slug and parent selection."); setBusy(false); return; }
+    if (!title.trim() || !base.slug || ((mode === "sections" || mode === "topics") && !parentValue)) { setError("Complete the title, slug and parent selection."); setBusy(false); return; }
     try {
       const { error: saveError } = await db.from(config.table).upsert(base, { onConflict: "id" });
       if (saveError) throw saveError;
@@ -79,6 +83,7 @@ export function ContentManager({ mode }: { mode: Mode }) {
   const parentName = (row: Row) => {
     if (mode === "sections") return subjects.find((item) => item.id === row.subject_id)?.title ?? "Unknown subject";
     if (mode === "topics") return sections.find((item) => item.id === row.section_id)?.title ?? "Unknown section";
+    if (mode === "subjects") return "Top-level subject";
     return row.show_in_nav ? "Navigation page" : "Standalone page";
   };
 
@@ -89,10 +94,14 @@ export function ContentManager({ mode }: { mode: Mode }) {
       <div className="flex items-center justify-between gap-2"><h2 className="font-semibold">{editing ? "Edit" : "Create"} {mode.slice(0,-1)}</h2>{editing && <Button type="button" size="sm" variant="ghost" onClick={reset}>New</Button>}</div>
       <label className="block space-y-1 text-xs text-muted-foreground">Title<Input value={title} onChange={e=>{setTitle(e.target.value);if(!editing)setSlug(slugify(e.target.value));}} required /></label>
       <label className="block space-y-1 text-xs text-muted-foreground">URL slug<Input value={slug} onChange={e=>setSlug(e.target.value)} required /></label>
-      {mode !== "pages" && <label className="block space-y-1 text-xs text-muted-foreground">{parentLabel}<select className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm" value={parentValue} onChange={e=>setParentId(e.target.value)} required><option value="">Select {parentLabel.toLowerCase()}</option>{parentOptions.map((item:any)=><option key={item.id} value={item.id}>{item.title}</option>)}</select></label>}
+      {(mode === "sections" || mode === "topics") && <label className="block space-y-1 text-xs text-muted-foreground">{parentLabel}<select className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm" value={parentValue} onChange={e=>setParentId(e.target.value)} required><option value="">Select {parentLabel.toLowerCase()}</option>{parentOptions.map((item:any)=><option key={item.id} value={item.id}>{item.title}</option>)}</select></label>}
       {mode !== "topics" && <label className="block space-y-1 text-xs text-muted-foreground">Description<Input value={description} onChange={e=>setDescription(e.target.value)} /></label>}
+      {mode === "subjects" && <>
+        <label className="block space-y-1 text-xs text-muted-foreground">Icon name<Input value={icon} onChange={e=>setIcon(e.target.value)} placeholder="BookOpen" /></label>
+        <label className="block space-y-1 text-xs text-muted-foreground">Subject banner image URL (optional)<Input type="url" value={imageUrl} onChange={e=>setImageUrl(e.target.value)} placeholder="https://example.com/subject.jpg" /></label>
+      </>}
       {mode === "topics" && <label className="block space-y-1 text-xs text-muted-foreground">Summary / blurb<Input value={description} onChange={e=>setDescription(e.target.value)} /></label>}
-      <label className="block space-y-1 text-xs text-muted-foreground">Content<textarea className="min-h-48 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground" value={body} onChange={e=>setBody(e.target.value)} placeholder="Write the page content or detailed topic notes…" /></label>
+      {mode !== "subjects" && <label className="block space-y-1 text-xs text-muted-foreground">Content<textarea className="min-h-48 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground" value={body} onChange={e=>setBody(e.target.value)} placeholder="Write the page content or detailed topic notes…" /></label>}
       {mode === "pages" && <div className="flex flex-wrap gap-4 text-sm"><label className="flex items-center gap-2"><input type="checkbox" checked={published} onChange={e=>setPublished(e.target.checked)} /> Published</label><label className="flex items-center gap-2"><input type="checkbox" checked={showInNav} onChange={e=>setShowInNav(e.target.checked)} /> Show in navigation</label></div>}
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
       <Button type="submit" disabled={busy}>{busy ? "Saving…" : editing ? "Save changes" : `Create ${mode.slice(0,-1)}`}</Button>
