@@ -290,7 +290,7 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
               type="button"
               variant="outline"
               onClick={() => void save(Boolean(existing.published))}
-              disabled={saving || Boolean(sectionEditorError)}
+              disabled={saving || Boolean(sectionEditorError) || !subjects.some((item) => item.slug === subject)}
             >
               {saving ? "Saving…" : "Save changes"}
             </Button>
