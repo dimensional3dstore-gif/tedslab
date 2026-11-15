@@ -128,7 +128,7 @@ function FilesPane() {
       </Folder>
       {grouped.map(({ cluster, topics, figures, concepts }) => {
         const total = topics.length + figures.length + concepts.length;
-        if (filter && total === 0) return null;
+        if ((filter || settings.subjectFilter !== "all" || settings.kindFilter !== "all") && total === 0) return null;
         return (
           <Folder
             key={cluster.id}
