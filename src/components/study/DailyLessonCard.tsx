@@ -10,7 +10,7 @@ export function DailyLessonCard({
 }: {
   lesson: DailyStudyLesson;
   completed: boolean;
-  onComplete: () => void;
+  onComplete: (score: number) => void;
   signedIn: boolean;
 }) {
   const [revealed, setRevealed] = useState<number[]>([]);
@@ -50,7 +50,7 @@ export function DailyLessonCard({
         <section>
           <h4 className="flex items-center gap-2 text-sm font-bold text-foreground"><Brain className="size-4 text-primary" /> Mastery quiz · {lesson.quiz.length} questions</h4>
           <div className="mt-2 space-y-3">{lesson.quiz.map((question, index) => <fieldset key={question.question} className="rounded-lg border border-border p-3"><legend className="px-1 text-sm font-semibold text-foreground">{index + 1}. {question.question}</legend><div className="mt-2 grid gap-2">{question.options.map((option, optionIndex) => <label key={option} className={`flex cursor-pointer items-start gap-2 rounded-md border p-2 text-sm ${answers[index] === optionIndex ? "border-primary bg-primary/5 text-foreground" : "border-border text-muted-foreground"}`}><input type="radio" name={`${lesson.id}-q${index}`} checked={answers[index] === optionIndex} disabled={marked} onChange={() => setAnswers((current) => ({ ...current, [index]: optionIndex }))} className="mt-0.5 accent-primary" />{option}</label>)}</div>{marked && <p className="mt-2 text-xs text-muted-foreground">{question.explanation}</p>}</fieldset>)}</div>
-          <div className="mt-3 flex flex-wrap items-center gap-3"><button type="button" disabled={!ready || marked} onClick={() => setMarked(true)} className="rounded-lg bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground disabled:opacity-40">Mark quiz</button>{marked && <span className="text-sm font-semibold text-foreground">Score {score}/{lesson.quiz.length} · {Math.round(score / lesson.quiz.length * 100)}%</span>}</div>
+          <div className="mt-3 flex flex-wrap items-center gap-3"><button type="button" disabled={!ready || marked} onClick={() => setMarked(true)} className="rounded-lg bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground disabled:opacity-40">Mark quiz</button>{marked && <button type="button" onClick={() => { setAnswers({}); setMarked(false); }} className="rounded-lg border border-border px-3 py-2 text-xs font-semibold text-foreground">Try again</button>}{marked && <span className="text-sm font-semibold text-foreground">Score {score}/{lesson.quiz.length} · {Math.round(score / lesson.quiz.length * 100)}%</span>}</div>
           {marked && <p className="mt-2 text-xs text-muted-foreground">{mastered ? "Mastery achieved. You may complete this lesson." : "Review the teaching sequence and flashcards, then reset your quiz and try again. The completion target is 80%."}</p>}
         </section>
 
@@ -61,7 +61,7 @@ export function DailyLessonCard({
 
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
           <span className="text-xs text-muted-foreground">{completed ? "Lesson completed" : "Complete the quiz with at least 80% to finish"}</span>
-          <button type="button" onClick={onComplete} disabled={!signedIn || completed || !mastered} className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:cursor-not-allowed disabled:opacity-40">{completed ? <CheckCircle2 className="size-4" /> : <LockKeyhole className="size-4" />}{completed ? "Completed" : "Complete lesson"}</button>
+          <button type="button" onClick={() => onComplete(Math.round((score / lesson.quiz.length) * 100))} disabled={!signedIn || completed || !mastered} className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:cursor-not-allowed disabled:opacity-40">{completed ? <CheckCircle2 className="size-4" /> : <LockKeyhole className="size-4" />}{completed ? "Completed" : "Complete lesson"}</button>
         </div>
         {!signedIn && <p className="text-xs text-muted-foreground">Sign in to save lesson completion and report progress to your parent portal.</p>}
       </div>
