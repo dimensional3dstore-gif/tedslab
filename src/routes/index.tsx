@@ -16,6 +16,7 @@ import { CategoryGrid } from "@/components/biopedia/CategoryGrid";
 import { FeaturedArticles } from "@/components/biopedia/FeaturedArticles";
 import { RightRail } from "@/components/biopedia/RightRail";
 import { useSubjects, useArticles, useSettings } from "@/lib/content";
+import { SUBJECTS } from "@/lib/catalog";
 import { HomepageArticleSections } from "@/components/biopedia/HomepageArticleSections";
 import { useBookmarks } from "@/hooks/use-bookmarks";
 
@@ -43,7 +44,7 @@ function Index() {
   const { data: articles } = useArticles();
   const { data: settings } = useSettings();
 
-  const categories = subjects ?? [];
+  // These nine top-level subjects are permanent categories, so the homepage must\n  // not disappear just because the editorial subjects table is empty during setup.\n  const categories = subjects?.length ? subjects : SUBJECTS;
   const publishedArticles = (articles ?? []).filter((a) => a.published);
 
   void settings;
