@@ -8,7 +8,7 @@ import {
   Wand2,
   Zap,
 } from "lucide-react";
-import { buildAiResponse, readKnowledge } from "@/ai";
+import { buildOfflineAiResponse, readKnowledge } from "@/ai";
 
 const starterPrompts = [
   "How should I study biology efficiently?",
@@ -28,7 +28,7 @@ export function Pate() {
     {
       role: "assistant",
       content:
-        "Hi! I can help with biology, revision planning, and understanding the study material on this site. Ask me anything.",
+        I am your private Study Coach. I will be direct, set a high standard and make you prove that you understand. No vague answers. Start with the concept, then explain it in your own words.",
     },
   ]);
   const [isThinking, setIsThinking] = useState(false);
@@ -61,7 +61,7 @@ export function Pate() {
     setTypingIndex(0);
     setFullResponse("");
 
-    const response = await buildAiResponse(trimmed);
+    const response = buildOfflineAiResponse(trimmed) + "\\n\\nYour task: explain that idea back without looking at your notes. If you cannot, review it and try again.";
     setFullResponse(response);
     setIsThinking(false);
     setTypingIndex(0);
@@ -101,17 +101,17 @@ export function Pate() {
             </div>
             <div>
               <h2 className="text-lg font-semibold text-foreground">
-                AI study tutor
+                Private Study Coach
               </h2>
               <p className="text-sm text-muted-foreground">
-                Built from your learning knowledge
+                Firm, focused coaching · local knowledge only
               </p>
             </div>
           </div>
 
           <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/8 px-2.5 py-1 text-[11px] font-medium text-primary">
             <Zap className="size-3.5" />
-            Live tutor
+            Strict coach
           </div>
         </div>
 
@@ -256,7 +256,7 @@ export function Pate() {
                 onKeyDown={handleKeyDown}
                 rows={3}
                 className="w-full resize-none rounded-xl border border-border bg-background/80 px-4 py-3 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-primary/80 focus:bg-background focus:ring-1 focus:ring-primary/30 transition-all"
-                placeholder="Ask me about biology, study techniques, revision tips..."
+                placeholder="State the concept you are struggling with. Be precise."
               />
             </div>
 
@@ -282,7 +282,7 @@ export function Pate() {
                 ) : (
                   <>
                     <Sparkles className="size-4" />
-                    <span>Ask Atom AI</span>
+                    <span>Submit answer</span>
                   </>
                 )}
               </button>
