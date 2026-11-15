@@ -36,6 +36,8 @@ function kindPhrase(kind: NodeKind): string {
       return "a continent of the atlas";
     case "topic":
       return "a major field of inquiry";
+    case "article":
+      return "a published Ted's Lab article";
     case "figure":
       return "a person who moved the map";
     case "concept":
