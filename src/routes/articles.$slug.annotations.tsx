@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/biopedia/AppShell";
 import { useArticles } from "@/lib/content";
@@ -53,8 +54,19 @@ function ArticleAnnotationsPage() {
 }
 
 function usePublicAnnotations(articleId?: string) {
-  return {
-    data: undefined as Array<{ id: string; title: string; note: string; kind: string }> | undefined,
-    isLoading: Boolean(articleId),
-  };
+  return useQuery({
+    queryKey: ["article-annotations", articleId],
+    enabled: Boolean(articleId),
+    queryFn: async () => {
+      if (!articleId) return [];
+      const { data, error } = await supabase
+        .from("article_annotations")
+        .select("id,title,note,kind")
+        .eq("article_id", articleId)
+        .eq("published", true)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return (data ?? []) as Array<{ id: string; title: string; note: string; kind: string }>;
+    },
+  });
 }
