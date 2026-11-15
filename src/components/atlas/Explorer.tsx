@@ -133,6 +133,18 @@ function FilesPane() {
           <NodeRow node={NODE_BY_ID["knowledge-atlas"]} depth={1} />
         )}
       </Folder>
+      <Folder
+        id="subjects"
+        title="Subjects"
+        color="#8ee6c7"
+        count={grouped.filter(({ subject }) => !!subject).length}
+      >
+        {grouped
+          .filter(({ subject }) => subject)
+          .map(({ subject }) => (
+            <NodeRow key={subject!.id} node={subject!} depth={1} />
+          ))}
+      </Folder>
       {grouped.map(({ cluster, subject, topics, articles, figures, concepts }) => {
         const total = topics.length + articles.length + figures.length + concepts.length + (subject ? 1 : 0);
         if ((filter || (settings.subjectFilter ?? "all") !== "all" || (settings.kindFilter ?? "all") !== "all") && total === 0) return null;
