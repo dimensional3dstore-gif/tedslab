@@ -368,6 +368,9 @@ export function Sidebar({
               <NavLink label="Study Enlist" Icon={LucideIcons.GraduationCap} to="/study" collapsed={collapsed} />
             </li>
             <li>
+              <NavLink label="Study Archive" Icon={LucideIcons.Archive} to="/study/archive" collapsed={collapsed} />
+            </li>
+            <li>
               <NavLink
                 label="All Articles"
                 Icon={BookOpen}
