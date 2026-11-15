@@ -11,10 +11,10 @@ import {
 import { buildOfflineAiResponse, readKnowledge } from "@/ai";
 
 const starterPrompts = [
-  "How should I study biology efficiently?",
-  "What is this site designed to help me do?",
-  "Explain the basics of cell energy in simple terms.",
-  "Give me a 30-minute revision plan for tomorrow.",
+  "Test me on cell structure.",
+  "Make me explain photosynthesis.",
+  "Find the gaps in my understanding of energy.",
+  "Give me a strict 30-minute revision plan.",
 ];
 
 type ChatMessage = {
@@ -28,7 +28,7 @@ export function Pate() {
     {
       role: "assistant",
       content:
-        I am your private Study Coach. I will be direct, set a high standard and make you prove that you understand. No vague answers. Start with the concept, then explain it in your own words.",
+        "I am your private Study Coach. I will be direct, set a high standard and make you prove that you understand. No vague answers. Start with the concept, then explain it in your own words.",
     },
   ]);
   const [isThinking, setIsThinking] = useState(false);
