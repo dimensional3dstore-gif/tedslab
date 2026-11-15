@@ -106,6 +106,11 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
       setSaving(false);
       return;
     }
+    if (!subject || !subjects.some((item) => item.slug === subject)) {
+      setSaveError("Choose a valid subject before saving this article.");
+      setSaving(false);
+      return;
+    }
     try {
       const saved = await upsertCustomArticle(row);
       await queryClient.invalidateQueries({ queryKey: ["articles"] });
@@ -160,12 +165,20 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
           />
         </label>
         <label className="block space-y-1 text-xs text-muted-foreground">
-          Subject
+          Subject (required)
           <select
+            required
             className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
             value={subject}
-            onChange={(e) => setSubject(e.target.value)}
+            onChange={(e) => {
+              const nextSubject = e.target.value;
+              setSubject(nextSubject);
+              const nextSections = allSections.filter((item) => item.subject_id === subjects.find((subjectItem) => subjectItem.slug === nextSubject)?.id);
+              setSection(nextSections[0]?.slug ?? "");
+              setTopic("");
+            }}
           >
+            <option value="" disabled>Select a subject</option>
             {subjects.map((s) => (
               <option key={s.slug} value={s.slug}>
                 {s.title}
@@ -286,11 +299,11 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
             type="button"
             variant="outline"
             onClick={() => void save(false)}
-            disabled={saving || Boolean(sectionEditorError)}
+            disabled={saving || Boolean(sectionEditorError) || !subjects.some((item) => item.slug === subject)}
           >
             {saving ? "Saving…" : existing?.published ? "Unpublish & save draft" : "Save draft"}
           </Button>
-          <Button type="submit" disabled={saving || Boolean(sectionEditorError)}>
+          <Button type="submit" disabled={saving || Boolean(sectionEditorError) || !subjects.some((item) => item.slug === subject)}>
             {saving ? "Publishing…" : existing?.published ? "✓ Expert reviewed · Republish" : "✓ Expert reviewed · Publish"}
           </Button>
           <Button
