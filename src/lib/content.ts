@@ -276,7 +276,7 @@ export const articleByIdQueryOptions = (id: string) =>
           .select("*")
           .eq("id", id)
           .maybeSingle();
-        if (!error && data) return data as ArticleRow;
+        if (!error) return (data as ArticleRow | null) ?? null;
       } catch {
         // Fall back to the bundled catalog when the database is unavailable.
       }
