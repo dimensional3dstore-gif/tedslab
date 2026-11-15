@@ -252,6 +252,8 @@ function StarredPane() {
 }
 
 export function Explorer() {
+  const { data: articles = [] } = useArticles();
+  const cmsCount = useMemo(() => toCMSGraphNodes(articles).length, [articles]);
   const rail = useAtlas((s) => s.rail);
   const filter = useAtlas((s) => s.explorerFilter);
   const setFilter = useAtlas((s) => s.setExplorerFilter);
@@ -273,7 +275,7 @@ export function Explorer() {
           {title}
         </h2>
         <span className="font-mono text-[10px] tabular-nums text-fg-subtle">
-          {NODES.length}
+          {NODES.length + cmsCount}
         </span>
       </div>
       {rail !== "tags" && rail !== "starred" && (
