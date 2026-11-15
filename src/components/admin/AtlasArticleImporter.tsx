@@ -131,6 +131,25 @@ export function AtlasArticleImporter() {
       const { error: sectionError } = await supabase.from("sections").upsert(sectionRows, { onConflict: "id" });
       if (sectionError) throw sectionError;
 
+      // Every imported article must reference a real topic owned by its subject.
+      const atlasTopics = subjects.map((subject, sort) => {
+        const subjectId = subjectIds.get(subject.slug);
+        if (!subjectId) throw new Error("Missing saved subject for " + subject.title);
+        return {
+          id: "atlas-topic-" + subject.slug,
+          subject_id: subjectId,
+          subject_slug: subject.slug,
+          section_id: null,
+          slug: "knowledge-atlas",
+          title: "Knowledge Atlas",
+          blurb: "Articles transferred from the Knowledge Atlas graph.",
+          body: "The complete collection of Knowledge Atlas entries filed under " + subject.title + ".",
+          image_url: null,
+          sort: 500 + sort,
+        };
+      });
+      const { error: topicError } = await supabase.from("topics").upsert(atlasTopics, { onConflict: "id" });
+      if (topicError) throw topicError;
       const rows = NODES.map((node, sort) => {
         const clusterKey = node.cluster === "atlas" ? "philosophy" : node.cluster;
         const subject = SUBJECTS_BY_CLUSTER[clusterKey];
@@ -151,7 +170,7 @@ export function AtlasArticleImporter() {
           tone: "educational",
           subject_slug: subjectSlug,
           section_slug: sectionSlug,
-          topic_slug: node.kind,
+          topic_slug: "knowledge-atlas",
           image_key: null,
           image_url: null,
           video_url: null,
@@ -175,6 +194,7 @@ export function AtlasArticleImporter() {
         queryClient.invalidateQueries({ queryKey: ["articles"] }),
         queryClient.invalidateQueries({ queryKey: ["subjects"] }),
         queryClient.invalidateQueries({ queryKey: ["sections"] }),
+        queryClient.invalidateQueries({ queryKey: ["topics"] }),
       ]);
       setResult(`Transferred ${imported} Knowledge Atlas entries into Ted's Lab articles. Added or updated 8 subject records and 9 Atlas collection sections. Existing Ted's Lab articles outside the atlas-* ID namespace were left untouched. Imported entries are published but are not marked expert reviewed.`);
     } catch (cause) {
