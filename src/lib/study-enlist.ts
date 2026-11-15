@@ -95,3 +95,94 @@ export function getYearStructure(grade: number) {
     return { week: index + 1, subject: day.subject, topic: day.topic, assessmentDay: index * 7 + 7 };
   });
 }
+
+
+export type DailyStudyLesson = {
+  id: string;
+  subject: string;
+  topic: string;
+  title: string;
+  lessonType: string;
+  estimatedMinutes: number;
+  objectives: string[];
+  teachingSequence: { heading: string; task: string }[];
+  flashcards: { front: string; back: string }[];
+  quiz: { question: string; options: string[]; answer: number; explanation: string }[];
+  articleUrl: string;
+  videoUrl: string;
+};
+
+const slugifyStudyTopic = (value: string) =>
+  value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
+const articleSubjectSlugs: Record<string, string> = {
+  English: "english", Mathematics: "mathematics", Science: "science", Humanities: "humanities",
+  "Digital Technologies": "technology", "Health & Physical Education": "health", "The Arts": "arts",
+  Biology: "biology", Chemistry: "chemistry", Physics: "physics", "Modern History": "history",
+  Geography: "geography", Economics: "economics", "Research & Study Skills": "study-skills",
+  "Advanced Mathematics": "mathematics", "Advanced Sciences": "science", "Academic Writing": "english",
+  "Research Methods": "research-methods", "Computer Science": "technology", "Critical Thinking": "critical-thinking",
+};
+
+function buildStudyLesson(grade: number, day: number, subject: string, topic: string, dayType: string): DailyStudyLesson {
+  const encodedTopic = encodeURIComponent(topic);
+  const stage = grade <= 2 ? "Use pictures, objects and short spoken explanations" :
+    grade <= 6 ? "Use labelled diagrams, worked examples and short written explanations" :
+    grade <= 10 ? "Use evidence, multi-step reasoning and independent written responses" :
+    "Use disciplinary terminology, independent research and critical evaluation";
+  const objectives = [
+    `Define the key ideas in ${topic} using accurate ${subject} vocabulary.`,
+    `Explain how the main concepts in ${topic} connect, using a worked example or evidence.`,
+    `Apply ${topic} to an unfamiliar problem and justify your reasoning.`,
+  ];
+  const teachingSequence = [
+    { heading: "Retrieve and connect", task: `Recall what you already know about ${subject}. Write or say three things you associate with ${topic}.` },
+    { heading: "Learn the core idea", task: `Study the central concept of ${topic}. Build a definition, identify its key parts and record unfamiliar vocabulary. ${stage}.` },
+    { heading: "Model and investigate", task: `Work through one example related to ${topic}. Annotate each step, explain why it is appropriate and identify one possible misconception.` },
+    { heading: "Guided practice", task: `Complete a scaffolded task: describe the concept, organise relevant evidence, and explain the relationship between two important ideas.` },
+    { heading: "Independent transfer", task: `Create a new example or solve a novel problem involving ${topic}. Explain your method and evaluate how well it works.` },
+  ];
+  const flashcards = [
+    { front: `What is the central idea of ${topic}?`, back: `Give a precise definition of ${topic}, name its essential features and explain why it matters in ${subject}.` },
+    { front: `What evidence helps explain ${topic}?`, back: `Use relevant observations, data, worked examples or reliable sources. Explain how the evidence supports the claim.` },
+    { front: `How can you apply ${topic} in a new situation?`, back: `Identify the relevant principle, choose a suitable method, show the steps and justify your conclusion.` },
+    { front: `What is a common misconception about ${topic}?`, back: `A misconception is an incomplete or inaccurate explanation. Test claims against definitions, examples and evidence before accepting them.` },
+    { front: `How do you evaluate an explanation of ${topic}?`, back: `Check accuracy, evidence quality, assumptions, context and limitations. Revise the explanation when evidence does not support it.` },
+  ];
+  const quiz = [
+    { question: `Which response best demonstrates understanding of ${topic}?`, options: ["Repeat the title without explanation", "Define the concept, explain its key features and apply it to an example", "Guess without checking evidence", "Copy a sentence without interpreting it"], answer: 1, explanation: "A strong response combines accurate knowledge, explanation and application." },
+    { question: `When investigating ${topic}, what makes evidence useful?`, options: ["It is the longest source available", "It agrees with an assumption without being checked", "It is relevant, reliable and connected to the question", "It is unrelated but interesting"], answer: 2, explanation: "Evidence must directly support the claim and be evaluated for reliability." },
+    { question: `What is the best way to transfer learning about ${topic}?`, options: ["Memorise only the heading", "Avoid unfamiliar examples", "Apply the idea to a new context and justify each step", "Skip the explanation"], answer: 2, explanation: "Transfer means applying knowledge in a new context and explaining why it fits." },
+    { question: "What should you do when your first answer is incorrect?", options: ["Hide the result and move on", "Identify the error, revisit the relevant idea and try a fresh problem", "Memorise the incorrect answer", "Stop practising the topic"], answer: 1, explanation: "Error analysis and a fresh attempt turn feedback into learning." },
+    { question: "Which study evidence best shows independent mastery?", options: ["A page of copied notes", "An unfinished activity", "A guessed answer", "A correct explanation and a new application completed without copying"], answer: 3, explanation: "Independent mastery requires accurate explanation and transfer without copying." },
+  ];
+  return {
+    id: `g${grade}-d${day}-${slugifyStudyTopic(subject)}`,
+    subject,
+    topic,
+    title: `${topic}: ${subject} lesson`,
+    lessonType: dayType,
+    estimatedMinutes: grade <= 2 ? 25 : grade <= 6 ? 35 : 45,
+    objectives,
+    teachingSequence,
+    flashcards,
+    quiz,
+    articleUrl: `/articles?search=${encodedTopic}&subject=${encodeURIComponent(articleSubjectSlugs[subject] ?? slugifyStudyTopic(subject))}`,
+    videoUrl: `https://www.youtube.com/results?search_query=${encodeURIComponent(`${topic} ${subject} educational lesson`)}`,
+  };
+}
+
+export function getDailyLessons(grade: number, day: number): DailyStudyLesson[] {
+  const level = GRADE_LEVELS.find((item) => item.grade === grade) ?? GRADE_LEVELS[0];
+  const safeDay = Math.min(365, Math.max(1, day));
+  const subjects = level.subjects;
+  const start = ((safeDay - 1) * 5) % subjects.length;
+  const dayType = safeDay === 365 ? "Final examination preparation" : DAY_TYPES[((safeDay - 1) % 7)].name;
+  return Array.from({ length: 5 }, (_, index) => {
+    const subject = subjects[(start + index) % subjects.length];
+    const bank = unitBanks[subject] ?? unitBanks["Research & Study Skills"];
+    const rotation = Math.floor(((safeDay - 1) * 5 + index) / subjects.length);
+    const topic = bank[rotation % bank.length];
+    return buildStudyLesson(grade, safeDay, subject, topic, dayType);
+  });
+}

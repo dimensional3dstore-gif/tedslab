@@ -16,6 +16,8 @@ import {
   FilePenLine,
   PanelLeftClose,
   PanelLeftOpen,
+  ShieldCheck,
+  BookOpenCheck,
   type LucideIcon,
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
@@ -33,6 +35,9 @@ import { AiAssistPanel } from "../atlas/AiAssist";
 import { useAuth } from "@/hooks/use-auth";
 
 export const studyTools = [
+  { label: "Study Enlist", icon: BookOpenCheck, to: "/study" },
+  { label: "Study Reviews", icon: BookOpen, to: "/study-reviews" },
+  { label: "Study Lab for Mac", icon: Download, to: "/study-download" },
   { label: "AI Tutor", icon: BrainCircuit, to: "/ai" },
   { label: "Chronium AI", icon: LucideIcons.Brackets, to: "/llm" },
   { label: "Notebook", icon: NotebookPen, to: "/notebook" },
@@ -41,6 +46,7 @@ export const studyTools = [
   { label: "Saved Content", icon: Bookmark, to: "/saved" },
   { label: "Create Custom List", icon: Plus, to: "/custom-lists" },
   { label: "Translate", icon: LucideIcons.SpeakerIcon, to: "/translate" },
+  { label: "Parent Portal", icon: ShieldCheck, to: "/parent" },
 ] as const;
 
 function resolveIcon(name: string | null | undefined): LucideIcon {

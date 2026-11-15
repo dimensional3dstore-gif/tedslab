@@ -1,0 +1,21 @@
+appId: com.tedslab.studylab
+productName: Study Lab
+extraMetadata:
+  main: electron/study-main.cjs
+asar: true
+directories:
+  output: release/study-lab
+files:
+  - electron/study-main.cjs
+  - electron/study-preload.cjs
+  - package.json
+mac:
+  category: public.app-category.education
+  target:
+    - target: dmg
+      arch:
+        - arm64
+  artifactName: Study-Lab-${version}-arm64.dmg
+dmg:
+  title: Study Lab
+  artifactName: Study-Lab-${version}-arm64.dmg

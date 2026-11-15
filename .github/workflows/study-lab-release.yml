@@ -1,0 +1,59 @@
+name: Build Study Lab for Apple Silicon
+
+on:
+  push:
+    tags:
+      - "study-v*"
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "electron/**"
+      - "electron-builder.study.yml"
+      - "src/routes/study-download.tsx"
+      - "src/routes/study-reviews.tsx"
+      - "src/ai/page.tsx"
+      - ".github/workflows/study-lab-release.yml"
+      - "package.json"
+      - "package-lock.json"
+
+permissions:
+  contents: write
+
+jobs:
+  build-study-lab:
+    runs-on: macos-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies
+        run: npm install --include=optional --no-audit --no-fund
+      - name: Build web application
+        run: npm run build
+      - name: Package Apple Silicon DMG
+        run: npx electron-builder --config electron-builder.study.yml --mac dmg --arm64
+      - name: Verify DMG exists
+        run: test -s release/study-lab/Study-Lab-*-arm64.dmg
+      - name: Upload DMG artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: study-lab-macos-arm64
+          path: release/study-lab/Study-Lab-*-arm64.dmg
+          if-no-files-found: error
+      - name: Publish GitHub Release
+        if: startsWith(github.ref, 'refs/tags/study-v')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Study Lab ${{ github.ref_name }}
+          generate_release_notes: true
+          files: release/study-lab/Study-Lab-*-arm64.dmg
+          body: |
+            ## Study Lab for Apple Silicon
+
+            Download the ARM64 macOS disk image and drag Study Lab into Applications.
+
+            This release is an in-app supervised study shell. Full-device lockdown requires macOS device management and is not provided by a standalone app.
