@@ -119,6 +119,7 @@ function FilesPane() {
         cluster: c,
         subject: all.find((n) => n.kind === "hub"),
         topics: all.filter((n) => n.kind === "topic"),
+        articles: all.filter((n) => n.kind === "article"),
         figures: all.filter((n) => n.kind === "figure"),
         concepts: all.filter((n) => n.kind === "concept"),
       };
@@ -132,8 +133,8 @@ function FilesPane() {
           <NodeRow node={NODE_BY_ID["knowledge-atlas"]} depth={1} />
         )}
       </Folder>
-      {grouped.map(({ cluster, subject, topics, figures, concepts }) => {
-        const total = topics.length + figures.length + concepts.length + (subject ? 1 : 0);
+      {grouped.map(({ cluster, subject, topics, articles, figures, concepts }) => {
+        const total = topics.length + articles.length + figures.length + concepts.length + (subject ? 1 : 0);
         if ((filter || (settings.subjectFilter ?? "all") !== "all" || (settings.kindFilter ?? "all") !== "all") && total === 0) return null;
         return (
           <Folder
@@ -152,6 +153,9 @@ function FilesPane() {
               {topics.map((n) => (
                 <NodeRow key={n.id} node={n} depth={2} />
               ))}
+            </Folder>
+            <Folder id={`${cluster.id}-articles`} title="Articles" count={articles.length}>
+              {articles.map((n) => <NodeRow key={n.id} node={n} depth={2} />)}
             </Folder>
             <Folder
               id={`${cluster.id}-figures`}
@@ -304,7 +308,7 @@ export function Explorer() {
           </label>
           <label className="min-w-0 text-[10px] text-fg-subtle">Type
             <select aria-label="Filter graph by article type" value={settings.kindFilter ?? "all"} onChange={(event) => patchSettings({ kindFilter: event.target.value })} className="mt-1 h-8 w-full rounded-sm border border-border bg-bg px-2 text-[11px] text-fg">
-              <option value="all">All types</option><option value="hub">Subjects</option><option value="topic">Topics</option><option value="concept">Concepts</option><option value="figure">People</option>
+              <option value="all">All types</option><option value="hub">Subjects</option><option value="topic">Topics</option><option value="article">Articles</option><option value="concept">Concepts</option><option value="figure">People</option>
             </select>
           </label>
         </div>
