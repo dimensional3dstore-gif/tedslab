@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell, PageHeader } from "@/components/biopedia/AppShell";
 import { useAuth } from "@/hooks/use-auth";
 import { getSupabaseAuthClient } from "@/integrations/supabase/auth";
-import { Bell, CheckCircle2, Clock3, GraduationCap, ShieldCheck, Users } from "lucide-react";
+import { Bell, CheckCircle2, Clock3, ShieldCheck, Users } from "lucide-react";
 
 export const Route = createFileRoute("/parent")({
   head: () => ({ meta: [{ title: "Parent Portal · Ted's Lab" }, { name: "description", content: "Manage learner permissions and monitor Study Enlist progress." }] }),
@@ -86,7 +86,7 @@ function ParentPortal() {
     return () => { active = false; };
   }, [user, loadPortal]);
 
-  const sendSignInLink = async (event: React.FormEvent<HTMLFormElement>) => {
+  const sendSignInLink = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setSending(true); setError(""); setNotice("");
     try {
