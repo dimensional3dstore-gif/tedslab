@@ -32,7 +32,7 @@ export const SUBJECTS: Subject[] = [
     icon: "Sprout",
     image_key: "hero-cell",
     image_url: null,
-    sort: 0,
+    sort: 3,
   },
   {
     id: "sub-mathematics",
@@ -42,7 +42,7 @@ export const SUBJECTS: Subject[] = [
     icon: "Sigma",
     image_key: "math-algebra",
     image_url: null,
-    sort: 1,
+    sort: 2,
   },
   {
     id: "sub-science",
@@ -52,7 +52,7 @@ export const SUBJECTS: Subject[] = [
     icon: "Atom",
     image_key: "sci-physics",
     image_url: null,
-    sort: 2,
+    sort: 1,
   },
   {
     id: "sub-history",
@@ -62,7 +62,7 @@ export const SUBJECTS: Subject[] = [
     icon: "Landmark",
     image_key: "his-ancient",
     image_url: null,
-    sort: 3,
+    sort: 6,
   },
   {
     id: "sub-english",
@@ -102,7 +102,7 @@ export const SUBJECTS: Subject[] = [
     icon: "Brain",
     image_key: null,
     image_url: null,
-    sort: 6,
+    sort: 7,
   },
   {
     id: "sub-atlas-systems",
@@ -112,7 +112,7 @@ export const SUBJECTS: Subject[] = [
     icon: "Network",
     image_key: null,
     image_url: null,
-    sort: 7,
+    sort: 8,
   },
 ];
 
