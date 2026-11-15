@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell, PageHeader } from "@/components/biopedia/AppShell";
 import {
   BookOpen,
@@ -492,7 +492,26 @@ function StudyEnlistPage() {
         </section>
 
         <section className="bio-panel p-5">
-          <div className="flex items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+                Website archive
+              </p>
+              <h2 className="mt-1 text-xl font-bold text-foreground">
+                Study Lab Archive
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                View completed Study Lab work separately from the active programme.
+              </p>
+            </div>
+            <Link
+              to="/study/archive"
+              className="inline-flex items-center gap-2 rounded-xl border border-primary/25 bg-primary/5 px-4 py-2 text-xs font-bold text-primary hover:bg-primary/10"
+            >
+              <Archive className="size-4" /> Open website archive
+            </Link>
+          </div>
+          <div className="mt-5 flex items-center justify-between gap-3">
             <div>
               <p className="text-xs font-semibold uppercase tracking-wider text-primary">
                 Study Archive
