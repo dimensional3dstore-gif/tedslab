@@ -30,7 +30,6 @@ export function AuthForm({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [dateOfBirth, setDateOfBirth] = useState("");
   const [guardianEmail, setGuardianEmail] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -45,8 +44,8 @@ export function AuthForm({
       setError("Account authentication is not configured for this deployment.");
       return;
     }
-    if (isSignup && (!dateOfBirth || !guardianEmail.trim())) {
-      setError("Enter the student’s date of birth and a parent or guardian email.");
+    if (isSignup && !guardianEmail.trim()) {
+      setError("Enter a parent or guardian email.");
       return;
     }
     if (isSignup && guardianEmail.trim().toLowerCase() === email.trim().toLowerCase()) {
@@ -68,7 +67,7 @@ export function AuthForm({
               emailRedirectTo:
                 supabaseEmailRedirectUrl ??
                 `${window.location.origin}/auth/callback`,
-              data: { full_name: name.trim(), display_name: name.trim(), account_type: "student", date_of_birth: dateOfBirth, guardian_email: guardianEmail.trim().toLowerCase() },
+              data: { full_name: name.trim(), display_name: name.trim(), account_type: "student", guardian_email: guardianEmail.trim().toLowerCase() },
             },
           })
         : await auth.auth.signInWithPassword({ email: email.trim(), password });
@@ -162,18 +161,11 @@ export function AuthForm({
           </div>
         )}
         {isSignup && (
-          <>
-            <div className="space-y-2">
-              <Label htmlFor="student-date-of-birth">Student date of birth</Label>
-              <Input id="student-date-of-birth" type="date" value={dateOfBirth} max={new Date().toISOString().slice(0, 10)} onChange={(event) => setDateOfBirth(event.target.value)} required />
-              <p className="text-xs text-muted-foreground">Used to recommend an Australian school year level. A parent or guardian confirms the placement.</p>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="guardian-email">Parent or guardian email</Label>
-              <Input id="guardian-email" type="email" autoComplete="email" value={guardianEmail} onChange={(event) => setGuardianEmail(event.target.value)} required />
-              <p className="text-xs text-muted-foreground">We will send this address a secure invitation to create or access the Parent Portal.</p>
-            </div>
-          </>
+          <div className="space-y-2">
+            <Label htmlFor="guardian-email">Parent or guardian email</Label>
+            <Input id="guardian-email" type="email" autoComplete="email" value={guardianEmail} onChange={(event) => setGuardianEmail(event.target.value)} required />
+            <p className="text-xs text-muted-foreground">We will invite your parent or guardian to complete year-level placement, AI permission and supervised study settings in the Parent Portal.</p>
+          </div>
         )}
         <div className="space-y-2">
           <Label htmlFor="account-email">Email</Label>
