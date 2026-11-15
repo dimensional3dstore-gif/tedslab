@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell, PageHeader } from "@/components/biopedia/AppShell";
 import { Download, GraduationCap, LockKeyhole, ShieldCheck, Star, BookOpenCheck } from "lucide-react";
 
-const releasesUrl = "https://github.com/dimensional3dstore-gif/tedslab/releases/latest";
+const releasesUrl = "https://github.com/dimensional3dstore-gif/tedslab/releases?q=Study+Lab";
 const repoReleasesUrl = "https://github.com/dimensional3dstore-gif/tedslab/releases";
 
 export const Route = createFileRoute("/study-download")({
