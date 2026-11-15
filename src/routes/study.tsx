@@ -26,7 +26,7 @@ function StudyEnlistPage() {
   const today = getStudyDay(grade, day);
   const weeks = useMemo(() => getYearStructure(grade), [grade]);
   const lessons = useMemo(() => getDailyLessons(grade, day), [grade, day]);
-  const visibleWeeks = showAllWeeks ? weeks : weeks.slice(0, 12);
+  const visibleWeeks = showAllWeeks ? weeks : weeks.slice(0, 12);\n  const activeLessonIndex = Math.max(0, lessons.findIndex((lesson) => !completedSubjects.includes(lesson.subject)) === -1 ? lessons.length - 1 : lessons.findIndex((lesson) => !completedSubjects.includes(lesson.subject)));\n  const activeLesson = lessons[activeLessonIndex];\n  const allLessonsCompleted = lessons.every((lesson) => completedSubjects.includes(lesson.subject));
   const setGradeLevel = (value: number) => { setGrade(value); setDay(1); };
   const moveDay = (delta: number) => setDay((value) => Math.min(365, Math.max(1, value + delta)));
 
@@ -117,7 +117,18 @@ function StudyEnlistPage() {
           </div>
           {onboarding === "pending" && <div className="rounded-xl border border-amber-500/30 bg-amber-500/5 p-4"><p className="font-semibold text-foreground">Waiting for parent or guardian approval</p><p className="mt-1 text-sm text-muted-foreground">Your parent must complete the secure invitation and approve your learning settings before Study Enlist can be used.</p><a href="/parent" className="mt-3 inline-flex rounded-lg bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground">Open parent portal</a></div>}
           {progressError && <p role="alert" className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">{progressError}</p>}
-          {onboarding !== "pending" && <div className="grid gap-5 xl:grid-cols-2">{lessons.map((lesson) => <DailyLessonCard key={lesson.id} lesson={lesson} completed={completedSubjects.includes(lesson.subject)} onComplete={(score) => void completeLesson(lesson.subject, score)} signedIn={Boolean(user)} />)}</div>}
+          {onboarding !== "pending" && <div className="space-y-4">
+            <div className="rounded-xl border border-border bg-card p-4">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div><p className="text-xs font-semibold uppercase tracking-wider text-primary">Your learning sequence</p><p className="mt-1 text-sm font-semibold text-foreground">{allLessonsCompleted ? "All five lessons completed" : `Lesson ${activeLessonIndex + 1} of ${lessons.length}`}</p></div>
+                <span className="text-xs text-muted-foreground">{lessons.filter((lesson) => completedSubjects.includes(lesson.subject)).length}/5 mastered</span>
+              </div>
+              <div className="mt-3 grid grid-cols-5 gap-2">{lessons.map((lesson, index) => <div key={lesson.id} className={`h-2 rounded-full ${completedSubjects.includes(lesson.subject) ? "bg-primary" : index === activeLessonIndex && !allLessonsCompleted ? "bg-primary/40" : "bg-secondary"}`} title={lesson.subject} />)}</div>
+              <div className="mt-3 flex flex-wrap gap-2">{lessons.map((lesson, index) => <span key={lesson.id} className={`rounded-full px-2.5 py-1 text-xs ${completedSubjects.includes(lesson.subject) ? "bg-primary/10 text-primary" : index === activeLessonIndex && !allLessonsCompleted ? "bg-secondary text-foreground font-semibold" : "bg-secondary/50 text-muted-foreground"}`}>{index + 1}. {lesson.subject}{completedSubjects.includes(lesson.subject) ? " ✓" : ""}</span>)}</div>
+            </div>
+            {allLessonsCompleted && <div className="rounded-xl border border-primary/30 bg-primary/5 p-4"><p className="font-semibold text-foreground">Daily sequence complete.</p><p className="mt-1 text-sm text-muted-foreground">You have completed all five subject lessons for Day {day}. Your progress has been saved.</p></div>}
+            {activeLesson && <DailyLessonCard key={activeLesson.id} lesson={activeLesson} completed={allLessonsCompleted || completedSubjects.includes(activeLesson.subject)} onComplete={(score) => void completeLesson(activeLesson.subject, score)} signedIn={Boolean(user)} />}
+          </div>}
         </section>
 
         <section className="bio-panel p-5">
