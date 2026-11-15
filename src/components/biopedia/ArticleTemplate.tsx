@@ -115,6 +115,13 @@ export function ArticleTemplate({
       </header>
 
       <div className="mt-6 flex flex-wrap gap-2 rounded-2xl border border-border bg-card/80 p-2">
+        <Link
+          to={preview ? "/articles/$slug" : "/articles/$slug/annotations"}
+          params={{ slug: article.slug }}
+          className="inline-flex items-center gap-2 rounded-lg bg-primary/10 px-3 py-2 text-sm font-medium text-primary shadow-sm"
+        >
+          Article annotations
+        </Link>
         {tabs.map((tab, index) => (
           <a
             key={tab}
