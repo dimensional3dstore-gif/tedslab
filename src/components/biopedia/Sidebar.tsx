@@ -35,7 +35,10 @@ import { AiAssistPanel } from "../atlas/AiAssist";
 import { useAuth } from "@/hooks/use-auth";
 
 export const studyTools = [
-  { label: "Study Enlist", icon: BookOpenCheck, to: "/study" },\n  { label: "Study Reviews", icon: BookOpen, to: "/study-reviews" },\n  { label: "Study Lab for Mac", icon: Download, to: "/study-download" },\n  { label: "AI Tutor", icon: BrainCircuit, to: "/ai" },
+  { label: "Study Enlist", icon: BookOpenCheck, to: "/study" },
+  { label: "Study Reviews", icon: BookOpen, to: "/study-reviews" },
+  { label: "Study Lab for Mac", icon: Download, to: "/study-download" },
+  { label: "AI Tutor", icon: BrainCircuit, to: "/ai" },
   { label: "Chronium AI", icon: LucideIcons.Brackets, to: "/llm" },
   { label: "Notebook", icon: NotebookPen, to: "/notebook" },
   { label: "Docs", icon: FilePenLine, to: "/docs" },
