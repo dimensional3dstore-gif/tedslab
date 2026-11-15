@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { BrainCircuit, RefreshCw, Sparkles, BookOpen } from "lucide-react";
 import { CLUSTERS } from "@/data/catalog";
+import { useStudentPermissions } from "@/hooks/use-student-permissions";
 import {
   generateDailyArticles,
   getStoredArticles,
@@ -32,7 +33,7 @@ export function AiAssistPanel() {
     [articles, selectedSubject],
   );
 
-  const runGeneration = () => {
+  const runGeneration = () => {\n    if (!permissions.aiAssistanceAllowed) return;
     setBusy(true);
     window.setTimeout(() => {
       const result = generateDailyArticles(SUBJECTS, 10);
