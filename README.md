@@ -1,6 +1,6 @@
 # Ted's Lab - Study Encyclopedia
 
-A comprehensive biology education platform built with modern web technologies. Features full-stack content management, admin dashboard, and interactive learning tools.
+A comprehensive biology education platform built with modern web technologies. Features full-stack content management, admin dashboard, and interactive learning tools. Created by a single research scientist and computer science developer Ted Han. Ted Han is experienced in the knowledge areas on advanced Biology, Mathematics, Computer Science, Logistics, English and Literature, Science, Astronomy, and Binary coding. He has especially created countless applications rolled into one immersive advanced system for the learning realms. 
 
 ## 🎯 Features
 
