@@ -117,7 +117,7 @@ function ParentPortal() {
       }).eq("id", link.id).eq("status", "pending");
       if (approvalError) throw approvalError;
       const { error: profileError } = await client.from("student_profiles").update({
-        grade_level: grade, onboarding_complete: true, updated_at: now,
+        grade_level: grade, onboarding_complete: true, start_date: new Intl.DateTimeFormat("en-CA", { timeZone: "Australia/Sydney", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date()), updated_at: now,
       }).eq("student_id", link.student_id);
       if (profileError) throw profileError;
       setNotice("Learner account approved. Study Enlist is now available with the permissions you selected.");
