@@ -14,7 +14,8 @@ function EditAdminArticlePage() {
   const article = articles.find((item) => item.id === id);
 
   return (
-    <AdminPage title="Edit article" description="Update the article, save a draft, or publish the latest revision.">\n      <Link to="/admin/articles" className="mb-4 inline-flex text-sm font-medium text-primary hover:underline">← Back to articles</Link>
+    <AdminPage title="Edit article" description="Update the article, save a draft, or publish the latest revision.">
+      <Link to="/admin/articles" className="mb-4 inline-flex text-sm font-medium text-primary hover:underline">← Back to articles</Link>
       {isLoading ? (
         <p className="text-sm text-muted-foreground">Loading article…</p>
       ) : article ? (
