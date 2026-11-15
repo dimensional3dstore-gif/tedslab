@@ -3,8 +3,9 @@ const path = require("node:path");
 
 const defaultUrl = "https://tedslab-dimensional3dstore-gif.vercel.app/study?desktop=1&focus=1";
 const appUrl = new URL(process.env.STUDY_LAB_URL || defaultUrl);
-if (appUrl.protocol !== "https:" && appUrl.hostname !== "localhost") {
-  throw new Error("Study Lab must load from a trusted HTTPS origin.");
+const allowedHosts = new Set(["tedslab-dimensional3dstore-gif.vercel.app", "teds-lab.com", "localhost", "127.0.0.1"]);
+if (!allowedHosts.has(appUrl.hostname) || (appUrl.protocol !== "https:" && !["localhost", "127.0.0.1"].includes(appUrl.hostname))) {
+  throw new Error("Study Lab must load from a trusted Ted Lab HTTPS origin.");
 }
 const trustedOrigin = appUrl.origin;
 
@@ -18,7 +19,7 @@ function createWindow() {
     backgroundColor: "#0b1020",
     autoHideMenuBar: true,
     fullscreen: true,
-    kiosk: process.env.STUDY_LAB_KIOSK === "1",
+    kiosk: process.env.STUDY_LAB_KIOSK !== "0",
     webPreferences: {
       preload: path.join(__dirname, "study-preload.cjs"),
       contextIsolation: true,
@@ -37,7 +38,6 @@ function createWindow() {
   });
   window.webContents.setWindowOpenHandler(({ url }) => {
     // Study Lab is intentionally self-contained; external links are not opened.
-    if (url.startsWith(trustedOrigin)) return { action: "allow" };
     return { action: "deny" };
   });
   window.webContents.on("before-input-event", (event, input) => {
