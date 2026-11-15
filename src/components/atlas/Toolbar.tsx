@@ -10,6 +10,7 @@ import {
   Palette,
   PanelLeft,
   PanelRight,
+  Presentation,
   ScanSearch,
   Spline,
   Type,
@@ -128,6 +129,15 @@ export function Toolbar() {
         onClick={() => patch({ showArrows: !settings.showArrows })}
       >
         <Spline className="size-3.5" />
+      </Tool>
+      <Tool
+        title="Interview focus: centre and fit the full graph"
+        onClick={() => {
+          useAtlas.setState({ explorerOpen: false, inspectorOpen: false, view: "graph" });
+          window.dispatchEvent(new Event("atlas:fit"));
+        }}
+      >
+        <Presentation className="size-3.5" />
       </Tool>
       <Tool
         title="Fit graph"

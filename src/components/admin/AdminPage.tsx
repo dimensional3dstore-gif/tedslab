@@ -5,6 +5,8 @@ import { PageHeader } from "@/components/biopedia/AppShell";
 const links = [
   ["Overview", "/admin"],
   ["Articles", "/admin/articles"],
+  ["Atlas transfer", "/admin/atlas-import"],
+  ["Subjects", "/admin/subjects"],
   ["Pages", "/admin/pages"],
   ["Sections", "/admin/sections"],
   ["Topics", "/admin/topics"],
