@@ -16,7 +16,7 @@ export function ContentManager({ mode }: { mode: Mode }) {
   const { data: pages = [] } = usePages();
   const { data: sections = [] } = useSections();
   const { data: topics = [] } = useTopics();
-  const { data: subjects = [] } = useSubjects();
+  const { data: subjects = [], error: subjectsError } = useSubjects();
   const [editing, setEditing] = useState<Row | null>(null);
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
@@ -120,6 +120,7 @@ export function ContentManager({ mode }: { mode: Mode }) {
     </form>
     <div className="space-y-3">
       <div><h2 className="font-semibold">{config.title}</h2><p className="text-xs text-muted-foreground">{list.length} records</p></div>
+      {mode === "subjects" && subjectsError && <p role="alert" className="text-sm text-destructive">Could not load saved subjects from Supabase: {subjectsError instanceof Error ? subjectsError.message : "Database query failed."}</p>}
       {list.map(row=><div key={row.id} className="bio-panel flex flex-wrap items-center justify-between gap-3 p-4">
         <div className="min-w-0"><h3 className="font-medium">{row.title}</h3><p className="text-xs text-muted-foreground">{row.slug} · {parentName(row)}{mode === "pages" ? ` · ${row.published ? "Published" : "Draft"}` : ""}</p></div>
         <div className="flex gap-2"><Button size="sm" variant="outline" onClick={()=>startEdit(row)}>Edit</Button><Button size="sm" variant="ghost" onClick={()=>void remove(row)}>Delete</Button></div>
