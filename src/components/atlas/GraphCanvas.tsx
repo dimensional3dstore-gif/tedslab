@@ -347,7 +347,7 @@ export function GraphCanvas() {
               ? 4
               : n.kind === "hub"
                 ? 3
-                : n.kind === "topic"
+                : n.kind === "topic" || n.kind === "article"
                   ? 2
                   : n.kind === "figure"
                     ? 1
