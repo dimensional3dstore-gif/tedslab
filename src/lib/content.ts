@@ -255,8 +255,35 @@ export function useTopics() {
   return useQuery(topicsQueryOptions);
 }
 
+export const articleByIdQueryOptions = (id: string) =>
+  queryOptions({
+    queryKey: ["article", "id", id],
+    queryFn: async () => {
+      if (!supabaseAuthConfigured) {
+        return ARTICLES.find((article) => article.id === id) ?? null;
+      }
+
+      try {
+        const { data, error } = await supabase
+          .from("articles")
+          .select("*")
+          .eq("id", id)
+          .maybeSingle();
+        if (!error && data) return data as ArticleRow;
+      } catch {
+        // Fall back to the bundled catalog when the database is unavailable.
+      }
+
+      return ARTICLES.find((article) => article.id === id) ?? null;
+    },
+  });
+
 export function useArticles() {
   return useQuery(articlesQueryOptions);
+}
+
+export function useArticleById(id: string) {
+  return useQuery(articleByIdQueryOptions(id));
 }
 
 export function useHeroSlides() {
