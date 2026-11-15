@@ -4,9 +4,12 @@ import { CLUSTERS, NODE_BY_ID, neighborsOf } from "@/data/catalog";
 import { WikiBody } from "@/lib/wiki";
 import { cn } from "@/lib/utils";
 import { useAtlas } from "@/store/atlas";
+import { useArticles } from "@/lib/content";
+import { layoutFromArticleBody } from "@/lib/article-layout";
 import { clusterColor } from "./GraphCanvas";
 
 export function ArticlePane() {
+  const { data: cmsArticles = [] } = useArticles();
   const openArticleId = useAtlas((s) => s.openArticleId);
   const selectedId = useAtlas((s) => s.selectedId);
   const openId = openArticleId ?? selectedId;
@@ -19,6 +22,41 @@ export function ArticlePane() {
 
   const article = openId ? ARTICLES[openId] : undefined;
   const node = openId ? NODE_BY_ID[openId] : undefined;
+  const cmsArticle = openId?.startsWith("cms-article-")
+    ? cmsArticles.find((item) => "cms-article-" + item.id === openId)
+    : undefined;
+
+  if (cmsArticle) {
+    const layout = layoutFromArticleBody(cmsArticle.body);
+    return (
+      <div className="flex h-full min-h-0 flex-col bg-canvas">
+        <div className="flex h-10 shrink-0 items-center gap-2 border-b border-border px-3">
+          <button type="button" onClick={() => { closeArticle(); setView("graph"); }} className="flex size-8 items-center justify-center rounded-sm text-fg-muted hover:bg-bg-hover hover:text-fg" title="Back to graph"><ArrowLeft className="size-4" /></button>
+          <Network className="size-3.5 text-accent" />
+          <span className="min-w-0 truncate text-[12px] text-fg-muted">{cmsArticle.title}</span>
+          <div className="flex-1" />
+          <button type="button" onClick={() => toggleBookmark(openId!)} className={cn("flex size-8 items-center justify-center rounded-sm", bookmarks.includes(openId!) ? "text-accent" : "text-fg-subtle")}><Bookmark className={cn("size-3.5", bookmarks.includes(openId!) && "fill-accent")} /></button>
+        </div>
+        <div className="atlas-scroll min-h-0 flex-1 overflow-y-auto">
+          <article className="mx-auto w-full max-w-[42rem] px-5 py-10 sm:px-8">
+            <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-fg-subtle">{cmsArticle.subject_slug ?? "Knowledge"} · {cmsArticle.topic_slug}</p>
+            <h1 className="mt-2 font-serif text-[2rem] leading-[1.15] tracking-[-0.03em] text-fg sm:text-[2.35rem]">{cmsArticle.title}</h1>
+            {cmsArticle.excerpt && <p className="mt-4 text-[15px] leading-relaxed text-fg-muted">{cmsArticle.excerpt}</p>}
+            <div className="mt-8 space-y-4 text-[14px] leading-relaxed text-fg-muted">
+              {layout?.overview.map((paragraph, index) => <p key={"o-" + index}>{paragraph}</p>)}
+              {layout?.sections.map((section, index) => (
+                <section key={section.heading + index} className="mt-8">
+                  <h2 className="mb-3 font-serif text-xl text-fg">{section.heading}</h2>
+                  {section.paragraphs?.map((paragraph, pIndex) => <p key={pIndex} className="mb-3">{paragraph}</p>)}
+                  {section.cards?.map((card) => <div key={card.title} className="mb-3 rounded-md border border-border bg-bg-elevated p-3"><h3 className="font-semibold text-fg">{card.title}</h3><p className="mt-1">{card.text}</p></div>)}
+                </section>
+              ))}
+            </div>
+          </article>
+        </div>
+      </div>
+    );
+  }
 
   if (!article || !node) {
     return (
