@@ -13,6 +13,8 @@ import { CLUSTERS, NODES, NODE_BY_ID } from "@/data/catalog";
 import { cn } from "@/lib/utils";
 import type { AtlasNode, ClusterId, NodeKind } from "@/data/types";
 import { useAtlas } from "@/store/atlas";
+import { useArticles } from "@/lib/content";
+import { toCMSGraphNodes } from "@/lib/atlas-cms";
 import { clusterColor } from "./GraphCanvas";
 
 function KindIcon({ kind, className }: { kind: NodeKind; className?: string }) {
@@ -103,13 +105,16 @@ function Folder({
 function FilesPane() {
   const filter = useAtlas((s) => s.explorerFilter).trim().toLowerCase();
   const settings = useAtlas((s) => s.settings);
+  const { data: articles = [] } = useArticles();
+  const cmsNodes = useMemo(() => toCMSGraphNodes(articles), [articles]);
+  const allNodes = useMemo(() => [...NODES, ...cmsNodes], [cmsNodes]);
   const grouped = useMemo(() => {
     const match = (n: AtlasNode) =>
       ((settings.subjectFilter ?? "all") === "all" || n.cluster === settings.subjectFilter) &&
       ((settings.kindFilter ?? "all") === "all" || n.kind === settings.kindFilter) &&
       (!filter || n.title.toLowerCase().includes(filter) || n.tags.some((t) => t.includes(filter)));
     return CLUSTERS.map((c) => {
-      const all = NODES.filter((n) => n.cluster === c.id && match(n));
+      const all = allNodes.filter((n) => n.cluster === c.id && match(n));
       return {
         cluster: c,
         subject: all.find((n) => n.kind === "hub"),
@@ -118,7 +123,7 @@ function FilesPane() {
         concepts: all.filter((n) => n.kind === "concept"),
       };
     });
-  }, [filter, settings.subjectFilter, settings.kindFilter]);
+  }, [filter, settings.subjectFilter, settings.kindFilter, allNodes]);
 
   return (
     <div className="atlas-scroll flex-1 overflow-y-auto py-1">
@@ -174,12 +179,15 @@ function FilesPane() {
 }
 
 function TagsPane() {
+  const { data: articles = [] } = useArticles();
+  const cmsNodes = useMemo(() => toCMSGraphNodes(articles), [articles]);
+  const allNodes = useMemo(() => [...NODES, ...cmsNodes], [cmsNodes]);
   const tags = useMemo(() => {
     const m = new Map<string, number>();
-    for (const n of NODES)
+    for (const n of allNodes)
       for (const t of n.tags) m.set(t, (m.get(t) ?? 0) + 1);
     return [...m.entries()].sort((a, b) => b[1] - a[1]);
-  }, []);
+  }, [allNodes]);
   const select = useAtlas((s) => s.select);
   return (
     <div className="atlas-scroll flex-1 overflow-y-auto p-2">
@@ -189,7 +197,7 @@ function TagsPane() {
             <button
               type="button"
               onClick={() => {
-                const n = NODES.find((x) => x.tags.includes(tag));
+                const n = allNodes.find((x) => x.tags.includes(tag));
                 if (n) select(n.id);
                 useAtlas.getState().setExplorerFilter(tag);
                 useAtlas.getState().setRail("files");
