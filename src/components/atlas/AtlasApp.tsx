@@ -47,8 +47,13 @@ export function AtlasApp() {
   const toggleInspector = useAtlas((s) => s.toggleInspector);
 
   useEffect(() => {
-    // Give the graph the full central canvas by default; panels remain available on demand.
-    useAtlas.setState({ explorerOpen: false, inspectorOpen: false });
+    // Open Knowledge Atlas directly on the graph with the left explorer visible.
+    useAtlas.setState({
+      view: "graph",
+      openArticleId: null,
+      explorerOpen: true,
+      inspectorOpen: false,
+    });
   }, []);
 
   useEffect(() => {
