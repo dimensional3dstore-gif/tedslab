@@ -115,7 +115,18 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
   };
 
   return (
-    <div className="grid gap-6 xl:grid-cols-[minmax(0,22rem)_1fr]">
+    <div className="space-y-5">
+      <div className="bio-panel flex flex-col gap-4 p-5 md:flex-row md:items-center md:justify-between">
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">Ted's Lab Publishing Studio</p>
+          <h2 className="mt-1 font-display text-2xl font-semibold text-foreground">{existing ? "Edit scientific article" : "Create scientific article"}</h2>
+          <p className="mt-1 max-w-2xl text-sm text-muted-foreground">Build a structured, publication-ready article, verify the reader view, then save it as a draft or publish it.</p>
+        </div>
+        <div className="rounded-lg border border-border bg-background/70 px-3 py-2 text-xs text-muted-foreground">
+          <span className="font-medium text-foreground">Status:</span> {existing?.published ? "Published" : "Draft"}
+        </div>
+      </div>
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,22rem)_1fr]">
       <form
         className="bio-panel space-y-4 p-4"
         onSubmit={(e) => {
@@ -278,6 +289,7 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
           layoutOverride={layout}
           preview
         />
+      </div>
       </div>
     </div>
   );
