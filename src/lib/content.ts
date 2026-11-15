@@ -138,7 +138,7 @@ export async function fetchCatalogRows<T extends { id: string }>(
   }
   const remoteRows = (data ?? []) as unknown as T[];
   // A successful empty query is the database's truth for editorial records.
-  if (table === "subjects" || table === "articles") return remoteRows;
+  if (table === "subjects" || table === "topics" || table === "articles") return remoteRows;
   if (!remoteRows.length) return fallback;
   const remoteById = new Map(remoteRows.map((row) => [row.id, row]));
   const fallbackIds = new Set(fallback.map((row) => row.id));
@@ -195,7 +195,7 @@ export const sectionsQueryOptions = queryOptions({
 export const topicsQueryOptions = queryOptions({
   queryKey: ["topics"],
   queryFn: () => fetchCatalogRows("topics", TOPICS),
-  initialData: TOPICS,
+  initialData: supabaseAuthConfigured ? [] : TOPICS,
 });
 
 export const articlesQueryOptions = queryOptions({
