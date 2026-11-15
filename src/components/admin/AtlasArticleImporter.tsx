@@ -12,6 +12,7 @@ const SUBJECTS_BY_CLUSTER: Record<string, { slug: string; title: string; descrip
   mathematics: { id: "sub-mathematics", slug: "mathematics", title: "Mathematics", description: "Number, structure, space and proof.", icon: "Sigma" },
   biology: { id: "sub-biology", slug: "biology", title: "Biology", description: "Life, organisms, evolution and living systems.", icon: "Sprout" },
   computing: { id: "sub-technology", slug: "technology", title: "Technology", description: "Computing, programming, artificial intelligence and digital systems.", icon: "Cpu" },
+  english: { id: "sub-english", slug: "english", title: "English", description: "Literature, poetry, grammar and the craft of writing.", icon: "BookOpen" },
   history: { id: "sub-history", slug: "history", title: "History", description: "Civilisations, events and the interpretation of the past.", icon: "Landmark" },
   mind: { id: "sub-atlas-mind", slug: "mind", title: "Mind & Cognition", description: "Consciousness, cognition, language, perception and behaviour.", icon: "BrainCircuit" },
   systems: { id: "sub-atlas-systems", slug: "systems", title: "Systems Science", description: "Complexity, networks, feedback, emergence and systems thinking.", icon: "Network" },
