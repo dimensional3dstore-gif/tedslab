@@ -48,9 +48,8 @@ export function AtlasApp() {
   const toggleInspector = useAtlas((s) => s.toggleInspector);
 
   useEffect(() => {
-    if (window.innerWidth < 768) {
-      useAtlas.setState({ explorerOpen: false, inspectorOpen: false });
-    }
+    // Give the graph the full central canvas by default; panels remain available on demand.
+    useAtlas.setState({ explorerOpen: false, inspectorOpen: false });
   }, []);
 
   useEffect(() => {
