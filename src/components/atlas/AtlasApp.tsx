@@ -2,6 +2,7 @@ import { Bookmark, Files, Network, Search, Tags } from "lucide-react";
 import { useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { useAtlas } from "@/store/atlas";
+import { NODE_BY_ID } from "@/data/catalog";
 import { ArticlePane } from "./ArticlePane";
 import { Explorer } from "./Explorer";
 import { GraphCanvas } from "./GraphCanvas";
@@ -47,6 +48,16 @@ export function AtlasApp() {
   const toggleInspector = useAtlas((s) => s.toggleInspector);
 
   useEffect(() => {
+    // Homepage article cards deep-link into the full Knowledge Atlas article pane.
+    const match = window.location.hash.match(/^#article=([a-z0-9-]+)$/i);
+    const articleId = match?.[1];
+    if (articleId && NODE_BY_ID[articleId]) {
+      useAtlas.setState({ explorerOpen: true, inspectorOpen: false });
+      useAtlas.getState().select(articleId);
+      useAtlas.getState().openArticle(articleId);
+      return;
+    }
+
     // Open Knowledge Atlas directly on the graph with the left explorer visible.
     useAtlas.setState({
       view: "graph",

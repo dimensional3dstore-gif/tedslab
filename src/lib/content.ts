@@ -136,11 +136,9 @@ export async function fetchCatalogRows<T extends { id: string }>(
   } catch {
     return fallback;
   }
-  const remoteRows = (data ?? []) as unknown as T[];
-  // Subjects and articles are editorial records: a successful empty query means
-  // the database is genuinely empty, not that the bundled demo catalogue exists.
-  if (table === "subjects" || table === "articles") return remoteRows;
-  if (!remoteRows.length) return fallback;
+  if (!data?.length) return fallback;
+
+  const remoteRows = data as unknown as T[];
   const remoteById = new Map(remoteRows.map((row) => [row.id, row]));
   const fallbackIds = new Set(fallback.map((row) => row.id));
   return [
@@ -167,10 +165,7 @@ export async function fetchCatalogRow<T>(
       .from(table)
       .select("*")
       .eq(column, value);
-    if (!error) {
-      if (data?.length) return data[0] as unknown as T;
-      if (table === "subjects") return null;
-    }
+    if (!error && data?.length) return data[0] as unknown as T;
   } catch {
     // Keep the bundled catalog available when the backing service is offline.
   }

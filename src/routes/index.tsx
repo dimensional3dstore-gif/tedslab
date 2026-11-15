@@ -16,6 +16,7 @@ import { CategoryGrid } from "@/components/biopedia/CategoryGrid";
 import { FeaturedArticles } from "@/components/biopedia/FeaturedArticles";
 import { RightRail } from "@/components/biopedia/RightRail";
 import { useSubjects, useArticles, useSettings } from "@/lib/content";
+import { HomepageArticleSections } from "@/components/biopedia/HomepageArticleSections";
 import { useBookmarks } from "@/hooks/use-bookmarks";
 
 const defaultTitle = "Ted's Lab — The Learning Encyclopedia";
@@ -63,6 +64,7 @@ function Index() {
                 : categories
             }
           />
+          <HomepageArticleSections categories={categories} articles={publishedArticles} query={q} />
           <FeaturedArticles
             items={
               q
