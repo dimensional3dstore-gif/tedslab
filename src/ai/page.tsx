@@ -298,8 +298,7 @@ export function Pate() {
         </div>
 
         <div className="rounded-2xl border border-border bg-muted/20 p-4 text-sm leading-7 text-foreground">
-          Ask for study advice, explanations of core concepts, revision plans,
-          or a summary of how the site works.
+          This chat runs in this page using the local Ted's Lab knowledge base. Messages are not sent to the external AI provider and are not saved as chat history. I will challenge vague thinking and require you to explain concepts in your own words.
         </div>
       </div>
     </div>
