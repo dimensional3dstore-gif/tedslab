@@ -19,7 +19,6 @@ const SUBJECTS_BY_CLUSTER: Record<string, { slug: string; title: string; descrip
 
 function plainText(value: string) {
   return value
-    .replace(/\\[([^[\\]]+)(?:\\|([^\\]]+))?\\]\\]/g, (_match, id: string, label?: string) => label ?? id)
     .replace(/\\[\\[([^|\\]]+)\\|([^\\]]+)\\]\\]/g, "$2")
     .replace(/\\[\\[([^\\]]+)\\]\\]/g, "$1")
     .replace(/[*_`]/g, "")
