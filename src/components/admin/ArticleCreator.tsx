@@ -272,6 +272,16 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
           </p>
         )}
         <div className="flex flex-wrap gap-2">
+          {existing && (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => void save(Boolean(existing.published))}
+              disabled={saving || Boolean(sectionEditorError)}
+            >
+              {saving ? "Saving…" : "Save changes"}
+            </Button>
+          )}
           <Button
             type="button"
             variant="outline"
