@@ -1,4 +1,5 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { Link } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -243,50 +244,17 @@ export function AdminDashboard() {
       </Card>
 
       <Card className="p-6">
-        <h3 className="mb-4 text-lg font-semibold">Quick Links</h3>
+        <h3 className="mb-4 text-lg font-semibold">Publishing Studio</h3>
+        <p className="mb-4 text-sm text-muted-foreground">Jump directly into the workflows that build Ted's Lab's scientific knowledge base.</p>
         <div className="grid gap-2 md:grid-cols-2">
-          <a
-            href="/admin/articles"
-            className="rounded-md border border-border p-3 text-sm font-medium hover:bg-accent"
-          >
-            → Manage Articles
-          </a>
-          <a
-            href="/llm"
-            className="rounded-md border border-border p-3 text-sm font-medium hover:bg-accent"
-          >
-            → Import local oMLX model
-          </a>
-          <a
-            href="/admin/pages"
-            className="rounded-md border border-border p-3 text-sm font-medium hover:bg-accent"
-          >
-            → Manage Pages
-          </a>
-          <a
-            href="/admin/sections"
-            className="rounded-md border border-border p-3 text-sm font-medium hover:bg-accent"
-          >
-            → Manage Sections
-          </a>
-          <a
-            href="/admin/topics"
-            className="rounded-md border border-border p-3 text-sm font-medium hover:bg-accent"
-          >
-            → Manage Topics
-          </a>
-          <a
-            href="/sitemap.xml"
-            className="rounded-md border border-border p-3 text-sm font-medium hover:bg-accent"
-          >
-            → View Sitemap
-          </a>
-          <a
-            href="/admin/pages-list"
-            className="rounded-md border border-border p-3 text-sm font-medium hover:bg-accent"
-          >
-            → All Pages
-          </a>
+          <Link to="/admin/articles/new" className="rounded-md border border-primary/30 bg-primary/5 p-3 text-sm font-semibold text-primary hover:bg-primary/10">→ Create Article</Link>
+          <Link to="/admin/articles" className="rounded-md border border-border p-3 text-sm font-medium hover:bg-accent">→ Manage Articles & Annotate</Link>
+          <Link to="/admin/sections" className="rounded-md border border-border p-3 text-sm font-medium hover:bg-accent">→ Create & Manage Sections</Link>
+          <Link to="/admin/topics" className="rounded-md border border-border p-3 text-sm font-medium hover:bg-accent">→ Create & Manage Topics</Link>
+          <Link to="/admin/pages" className="rounded-md border border-border p-3 text-sm font-medium hover:bg-accent">→ Manage Pages</Link>
+          <a href="/llm" className="rounded-md border border-border p-3 text-sm font-medium hover:bg-accent">→ Import local oMLX model</a>
+          <a href="/sitemap.xml" className="rounded-md border border-border p-3 text-sm font-medium hover:bg-accent">→ View Sitemap</a>
+          <Link to="/admin/pages-list" className="rounded-md border border-border p-3 text-sm font-medium hover:bg-accent">→ All Pages</Link>
         </div>
       </Card>
     </div>
