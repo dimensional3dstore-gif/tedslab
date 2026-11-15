@@ -3,7 +3,7 @@ import { useRef } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArticleCard } from "./ArticleCard";
 import type { ArticleRow, Subject } from "@/lib/content";
-import { CLUSTERS, NODES } from "@/data/catalog";
+import { NODES } from "@/data/catalog";
 import { getArticle } from "@/data/articles/compose";
 
 const SUBJECT_CLUSTERS: Record<string, string[]> = {
