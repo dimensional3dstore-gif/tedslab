@@ -88,7 +88,7 @@ export function AtlasArticleImporter() {
       const subjects = Object.values(SUBJECTS_BY_CLUSTER);
       const { error: subjectError } = await supabase
         .from("subjects")
-        .upsert(subjects.map((subject, sort) => ({
+        .upsert(subjects.map((subject) => ({
           id: subject.id,
           slug: subject.slug,
           title: subject.title,
@@ -96,7 +96,6 @@ export function AtlasArticleImporter() {
           icon: subject.icon,
           image_key: null,
           image_url: null,
-          sort,
         })), { onConflict: "slug" });
       if (subjectError) throw subjectError;
 
