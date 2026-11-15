@@ -115,6 +115,15 @@ export type DailyStudyLesson = {
 const slugifyStudyTopic = (value: string) =>
   value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
+const articleSubjectSlugs: Record<string, string> = {
+  English: "english", Mathematics: "mathematics", Science: "science", Humanities: "humanities",
+  "Digital Technologies": "technology", "Health & Physical Education": "health", "The Arts": "arts",
+  Biology: "biology", Chemistry: "chemistry", Physics: "physics", "Modern History": "history",
+  Geography: "geography", Economics: "economics", "Research & Study Skills": "study-skills",
+  "Advanced Mathematics": "mathematics", "Advanced Sciences": "science", "Academic Writing": "english",
+  "Research Methods": "research-methods", "Computer Science": "technology", "Critical Thinking": "critical-thinking",
+};
+
 function buildStudyLesson(grade: number, day: number, subject: string, topic: string, dayType: string): DailyStudyLesson {
   const encodedTopic = encodeURIComponent(topic);
   const stage = grade <= 2 ? "Use pictures, objects and short spoken explanations" :
@@ -158,7 +167,7 @@ function buildStudyLesson(grade: number, day: number, subject: string, topic: st
     teachingSequence,
     flashcards,
     quiz,
-    articleUrl: `/articles?search=${encodedTopic}`,
+    articleUrl: `/articles?search=${encodedTopic}&subject=${encodeURIComponent(articleSubjectSlugs[subject] ?? slugifyStudyTopic(subject))}`,
     videoUrl: `https://www.youtube.com/results?search_query=${encodeURIComponent(`${topic} ${subject} educational lesson`)}`,
   };
 }
