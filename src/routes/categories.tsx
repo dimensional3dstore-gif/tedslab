@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell, PageHeader } from "@/components/biopedia/AppShell";
 import { useSubjects, useSections } from "@/lib/content";
-import { SUBJECTS } from "@/lib/catalog";
+import { mergeSubjectsWithCatalog } from "@/lib/catalog";
 
 const title = "All Categories — Ted's Lab";
 const description =
@@ -25,7 +25,7 @@ function CategoriesPage() {
   const { data: subjects } = useSubjects();
   const { data: sections } = useSections();
 
-  // Subjects are permanent top-level categories. Keep the canonical catalogue visible\n  // even when the editorial table is temporarily empty during initialization.\n  const items = subjects?.length ? subjects : SUBJECTS;
+  const items = mergeSubjectsWithCatalog(subjects);
 
   return (
     <AppShell>
