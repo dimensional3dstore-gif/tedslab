@@ -12,6 +12,8 @@ export type GraphSettings = {
   localMode: boolean;
   physics: boolean;
   showArrows: boolean;
+  subjectFilter: string;
+  kindFilter: string;
 };
 
 type AtlasState = {
@@ -82,6 +84,8 @@ export const useAtlas = create<AtlasState>()(
         localMode: false,
         physics: false,
         showArrows: false,
+        subjectFilter: "all",
+        kindFilter: "all",
       },
       select: (id) => {
         if (!id || !NODE_BY_ID[id]) {
