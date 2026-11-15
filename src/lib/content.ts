@@ -167,10 +167,8 @@ export async function fetchCatalogRow<T>(
       .from(table)
       .select("*")
       .eq(column, value);
-    if (!error) {
-      if (data?.length) return data[0] as unknown as T;
-      if (table === "subjects") return null;
-    }
+    if (!error) return data?.length ? data[0] as unknown as T : table === "subjects" ? null : fallback.find((row) => (row as Record<string, unknown>)[column] === value) ?? null;
+    if (table === "subjects") throw error;
   } catch (error) {
     if (table === "subjects") throw error;
     // Keep the bundled catalog available when the backing service is offline.
