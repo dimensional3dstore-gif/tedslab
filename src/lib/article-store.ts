@@ -25,6 +25,7 @@ export async function upsertCustomArticle(article: ArticleRow) {
     image_url: article.image_url,
     video_url: article.video_url,
     published: Boolean(article.published),
+    expert_reviewed: Boolean(article.published),
     status: article.status ?? (article.published ? "published" : "draft"),
     sort: article.sort ?? 0,
     updated_at: new Date().toISOString(),

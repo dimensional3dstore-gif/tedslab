@@ -60,6 +60,7 @@ create table if not exists public.articles (
   image_url text,
   video_url text,
   published boolean not null default false,
+  expert_reviewed boolean not null default false,
   status text not null default 'draft' check (status in ('draft','review','published')),
   sort integer not null default 0,
   created_at timestamptz not null default now(),
@@ -111,6 +112,29 @@ create table if not exists public.videos (
   updated_at timestamptz not null default now()
 );
 
+create table if not exists public.quizzes (
+  id text primary key,
+  slug text not null unique,
+  title text not null,
+  question text not null,
+  options jsonb not null default '[]'::jsonb,
+  answer text not null,
+  published boolean not null default false,
+  sort integer not null default 0,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.flashcards (
+  id text primary key,
+  front text not null,
+  back text not null,
+  published boolean not null default false,
+  sort integer not null default 0,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
 create table if not exists public.nav_links (
   id text primary key,
   label text not null,
@@ -135,3 +159,5 @@ create index if not exists articles_taxonomy_idx on public.articles(subject_slug
 create index if not exists pages_public_idx on public.pages(published, status, sort);
 create index if not exists videos_public_idx on public.videos(published, sort);
 create index if not exists nav_links_sort_idx on public.nav_links(group_name, sort);
+create index if not exists quizzes_public_idx on public.quizzes(published, sort);
+create index if not exists flashcards_public_idx on public.flashcards(published, sort);
