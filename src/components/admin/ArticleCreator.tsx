@@ -33,6 +33,9 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
   const [section, setSection] = useState(existing?.section_slug ?? "organisms");
   const [topic, setTopic] = useState(existing?.topic_slug ?? "");
   const [imageKey, setImageKey] = useState(existing?.image_key ?? "hero-cell");
+  const [imageUrl, setImageUrl] = useState(existing?.image_url ?? "");
+  const [videoUrl, setVideoUrl] = useState(existing?.video_url ?? "");
+  const [minutes, setMinutes] = useState(existing?.minutes ?? 8);
   const availableSections = allSections.filter((item) => item.subject_id === subjects.find((subjectItem) => subjectItem.slug === subject)?.id);
   const selectedSection = allSections.find((item) => item.slug === section);
   const availableTopics = allTopics.filter((item) => item.section_id === selectedSection?.id);
@@ -70,20 +73,20 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
       title,
       excerpt,
       body: JSON.stringify(layout),
-      minutes: 8,
+      minutes,
       tone: "scientific",
       subject_slug: subject,
       section_slug: section,
       topic_slug: topic || null,
       image_key: imageKey,
-      image_url: null,
-      video_url: null,
+      image_url: imageUrl.trim() || null,
+      video_url: videoUrl.trim() || null,
       published: status === "published",
       expert_reviewed: status === "published",
       status,
       sort: 0,
     }),
-    [existing?.id, title, slug, excerpt, layout, subject, section, topic, imageKey, status],
+    [existing?.id, title, slug, excerpt, layout, subject, section, topic, imageKey, imageUrl, videoUrl, minutes, status],
   );
 
   const save = async (publish: boolean) => {
@@ -197,6 +200,19 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
               </option>
             ))}
           </select>
+        </label>
+        <label className="block space-y-1 text-xs text-muted-foreground">
+          Custom banner image URL (optional — overrides the selected image)
+          <Input type="url" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="https://example.com/banner.jpg" />
+          <span className="block text-[11px]">The live preview updates immediately. Clear this field to use the selected Ted’s Lab image.</span>
+        </label>
+        <label className="block space-y-1 text-xs text-muted-foreground">
+          Read time (minutes)
+          <Input type="number" min="1" max="180" value={minutes} onChange={(e) => setMinutes(Math.max(1, Number(e.target.value) || 1))} />
+        </label>
+        <label className="block space-y-1 text-xs text-muted-foreground">
+          Article video URL (optional)
+          <Input type="url" value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)} placeholder="https://…" />
         </label>
         <label className="block space-y-1 text-xs text-muted-foreground">
           Overview (one paragraph per line)
