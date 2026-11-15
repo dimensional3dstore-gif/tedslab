@@ -33,7 +33,8 @@ export function AiAssistPanel() {
     [articles, selectedSubject],
   );
 
-  const runGeneration = () => {\n    if (!permissions.aiAssistanceAllowed) return;
+  const runGeneration = () => {
+    if (!permissions.aiAssistanceAllowed) return;
     setBusy(true);
     window.setTimeout(() => {
       const result = generateDailyArticles(SUBJECTS, 10);
@@ -60,10 +61,11 @@ export function AiAssistPanel() {
         </div>
       </div>
 
+      {!permissions.loading && !permissions.aiAssistanceAllowed && <p className="rounded-lg border border-border bg-secondary/40 p-3 text-xs text-muted-foreground">AI assistance is disabled by the learner’s parent or guardian.</p>}
       <button
         type="button"
         onClick={runGeneration}
-        disabled={busy}
+        disabled={busy || permissions.loading || !permissions.aiAssistanceAllowed}
         className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-60"
       >
         {busy ? (
