@@ -1,5 +1,7 @@
 appId: com.tedslab.studylab
 productName: Study Lab
+extraMetadata:
+  main: electron/study-main.cjs
 asar: true
 directories:
   output: release/study-lab
