@@ -75,7 +75,7 @@ function SubjectPage() {
               .filter(
                 (s) =>
                   !q ||
-                  `${s.title} ${s.description ?? ""}`.toLowerCase().includes(q),
+                  `${s.title} ${s.blurb ?? ""}`.toLowerCase().includes(q),
               )
               .map((s) => (
                 <Link
