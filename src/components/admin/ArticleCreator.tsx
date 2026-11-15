@@ -106,6 +106,7 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
       const saved = await upsertCustomArticle(row);
       await queryClient.invalidateQueries({ queryKey: ["articles"] });
       await queryClient.invalidateQueries({ queryKey: ["article", saved.slug] });
+      await queryClient.invalidateQueries({ queryKey: ["article", "id", saved.id] });
       await navigate({ to: "/admin/articles" });
     } catch (error) {
       setSaveError(error instanceof Error ? error.message : "Unable to save this article. Check your admin access and database connection.");
