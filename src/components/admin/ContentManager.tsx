@@ -28,6 +28,7 @@ export function ContentManager({ mode }: { mode: Mode }) {
   const [icon, setIcon] = useState("BookOpen");
   const [imageUrl, setImageUrl] = useState("");
   const [error, setError] = useState("");
+  const [savedMessage, setSavedMessage] = useState("");
   const [busy, setBusy] = useState(false);
 
   const config = {
@@ -43,19 +44,19 @@ export function ContentManager({ mode }: { mode: Mode }) {
 
   const reset = () => {
     setEditing(null); setTitle(""); setSlug(""); setDescription(""); setBody("");
-    setParentId(""); setPublished(false); setShowInNav(false); setIcon("BookOpen"); setImageUrl(""); setError("");
+    setParentId(""); setPublished(false); setShowInNav(false); setIcon("BookOpen"); setImageUrl(""); setError(""); setSavedMessage("");
   };
 
   const startEdit = (row: Row) => {
     setEditing(row); setTitle(row.title ?? ""); setSlug(row.slug ?? "");
     setDescription(row.description ?? row.blurb ?? "");
     setBody(row.body ?? ""); setParentId(row.subject_id ?? row.section_id ?? "");
-    setPublished(Boolean(row.published)); setShowInNav(Boolean(row.show_in_nav)); setIcon(row.icon ?? "BookOpen"); setImageUrl(row.image_url ?? ""); setError("");
+    setPublished(Boolean(row.published)); setShowInNav(Boolean(row.show_in_nav)); setIcon(row.icon ?? "BookOpen"); setImageUrl(row.image_url ?? ""); setError(""); setSavedMessage("");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const save = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault(); setBusy(true); setError("");
+    event.preventDefault(); setBusy(true); setError(""); setSavedMessage("");
     const base: Row = { id: editing?.id ?? `${mode.slice(0, -1)}-${crypto.randomUUID()}`, slug: slugify(slug || title), title, sort: editing?.sort ?? config.rows.length };
     if (mode === "pages") Object.assign(base, { description, body, published, status: published ? "published" : "draft", show_in_nav: showInNav, image_url: editing?.image_url ?? null });
     if (mode === "subjects") Object.assign(base, { description, icon: icon.trim() || null, image_key: editing?.image_key ?? null, image_url: imageUrl.trim() || null });
@@ -63,10 +64,20 @@ export function ContentManager({ mode }: { mode: Mode }) {
     if (mode === "topics") Object.assign(base, { subject_id: parentValue, subject_slug: subjects.find((item) => item.id === parentValue)?.slug, section_id: null, blurb: description, body, image_url: imageUrl.trim() || null });
     if (!title.trim() || !base.slug || ((mode === "sections" || mode === "topics") && !parentValue)) { setError("Complete the title, slug and parent selection."); setBusy(false); return; }
     try {
-      const { error: saveError } = await db.from(config.table).upsert(base, { onConflict: "id" });
+      if (mode === "subjects") {
+        const duplicate = subjects.some((item) => item.slug === base.slug && item.id !== base.id);
+        if (duplicate) throw new Error("That subject URL slug is already in use. Choose a unique slug.");
+      }
+      const { data: savedRow, error: saveError } = await db
+        .from(config.table)
+        .upsert(base, { onConflict: "id" })
+        .select("*")
+        .single();
       if (saveError) throw saveError;
+      if (!savedRow) throw new Error("Supabase did not confirm that the record was saved.");
       await queryClient.invalidateQueries();
       reset();
+      setSavedMessage(mode === "subjects" ? "Subject saved to the database." : "Changes saved.");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Unable to save this item. Check admin permissions and database access.");
     } finally { setBusy(false); }
@@ -104,6 +115,7 @@ export function ContentManager({ mode }: { mode: Mode }) {
       {mode !== "subjects" && <label className="block space-y-1 text-xs text-muted-foreground">Content<textarea className="min-h-48 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground" value={body} onChange={e=>setBody(e.target.value)} placeholder="Write the page content or detailed topic notes…" /></label>}
       {mode === "pages" && <div className="flex flex-wrap gap-4 text-sm"><label className="flex items-center gap-2"><input type="checkbox" checked={published} onChange={e=>setPublished(e.target.checked)} /> Published</label><label className="flex items-center gap-2"><input type="checkbox" checked={showInNav} onChange={e=>setShowInNav(e.target.checked)} /> Show in navigation</label></div>}
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+      {savedMessage && <p role="status" className="text-sm text-emerald-600">{savedMessage}</p>}
       <Button type="submit" disabled={busy}>{busy ? "Saving…" : editing ? "Save changes" : `Create ${mode.slice(0,-1)}`}</Button>
     </form>
     <div className="space-y-3">
