@@ -7,6 +7,7 @@ const title = "All Articles — Ted's Lab";
 const description = "Browse all articles across every Ted's Lab subject.";
 
 export const Route = createFileRoute("/articles")({
+  validateSearch: (search: Record<string, unknown>) => ({ search: typeof search.search === "string" ? search.search : "" }),
   head: () => ({
     meta: [
       { title },
@@ -22,6 +23,7 @@ export const Route = createFileRoute("/articles")({
 
 function ArticlesPage() {
   const { pathname } = useLocation();
+  const { search: routeSearch } = Route.useSearch();
   const { data: articles = [], isLoading } = useArticles();
 
   if (pathname !== "/articles") {
@@ -32,9 +34,10 @@ function ArticlesPage() {
     <AppShell>
       {(q) => {
         const publishedArticles = articles.filter((a) => a.published);
+        const searchTerm = (q || routeSearch).trim().toLowerCase();
         const filtered = publishedArticles.filter(
           (a) =>
-            !q || `${a.title} ${a.excerpt ?? ""}`.toLowerCase().includes(q),
+            !searchTerm || `${a.title} ${a.excerpt ?? ""} ${a.subject_slug ?? ""}`.toLowerCase().includes(searchTerm),
         );
 
         return (
