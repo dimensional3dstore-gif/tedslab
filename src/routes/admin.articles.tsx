@@ -43,7 +43,14 @@ function AdminArticlesPage() {
               <div className="flex items-center gap-2">
                 {article.published && <Link to="/articles/$slug" params={{ slug: article.slug }} className="rounded-md border border-border px-3 py-2 text-xs font-medium hover:bg-secondary">View</Link>}
                 <Link to="/admin/articles/$id/annotate" params={{ id: article.id }} className="rounded-md border border-primary/30 px-3 py-2 text-xs font-semibold text-primary hover:bg-primary/10">Annotate</Link>
-                <Link to="/admin/articles/$id" params={{ id: article.id }} className="rounded-md bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground">Edit</Link>
+                <Link
+                  to="/admin/articles/$id"
+                  params={{ id: article.id }}
+                  aria-label={"Edit " + article.title}
+                  className="rounded-md bg-primary px-4 py-2 text-xs font-bold text-primary-foreground shadow-sm ring-1 ring-primary/40 hover:bg-primary/90"
+                >
+                  Edit article
+                </Link>
               </div>
             </article>
           ))}
