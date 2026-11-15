@@ -63,9 +63,6 @@ export function Sidebar({
   const { isAdmin } = useAuth();
   const chronosDownloadUrl = getChronosOSDownloadUrl();
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
-  const [expandedSections, setExpandedSections] = useState<Set<string>>(
-    new Set(),
-  );
   const [collapsed, setCollapsed] = useState(false);
   const [knowledgeExpanded, setKnowledgeExpanded] = useState(true);
 
@@ -110,14 +107,7 @@ export function Sidebar({
     });
   };
 
-  const toggleSection = (id: string) => {
-    setExpandedSections((previous) => {
-      const next = new Set(previous);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  };
+
 
   return (
     <>
@@ -257,78 +247,6 @@ export function Sidebar({
                             />
                           </li>
                         ))}
-                        {!collapsed && sectionArticles.length > 0 && (
-                                  <button
-                                    type="button"
-                                    aria-label={`${sectionExpanded ? "Collapse" : "Expand"} ${section.label} articles`}
-                                    aria-expanded={sectionExpanded}
-                                    onClick={() => toggleSection(section.id)}
-                                    className="rounded p-1 text-muted-foreground hover:bg-secondary hover:text-foreground"
-                                  >
-                                    <ChevronRight
-                                      className={`size-3.5 transition-transform ${sectionExpanded ? "rotate-90" : ""}`}
-                                    />
-                                  </button>
-                                )}
-                              </div>
-                              {!collapsed &&
-                                sectionExpanded &&
-                                sectionArticles.length > 0 && (
-                                  <ul className="ml-7 space-y-0.5 border-l border-sidebar-border pl-2">
-                                    {sectionArticles.map((article) => (
-                                      <li key={article.id}>
-                                        <Link
-                                          to="/articles/$slug"
-                                          params={{ slug: article.slug }}
-                                          className="block truncate rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:bg-secondary hover:text-foreground"
-                                          title={article.title}
-                                        >
-                                          {article.title}
-                                        </Link>
-                                      </li>
-                                    ))}
-                                  </ul>
-                                )}
-                            </li>
-                          );
-                        })}
-                        {!collapsed &&
-                          (articles ?? []).filter(
-                            (article) =>
-                              article.published &&
-                              article.subject_slug === subject.slug &&
-                              !subjectSections.some(
-                                (section) =>
-                                  section.slug === article.section_slug,
-                              ),
-                          ).length > 0 && (
-                            <li className="pt-2">
-                              <p className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                                More articles
-                              </p>
-                              {(articles ?? [])
-                                .filter(
-                                  (article) =>
-                                    article.published &&
-                                    article.subject_slug === subject.slug &&
-                                    !subjectSections.some(
-                                      (section) =>
-                                        section.slug === article.section_slug,
-                                    ),
-                                )
-                                .map((article) => (
-                                  <Link
-                                    key={article.id}
-                                    to="/articles/$slug"
-                                    params={{ slug: article.slug }}
-                                    className="block truncate rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:bg-secondary hover:text-foreground"
-                                    title={article.title}
-                                  >
-                                    {article.title}
-                                  </Link>
-                                ))}
-                            </li>
-                          )}
                       </ul>
                     )}
                   </li>
