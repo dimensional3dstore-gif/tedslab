@@ -8,7 +8,6 @@ import { GraphCanvas } from "./GraphCanvas";
 import { IconRail } from "./IconRail";
 import { Inspector } from "./Inspector";
 import { SearchModal } from "./SearchModal";
-import { StatusBar } from "./StatusBar";
 import { Toolbar } from "./Toolbar";
 
 function Center() {
@@ -92,7 +91,6 @@ export function AtlasApp() {
               <Center />
             </div>
           </div>
-          <StatusBar />
         </div>
         {inspectorOpen && (
           <div className="hidden w-[300px] shrink-0 md:block">
