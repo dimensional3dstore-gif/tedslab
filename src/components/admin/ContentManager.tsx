@@ -37,9 +37,9 @@ export function ContentManager({ mode }: { mode: Mode }) {
     subjects: { table: "subjects", title: "Subjects", rows: subjects as Row[] },
   }[mode];
 
-  const parentOptions = mode === "sections" ? subjects : sections;
-  const parentLabel = mode === "sections" ? "Subject" : "Section";
-  const parentValue = parentId || (mode === "sections" ? subjects[0]?.id : sections[0]?.id) || "";
+  const parentOptions = mode === "sections" || mode === "topics" ? subjects : [];
+  const parentLabel = "Subject";
+  const parentValue = parentId || (mode === "sections" || mode === "topics" ? subjects[0]?.id : "") || "";
 
   const reset = () => {
     setEditing(null); setTitle(""); setSlug(""); setDescription(""); setBody("");
@@ -60,7 +60,7 @@ export function ContentManager({ mode }: { mode: Mode }) {
     if (mode === "pages") Object.assign(base, { description, body, published, status: published ? "published" : "draft", show_in_nav: showInNav, image_url: editing?.image_url ?? null });
     if (mode === "subjects") Object.assign(base, { description, icon: icon.trim() || null, image_key: editing?.image_key ?? null, image_url: imageUrl.trim() || null });
     if (mode === "sections") Object.assign(base, { subject_id: parentValue, label: title, description, body, icon: editing?.icon ?? null, image_key: editing?.image_key ?? null, image_url: editing?.image_url ?? null });
-    if (mode === "topics") Object.assign(base, { section_id: parentValue, blurb: description, body, image_url: editing?.image_url ?? null });
+    if (mode === "topics") Object.assign(base, { subject_id: parentValue, subject_slug: subjects.find((item) => item.id === parentValue)?.slug, section_id: null, blurb: description, body, image_url: imageUrl.trim() || null });
     if (!title.trim() || !base.slug || ((mode === "sections" || mode === "topics") && !parentValue)) { setError("Complete the title, slug and parent selection."); setBusy(false); return; }
     try {
       const { error: saveError } = await db.from(config.table).upsert(base, { onConflict: "id" });
@@ -82,7 +82,7 @@ export function ContentManager({ mode }: { mode: Mode }) {
 
   const parentName = (row: Row) => {
     if (mode === "sections") return subjects.find((item) => item.id === row.subject_id)?.title ?? "Unknown subject";
-    if (mode === "topics") return sections.find((item) => item.id === row.section_id)?.title ?? "Unknown section";
+    if (mode === "topics") return subjects.find((item) => item.id === row.subject_id)?.title ?? "Unknown subject";
     if (mode === "subjects") return "Top-level subject";
     return row.show_in_nav ? "Navigation page" : "Standalone page";
   };
@@ -100,7 +100,7 @@ export function ContentManager({ mode }: { mode: Mode }) {
         <label className="block space-y-1 text-xs text-muted-foreground">Icon name<Input value={icon} onChange={e=>setIcon(e.target.value)} placeholder="BookOpen" /></label>
         <label className="block space-y-1 text-xs text-muted-foreground">Subject banner image URL (optional)<Input type="url" value={imageUrl} onChange={e=>setImageUrl(e.target.value)} placeholder="https://example.com/subject.jpg" /></label>
       </>}
-      {mode === "topics" && <label className="block space-y-1 text-xs text-muted-foreground">Summary / blurb<Input value={description} onChange={e=>setDescription(e.target.value)} /></label>}
+      {mode === "topics" && <><label className="block space-y-1 text-xs text-muted-foreground">Summary / blurb<Input value={description} onChange={e=>setDescription(e.target.value)} /></label><label className="block space-y-1 text-xs text-muted-foreground">Topic image URL (optional)<Input type="url" value={imageUrl} onChange={e=>setImageUrl(e.target.value)} /></label></>}
       {mode !== "subjects" && <label className="block space-y-1 text-xs text-muted-foreground">Content<textarea className="min-h-48 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground" value={body} onChange={e=>setBody(e.target.value)} placeholder="Write the page content or detailed topic notes…" /></label>}
       {mode === "pages" && <div className="flex flex-wrap gap-4 text-sm"><label className="flex items-center gap-2"><input type="checkbox" checked={published} onChange={e=>setPublished(e.target.checked)} /> Published</label><label className="flex items-center gap-2"><input type="checkbox" checked={showInNav} onChange={e=>setShowInNav(e.target.checked)} /> Show in navigation</label></div>}
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
