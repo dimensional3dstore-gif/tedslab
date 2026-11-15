@@ -131,9 +131,10 @@ export async function fetchCatalogRows<T extends { id: string }>(
       .from(table)
       .select("*")
       .order("sort", { ascending: true });
-    if (result.error) return fallback;
+    if (result.error) { if (table === "subjects" || table === "topics" || table === "articles") throw result.error; return fallback; }
     data = result.data;
-  } catch {
+  } catch (error) {
+    if (table === "subjects" || table === "topics" || table === "articles") throw error;
     return fallback;
   }
   const remoteRows = (data ?? []) as unknown as T[];
@@ -170,7 +171,8 @@ export async function fetchCatalogRow<T>(
       if (data?.length) return data[0] as unknown as T;
       if (table === "subjects") return null;
     }
-  } catch {
+  } catch (error) {
+    if (table === "subjects") throw error;
     // Keep the bundled catalog available when the backing service is offline.
   }
   return (
@@ -278,10 +280,10 @@ export const articleByIdQueryOptions = (id: string) =>
           .maybeSingle();
         if (!error) return (data as ArticleRow | null) ?? null;
       } catch {
-        // Fall back to the bundled catalog when the database is unavailable.
+        return null;
       }
 
-      return ARTICLES.find((article) => article.id === id) ?? null;
+      return null;
     },
   });
 
