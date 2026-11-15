@@ -179,7 +179,7 @@ export async function fetchCatalogRow<T>(
 export const subjectsQueryOptions = queryOptions({
   queryKey: ["subjects"],
   queryFn: () => fetchCatalogRows("subjects", SUBJECTS),
-  initialData: SUBJECTS,
+  initialData: supabaseAuthConfigured ? [] : SUBJECTS,
 });
 
 export const sectionsQueryOptions = queryOptions({
@@ -197,7 +197,7 @@ export const topicsQueryOptions = queryOptions({
 export const articlesQueryOptions = queryOptions({
   queryKey: ["articles"],
   queryFn: () => fetchCatalogRows("articles", ARTICLES),
-  initialData: ARTICLES,
+  initialData: supabaseAuthConfigured ? [] : ARTICLES,
 });
 
 export const heroSlidesQueryOptions = queryOptions({
