@@ -17,7 +17,8 @@
     "desktop:app": "electron-builder --mac dir --arm64",
     "desktop:mac": "node scripts/package-chronosos-macos.mjs",
     "desktop:download": "node scripts/package-chronosos-macos.mjs",
-    "prebuild": "node scripts/verify-build-config.mjs"
+    "prebuild": "node scripts/verify-build-config.mjs",
+    "desktop:study:mac": "electron-builder --config electron-builder.study.yml --mac dmg --arm64"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.27.0",
