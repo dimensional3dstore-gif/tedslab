@@ -17,6 +17,7 @@ import {
   type ArticleLayout,
 } from "@/lib/article-layout";
 import { resolveImage } from "@/lib/images";
+import { StudyLesson } from "@/components/study/StudyLesson";
 
 export function ArticleTemplate({
   article,
@@ -128,6 +129,7 @@ export function ArticleTemplate({
         >
           Article annotations
         </Link>
+        <a href={preview ? undefined : "#study-lesson"} className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground">Study lesson</a>
         {tabs.map((tab, index) => (
           <a
             key={tab}
@@ -203,6 +205,8 @@ export function ArticleTemplate({
           </div>
         </section>
       ))}
+
+      {!preview && <StudyLesson article={article} layout={layout} />}
 
       <div className="mt-8 flex items-center justify-between gap-3 rounded-xl border border-border bg-card/80 p-3 text-sm text-muted-foreground">
         <span>Was this reference useful?</span>
