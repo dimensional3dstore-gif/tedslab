@@ -5,6 +5,16 @@ on:
     tags:
       - "study-v*"
   workflow_dispatch:
+  pull_request:
+    paths:
+      - "electron/**"
+      - "electron-builder.study.yml"
+      - "src/routes/study-download.tsx"
+      - "src/routes/study-reviews.tsx"
+      - "src/ai/page.tsx"
+      - ".github/workflows/study-lab-release.yml"
+      - "package.json"
+      - "package-lock.json"
 
 permissions:
   contents: write
