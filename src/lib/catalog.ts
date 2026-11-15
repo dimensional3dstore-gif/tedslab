@@ -116,6 +116,18 @@ export const SUBJECTS: Subject[] = [
   },
 ];
 
+/**
+ * Permanent top-level subjects are always present in navigation and category views.
+ * Database rows may override their metadata, and any additional database subjects are appended.
+ */
+export function mergeSubjectsWithCatalog(remote: Subject[] | undefined): Subject[] {
+  const byId = new Map((remote ?? []).map((subject) => [subject.id, subject]));
+  const permanent = SUBJECTS.map((subject) => byId.get(subject.id) ?? subject);
+  const permanentIds = new Set(SUBJECTS.map((subject) => subject.id));
+  const additional = (remote ?? []).filter((subject) => !permanentIds.has(subject.id));
+  return [...permanent, ...additional].sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0));
+}
+
 const extraSections: {
   subjectId: string;
   slug: string;
