@@ -11,7 +11,7 @@ import {
 import { Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/biopedia/AppShell";
 import { RelatedArticles } from "@/components/biopedia/RelatedArticles";
-import type { ArticleRow } from "@/lib/content";
+import { useSubjects, type ArticleRow } from "@/lib/content";
 import {
   layoutFromArticleBody,
   type ArticleLayout,
@@ -30,6 +30,8 @@ export function ArticleTemplate({
   preview?: boolean;
   layoutOverride?: ArticleLayout | null;
 }) {
+  const { data: subjects = [] } = useSubjects();
+  const subjectTitle = subjects.find((subject) => subject.slug === article.subject_slug)?.title ?? article.subject_slug ?? "Unassigned subject";
   const layout =
     layoutOverride ??
     layoutFromArticleBody(article.body) ??
@@ -54,7 +56,7 @@ export function ArticleTemplate({
   const image = resolveImage(article.image_url, article.image_key);
   const crumbs = [
     "Home",
-    article.subject_slug ?? "Library",
+    subjectTitle,
     article.section_slug ?? "Articles",
     article.title,
   ];
@@ -87,9 +89,14 @@ export function ArticleTemplate({
             <h1 className="font-display text-4xl font-black tracking-tight text-foreground">
               {article.title}
             </h1>
-            <div className="mt-3 inline-flex items-center gap-2 rounded-md border border-primary/30 bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary">
-              <CheckCircle2 className="size-3.5" />
-              Scientific reference
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-2 rounded-md border border-primary/30 bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary">
+                <CheckCircle2 className="size-3.5" />
+                Scientific reference
+              </span>
+              <span className="inline-flex items-center gap-2 rounded-md border border-border bg-secondary px-2.5 py-1 text-xs font-medium text-foreground">
+                Subject: {subjectTitle}
+              </span>
             </div>
             {article.published && article.expert_reviewed && (
               <div className="mt-2 inline-flex items-center gap-2 rounded-md border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-xs font-semibold text-emerald-600">
