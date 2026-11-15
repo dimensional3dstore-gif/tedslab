@@ -5,6 +5,7 @@ export type ClusterId =
   | "biology"
   | "computing"
   | "history"
+  | "english"
   | "mind"
   | "systems";
 
