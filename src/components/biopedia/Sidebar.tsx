@@ -22,6 +22,7 @@ import { useState } from "react";
 import {
   useSubjects,
   useSections,
+  useTopics,
   useArticles,
   useNavLinks,
   useSettings,
@@ -57,6 +58,7 @@ export function Sidebar({
 }) {
   const { data: subjects, isLoading: subjectsLoading } = useSubjects();
   const { data: sections, isLoading: sectionsLoading } = useSections();
+  const { data: topics } = useTopics();
   const { data: articles } = useArticles();
   const { data: navLinks } = useNavLinks();
   const { data: settings } = useSettings();
@@ -191,6 +193,7 @@ export function Sidebar({
               <li className="space-y-1 px-3 py-2">{Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-8 w-full rounded-lg" />)}</li>
             ) : (subjects ?? []).map((subject) => {
               const subjectSections = sectionsBySubject.get(subject.id) ?? [];
+              const subjectTopics = (topics ?? []).filter((topic) => topic.subject_id === subject.id).sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0) || a.title.localeCompare(b.title));
               const isExpanded = expanded.has(subject.id);
               return (
                 <li key={subject.id}>
@@ -201,16 +204,16 @@ export function Sidebar({
                   {isExpanded && !collapsed && (
                     <div className="ml-4 mt-0.5 border-l border-sidebar-border pl-2">
                       <ul className="space-y-0.5">
-                        <li className="px-2 pt-1 pb-0.5 text-[10px] font-semibold tracking-wider text-muted-foreground">SECTIONS</li>
-                        {subjectSections.map((section) => <li key={section.id}><NavLink label={section.label} Icon={resolveIcon(section.icon)} to={`/${subject.slug}/${section.slug}`} collapsed={collapsed} /></li>)}
-                        {!subjectSections.length && <li className="px-2 py-1 text-xs text-muted-foreground">No sections yet</li>}
+                        <li className="px-2 pt-1 pb-0.5 text-[10px] font-semibold tracking-wider text-muted-foreground">TOPICS</li>
+                        {subjectTopics.map((topic) => <li key={topic.id}><NavLink label={topic.title} Icon={LucideIcons.Layers} to={`/${subject.slug}/${topic.slug}`} collapsed={collapsed} /></li>)}
+                        {!subjectTopics.length && <li className="px-2 py-1 text-xs text-muted-foreground">No topics yet</li>}
                       </ul>
                       <ul className="mt-2 space-y-0.5">
                         <li className="px-2 pt-1 pb-0.5 text-[10px] font-semibold tracking-wider text-muted-foreground">ARTICLES</li>
-                        {(articles ?? []).filter((article) => article.published && article.subject_slug === subject.slug).sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0) || a.title.localeCompare(b.title)).map((article) => (
-                          <li key={article.id}><Link to="/articles/$slug" params={{ slug: article.slug }} className="block truncate rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:bg-secondary hover:text-foreground" title={article.title}>{article.title}</Link></li>
+                        {subjectTopics.flatMap((topic) => (articles ?? []).filter((article) => article.published && article.topic_slug === topic.slug).map((article) => ({...article, parentTopic: topic.title}))).map((article) => (
+                          <li key={article.id}><Link to="/articles/$slug" params={{ slug: article.slug }} className="block truncate rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:bg-secondary hover:text-foreground" title={`${article.parentTopic}: ${article.title}`}>{article.title}</Link></li>
                         ))}
-                        {!(articles ?? []).some((article) => article.published && article.subject_slug === subject.slug) && <li className="px-2 py-1 text-xs text-muted-foreground">No published articles yet</li>}
+                        {!subjectTopics.some((topic) => (articles ?? []).some((article) => article.published && article.topic_slug === topic.slug)) && <li className="px-2 py-1 text-xs text-muted-foreground">No published articles yet</li>}
                       </ul>
                     </div>
                   )}
