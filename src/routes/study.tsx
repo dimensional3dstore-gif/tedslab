@@ -8,6 +8,12 @@ import { useAuth } from "@/hooks/use-auth";
 import { getSupabaseAuthClient } from "@/integrations/supabase/auth";
 import { useStudentPermissions } from "@/hooks/use-student-permissions";
 
+declare global {
+  interface Window {
+    studyLabDesktop?: { setKiosk: (enabled: boolean) => Promise<boolean> };
+  }
+}
+
 export const Route = createFileRoute("/study")({
   head: () => ({ meta: [{ title: "Study Enlist · 365-day curriculum — Ted's Lab" }, { name: "description", content: "A rigorous 365-day Australian learning programme for Grades 1–13, with daily lessons, weekly mastery tests and exam preparation." }] }),
   component: StudyEnlistPage,
@@ -22,6 +28,11 @@ function StudyEnlistPage() {
   const [progressError, setProgressError] = useState("");
   const { user, loading: authLoading } = useAuth();
   const permissions = useStudentPermissions();
+
+  useEffect(() => {
+    if (permissions.loading || !window.studyLabDesktop) return;
+    void window.studyLabDesktop.setKiosk(permissions.browserLockEnabled).catch(() => undefined);
+  }, [permissions.loading, permissions.browserLockEnabled]);
   const level = GRADE_LEVELS.find((item) => item.grade === grade)!;
   const today = getStudyDay(grade, day);
   const weeks = useMemo(() => getYearStructure(grade), [grade]);
