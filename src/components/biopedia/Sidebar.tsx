@@ -186,7 +186,8 @@ export function Sidebar({
             </button>
           )}
           <ul className="space-y-0.5">
-            <li><NavLink label="Study Lab OS" Icon={LucideIcons.GraduationCap} to="/study" collapsed={collapsed} /></li>
+            <li><NavLink label="Home" Icon={LucideIcons.Home} to="/" exact collapsed={collapsed} /></li>
+            <li><NavLink label="Study Lab" Icon={LucideIcons.GraduationCap} to="/study" collapsed={collapsed} /></li>
             <li><NavLink label="Knowledge Atlas" Icon={LucideIcons.Network} to="/knowledge-atlas" collapsed={collapsed} /></li>
             <li>
               <NavLink
