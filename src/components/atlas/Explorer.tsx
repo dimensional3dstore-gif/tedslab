@@ -220,6 +220,9 @@ function TagsPane() {
 }
 
 function StarredPane() {
+  const { data: articles = [] } = useArticles();
+  const cmsNodes = useMemo(() => toCMSGraphNodes(articles), [articles]);
+  const allNodes = useMemo(() => [...NODES, ...cmsNodes], [cmsNodes]);
   const bookmarks = useAtlas((s) => s.bookmarks);
   const recent = useAtlas((s) => s.recent);
   return (
@@ -234,8 +237,8 @@ function StarredPane() {
       )}
       {bookmarks.map(
         (id) =>
-          NODE_BY_ID[id] && (
-            <NodeRow key={id} node={NODE_BY_ID[id]} depth={0} />
+          allNodes.find((node) => node.id === id) && (
+            <NodeRow key={id} node={allNodes.find((node) => node.id === id)!} depth={0} />
           ),
       )}
       <p className="mt-3 px-3 py-1 text-[10px] font-medium uppercase tracking-wider text-fg-subtle">
@@ -243,8 +246,8 @@ function StarredPane() {
       </p>
       {recent.map(
         (id) =>
-          NODE_BY_ID[id] && (
-            <NodeRow key={`r-${id}`} node={NODE_BY_ID[id]} depth={0} />
+          allNodes.find((node) => node.id === id) && (
+            <NodeRow key={`r-${id}`} node={allNodes.find((node) => node.id === id)!} depth={0} />
           ),
       )}
     </div>
