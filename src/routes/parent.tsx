@@ -20,7 +20,7 @@ type GuardianLink = {
 };
 type StudentProfile = {
   student_id: string;
-  date_of_birth: string;
+  date_of_birth: string | null;
   grade_level: number;
   onboarding_complete: boolean;
   start_date: string;
@@ -117,7 +117,7 @@ function ParentPortal() {
       }).eq("id", link.id).eq("status", "pending");
       if (approvalError) throw approvalError;
       const { error: profileError } = await client.from("student_profiles").update({
-        grade_level: grade, onboarding_complete: true, start_date: new Intl.DateTimeFormat("en-CA", { timeZone: "Australia/Sydney", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date()), updated_at: now,
+        grade_level: grade, onboarding_complete: true, date_of_birth: null, start_date: new Intl.DateTimeFormat("en-CA", { timeZone: "Australia/Sydney", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date()), updated_at: now,
       }).eq("student_id", link.student_id);
       if (profileError) throw profileError;
       setNotice("Learner account approved. Study Enlist is now available with the permissions you selected.");
@@ -164,7 +164,7 @@ function ParentPortal() {
                 const profile = profiles[link.student_id];
                 return <article key={link.id} className="bio-panel space-y-4 p-5">
                   <div><p className="text-xs font-semibold uppercase tracking-wider text-primary">New learner invitation</p><h3 className="mt-1 text-lg font-bold text-foreground">Learner account</h3><p className="text-xs text-muted-foreground">Student ID: {link.student_id.slice(0, 8)}… · Guardian email: {link.guardian_email}</p></div>
-                  {profile && <div className="rounded-lg bg-secondary/40 p-3 text-sm text-muted-foreground">Date of birth: {profile.date_of_birth} · Recommended year level: Grade {profile.grade_level}</div>}
+                  {profile && <div className="rounded-lg bg-secondary/40 p-3 text-sm text-muted-foreground">{profile.date_of_birth ? `Date of birth: ${profile.date_of_birth} · ` : ""}Recommended year level: Grade {profile.grade_level}</div> }
                   <div className="space-y-2"><label className="block text-sm font-medium text-foreground" htmlFor={`grade-${link.id}`}>Confirm year level</label><select id={`grade-${link.id}`} value={gradeChoice[link.student_id] ?? profile?.grade_level ?? 1} onChange={(event) => setGradeChoice((current) => ({ ...current, [link.student_id]: Number(event.target.value) }))} className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground">{Array.from({ length: 13 }, (_, index) => index + 1).map((grade) => <option key={grade} value={grade}>Grade {grade}</option>)}</select></div>
                   <label className="flex items-start gap-3 rounded-lg border border-border p-3"><input type="checkbox" checked={aiChoice[link.id] ?? false} onChange={(event) => setAiChoice((current) => ({ ...current, [link.id]: event.target.checked }))} className="mt-1 accent-primary" /><span><strong className="block text-sm text-foreground">Allow AI assistance</strong><span className="text-xs text-muted-foreground">Permit AI-powered study help where available. You can change this permission later.</span></span></label>
                   <label className="flex items-start gap-3 rounded-lg border border-border p-3"><input type="checkbox" checked={browserChoice[link.id] ?? true} onChange={(event) => setBrowserChoice((current) => ({ ...current, [link.id]: event.target.checked }))} className="mt-1 accent-primary" /><span><strong className="block text-sm text-foreground">Enable supervised study mode</strong><span className="text-xs text-muted-foreground">Keep the learner in Ted's Lab study flow and enable in-platform focus restrictions. This does not lock other browser tabs or device applications.</span></span></label>
