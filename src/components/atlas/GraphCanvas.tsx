@@ -176,6 +176,8 @@ export function GraphCanvas() {
       }
 
       const visible = (n: SimNode) => {
+        if (st.subjectFilter !== "all" && n.cluster !== st.subjectFilter) return false;
+        if (st.kindFilter !== "all" && n.kind !== st.kindFilter) return false;
         if (st.localMode && sel) return selSet.has(n.id);
         return true;
       };
