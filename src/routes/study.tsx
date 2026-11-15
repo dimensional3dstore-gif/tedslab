@@ -60,13 +60,13 @@ function StudyEnlistPage() {
     return () => { active = false; };
   }, [user, authLoading, grade, day]);
 
-  const completeLesson = async (subject: string) => {
+  const completeLesson = async (subject: string, quizScore: number) => {
     if (!user) return;
     try {
       const now = new Date().toISOString();
       const { error } = await getSupabaseAuthClient().from("study_progress").upsert({
         student_id: user.id, grade_level: grade, curriculum_day: day, subject,
-        status: "completed", completed_at: now, updated_at: now,
+        status: "completed", quiz_score: quizScore, completed_at: now, updated_at: now,
       }, { onConflict: "student_id,grade_level,curriculum_day,subject" });
       if (error) throw error;
       setCompletedSubjects((current) => current.includes(subject) ? current : [...current, subject]);
@@ -117,7 +117,7 @@ function StudyEnlistPage() {
           </div>
           {onboarding === "pending" && <div className="rounded-xl border border-amber-500/30 bg-amber-500/5 p-4"><p className="font-semibold text-foreground">Waiting for parent or guardian approval</p><p className="mt-1 text-sm text-muted-foreground">Your parent must complete the secure invitation and approve your learning settings before Study Enlist can be used.</p><a href="/parent" className="mt-3 inline-flex rounded-lg bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground">Open parent portal</a></div>}
           {progressError && <p role="alert" className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">{progressError}</p>}
-          {onboarding !== "pending" && <div className="grid gap-5 xl:grid-cols-2">{lessons.map((lesson) => <DailyLessonCard key={lesson.id} lesson={lesson} completed={completedSubjects.includes(lesson.subject)} onComplete={() => void completeLesson(lesson.subject)} signedIn={Boolean(user)} />)}</div>}
+          {onboarding !== "pending" && <div className="grid gap-5 xl:grid-cols-2">{lessons.map((lesson) => <DailyLessonCard key={lesson.id} lesson={lesson} completed={completedSubjects.includes(lesson.subject)} onComplete={(score) => void completeLesson(lesson.subject, score)} signedIn={Boolean(user)} />)}</div>}
         </section>
 
         <section className="bio-panel p-5">
