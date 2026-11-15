@@ -119,9 +119,9 @@ function forceClusterRings(nodes: SimNode[]) {
   };
 }
 
-export function buildSimulation(): { nodes: SimNode[]; links: SimLink[] } {
+export function buildSimulation(graphNodes: AtlasNode[] = NODES, graphEdges: { source: string; target: string }[] = EDGES): { nodes: SimNode[]; links: SimLink[] } {
   const degree = new Map<string, number>();
-  for (const e of EDGES) {
+  for (const e of graphEdges) {
     degree.set(e.source, (degree.get(e.source) ?? 0) + 1);
     degree.set(e.target, (degree.get(e.target) ?? 0) + 1);
   }
@@ -129,14 +129,14 @@ export function buildSimulation(): { nodes: SimNode[]; links: SimLink[] } {
   const kindIndex = new Map<string, { i: number; n: number }>();
   for (const cluster of ["atlas", ...CLUSTERS.map((c) => c.id)]) {
     for (const kind of ["hub", "topic", "figure", "concept"] as const) {
-      const group = NODES.filter(
+      const group = graphNodes.filter(
         (n) => n.cluster === cluster && n.kind === kind,
       );
       group.forEach((n, i) => kindIndex.set(n.id, { i, n: group.length }));
     }
   }
 
-  const nodes: SimNode[] = NODES.map((n) => {
+  const nodes: SimNode[] = graphNodes.map((n) => {
     const d = degree.get(n.id) ?? 1;
     const ki = kindIndex.get(n.id) ?? { i: 0, n: 1 };
     const c = seedXY(n, ki.i, ki.n);
@@ -152,7 +152,7 @@ export function buildSimulation(): { nodes: SimNode[]; links: SimLink[] } {
   });
 
   const byId = new Map(nodes.map((n) => [n.id, n]));
-  const links = EDGES.map((e) => ({
+  const links = graphEdges.map((e) => ({
     source: byId.get(e.source)!,
     target: byId.get(e.target)!,
   })).filter((l) => l.source && l.target);
@@ -230,9 +230,15 @@ export function buildSimulation(): { nodes: SimNode[]; links: SimLink[] } {
 
 let cached: { nodes: SimNode[]; links: SimLink[] } | null = null;
 
-export function getLaidOutGraph() {
-  if (!cached) cached = buildSimulation();
-  return cached;
+export function getLaidOutGraph(
+  graphNodes: AtlasNode[] = NODES,
+  graphEdges: { source: string; target: string }[] = EDGES,
+) {
+  if (graphNodes === NODES && graphEdges === EDGES) {
+    if (!cached) cached = buildSimulation();
+    return cached;
+  }
+  return buildSimulation(graphNodes, graphEdges);
 }
 
 export { HUB_R, CLUSTER_ANGLE, clusterHubXY };
