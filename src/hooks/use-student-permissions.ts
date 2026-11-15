@@ -23,7 +23,7 @@ export function useStudentPermissions(): StudentPermissions {
   useEffect(() => {
     if (authLoading) return;
     if (!user) {
-      setPermissions({ loading: false, isStudent: false, onboardingComplete: false, aiAssistanceAllowed: false, browserLockEnabled: false });
+      setPermissions({ loading: false, isStudent: false, onboardingComplete: true, aiAssistanceAllowed: true, browserLockEnabled: false });
       return;
     }
     let active = true;
