@@ -101,14 +101,13 @@ function Folder({
 }
 
 function FilesPane() {
-  const filter = useAtlas((s) => s.explorerFilter)
-    .trim()
-    .toLowerCase();
+  const filter = useAtlas((s) => s.explorerFilter).trim().toLowerCase();
+  const settings = useAtlas((s) => s.settings);
   const grouped = useMemo(() => {
     const match = (n: AtlasNode) =>
-      !filter ||
-      n.title.toLowerCase().includes(filter) ||
-      n.tags.some((t) => t.includes(filter));
+      (settings.subjectFilter === "all" || n.cluster === settings.subjectFilter) &&
+      (settings.kindFilter === "all" || n.kind === settings.kindFilter) &&
+      (!filter || n.title.toLowerCase().includes(filter) || n.tags.some((t) => t.includes(filter)));
     return CLUSTERS.map((c) => {
       const all = NODES.filter((n) => n.cluster === c.id && match(n));
       return {
@@ -118,7 +117,7 @@ function FilesPane() {
         concepts: all.filter((n) => n.kind === "concept"),
       };
     });
-  }, [filter]);
+  }, [filter, settings.subjectFilter, settings.kindFilter]);
 
   return (
     <div className="atlas-scroll flex-1 overflow-y-auto py-1">
@@ -246,6 +245,8 @@ export function Explorer() {
   const rail = useAtlas((s) => s.rail);
   const filter = useAtlas((s) => s.explorerFilter);
   const setFilter = useAtlas((s) => s.setExplorerFilter);
+  const settings = useAtlas((s) => s.settings);
+  const patchSettings = useAtlas((s) => s.patchSettings);
   const title =
     rail === "tags"
       ? "Tags"
