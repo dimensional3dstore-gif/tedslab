@@ -365,6 +365,9 @@ export function Sidebar({
           )}
           <ul className="space-y-0.5 pb-4">
             <li>
+              <NavLink label="Study Enlist" Icon={LucideIcons.GraduationCap} to="/study" collapsed={collapsed} />
+            </li>
+            <li>
               <NavLink
                 label="All Articles"
                 Icon={BookOpen}
