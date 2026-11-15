@@ -30,6 +30,8 @@ export function AuthForm({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [guardianEmail, setGuardianEmail] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
@@ -41,6 +43,14 @@ export function AuthForm({
     setNotice("");
     if (!supabaseAuthConfigured) {
       setError("Account authentication is not configured for this deployment.");
+      return;
+    }
+    if (isSignup && (!dateOfBirth || !guardianEmail.trim())) {
+      setError("Enter the student’s date of birth and a parent or guardian email.");
+      return;
+    }
+    if (isSignup && guardianEmail.trim().toLowerCase() === email.trim().toLowerCase()) {
+      setError("The parent or guardian must use a different email address.");
       return;
     }
     if (isSignup && password !== confirmPassword) {
@@ -58,7 +68,7 @@ export function AuthForm({
               emailRedirectTo:
                 supabaseEmailRedirectUrl ??
                 `${window.location.origin}/auth/callback`,
-              data: { full_name: name.trim(), display_name: name.trim() },
+              data: { full_name: name.trim(), display_name: name.trim(), account_type: "student", date_of_birth: dateOfBirth, guardian_email: guardianEmail.trim().toLowerCase() },
             },
           })
         : await auth.auth.signInWithPassword({ email: email.trim(), password });
@@ -86,10 +96,16 @@ export function AuthForm({
         return;
       }
 
-      if (isSignup && !result.data.session) {
-        setNotice(
-          "Account created. Check your email for a confirmation link before signing in.",
-        );
+      if (isSignup) {
+        const invitation = await auth.auth.signInWithOtp({
+          email: guardianEmail.trim().toLowerCase(),
+          options: { emailRedirectTo: `${window.location.origin}/parent` },
+        });
+        if (invitation.error) {
+          setNotice("Student account created. Parent invitation could not be sent automatically; ask your parent to open the Parent Portal and request a sign-in link.");
+        } else {
+          setNotice("Student account created. A secure sign-in invitation has been emailed to your parent or guardian. Study Enlist will unlock after they approve the account and learning settings.");
+        }
       } else if (redirectAfterSignIn) {
         await navigate({ to: "/dashboard" });
       } else {
@@ -144,6 +160,20 @@ export function AuthForm({
               maxLength={80}
             />
           </div>
+        )}
+        {isSignup && (
+          <>
+            <div className="space-y-2">
+              <Label htmlFor="student-date-of-birth">Student date of birth</Label>
+              <Input id="student-date-of-birth" type="date" value={dateOfBirth} max={new Date().toISOString().slice(0, 10)} onChange={(event) => setDateOfBirth(event.target.value)} required />
+              <p className="text-xs text-muted-foreground">Used to recommend an Australian school year level. A parent or guardian confirms the placement.</p>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="guardian-email">Parent or guardian email</Label>
+              <Input id="guardian-email" type="email" autoComplete="email" value={guardianEmail} onChange={(event) => setGuardianEmail(event.target.value)} required />
+              <p className="text-xs text-muted-foreground">We will send this address a secure invitation to create or access the Parent Portal.</p>
+            </div>
+          </>
         )}
         <div className="space-y-2">
           <Label htmlFor="account-email">Email</Label>
