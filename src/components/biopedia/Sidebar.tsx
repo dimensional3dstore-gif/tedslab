@@ -64,7 +64,6 @@ export function Sidebar({
   const chronosDownloadUrl = getChronosOSDownloadUrl();
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [collapsed, setCollapsed] = useState(false);
-  const [knowledgeExpanded, setKnowledgeExpanded] = useState(true);
 
   const brandName = settings?.["site_name"] ?? "Ted's Lab";
   const brandTagline =
@@ -179,84 +178,54 @@ export function Sidebar({
           <ul className="space-y-0.5">
             <li><NavLink label="Home" Icon={LucideIcons.Home} to="/" exact collapsed={collapsed} /></li>
             <li><NavLink label="Study Lab" Icon={LucideIcons.GraduationCap} to="/study" collapsed={collapsed} /></li>
-            <li>
-              <button type="button" onClick={() => setKnowledgeExpanded((value) => !value)} aria-expanded={knowledgeExpanded} title="Knowledge" className={"group flex w-full items-center rounded-lg py-2 text-sm text-sidebar-foreground transition-colors hover:bg-secondary " + (collapsed ? "justify-center px-0" : "gap-3 px-3")}>
-                <BookOpen className="size-4 shrink-0 text-muted-foreground" />
-                {!collapsed && <><span className="flex-1 text-left">Knowledge</span><ChevronRight className={"size-4 text-muted-foreground transition-transform " + (knowledgeExpanded ? "rotate-90" : "")} /></>}
-              </button>
-              {knowledgeExpanded && (
-                <ul className="ml-4 mt-0.5 space-y-0.5 border-l border-sidebar-border pl-2">
-                  <li><NavLink label="Knowledge Atlas" Icon={LucideIcons.Network} to="/knowledge-atlas" collapsed={collapsed} /></li>
-                  <li>
-                    <button type="button" onClick={() => toggle("all-articles")} aria-expanded={expanded.has("all-articles")} className={"group flex w-full items-center rounded-lg py-2 text-sm text-sidebar-foreground transition-colors hover:bg-secondary " + (collapsed ? "justify-center px-0" : "gap-3 px-3")}>
-                      <FileText className="size-4 shrink-0 text-muted-foreground" />
-                      {!collapsed && <><span className="flex-1 text-left">Articles</span><ChevronRight className={"size-4 text-muted-foreground transition-transform " + (expanded.has("all-articles") ? "rotate-90" : "")} /></>}
-                    </button>
-                    {expanded.has("all-articles") && !collapsed && <ul className="ml-4 space-y-0.5 border-l border-sidebar-border pl-2">
-                      {(articles ?? []).filter((article) => article.published).sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0) || a.title.localeCompare(b.title)).map((article) => <li key={article.id}><Link to="/articles/$slug" params={{ slug: article.slug }} className="block truncate rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:bg-secondary hover:text-foreground" title={article.title}>{article.title}</Link></li>)}
-                    </ul>}
-                  </li>
-                  {!collapsed && <li className="px-3 pt-3 pb-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Subjects</li>}
-            {subjectsLoading || sectionsLoading ? (
-              <li className="space-y-1 px-3 py-2">
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <Skeleton key={i} className="h-8 w-full rounded-lg" />
-                ))}
-              </li>
-            ) : (
-              (subjects ?? []).map((subject) => {
-                const subjectSections = sectionsBySubject.get(subject.id) ?? [];
-                const isExpanded = expanded.has(subject.id);
-                return (
-                  <li key={subject.id}>
-                    <button
-                      type="button"
-                      onClick={() => toggle(subject.id)}
-                      title={subject.title}
-                      aria-label={`${isExpanded ? "Collapse" : "Expand"} ${subject.title}`}
-                      className={`group flex w-full items-center rounded-lg py-2 text-sm text-sidebar-foreground transition-colors hover:bg-secondary ${collapsed ? "justify-center px-0" : "gap-3 px-3"}`}
-                    >
-                      <span className="shrink-0">
-                        {(() => {
-                          const Icon = resolveIcon(subject.icon);
-                          return (
-                            <Icon className="size-4 text-muted-foreground" />
-                          );
-                        })()}
-                      </span>
-                      {!collapsed && (
-                        <span className="flex-1 truncate text-left">
-                          {subject.title}
-                        </span>
-                      )}
-                      {!collapsed && (
-                        <ChevronRight
-                          className={`size-4 text-muted-foreground transition-transform ${isExpanded ? "rotate-90" : ""}`}
-                        />
-                      )}
-                    </button>
-                    {isExpanded && subjectSections.length > 0 && (
-                      <ul className="ml-4 mt-0.5 space-y-0.5 border-l border-sidebar-border pl-2">
-                        {subjectSections.map((section) => (
-                          <li key={section.id}>
-                            <NavLink
-                              label={section.label}
-                              Icon={resolveIcon(section.icon)}
-                              to={`/${subject.slug}/${section.slug}`}
-                              collapsed={collapsed}
-                            />
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </li>
-                );
-              })
-            )}
+          </ul>
 
+          {!collapsed && (
+            <p className="px-3 pt-6 pb-2 text-[11px] font-semibold tracking-widest text-primary/80">
+              KNOWLEDGE
+            </p>
+          )}
+          <ul className="space-y-0.5">
+            <li><NavLink label="Knowledge Atlas" Icon={LucideIcons.Network} to="/knowledge-atlas" collapsed={collapsed} /></li>
+            <li>
+              <button type="button" onClick={() => toggle("all-articles")} aria-expanded={expanded.has("all-articles")} className={"group flex w-full items-center rounded-lg py-2 text-sm text-sidebar-foreground transition-colors hover:bg-secondary " + (collapsed ? "justify-center px-0" : "gap-3 px-3")}>
+                <FileText className="size-4 shrink-0 text-muted-foreground" />
+                {!collapsed && <><span className="flex-1 text-left">Articles</span><ChevronRight className={"size-4 text-muted-foreground transition-transform " + (expanded.has("all-articles") ? "rotate-90" : "")} /></>}
+              </button>
+              {expanded.has("all-articles") && !collapsed && (
+                <ul className="ml-4 space-y-0.5 border-l border-sidebar-border pl-2">
+                  {(articles ?? []).filter((article) => article.published).sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0) || a.title.localeCompare(b.title)).map((article) => (
+                    <li key={article.id}><Link to="/articles/$slug" params={{ slug: article.slug }} className="block truncate rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:bg-secondary hover:text-foreground" title={article.title}>{article.title}</Link></li>
+                  ))}
+                  {!(articles ?? []).some((article) => article.published) && <li className="px-2 py-1.5 text-xs text-muted-foreground">No published articles yet</li>}
                 </ul>
               )}
             </li>
+            {subjectsLoading || sectionsLoading ? (
+              <li className="space-y-1 px-3 py-2">{Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-8 w-full rounded-lg" />)}</li>
+            ) : (subjects ?? []).map((subject) => {
+              const subjectSections = sectionsBySubject.get(subject.id) ?? [];
+              const subjectArticles = (articles ?? []).filter((article) => article.published && article.subject_slug === subject.slug).sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0) || a.title.localeCompare(b.title));
+              const isExpanded = expanded.has(subject.id);
+              return (
+                <li key={subject.id}>
+                  <button type="button" onClick={() => toggle(subject.id)} title={subject.title} aria-label={`${isExpanded ? "Collapse" : "Expand"} ${subject.title}`} aria-expanded={isExpanded} className={"group flex w-full items-center rounded-lg py-2 text-sm text-sidebar-foreground transition-colors hover:bg-secondary " + (collapsed ? "justify-center px-0" : "gap-3 px-3")}>
+                    {(() => { const Icon = resolveIcon(subject.icon); return <Icon className="size-4 shrink-0 text-muted-foreground" />; })()}
+                    {!collapsed && <><span className="flex-1 truncate text-left">{subject.title}</span><ChevronRight className={"size-4 text-muted-foreground transition-transform " + (isExpanded ? "rotate-90" : "")} /></>}
+                  </button>
+                  {isExpanded && !collapsed && (
+                    <ul className="ml-4 mt-0.5 space-y-0.5 border-l border-sidebar-border pl-2">
+                      {subjectSections.map((section) => <li key={section.id}><NavLink label={section.label} Icon={resolveIcon(section.icon)} to={`/${subject.slug}/${section.slug}`} collapsed={collapsed} /></li>)}
+                      {subjectArticles.map((article) => <li key={article.id}><Link to="/articles/$slug" params={{ slug: article.slug }} className="block truncate rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:bg-secondary hover:text-foreground" title={article.title}>{article.title}</Link></li>)}
+                      {!subjectSections.length && !subjectArticles.length && <li className="px-2 py-1.5 text-xs text-muted-foreground">No content yet</li>}
+                    </ul>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+
+          <ul className="space-y-0.5">
             <li>
               <NavLink
                 label="ChronosOS Deepmind"
