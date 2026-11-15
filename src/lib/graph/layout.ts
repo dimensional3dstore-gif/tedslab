@@ -36,6 +36,7 @@ const HUB_R = 1280;
 const KIND_RING: Record<string, number> = {
   hub: 0,
   topic: 520,
+  article: 680,
   figure: 820,
   concept: 1140,
 };
@@ -59,7 +60,7 @@ function radiusFor(n: AtlasNode, degree: number): number {
       ? 16
       : n.kind === "hub"
         ? 10.5
-        : n.kind === "topic"
+        : n.kind === "topic" || n.kind === "article"
           ? 7.2
           : n.kind === "figure"
             ? 5.6
@@ -92,7 +93,7 @@ function seedXY(
   const ring = KIND_RING[n.kind] ?? 900;
   const step = (Math.PI * 2) / Math.max(1, kindCount);
   const kindShift =
-    n.kind === "topic" ? 0.12 : n.kind === "figure" ? 0.38 : 0.64;
+    n.kind === "topic" ? 0.12 : n.kind === "article" ? 0.25 : n.kind === "figure" ? 0.38 : 0.64;
   const ang = a0 + step * (indexInKind + kindShift) + jitter(n.id, 0.14);
   const r = ring + jitter(n.id + "r", 70);
   return { x: hub.x + Math.cos(ang) * r, y: hub.y + Math.sin(ang) * r };
@@ -128,7 +129,7 @@ export function buildSimulation(graphNodes: AtlasNode[] = NODES, graphEdges: { s
 
   const kindIndex = new Map<string, { i: number; n: number }>();
   for (const cluster of ["atlas", ...CLUSTERS.map((c) => c.id)]) {
-    for (const kind of ["hub", "topic", "figure", "concept"] as const) {
+    for (const kind of ["hub", "topic", "article", "figure", "concept"] as const) {
       const group = graphNodes.filter(
         (n) => n.cluster === cluster && n.kind === kind,
       );
@@ -185,7 +186,7 @@ export function buildSimulation(graphNodes: AtlasNode[] = NODES, graphEdges: { s
             ? -1600
             : d.kind === "hub"
               ? -820
-              : d.kind === "topic"
+              : d.kind === "topic" || d.kind === "article"
                 ? -280
                 : -180,
         )
@@ -197,7 +198,7 @@ export function buildSimulation(graphNodes: AtlasNode[] = NODES, graphEdges: { s
         .radius((d) => {
           if (d.kind === "atlas") return d.r + 64;
           if (d.kind === "hub") return d.r + 58;
-          if (d.kind === "topic") return d.r + 46;
+          if (d.kind === "topic" || d.kind === "article") return d.r + 46;
           return d.r + 38;
         })
         .iterations(5)
