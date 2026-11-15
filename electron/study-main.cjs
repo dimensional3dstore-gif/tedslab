@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu, shell } = require("electron");
+const { app, BrowserWindow, Menu } = require("electron");
 const path = require("node:path");
 
 const defaultUrl = "https://tedslab-dimensional3dstore-gif.vercel.app/study?desktop=1&focus=1";
