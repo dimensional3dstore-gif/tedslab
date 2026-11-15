@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu } = require("electron");
+const { app, BrowserWindow, Menu, ipcMain } = require("electron");
 const path = require("node:path");
 
 const defaultUrl = "https://tedslab-dimensional3dstore-gif.vercel.app/study?desktop=1&focus=1";
@@ -18,8 +18,8 @@ function createWindow() {
     title: "Study Lab",
     backgroundColor: "#0b1020",
     autoHideMenuBar: true,
-    fullscreen: true,
-    kiosk: process.env.STUDY_LAB_KIOSK !== "0",
+    fullscreen: false,
+    kiosk: false,
     webPreferences: {
       preload: path.join(__dirname, "study-preload.cjs"),
       contextIsolation: true,
@@ -49,6 +49,18 @@ function createWindow() {
   });
   void window.loadURL(appUrl.href);
 }
+
+ipcMain.handle("study-lab:set-kiosk", (event, enabled) => {
+  if (event.senderFrame?.url && new URL(event.senderFrame.url).origin !== trustedOrigin) {
+    throw new Error("Only the trusted Study Lab page can change focus mode.");
+  }
+  if (typeof enabled !== "boolean") throw new Error("Focus mode requires a boolean value.");
+  const window = BrowserWindow.fromWebContents(event.sender);
+  if (!window) throw new Error("Study Lab window is unavailable.");
+  window.setKiosk(enabled);
+  window.setFullScreen(enabled);
+  return enabled;
+});
 
 app.whenReady().then(() => {
   Menu.setApplicationMenu(Menu.buildFromTemplate([
