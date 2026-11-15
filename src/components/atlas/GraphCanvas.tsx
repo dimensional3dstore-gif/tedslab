@@ -1,8 +1,10 @@
 /* eslint-disable react-refresh/only-export-components */
-import { useEffect, useRef } from "react";
-import { CLUSTERS, neighborsOf } from "@/data/catalog";
+import { useEffect, useMemo, useRef } from "react";
+import { CLUSTERS, EDGES, NODES } from "@/data/catalog";
 import { getLaidOutGraph, type SimNode } from "@/lib/graph/layout";
 import { useAtlas } from "@/store/atlas";
+import { useArticles } from "@/lib/content";
+import { toCMSGraphNodes } from "@/lib/atlas-cms";
 
 const CLUSTER_COLOR: Record<string, string> = {
   atlas: "#e8fbff",
@@ -36,6 +38,21 @@ function screenPt(n: { x: number; y: number }, cam: Cam, w: number, h: number) {
 }
 
 export function GraphCanvas() {
+  const { data: articles = [] } = useArticles();
+  const cmsNodes = useMemo(() => toCMSGraphNodes(articles), [articles]);
+  const graphNodes = useMemo(() => [...NODES, ...cmsNodes], [cmsNodes]);
+  const graphEdges = useMemo(
+    () => [...EDGES, ...cmsNodes.map((node) => ({ source: node.id, target: node.cluster }))],
+    [cmsNodes],
+  );
+  const graphNeighbors = useMemo(() => {
+    const neighbors: Record<string, string[]> = {};
+    for (const edge of graphEdges) {
+      (neighbors[edge.source] ??= []).push(edge.target);
+      (neighbors[edge.target] ??= []).push(edge.source);
+    }
+    return neighbors;
+  }, [graphEdges]);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const cam = useRef<Cam>({ x: 0, y: 0, k: 0.56 });
   const hoverId = useRef<string | null>(null);
@@ -61,7 +78,7 @@ export function GraphCanvas() {
     const ctx = canvas.getContext("2d", { alpha: false });
     if (!ctx) return;
 
-    const graph = getLaidOutGraph();
+    const graph = getLaidOutGraph(graphNodes, graphEdges);
     const nodes = graph.nodes;
     const links = graph.links;
     const byId = new Map(nodes.map((n) => [n.id, n]));
@@ -167,13 +184,13 @@ export function GraphCanvas() {
       const selSet = new Set<string>();
       if (sel) {
         selSet.add(sel);
-        for (const id of neighborsOf(sel)) selSet.add(id);
+        for (const id of graphNeighbors[sel] ?? []) selSet.add(id);
       }
       const focus = hoveredId ?? sel;
       const focusSet = new Set<string>();
       if (focus) {
         focusSet.add(focus);
-        for (const id of neighborsOf(focus)) focusSet.add(id);
+        for (const id of graphNeighbors[focus] ?? []) focusSet.add(id);
       }
 
       const visible = (n: SimNode) => {
@@ -477,7 +494,7 @@ export function GraphCanvas() {
       canvas.removeEventListener("pointerleave", onLeave);
       canvas.removeEventListener("dblclick", onDbl);
     };
-  }, [hover, openArticle, select]);
+  }, [hover, openArticle, select, graphNodes, graphEdges, graphNeighbors]);
 
   void selectedId;
   void settings;
