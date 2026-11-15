@@ -84,6 +84,36 @@ export const SUBJECTS: Subject[] = [
     image_url: null,
     sort: 5,
   },
+  {
+    id: "sub-atlas-philosophy",
+    slug: "philosophy",
+    title: "Philosophy",
+    description: "Knowledge, reasoning, ethics, metaphysics and the study of ideas.",
+    icon: "Landmark",
+    image_key: null,
+    image_url: null,
+    sort: 0,
+  },
+  {
+    id: "sub-atlas-mind",
+    slug: "mind",
+    title: "Mind & Cognition",
+    description: "Consciousness, cognition, language, perception and behaviour.",
+    icon: "Brain",
+    image_key: null,
+    image_url: null,
+    sort: 6,
+  },
+  {
+    id: "sub-atlas-systems",
+    slug: "systems",
+    title: "Systems Science",
+    description: "Complexity, networks, feedback, emergence and systems thinking.",
+    icon: "Network",
+    image_key: null,
+    image_url: null,
+    sort: 7,
+  },
 ];
 
 const extraSections: {
