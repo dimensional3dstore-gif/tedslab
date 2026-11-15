@@ -136,9 +136,10 @@ export async function fetchCatalogRows<T extends { id: string }>(
   } catch {
     return fallback;
   }
-  if (!data?.length) return fallback;
-
-  const remoteRows = data as unknown as T[];
+  const remoteRows = (data ?? []) as unknown as T[];
+  // A successful empty query is the database's truth for editorial records.
+  if (table === "subjects" || table === "articles") return remoteRows;
+  if (!remoteRows.length) return fallback;
   const remoteById = new Map(remoteRows.map((row) => [row.id, row]));
   const fallbackIds = new Set(fallback.map((row) => row.id));
   return [
@@ -165,7 +166,10 @@ export async function fetchCatalogRow<T>(
       .from(table)
       .select("*")
       .eq(column, value);
-    if (!error && data?.length) return data[0] as unknown as T;
+    if (!error) {
+      if (data?.length) return data[0] as unknown as T;
+      if (table === "subjects") return null;
+    }
   } catch {
     // Keep the bundled catalog available when the backing service is offline.
   }
