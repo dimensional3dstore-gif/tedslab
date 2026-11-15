@@ -371,7 +371,7 @@ export function GraphCanvas() {
             n.id === hoverId.current;
           const show =
             important ||
-            (n.kind === "topic" && k > 0.34) ||
+            ((n.kind === "topic" || n.kind === "article") && k > 0.34) ||
             (n.kind === "figure" && k > 0.5) ||
             (n.kind === "concept" && k > 0.58);
           if (!show) continue;
