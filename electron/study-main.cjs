@@ -8,6 +8,15 @@ if (!allowedHosts.has(appUrl.hostname) || (appUrl.protocol !== "https:" && !["lo
   throw new Error("Study Lab must load from a trusted Ted Lab HTTPS origin.");
 }
 const trustedOrigin = appUrl.origin;
+const allowedPaths = new Set(["/study", "/study-reviews", "/ai", "/parent", "/study-download", "/login", "/signup", "/auth", "/auth/callback"]);
+function isAllowedStudyUrl(value) {
+  try {
+    const target = new URL(value);
+    return target.origin === trustedOrigin && allowedPaths.has(target.pathname);
+  } catch {
+    return false;
+  }
+}
 
 function createWindow() {
   const window = new BrowserWindow({
@@ -31,10 +40,16 @@ function createWindow() {
 
   window.webContents.on("will-navigate", (event, target) => {
     try {
-      if (new URL(target).origin !== trustedOrigin) event.preventDefault();
+      if (!isAllowedStudyUrl(target)) event.preventDefault();
     } catch {
       event.preventDefault();
     }
+  });
+  window.webContents.on("did-navigate-in-page", (_event, target, isMainFrame) => {
+    if (isMainFrame && !isAllowedStudyUrl(target)) void window.loadURL(defaultUrl);
+  });
+  window.webContents.on("dom-ready", () => {
+    void window.webContents.insertCSS("aside { display: none !important; }");
   });
   window.webContents.setWindowOpenHandler(({ url }) => {
     // Study Lab is intentionally self-contained; external links are not opened.
