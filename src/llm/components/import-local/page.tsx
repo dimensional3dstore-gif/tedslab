@@ -206,6 +206,12 @@ export function NexiumAIPage() {
     }
   };
 
+  useEffect(() => {
+    if (authLoading || !config.model || !config.baseUrl || loadingModel || modelReady) return;
+    if (!isAdmin && !sharedConfigLoaded) return;
+    void loadSelectedModel();
+  }, [authLoading, config.model, config.baseUrl, isAdmin, sharedConfigLoaded, loadingModel, modelReady]);
+
   const sendMessage = async (text = draft) => {
     const question = text.trim();
     if (!question || busy || !modelReady) return;
