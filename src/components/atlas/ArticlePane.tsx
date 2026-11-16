@@ -141,14 +141,52 @@ export function ArticlePane() {
               </span>
             ))}
           </div>
-          <div className="mt-8">
-            <WikiBody
-              markdown={article.body}
-              onNavigate={(id) => {
-                select(id);
-                openArticle(id);
-              }}
-            />
+          <div className="mt-8 space-y-8">
+            {(() => {
+              const structured = layoutFromArticleBody(article.body);
+              if (!structured) {
+                return (
+                  <WikiBody
+                    markdown={article.body}
+                    onNavigate={(id) => {
+                      select(id);
+                      openArticle(id);
+                    }}
+                  />
+                );
+              }
+              return (
+                <>
+                  <section className="rounded-md border border-border bg-bg-elevated p-4">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-accent">Overview</p>
+                    <div className="mt-3 space-y-3 text-[14px] leading-relaxed text-fg-muted">
+                      {structured.overview.map((paragraph, index) => (
+                        <p key={"overview-" + index}>{paragraph}</p>
+                      ))}
+                    </div>
+                  </section>
+                  {structured.sections.map((section, index) => (
+                    <section key={section.heading + index} className="border-t border-border pt-7">
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-fg-subtle">
+                        Section {index + 1}
+                      </p>
+                      <h2 className="mt-1 font-serif text-xl tracking-[-0.02em] text-fg">{section.heading}</h2>
+                      <div className="mt-4 space-y-3 text-[14px] leading-relaxed text-fg-muted">
+                        {section.paragraphs?.map((paragraph, pIndex) => (
+                          <p key={pIndex}>{paragraph}</p>
+                        ))}
+                        {section.cards?.map((card) => (
+                          <div key={card.title} className="rounded-md border border-border bg-bg-elevated p-3">
+                            <h3 className="font-semibold text-fg">{card.title}</h3>
+                            <p className="mt-1">{card.text}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </section>
+                  ))}
+                </>
+              );
+            })()}
           </div>
           <nav className="mt-12 border-t border-border pt-6">
             <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-fg-subtle">
