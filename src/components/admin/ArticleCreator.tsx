@@ -38,7 +38,7 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
   const [minutes, setMinutes] = useState(existing?.minutes ?? 8);
   const availableSections = allSections.filter((item) => item.subject_id === subjects.find((subjectItem) => subjectItem.slug === subject)?.id);
   const selectedSection = allSections.find((item) => item.slug === section);
-  const availableTopics = allTopics.filter((item) => item.section_id === selectedSection?.id);
+  // Topics belong to subjects. Sections are optional organization metadata and must not hide valid topics from the article editor.\n  const availableTopics = allTopics\n    .filter((item) => item.subject_id === subjects.find((subjectItem) => subjectItem.slug === subject)?.id)\n    .sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0) || a.title.localeCompare(b.title));
   const [layout, setLayout] = useState<ArticleLayout>(
     existing
       ? (layoutFromArticleBody(existing.body) ?? cloneDefault())
@@ -194,9 +194,9 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
           </select>
         </label>
         <label className="block space-y-1 text-xs text-muted-foreground">
-          Topic (optional)
+          Topic (required)
           <select className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm" value={topic} onChange={(e) => setTopic(e.target.value)}>
-            <option value="">No topic</option>
+            <option value="" disabled>Select a topic</option>
             {availableTopics.map((item) => <option key={item.id} value={item.slug}>{item.title}</option>)}
           </select>
         </label>
@@ -290,7 +290,7 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
               type="button"
               variant="outline"
               onClick={() => void save(Boolean(existing.published))}
-              disabled={saving || Boolean(sectionEditorError) || !subjects.some((item) => item.slug === subject)}
+              disabled={saving || Boolean(sectionEditorError) || !subjects.some((item) => item.slug === subject) || !topic}
             >
               {saving ? "Saving…" : "Save changes"}
             </Button>
