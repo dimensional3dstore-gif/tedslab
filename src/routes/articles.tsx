@@ -22,7 +22,7 @@ export const Route = createFileRoute("/articles")({
 
 function ArticlesPage() {
   const { pathname } = useLocation();
-  const { data: articles = [], isLoading } = useArticles();
+  const { data: articles = [], isFetching } = useArticles();
 
   if (pathname !== "/articles") {
     return <Outlet />;
@@ -40,12 +40,7 @@ function ArticlesPage() {
         return (
           <>
             <PageHeader title="All Articles" description={description} />
-            {isLoading && (
-              <p className="mt-6 text-sm text-muted-foreground">
-                Loading articles…
-              </p>
-            )}
-            {!isLoading && filtered.length === 0 && (
+            {!isFetching && filtered.length === 0 && (
               <p className="mt-6 text-sm text-muted-foreground">
                 No articles match your search.
               </p>
@@ -58,6 +53,17 @@ function ArticlesPage() {
                   showBookmark={false}
                   variant="default"
                 />
+              ))}
+              {isFetching && Array.from({ length: 3 }, (_, index) => (
+                <div key={`article-skeleton-${index}`} aria-hidden="true" className="bio-panel animate-pulse overflow-hidden">
+                  <div className="h-40 w-full bg-muted" />
+                  <div className="space-y-3 p-4">
+                    <div className="h-4 w-24 rounded bg-muted" />
+                    <div className="h-5 w-4/5 rounded bg-muted" />
+                    <div className="h-3 w-full rounded bg-muted" />
+                    <div className="h-3 w-2/3 rounded bg-muted" />
+                  </div>
+                </div>
               ))}
             </div>
           </>
