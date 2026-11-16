@@ -508,31 +508,98 @@ const extraSections: {
 ];
 
 const atlasSubjectTopics: TopicRow[] = [
-  // Philosophy: open-ended areas for arguments, knowledge, reality and values.
-  { id: "topic-philosophy-logic", section_id: null, subject_id: "sub-atlas-philosophy", subject_slug: "philosophy", slug: "logic", title: "Logic and Critical Reasoning", blurb: "Formal reasoning, valid inference, proof and the structure of arguments.", body: "Explore deductive and inductive reasoning, formal systems, proof, fallacies and argument analysis.", image_url: null, sort: 1 },
-  { id: "topic-philosophy-epistemology", section_id: null, subject_id: "sub-atlas-philosophy", subject_slug: "philosophy", slug: "epistemology", title: "Knowledge and Epistemology", blurb: "Knowledge, evidence, belief, justification and uncertainty.", body: "Explore theories of knowledge, scepticism, evidence, rationality and scientific knowledge.", image_url: null, sort: 2 },
-  { id: "topic-philosophy-metaphysics", section_id: null, subject_id: "sub-atlas-philosophy", subject_slug: "philosophy", slug: "metaphysics", title: "Metaphysics and Reality", blurb: "Existence, identity, causation, time and possibility.", body: "Explore what exists, personal identity, causation, time, modality and the nature of reality.", image_url: null, sort: 3 },
-  { id: "topic-philosophy-ethics", section_id: null, subject_id: "sub-atlas-philosophy", subject_slug: "philosophy", slug: "ethics", title: "Ethics and Moral Philosophy", blurb: "Moral reasoning, values, duties, rights and the good life.", body: "Explore normative ethics, applied ethics, virtue, duties, consequences and moral dilemmas.", image_url: null, sort: 4 },
-  { id: "topic-philosophy-political-philosophy", section_id: null, subject_id: "sub-atlas-philosophy", subject_slug: "philosophy", slug: "political-philosophy", title: "Political Philosophy", blurb: "Justice, authority, liberty, rights and political institutions.", body: "Explore justice, democracy, sovereignty, equality, freedom and social contracts.", image_url: null, sort: 5 },
-  { id: "topic-philosophy-philosophy-of-mind", section_id: null, subject_id: "sub-atlas-philosophy", subject_slug: "philosophy", slug: "philosophy-of-mind", title: "Philosophy of Mind", blurb: "Mind, consciousness, identity and the relationship between thought and matter.", body: "Explore dualism, physicalism, intentionality, personal identity and mental causation.", image_url: null, sort: 6 },
-  { id: "topic-philosophy-aesthetics", section_id: null, subject_id: "sub-atlas-philosophy", subject_slug: "philosophy", slug: "aesthetics", title: "Aesthetics and Philosophy of Art", blurb: "Beauty, interpretation, creativity and the nature of art.", body: "Explore aesthetic value, artistic meaning, taste, interpretation and creativity.", image_url: null, sort: 7 },
-  // Mind & Cognition: broad scientific and philosophical study of mental life.
-  { id: "topic-mind-cognition", section_id: null, subject_id: "sub-atlas-mind", subject_slug: "mind", slug: "cognition", title: "Cognition and Thinking", blurb: "How minds process information, learn, reason and solve problems.", body: "Explore attention, memory, learning, decision-making, intelligence and cognitive architectures.", image_url: null, sort: 1 },
-  { id: "topic-mind-perception", section_id: null, subject_id: "sub-atlas-mind", subject_slug: "mind", slug: "perception", title: "Perception and Consciousness", blurb: "How sensory systems construct experience and awareness.", body: "Explore vision, hearing, multisensory integration, consciousness and perceptual illusions.", image_url: null, sort: 2 },
-  { id: "topic-mind-learning-memory", section_id: null, subject_id: "sub-atlas-mind", subject_slug: "mind", slug: "learning-memory", title: "Learning and Memory", blurb: "Encoding, storing, retrieving and changing knowledge.", body: "Explore working memory, long-term memory, forgetting, skill acquisition and learning science.", image_url: null, sort: 3 },
-  { id: "topic-mind-language-mind", section_id: null, subject_id: "sub-atlas-mind", subject_slug: "mind", slug: "language-mind", title: "Language and Thought", blurb: "Language acquisition, meaning, grammar and communication.", body: "Explore linguistics, semantics, syntax, pragmatics, language development and communication.", image_url: null, sort: 4 },
-  { id: "topic-mind-development", section_id: null, subject_id: "sub-atlas-mind", subject_slug: "mind", slug: "development", title: "Development Across the Lifespan", blurb: "How cognition, emotion and behaviour change throughout life.", body: "Explore developmental psychology, childhood, adolescence, ageing and lifespan change.", image_url: null, sort: 5 },
-  { id: "topic-mind-emotion-motivation", section_id: null, subject_id: "sub-atlas-mind", subject_slug: "mind", slug: "emotion-motivation", title: "Emotion and Motivation", blurb: "The forces that shape feeling, goals and action.", body: "Explore emotion, motivation, reward, drives, self-regulation and behaviour.", image_url: null, sort: 6 },
-  { id: "topic-mind-social-behaviour", section_id: null, subject_id: "sub-atlas-mind", subject_slug: "mind", slug: "social-behaviour", title: "Social Behaviour and Individual Differences", blurb: "How people differ and influence one another.", body: "Explore personality, social cognition, group behaviour, culture and individual differences.", image_url: null, sort: 7 },
-  // Systems Science: frameworks that apply across natural, social and engineered systems.
-  { id: "topic-systems-systems-thinking", section_id: null, subject_id: "sub-atlas-systems", subject_slug: "systems", slug: "systems-thinking", title: "Systems Thinking and Modelling", blurb: "Whole-system behaviour, feedback, stocks, flows and leverage points.", body: "Explore causal loops, stocks and flows, system dynamics and intervention design.", image_url: null, sort: 1 },
-  { id: "topic-systems-complexity", section_id: null, subject_id: "sub-atlas-systems", subject_slug: "systems", slug: "complexity", title: "Complexity and Emergence", blurb: "Emergence, adaptation and behaviour in complex systems.", body: "Explore self-organisation, emergence, nonlinear dynamics, resilience and complex adaptive systems.", image_url: null, sort: 2 },
-  { id: "topic-systems-feedback-control", section_id: null, subject_id: "sub-atlas-systems", subject_slug: "systems", slug: "feedback-control", title: "Feedback and Control", blurb: "Control, communication, feedback and regulation.", body: "Explore feedback loops, control theory, regulation, information flow and autonomous systems.", image_url: null, sort: 3 },
-  { id: "topic-systems-networks", section_id: null, subject_id: "sub-atlas-systems", subject_slug: "systems", slug: "networks", title: "Networks and Connectivity", blurb: "Nodes, connections, graph structure and network dynamics.", body: "Explore graph theory, social networks, infrastructure, network science and connectivity.", image_url: null, sort: 4 },
-  { id: "topic-systems-dynamics", section_id: null, subject_id: "sub-atlas-systems", subject_slug: "systems", slug: "dynamics", title: "System Dynamics and Change", blurb: "How systems evolve over time through interacting processes.", body: "Explore dynamic models, delays, nonlinear behaviour, stability and change.", image_url: null, sort: 5 },
-  { id: "topic-systems-information", section_id: null, subject_id: "sub-atlas-systems", subject_slug: "systems", slug: "information", title: "Information and Communication Systems", blurb: "Information, entropy, signals, communication and uncertainty.", body: "Explore information theory, coding, communication channels, signals and information measures.", image_url: null, sort: 6 },
-  { id: "topic-systems-resilience", section_id: null, subject_id: "sub-atlas-systems", subject_slug: "systems", slug: "resilience", title: "Resilience, Risk and Sustainability", blurb: "How systems absorb shocks, adapt and remain viable.", body: "Explore resilience, risk, sustainability, robustness and recovery in complex systems.", image_url: null, sort: 7 },
-];
+  // Broad Knowledge Atlas topics. Each bucket is intentionally wide so many related articles can live together.
+  ...[
+    ["life-and-biology", "Life & Biology", "Cells, organisms, genetics, evolution, physiology, ecology and biotechnology."],
+    ["genes-and-evolution", "Genes & Evolution", "DNA, heredity, natural selection, adaptation and evolutionary change."],
+    ["cells-and-organisms", "Cells & Organisms", "Cell biology, microbiology, taxonomy, anatomy and how living systems are organised."],
+    ["human-biology", "Human Biology", "The human body, immune systems, neuroscience, health and biological processes."],
+    ["ecology-and-biotechnology", "Ecology & Biotechnology", "Ecosystems, microbiomes, conservation and technologies that work with living systems."],
+  ].map(([slug, title, blurb], i) => ({
+    id: `topic-biology-${slug}`, section_id: null, subject_id: "sub-biology", subject_slug: "biology", slug, title, blurb,
+    body: blurb, image_url: null, sort: i + 1,
+  })),
+  ...[
+    ["matter-and-energy", "Matter & Energy", "Matter, energy, chemistry, thermodynamics and the fundamental properties of the physical world."],
+    ["motion-and-mechanics", "Motion & Mechanics", "Forces, motion, momentum, gravity and the mathematical description of physical systems."],
+    ["fields-waves-and-light", "Fields, Waves & Light", "Electromagnetism, waves, optics, radiation and fields."],
+    ["quantum-and-relativity", "Quantum & Relativity", "Quantum mechanics, spacetime, relativity and the foundations of modern physics."],
+    ["earth-and-universe", "Earth & Universe", "Earth science, cosmology, stars, galaxies, black holes and the large-scale universe."],
+  ].map(([slug, title, blurb], i) => ({
+    id: `topic-science-${slug}`, section_id: null, subject_id: "sub-science", subject_slug: "science", slug, title, blurb,
+    body: blurb, image_url: null, sort: i + 1,
+  })),
+  ...[
+    ["foundations-and-logic", "Foundations & Logic", "Sets, proof, formal reasoning, structures and the foundations of mathematics."],
+    ["algebra-and-number", "Algebra & Number", "Equations, functions, algebraic structures, numbers and patterns."],
+    ["geometry-and-space", "Geometry & Space", "Shapes, measurement, coordinates, vectors and mathematical space."],
+    ["calculus-and-analysis", "Calculus & Analysis", "Limits, change, derivatives, integrals, sequences and continuous mathematics."],
+    ["discrete-and-applied", "Discrete & Applied Mathematics", "Graphs, combinatorics, probability, statistics, optimisation and mathematical applications."],
+  ].map(([slug, title, blurb], i) => ({
+    id: `topic-mathematics-${slug}`, section_id: null, subject_id: "sub-mathematics", subject_slug: "mathematics", slug, title, blurb,
+    body: blurb, image_url: null, sort: i + 1,
+  })),
+  ...[
+    ["computing-foundations", "Computing Foundations", "Computation, programming concepts, data, information and the foundations of computer science."],
+    ["algorithms-and-software", "Algorithms & Software", "Algorithms, data structures, programming, software engineering and open-source systems."],
+    ["ai-and-data", "AI & Data", "Machine learning, neural networks, language models, data science and intelligent systems."],
+    ["systems-and-networks", "Systems & Networks", "Operating systems, networks, distributed computing, hardware and computer architecture."],
+    ["security-and-theory", "Security & Computing Theory", "Cybersecurity, cryptography, computation theory, privacy and trustworthy computing."],
+  ].map(([slug, title, blurb], i) => ({
+    id: `topic-technology-${slug}`, section_id: null, subject_id: "sub-technology", subject_slug: "technology", slug, title, blurb,
+    body: blurb, image_url: null, sort: i + 1,
+  })),
+  ...[
+    ["cognition-and-learning", "Cognition & Learning", "Thinking, memory, attention, learning, intelligence and problem solving."],
+    ["perception-and-consciousness", "Perception & Consciousness", "Sensation, perception, awareness, consciousness and subjective experience."],
+    ["brain-and-behaviour", "Brain & Behaviour", "Neuroscience, behaviour, neuroplasticity and biological foundations of the mind."],
+    ["development-and-social-mind", "Development & Social Mind", "Development, language, personality, social behaviour and individual differences."],
+    ["emotion-and-decision", "Emotion & Decision-Making", "Emotion, motivation, judgement, cognitive bias and human decision-making."],
+  ].map(([slug, title, blurb], i) => ({
+    id: `topic-mind-${slug}`, section_id: null, subject_id: "sub-atlas-mind", subject_slug: "mind", slug, title, blurb,
+    body: blurb, image_url: null, sort: i + 1,
+  })),
+  ...[
+    ["knowledge-and-reason", "Knowledge & Reason", "Epistemology, logic, evidence, truth, rationality and critical reasoning."],
+    ["reality-and-mind", "Reality & Mind", "Metaphysics, existence, identity, consciousness and the nature of reality."],
+    ["ethics-and-values", "Ethics & Values", "Moral philosophy, virtue, justice, rights, duties and the good life."],
+    ["society-and-politics", "Society & Politics", "Political philosophy, authority, liberty, democracy, equality and institutions."],
+    ["meaning-and-existence", "Meaning & Existence", "Existentialism, aesthetics, purpose, meaning, art and human existence."],
+  ].map(([slug, title, blurb], i) => ({
+    id: `topic-philosophy-${slug}`, section_id: null, subject_id: "sub-atlas-philosophy", subject_slug: "philosophy", slug, title, blurb,
+    body: blurb, image_url: null, sort: i + 1,
+  })),
+  ...[
+    ["systems-thinking", "Systems Thinking", "Whole systems, causal relationships, stocks, flows and leverage points."],
+    ["complexity-and-emergence", "Complexity & Emergence", "Self-organisation, adaptation, nonlinear behaviour and emergent patterns."],
+    ["networks-and-connectivity", "Networks & Connectivity", "Graphs, networks, relationships, connectivity and network dynamics."],
+    ["feedback-and-control", "Feedback & Control", "Feedback loops, regulation, control, stability and autonomous behaviour."],
+    ["information-and-resilience", "Information & Resilience", "Information flow, communication, robustness, risk, sustainability and recovery."],
+  ].map(([slug, title, blurb], i) => ({
+    id: `topic-systems-${slug}`, section_id: null, subject_id: "sub-atlas-systems", subject_slug: "systems", slug, title, blurb,
+    body: blurb, image_url: null, sort: i + 1,
+  })),
+  ...[
+    ["ancient-and-classical-world", "Ancient & Classical World", "Early civilisations, cities, empires, classical Greece, Rome and the ancient world."],
+    ["medieval-and-global-exchange", "Medieval World & Global Exchange", "Medieval societies, religions, trade routes, the Silk Road and cultural exchange."],
+    ["revolutions-and-industrialisation", "Revolutions & Industrialisation", "Scientific, political and industrial revolutions and their global consequences."],
+    ["wars-and-conflict", "Wars & Conflict", "Major conflicts, military change, causes of war, world wars and their aftermath."],
+    ["colonialism-and-global-change", "Colonialism & Global Change", "Imperialism, colonisation, decolonisation, migration and the reshaping of societies."],
+  ].map(([slug, title, blurb], i) => ({
+    id: `topic-history-${slug}`, section_id: null, subject_id: "sub-history", subject_slug: "history", slug, title, blurb,
+    body: blurb, image_url: null, sort: i + 1,
+  })),
+  ...[
+    ["language-and-linguistics", "Language & Linguistics", "Language structure, acquisition, meaning, grammar, communication and linguistic change."],
+    ["communication-and-information", "Communication & Information", "Signals, information, rhetoric, communication systems and the transmission of meaning."],
+    ["grammar-and-structure", "Grammar & Structure", "Syntax, morphology, semantics and the structures that make language work."],
+    ["literature-and-narrative", "Literature & Narrative", "Stories, narrative form, character, themes, genres and literary interpretation."],
+    ["poetry-and-expression", "Poetry & Expression", "Poetry, imagery, rhythm, form, rhetoric and creative expression."],
+  ].map(([slug, title, blurb], i) => ({
+    id: `topic-english-${slug}`, section_id: null, subject_id: "sub-english", subject_slug: "english", slug, title, blurb,
+    body: blurb, image_url: null, sort: i + 1,
+  })),
+] as unknown as TopicRow[];
 
 function buildSectionsAndTopics() {
   const sectionRows: SectionRow[] = [];
