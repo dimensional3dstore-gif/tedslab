@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -81,7 +81,7 @@ export function AtlasArticleImporter() {
   const [result, setResult] = useState("");
   const [error, setError] = useState("");
 
-  const importArticles = async () => {
+  const importArticles = useCallback(async () => {
     setRunning(true);
     setError("");
     setResult("");
@@ -160,9 +160,17 @@ export function AtlasArticleImporter() {
         const body = JSON.stringify(layout);
         const subjectSlug = subject.slug;
         const sectionSlug = section.slug;
+        // Replace the old collection-summary placeholder rows in place for
+        // each hub and the Atlas root. All other nodes receive stable IDs.
+        const isCollectionArticle =
+          node.kind === "atlas" || (node.kind === "hub" && node.id === node.cluster);
+        const legacyKey = node.kind === "atlas" ? "overview" : node.id;
+        const articleId = isCollectionArticle
+          ? `atlas-${legacyKey}-atlas-${legacyKey}`
+          : `atlas-${node.id}`;
         return {
-          id: `atlas-${node.id}`,
-          slug: `knowledge-atlas-${node.id}`,
+          id: articleId,
+          slug: isCollectionArticle ? articleId : `knowledge-atlas-${node.id}`,
           title: node.title,
           excerpt: node.summary,
           body,
@@ -202,7 +210,13 @@ export function AtlasArticleImporter() {
     } finally {
       setRunning(false);
     }
-  };
+  }, [queryClient]);
+
+  // The admin transfer is an idempotent upsert, so opening this page performs
+  // the initial sync automatically. The button remains available for retries.
+  useEffect(() => {
+    void importArticles();
+  }, [importArticles]);
 
   return (
     <section className="bio-panel space-y-4 p-5">
