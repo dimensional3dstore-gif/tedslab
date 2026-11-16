@@ -190,6 +190,9 @@ export function Sidebar({
           )}
           <ul className="space-y-0.5">
             <li><NavLink label="Knowledge Atlas" Icon={LucideIcons.Network} to="/knowledge-atlas" collapsed={collapsed} /></li>
+            <li><NavLink label="ChronosOS Deepmind" Icon={BrainCircuit} to="/chronosos-deepmind" collapsed={collapsed} featured /></li>
+            <li><NavLink label="Micro-Atlas" Icon={Microscope} to="/microatlas" collapsed={collapsed} /></li>
+            <li><NavLink label="Lost Atlas" Icon={LucideIcons.EarthIcon} to="/lost-atlas" collapsed={collapsed} /></li>
           </ul>
 
           {!collapsed && (
@@ -201,7 +204,7 @@ export function Sidebar({
             {subjectsLoading ? (
               <li className="space-y-1 px-3 py-2">{Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-8 w-full rounded-lg" />)}</li>
             ) : (subjects ?? []).map((subject) => {
-              const subjectTopics = (topicsBySubject.get(subject.id) ?? []).slice(0, 12);
+              const subjectTopics = (topicsBySubject.get(subject.id) ?? []);
               const subjectKey = "subject:" + subject.slug;
               const subjectOpen = expanded.has(subjectKey);
               return (
@@ -278,32 +281,6 @@ export function Sidebar({
                 </li>
               );
             })}
-          </ul>
-
-          <ul className="space-y-0.5">
-            <li>
-              <NavLink
-                label="ChronosOS Deepmind"
-                Icon={BrainCircuit}
-                to="/chronosos-deepmind"
-                collapsed={collapsed}
-                featured
-              />
-            </li>
-            <li>
-              <NavLink
-                label="Lost Atlas"
-                Icon={LucideIcons.EarthIcon}
-                to="/lost-atlas"
-              />
-            </li>
-            <li>
-              <NavLink
-                label="MicroAtlas"
-                Icon={Microscope}
-                to="/microatlas"
-              />
-            </li>
           </ul>
 
           {!collapsed && (
