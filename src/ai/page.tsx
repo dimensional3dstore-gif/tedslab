@@ -30,7 +30,7 @@ export function Pate() {
   const [chatStatus, setChatStatus] = useState("");
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
-  useEffect(() => { if (user && cloudMessages.length) setMessages(cloudMessages); }, [user?.id]);
+  useEffect(() => { if (user && cloudMessages.length) setMessages(cloudMessages); }, [user?.id, cloudMessages]);
   const saveConversation = async () => {
     if (!user) { setChatStatus("Sign in to save chats."); return; }
     try { await saveAsync(messages); setChatStatus("Chat saved to your account."); }
