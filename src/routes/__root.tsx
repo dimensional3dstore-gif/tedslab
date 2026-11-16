@@ -10,6 +10,7 @@ import type { ReactNode } from "react";
 import { useEffect } from "react";
 import { AuthProvider } from "@/lib/auth/provider";
 import { PreviewHostBridge } from "@/components/preview-host-bridge";
+import { OfflineSupport } from "@/components/biopedia/OfflineSupport";
 import appCss from "../styles.css?url";
 
 const APP_NAME = "Ted's Lab — The Learning Encyclopedia";
