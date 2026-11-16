@@ -156,11 +156,17 @@ export async function fetchCatalogRows<T extends { id: string }>(
   if (!supabaseAuthConfigured) return fallback;
   let data: unknown[] | null = null;
   try {
-    const result = await supabase
-      .from(table)
-      .select("*")
-      .order("sort", { ascending: true });
-    if (result.error) { if (table === "subjects" || table === "topics") throw result.error; return fallback; }
+    let query = supabase.from(table).select("*");
+    // Keep the public feed deterministic even for signed-in admins, whose RLS
+    // policy also permits reading drafts.
+    if (table === "articles") {
+      query = query.eq("published", true).eq("status", "published");
+    }
+    const result = await query.order("sort", { ascending: true });
+    if (result.error) {
+      if (table === "subjects" || table === "topics") throw result.error;
+      return fallback;
+    }
     data = result.data;
   } catch (error) {
     if (table === "subjects" || table === "topics") throw error;
@@ -170,10 +176,27 @@ export async function fetchCatalogRows<T extends { id: string }>(
   // Subjects and topics are database-authoritative. Articles merge remote records with the bundled catalogue.
   if (table === "subjects" || table === "topics") return remoteRows;
   if (table === "articles") {
-    const remoteBySlug = new Map(remoteRows.map((row) => [(row as { slug?: string }).slug, row]));
-    const merged = fallback.map((row) => remoteBySlug.get((row as { slug?: string }).slug) ?? row);
-    const fallbackSlugs = new Set(fallback.map((row) => (row as { slug?: string }).slug));
-    return [...merged, ...remoteRows.filter((row) => !fallbackSlugs.has((row as { slug?: string }).slug))];
+    const publicRows = remoteRows.filter((row) => {
+      const article = row as { published?: boolean | null; status?: string | null };
+      return article.published === true && article.status === "published";
+    });
+    const remoteBySlug = new Map(
+      publicRows.map((row) => [(row as { slug?: string }).slug, row]),
+    );
+    // Bundled catalogue and Knowledge Atlas articles are the guaranteed baseline.
+    // Supabase may enrich/replace them when a published CMS version exists.
+    const merged = fallback.map(
+      (row) => remoteBySlug.get((row as { slug?: string }).slug) ?? row,
+    );
+    const fallbackSlugs = new Set(
+      fallback.map((row) => (row as { slug?: string }).slug),
+    );
+    return [
+      ...merged,
+      ...publicRows.filter(
+        (row) => !fallbackSlugs.has((row as { slug?: string }).slug),
+      ),
+    ];
   }
   if (!remoteRows.length) return fallback;
   const remoteById = new Map(remoteRows.map((row) => [row.id, row]));
