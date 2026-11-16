@@ -90,6 +90,91 @@ const ATLAS_SUBJECT_MAP: Record<string, string> = {
 // The source cluster remains intact in the Atlas graph; this mapping controls
 // the broad subject shelves shown in the Ted's Lab encyclopedia.
 const ATLAS_ARTICLE_SUBJECT_OVERRIDES: Record<string, string> = {
+  // Legacy/public Knowledge Atlas paths retained as article slugs.
+  "atlas-cell-biology": "biology",
+  "genetics-dna-dna-structure": "biology",
+  "evolution-natural-selection": "biology",
+  "plants-photosynthesis": "biology",
+  "human-biology-immune-system": "biology",
+  "atlas-microbiome": "biology",
+  "biotechnology-crispr": "biology",
+  "atlas-darwin": "biology",
+  "organisms-taxonomy": "biology",
+
+  "atlas-classical-mechanics": "science",
+  "atlas-quantum-mechanics": "science",
+  "atlas-relativity": "science",
+  "atlas-thermodynamics": "science",
+  "chemistry-periodic-table": "science",
+  "atlas-cosmology": "science",
+  "atlas-higgs-boson": "science",
+  "atlas-black-holes": "science",
+  "atlas-electromagnetism": "science",
+  "atlas-einstein": "science",
+
+  "atlas-calculus": "mathematics",
+  "atlas-linear-algebra": "mathematics",
+  "atlas-number-theory": "mathematics",
+  "atlas-graph-theory": "mathematics",
+  "atlas-category-theory": "mathematics",
+  "atlas-set-theory": "mathematics",
+  "atlas-complex-numbers": "mathematics",
+  "geometry-euclidean-proof": "mathematics",
+  "atlas-godel": "mathematics",
+
+  "atlas-algorithms": "technology",
+  "artificial-intelligence-machine-learning": "technology",
+  "artificial-intelligence-neural-networks": "technology",
+  "atlas-computation-theory": "technology",
+  "cybersecurity-cryptography": "technology",
+  "atlas-operating-systems": "technology",
+  "artificial-intelligence-language-models": "technology",
+  "atlas-turing": "technology",
+  "atlas-open-source": "technology",
+
+  "atlas-cognitive-psychology": "mind",
+  "atlas-consciousness": "mind",
+  "atlas-perception": "mind",
+  "atlas-working-memory": "mind",
+  "atlas-neuroplasticity": "mind",
+  "atlas-cognitive-bias": "mind",
+  "atlas-dual-process": "mind",
+  "atlas-kahneman": "mind",
+
+  "atlas-epistemology": "philosophy",
+  "topic-ethics": "philosophy",
+  "atlas-metaphysics": "philosophy",
+  "atlas-existentialism": "philosophy",
+  "atlas-philosophy-of-mind": "philosophy",
+  "atlas-utilitarianism": "philosophy",
+  "atlas-kant": "philosophy",
+  "atlas-socrates": "philosophy",
+
+  "atlas-systems-thinking": "systems",
+  "atlas-chaos-theory": "systems",
+  "atlas-emergence": "systems",
+  "topic-feedback-control": "systems",
+  "atlas-scale-free-networks": "systems",
+  "atlas-autopoiesis": "systems",
+  "atlas-meadows": "systems",
+
+  "atlas-ancient-civilizations": "history",
+  "ancient-world-classical-greece": "history",
+  "revolutions-industrial-revolution": "history",
+  "atlas-scientific-revolution": "history",
+  "atlas-french-revolution": "history",
+  "atlas-world-wars": "history",
+  "atlas-silk-road": "history",
+  "atlas-decolonization": "history",
+
+  "atlas-language-acquisition": "english",
+  "grammar-syntax": "english",
+  "atlas-information-theory": "english",
+  "literature-narrative-form": "english",
+  "atlas-poetry": "english",
+  "atlas-chomsky": "english",
+  "atlas-shannon": "english",
+
   "abstract-algebra": "biology",
   "cell-biology": "biology",
   "natural-selection": "biology",
@@ -310,7 +395,9 @@ export async function fetchCatalogRows<T extends { id: string }>(
         const atlasId = article.slug.startsWith("atlas-")
           ? article.slug.slice("atlas-".length)
           : "";
-        const subjectSlug = ATLAS_ARTICLE_SUBJECT_OVERRIDES[atlasId];
+        const subjectSlug =
+          ATLAS_ARTICLE_SUBJECT_OVERRIDES[article.slug] ??
+          ATLAS_ARTICLE_SUBJECT_OVERRIDES[atlasId];
         return subjectSlug ? { ...row, subject_slug: subjectSlug } : row;
       });
     const remoteBySlug = new Map(
