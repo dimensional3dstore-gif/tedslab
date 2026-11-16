@@ -152,16 +152,14 @@ export function NexiumAIPage() {
     } finally {
       setDiscovering(false);
     }
-  }, []);
-
-
+  }, [isAdmin]);
 
   useEffect(() => {
     setBaseUrlDraft(config.baseUrl);
   }, [config.baseUrl]);
 
   const loadSelectedModel = async () => {
-    if (
+    if (!isAdmin || 
       !config.model ||
       !models.some((model) => model.id === config.model) ||
       loadingModel
@@ -265,8 +263,8 @@ export function NexiumAIPage() {
               type="button"
               variant="outline"
               size="icon"
-              aria-label="Local AI settings"
-              title="Local AI settings"
+              aria-label="Nexium settings"
+              title="Nexium settings"
               onClick={() => setShowSettings((value) => !value)}
             >
               <Settings2 className="size-4" />
