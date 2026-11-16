@@ -234,7 +234,7 @@ export const articlesQueryOptions = queryOptions({
     const remoteSlugs = new Set(remote.map((article) => article.slug));
     return [...remote, ...atlasArticleRows.filter((article) => !remoteSlugs.has(article.slug))];
   },
-  initialData: supabaseAuthConfigured ? [] : ARTICLES,
+  initialData: supabaseAuthConfigured ? [] : websiteFallbackArticles,
 });
 
 export const heroSlidesQueryOptions = queryOptions({
