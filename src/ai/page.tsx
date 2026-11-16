@@ -24,8 +24,9 @@ type ChatMessage = {
   content: string;
 };
 
+const initialMessages: ChatMessage[] = [{ role: "assistant", content: "Hi! I can help with biology, revision planning, and understanding the study material on this site. Ask me anything." }];
+
 export function Pate() {
-  const initialMessages: ChatMessage[] = [{ role: "assistant", content: "Hi! I can help with biology, revision planning, and understanding the study material on this site. Ask me anything." }];
   const { value: cloudMessages, saveAsync, user } = useUserCollection<ChatMessage[]>("chats", "ai-tutor", initialMessages);
   const [chatStatus, setChatStatus] = useState("");
   const [question, setQuestion] = useState("");
