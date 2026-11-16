@@ -38,7 +38,11 @@ export const Route = createFileRoute("/$subject")({
       subjectQueryOptions(params.subject),
     );
     if (!subject) {
-      const article = websiteFallbackArticles.find(
+      const articles = await fetchCatalogRows<ArticleRow>(
+        "articles",
+        websiteFallbackArticles,
+      );
+      const article = articles.find(
         (row) => row.slug === params.subject && row.published,
       );
       if (article) {
