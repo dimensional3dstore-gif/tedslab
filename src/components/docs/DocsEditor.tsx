@@ -381,7 +381,7 @@ export function DocsEditor() {
           <span className="text-xs text-muted-foreground">{user ? cloudStatus : "Sign in to save across devices"}</span>
           <button
             type="button"
-            onClick={() => window.print()
+            onClick={() => window.print()}
             className="rounded-md border border-border bg-background px-3 py-2 text-sm font-medium text-foreground hover:bg-secondary"
           >
             Print / PDF
