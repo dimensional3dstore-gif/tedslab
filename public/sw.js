@@ -29,7 +29,8 @@ self.addEventListener("fetch", (event) => {
 
   const url = new URL(request.url);
 
-  if (url.origin !== self.location.origin) return;
+  const isSupabase = url.hostname.endsWith(".supabase.co");
+  if (url.origin !== self.location.origin && !isSupabase) return;
 
   if (request.mode === "navigate") {
     event.respondWith(
