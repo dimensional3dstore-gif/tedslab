@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { BookOpen, LoaderCircle, Send, Sparkles } from "lucide-react";
+import { BookOpen, Bookmark, BookmarkCheck, LoaderCircle, Send, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,6 +8,8 @@ import type { ArticleRow } from "@/lib/content";
 
 type SharedNexiumConfig = { baseUrl: string; model: string };
 type Turn = { role: "user" | "assistant"; content: string };
+type SavedExplanation = { id: string; articleSlug: string; articleTitle: string; content: string; savedAt: string };
+const SAVED_EXPLANATIONS_KEY = "tedslab:saved-nexium-explanations:v1";
 
 export function ArticleConceptExplainer({ article }: { article: ArticleRow }) {
   const [config, setConfig] = useState<SharedNexiumConfig | null>(null);
@@ -17,6 +19,7 @@ export function ArticleConceptExplainer({ article }: { article: ArticleRow }) {
   const [loadingConfig, setLoadingConfig] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [savedIds, setSavedIds] = useState<string[]>([]);
 
   useEffect(() => {
     let active = true;
@@ -103,7 +106,7 @@ export function ArticleConceptExplainer({ article }: { article: ArticleRow }) {
           {turns.map((turn, index) => (
             <article key={index} className={turn.role === "user" ? "ml-auto max-w-[90%] rounded-xl bg-primary/10 p-3" : "max-w-full rounded-xl border border-border bg-background p-4"}>
               <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">{turn.role === "user" ? "You asked" : "Nexium explains"}</p>
-              <div className="whitespace-pre-wrap text-sm leading-7 text-foreground">{turn.content}</div>
+              <div className="whitespace-pre-wrap text-sm leading-7 text-foreground">{turn.content}</div>\n              {turn.role === "assistant" && (\n                <div className="mt-3 flex justify-end border-t border-border pt-2">\n                  <Button type="button" size="sm" variant="ghost" onClick={() => toggleSave(turn.content)} className="gap-2">\n                    {savedIds.includes(`${article.slug}:${turn.content}`) ? <BookmarkCheck className="size-4" /> : <Bookmark className="size-4" />}\n                    {savedIds.includes(`${article.slug}:${turn.content}`) ? "Saved" : "Save explanation"}\n                  </Button>\n                </div>\n              )}
             </article>
           ))}
           {busy && <p className="flex items-center gap-2 text-sm text-muted-foreground"><LoaderCircle className="size-4 animate-spin" /> Nexium is preparing your explanation…</p>}
