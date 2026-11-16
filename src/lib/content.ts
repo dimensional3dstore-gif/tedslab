@@ -300,10 +300,19 @@ export async function fetchCatalogRows<T extends { id: string }>(
     ];
   }
   if (table === "articles") {
-    const publicRows = remoteRows.filter((row) => {
-      const article = row as { published?: boolean | null; status?: string | null };
-      return article.published === true && article.status === "published";
-    });
+    const publicRows = remoteRows
+      .filter((row) => {
+        const article = row as { published?: boolean | null; status?: string | null };
+        return article.published === true && article.status === "published";
+      })
+      .map((row) => {
+        const article = row as ArticleRow;
+        const atlasId = article.slug.startsWith("atlas-")
+          ? article.slug.slice("atlas-".length)
+          : "";
+        const subjectSlug = ATLAS_ARTICLE_SUBJECT_OVERRIDES[atlasId];
+        return subjectSlug ? { ...row, subject_slug: subjectSlug } : row;
+      });
     const remoteBySlug = new Map(
       publicRows.map((row) => [(row as { slug?: string }).slug, row]),
     );
