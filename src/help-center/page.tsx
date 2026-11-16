@@ -26,13 +26,13 @@ const helpTopics = [
   },
   {
     category: "Study tools",
-    title: "Using Chronium AI with a local model",
+    title: "Using Nexium with a local model",
     summary:
       "Connect to a running oMLX server, discover a model, load it, then start chat.",
     details:
       "The default server address is http://127.0.0.1:8000. The app checks /v1/models and loads a selected model through oMLX before enabling chat. In a normal browser, the oMLX CORS allowlist must include this site's origin; the packaged desktop bridge uses loopback access.",
     to: "/llm",
-    linkLabel: "Open Chronium AI",
+    linkLabel: "Open Nexium",
   },
   {
     category: "Study tools",
