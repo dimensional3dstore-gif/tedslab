@@ -189,6 +189,14 @@ export function Sidebar({
           )}
           <ul className="space-y-0.5">
             <li><NavLink label="Knowledge Atlas" Icon={LucideIcons.Network} to="/knowledge-atlas" collapsed={collapsed} /></li>
+          </ul>
+
+          {!collapsed && (
+            <p className="px-3 pt-6 pb-2 text-[11px] font-semibold tracking-widest text-primary/80">
+              SUBJECTS
+            </p>
+          )}
+          <ul className="space-y-0.5">
             {subjectsLoading || sectionsLoading ? (
               <li className="space-y-1 px-3 py-2">{Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-8 w-full rounded-lg" />)}</li>
             ) : (subjects ?? []).map((subject) => {
