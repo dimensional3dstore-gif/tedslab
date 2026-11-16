@@ -211,11 +211,7 @@ export function Sidebar({
             ))}
           </ul>
 
-          {!collapsed && (
-            <p className="px-3 pt-6 pb-2 text-[11px] font-semibold tracking-widest text-primary/80">
-              TOPICS
-            </p>
-          )}
+
           <ul className="space-y-0.5">
             {(topics ?? []).slice().sort((a,b) => (a.sort ?? 0) - (b.sort ?? 0) || a.title.localeCompare(b.title)).map((topic) => (
               <li key={topic.id}>
