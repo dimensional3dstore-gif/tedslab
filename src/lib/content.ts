@@ -269,28 +269,71 @@ export const atlasArticleRows: ArticleRow[] = Object.values(ATLAS_ARTICLES).map(
   section_slug: "knowledge-atlas",
   topic_slug: (() => {
     const text = (article.title + " " + article.summary).toLowerCase();
-    if (article.cluster === "philosophy") {
-      if (/ethic|moral|virtue|justice/.test(text)) return "ethics";
-      if (/knowledge|evidence|belief|truth/.test(text)) return "epistemology";
-      if (/reality|exist|caus|time|identity/.test(text)) return "metaphysics";
-      if (/politic|state|democra|liberty|rights/.test(text)) return "political-philosophy";
-      if (/mind|conscious|self|mental/.test(text)) return "philosophy-of-mind";
-      return "logic";
+    const cluster = article.cluster;
+    if (cluster === "biology") {
+      if (/gene|dna|crispr|hered|evolution|darwin|natural selection/.test(text)) return "genes-and-evolution";
+      if (/cell|microbi|organism|taxonomy|species/.test(text)) return "cells-and-organisms";
+      if (/human|immune|body|physiolog|neuro/.test(text)) return "human-biology";
+      if (/ecology|ecosystem|biome|conservation|biotechn/.test(text)) return "ecology-and-biotechnology";
+      return "life-and-biology";
     }
-    if (article.cluster === "mind") {
-      if (/memory|learn|recall/.test(text)) return "learning-memory";
-      if (/language|speech|linguistic/.test(text)) return "language-mind";
-      if (/percept|vision|sensory|conscious/.test(text)) return "perception";
-      return "cognition";
+    if (cluster === "science" || cluster === "physics") {
+      if (/quantum|relativ|spacetime/.test(text)) return "quantum-and-relativity";
+      if (/mechanic|motion|force|gravity|momentum/.test(text)) return "motion-and-mechanics";
+      if (/electromagnet|wave|light|optic|field/.test(text)) return "fields-waves-and-light";
+      if (/cosmolog|black hole|galax|universe|planet|earth/.test(text)) return "earth-and-universe";
+      return "matter-and-energy";
     }
-    if (article.cluster === "systems") {
-      if (/network|graph|connect/.test(text)) return "networks";
-      if (/complex|emerg|adapt/.test(text)) return "complexity";
-      if (/feedback|control|regulat/.test(text)) return "feedback-control";
-      if (/information|entropy|signal|communicat/.test(text)) return "information";
+    if (cluster === "mathematics") {
+      if (/calculus|derivative|integral|limit|analysis/.test(text)) return "calculus-and-analysis";
+      if (/geometry|euclidean|shape|space|coordinate/.test(text)) return "geometry-and-space";
+      if (/algebra|number|complex/.test(text)) return "algebra-and-number";
+      if (/graph|set|category|combin|probab|statistic|discrete/.test(text)) return "discrete-and-applied";
+      return "foundations-and-logic";
+    }
+    if (cluster === "technology" || cluster === "computing") {
+      if (/machine learning|neural|language model|artificial intelligence|ai|data/.test(text)) return "ai-and-data";
+      if (/operating system|network|distributed|hardware|architecture/.test(text)) return "systems-and-networks";
+      if (/cryptograph|cyber|security|computation theory|privacy/.test(text)) return "security-and-theory";
+      if (/algorithm|program|software|open source|code/.test(text)) return "algorithms-and-software";
+      return "computing-foundations";
+    }
+    if (cluster === "mind") {
+      if (/percept|vision|sensory|conscious/.test(text)) return "perception-and-consciousness";
+      if (/brain|neuro|behavio|plastic/.test(text)) return "brain-and-behaviour";
+      if (/develop|child|social|personality|language/.test(text)) return "development-and-social-mind";
+      if (/emotion|motivat|bias|decision|kahneman|judg/.test(text)) return "emotion-and-decision";
+      return "cognition-and-learning";
+    }
+    if (cluster === "philosophy") {
+      if (/ethic|moral|virtue|justice|right|duty/.test(text)) return "ethics-and-values";
+      if (/politic|state|democra|liberty|authority|society/.test(text)) return "society-and-politics";
+      if (/existential|meaning|purpose|art|beauty|aesthetic/.test(text)) return "meaning-and-existence";
+      if (/reality|exist|caus|time|identity|mind|conscious/.test(text)) return "reality-and-mind";
+      return "knowledge-and-reason";
+    }
+    if (cluster === "systems") {
+      if (/network|graph|connect/.test(text)) return "networks-and-connectivity";
+      if (/complex|emerg|adapt|chaos/.test(text)) return "complexity-and-emergence";
+      if (/feedback|control|regulat/.test(text)) return "feedback-and-control";
+      if (/information|entropy|signal|communicat|resilien|risk|sustain/.test(text)) return "information-and-resilience";
       return "systems-thinking";
     }
-    return "foundations";
+    if (cluster === "history") {
+      if (/ancient|classical|greece|rome|civilization/.test(text)) return "ancient-and-classical-world";
+      if (/medieval|silk road|trade|religion|exchange/.test(text)) return "medieval-and-global-exchange";
+      if (/revolution|industrial|scientific revolution/.test(text)) return "revolutions-and-industrialisation";
+      if (/war|conflict|world war|military/.test(text)) return "wars-and-conflict";
+      return "colonialism-and-global-change";
+    }
+    if (cluster === "english" || cluster === "language") {
+      if (/poetry|poem|meter|rhyme|verse/.test(text)) return "poetry-and-expression";
+      if (/literature|narrative|story|character|novel|theme/.test(text)) return "literature-and-narrative";
+      if (/syntax|grammar|morpholog|semantic|structure/.test(text)) return "grammar-and-structure";
+      if (/information theory|shannon|signal|communication|rhetoric/.test(text)) return "communication-and-information";
+      return "language-and-linguistics";
+    }
+    return "life-and-biology";
   })(),
   image_key: null,
   image_url: null,
