@@ -7,6 +7,7 @@ import {
   Bookmark,
   Plus,
   ChevronRight,
+  ChevronDown,
   BookOpen,
   FileText,
   BrainCircuit,
@@ -196,38 +197,89 @@ export function Sidebar({
               SUBJECTS
             </p>
           )}
-          <ul className="space-y-0.5">
+          <ul className="space-y-1">
             {subjectsLoading ? (
               <li className="space-y-1 px-3 py-2">{Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-8 w-full rounded-lg" />)}</li>
-            ) : (subjects ?? []).map((subject) => (
-              <li key={subject.id}>
-                <NavLink
-                  label={subject.title}
-                  Icon={resolveIcon(subject.icon)}
-                  to={`/${subject.slug}`}
-                  collapsed={collapsed}
-                />
-              </li>
-            ))}
-          </ul>
-
-
-          {!collapsed && (
-            <p className="px-3 pt-6 pb-2 text-[11px] font-semibold tracking-widest text-primary/80">
-              TOPICS
-            </p>
-          )}
-          <ul className="space-y-0.5">
-            {(topics ?? []).slice().sort((a,b) => (a.sort ?? 0) - (b.sort ?? 0) || a.title.localeCompare(b.title)).map((topic) => (
-              <li key={topic.id}>
-                <NavLink
-                  label={topic.title}
-                  Icon={LucideIcons.Layers}
-                  to={`/${topic.subject_slug}/${topic.slug}`}
-                  collapsed={collapsed}
-                />
-              </li>
-            ))}
+            ) : (subjects ?? []).map((subject) => {
+              const subjectTopics = (topics ?? [])
+                .filter((topic) => topic.subject_slug === subject.slug)
+                .sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0) || a.title.localeCompare(b.title));
+              const subjectKey = "subject:" + subject.slug;
+              const subjectOpen = expanded.has(subjectKey);
+              return (
+                <li key={subject.id}>
+                  <div className="flex items-center gap-1">
+                    <div className="min-w-0 flex-1">
+                      <NavLink label={subject.title} Icon={resolveIcon(subject.icon)} to={"/" + subject.slug} collapsed={collapsed} />
+                    </div>
+                    {!collapsed && subjectTopics.length > 0 && (
+                      <button
+                        type="button"
+                        aria-label={subjectOpen ? "Collapse " + subject.title + " topics" : "Expand " + subject.title + " topics"}
+                        aria-expanded={subjectOpen}
+                        onClick={() => toggle(subjectKey)}
+                        className="grid size-8 shrink-0 place-items-center rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground"
+                      >
+                        {subjectOpen ? <ChevronDown className="size-4" /> : <ChevronRight className="size-4" />}
+                      </button>
+                    )}
+                  </div>
+                  {!collapsed && subjectOpen && subjectTopics.length > 0 && (
+                    <ul className="ml-4 mt-1 space-y-1 border-l border-sidebar-border pl-2">
+                      {subjectTopics.map((topic) => {
+                        const topicKey = "topic:" + subject.slug + ":" + topic.slug;
+                        const topicOpen = expanded.has(topicKey);
+                        const topicArticles = (articles ?? [])
+                          .filter((article) => article.published === true && article.topic_slug === topic.slug)
+                          .sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0) || a.title.localeCompare(b.title));
+                        return (
+                          <li key={topic.id}>
+                            <div className="flex items-center gap-1">
+                              <Link
+                                to={"/" + subject.slug + "/" + topic.slug}
+                                title={topic.title}
+                                className="flex min-w-0 flex-1 items-center gap-2 rounded-lg px-2 py-2 text-xs text-sidebar-foreground transition-colors hover:bg-secondary hover:text-primary"
+                              >
+                                <Layers className="size-3.5 shrink-0 text-muted-foreground" />
+                                <span className="truncate">{topic.title}</span>
+                                <span className="ml-auto text-[10px] text-muted-foreground">{topicArticles.length}</span>
+                              </Link>
+                              <button
+                                type="button"
+                                aria-label={topicOpen ? "Collapse " + topic.title + " articles" : "Expand " + topic.title + " articles"}
+                                aria-expanded={topicOpen}
+                                onClick={() => toggle(topicKey)}
+                                className="grid size-7 shrink-0 place-items-center rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground"
+                              >
+                                {topicOpen ? <ChevronDown className="size-3.5" /> : <ChevronRight className="size-3.5" />}
+                              </button>
+                            </div>
+                            {topicOpen && (
+                              <ul className="ml-4 mt-1 space-y-0.5 border-l border-sidebar-border pl-2">
+                                {topicArticles.length ? topicArticles.map((article) => (
+                                  <li key={article.id}>
+                                    <Link
+                                      to={"/articles/" + article.slug}
+                                      title={article.title}
+                                      className="flex items-start gap-2 rounded-md px-2 py-1.5 text-[11px] leading-snug text-muted-foreground transition-colors hover:bg-secondary hover:text-primary"
+                                    >
+                                      <BookOpen className="mt-0.5 size-3 shrink-0" />
+                                      <span className="line-clamp-2">{article.title}</span>
+                                    </Link>
+                                  </li>
+                                )) : (
+                                  <li className="px-2 py-1.5 text-[10px] text-muted-foreground">No published articles yet</li>
+                                )}
+                              </ul>
+                            )}
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  )}
+                </li>
+              );
+            })}
           </ul>
 
           <ul className="space-y-0.5">
