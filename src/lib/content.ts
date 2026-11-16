@@ -156,7 +156,12 @@ export async function fetchCatalogRows<T extends { id: string }>(
   if (!supabaseAuthConfigured) return fallback;
   let data: unknown[] | null = null;
   try {
-    let query = supabase.from(table).select("*");
+    const columns = table === "subjects"
+      ? "id,slug,title,description,icon,image_key,image_url,sort"
+      : table === "topics"
+        ? "id,section_id,subject_id,subject_slug,slug,title,blurb,image_url,sort"
+        : "*";
+    let query = supabase.from(table).select(columns);
     // Keep the public feed deterministic even for signed-in admins, whose RLS
     // policy also permits reading drafts.
     if (table === "articles") {
@@ -173,8 +178,15 @@ export async function fetchCatalogRows<T extends { id: string }>(
     return fallback;
   }
   const remoteRows = (data ?? []) as unknown as T[];
-  // Subjects and topics are database-authoritative. Articles merge remote records with the bundled catalogue.
-  if (table === "subjects" || table === "topics") return remoteRows;
+  // Prefer cached/bundled rows immediately, then let Supabase update them in the background.
+  if (table === "subjects" || table === "topics") {
+    const remoteById = new Map(remoteRows.map((row) => [row.id, row]));
+    const fallbackIds = new Set(fallback.map((row) => row.id));
+    return [
+      ...fallback.map((row) => remoteById.get(row.id) ?? row),
+      ...remoteRows.filter((row) => !fallbackIds.has(row.id)),
+    ];
+  }
   if (table === "articles") {
     const publicRows = remoteRows.filter((row) => {
       const article = row as { published?: boolean | null; status?: string | null };
@@ -221,10 +233,16 @@ export async function fetchCatalogRow<T>(
     );
   }
   try {
+    const columns = table === "subjects"
+      ? "id,slug,title,description,icon,image_key,image_url,sort"
+      : table === "topics"
+        ? "id,section_id,subject_id,subject_slug,slug,title,blurb,image_url,sort"
+        : "*";
     const { data, error } = await supabase
       .from(table)
-      .select("*")
-      .eq(column, value);
+      .select(columns)
+      .eq(column, value)
+      .limit(1);
     if (!error) return data?.length ? data[0] as unknown as T : table === "subjects" ? null : fallback.find((row) => (row as Record<string, unknown>)[column] === value) ?? null;
     if (table === "subjects" || table === "topics") throw error;
   } catch (error) {
@@ -241,7 +259,11 @@ export async function fetchCatalogRow<T>(
 export const subjectsQueryOptions = queryOptions({
   queryKey: ["subjects"],
   queryFn: () => fetchCatalogRows("subjects", SUBJECTS),
-  initialData: supabaseAuthConfigured ? [] : SUBJECTS,
+  initialData: SUBJECTS,
+  staleTime: 5 * 60 * 1000,
+  gcTime: 30 * 60 * 1000,
+  refetchOnWindowFocus: false,
+  retry: 1,
 });
 
 export const sectionsQueryOptions = queryOptions({
@@ -253,7 +275,11 @@ export const sectionsQueryOptions = queryOptions({
 export const topicsQueryOptions = queryOptions({
   queryKey: ["topics"],
   queryFn: () => fetchCatalogRows("topics", TOPICS),
-  initialData: supabaseAuthConfigured ? [] : TOPICS,
+  initialData: TOPICS,
+  staleTime: 5 * 60 * 1000,
+  gcTime: 30 * 60 * 1000,
+  refetchOnWindowFocus: false,
+  retry: 1,
 });
 
 export const articlesQueryOptions = queryOptions({
