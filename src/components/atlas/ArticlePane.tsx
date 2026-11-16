@@ -23,7 +23,9 @@ export function ArticlePane() {
   const atlasNode = openId ? NODE_BY_ID[openId] : undefined;
 
   useEffect(() => {
-    if (!openId) return;
+    // In split mode, merely selecting a node should keep the inline preview.
+    // Navigate only after the user explicitly opens an Atlas entry.
+    if (!openArticleId) return;
 
     if (openId.startsWith("cms-article-")) {
       if (!cmsArticle) return;
@@ -40,7 +42,7 @@ export function ArticlePane() {
         params: { slug: `atlas-${atlasNode.id}` },
       });
     }
-  }, [openId, cmsArticle, atlasArticle, atlasNode, navigate]);
+  }, [openArticleId, openId, cmsArticle, atlasArticle, atlasNode, navigate]);
 
   return (
     <div className="flex h-full min-h-0 items-center justify-center bg-canvas px-6 text-center">
