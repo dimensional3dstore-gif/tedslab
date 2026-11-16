@@ -507,6 +507,18 @@ const extraSections: {
   },
 ];
 
+const atlasSubjectTopics: TopicRow[] = [
+  { id: "top-philosophy-knowledge-atlas", section_id: null, subject_id: "sub-atlas-philosophy", subject_slug: "philosophy", slug: "knowledge-atlas", title: "Knowledge Atlas", blurb: "Cross-disciplinary atlas articles on ideas, arguments and intellectual history.", body: "Knowledge Atlas articles.", image_url: null, sort: 0 },
+  { id: "top-mind-knowledge-atlas", section_id: null, subject_id: "sub-atlas-mind", subject_slug: "mind", slug: "knowledge-atlas", title: "Knowledge Atlas", blurb: "Atlas articles on cognition, consciousness, language and behaviour.", body: "Knowledge Atlas articles.", image_url: null, sort: 0 },
+  { id: "top-systems-knowledge-atlas", section_id: null, subject_id: "sub-atlas-systems", subject_slug: "systems", slug: "knowledge-atlas", title: "Knowledge Atlas", blurb: "Atlas articles on complexity, networks, feedback and emergence.", body: "Knowledge Atlas articles.", image_url: null, sort: 0 },
+  { id: "top-science-knowledge-atlas", section_id: null, subject_id: "sub-science", subject_slug: "science", slug: "knowledge-atlas", title: "Knowledge Atlas", blurb: "Atlas articles spanning physics, Earth systems and scientific ideas.", body: "Knowledge Atlas articles.", image_url: null, sort: 50 },
+  { id: "top-biology-knowledge-atlas", section_id: null, subject_id: "sub-biology", subject_slug: "biology", slug: "knowledge-atlas", title: "Knowledge Atlas", blurb: "Atlas articles connecting life, evolution and biological systems.", body: "Knowledge Atlas articles.", image_url: null, sort: 50 },
+  { id: "top-mathematics-knowledge-atlas", section_id: null, subject_id: "sub-mathematics", subject_slug: "mathematics", slug: "knowledge-atlas", title: "Knowledge Atlas", blurb: "Atlas articles on mathematical structure, proof and computation.", body: "Knowledge Atlas articles.", image_url: null, sort: 50 },
+  { id: "top-technology-knowledge-atlas", section_id: null, subject_id: "sub-technology", subject_slug: "technology", slug: "knowledge-atlas", title: "Knowledge Atlas", blurb: "Atlas articles on computing, algorithms and digital systems.", body: "Knowledge Atlas articles.", image_url: null, sort: 50 },
+  { id: "top-history-knowledge-atlas", section_id: null, subject_id: "sub-history", subject_slug: "history", slug: "knowledge-atlas", title: "Knowledge Atlas", blurb: "Atlas articles on civilizations, revolutions and historical change.", body: "Knowledge Atlas articles.", image_url: null, sort: 50 },
+  { id: "top-english-knowledge-atlas", section_id: null, subject_id: "sub-english", subject_slug: "english", slug: "knowledge-atlas", title: "Knowledge Atlas", blurb: "Atlas articles on literature, language and writing.", body: "Knowledge Atlas articles.", image_url: null, sort: 50 },
+];
+
 function buildSectionsAndTopics() {
   const sectionRows: SectionRow[] = [];
   const topicRows: TopicRow[] = [];
@@ -573,7 +585,7 @@ function buildSectionsAndTopics() {
     });
   });
 
-  return { sectionRows, topicRows };
+  return { sectionRows, topicRows: [...topicRows, ...atlasSubjectTopics] };
 }
 
 const built = buildSectionsAndTopics();
