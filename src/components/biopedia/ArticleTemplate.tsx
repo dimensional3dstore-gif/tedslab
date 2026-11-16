@@ -159,10 +159,10 @@ export function ArticleTemplate({
 
       <section
         id="section-0"
-        className="mt-8 rounded-2xl border border-border bg-card/80 p-6"
+        className="mt-8 rounded-2xl border border-border bg-card/80 p-6 md:p-8"
       >
         <h2 className="text-3xl font-bold text-foreground">Scientific overview</h2>
-        <div className="mt-6 space-y-5 text-base leading-relaxed text-muted-foreground">
+        <div className="prose prose-lg max-w-4xl dark:prose-invert mt-6 space-y-5 text-[15px] leading-8 text-muted-foreground">
           {layout.overview.map((p) => (
             <p key={p.slice(0, 48)}>{p}</p>
           ))}
@@ -183,14 +183,14 @@ export function ArticleTemplate({
         <section
           key={sec.heading}
           id={`section-${si + 1}`}
-          className="mt-8 rounded-2xl border border-border bg-card/80 p-6"
+          className="mt-8 rounded-2xl border border-border bg-card/80 p-6 md:p-8"
         >
-          <h2 className="text-3xl font-bold text-foreground">{sec.heading}</h2>
-          <div className="mt-6 space-y-4">
+          <div className="mb-5 flex items-center gap-3"><span className="grid size-9 shrink-0 place-items-center rounded-lg bg-primary/10 text-sm font-bold text-primary">{si + 1}</span><h2 className="font-display text-2xl font-bold tracking-tight text-foreground md:text-3xl">{sec.heading}</h2></div>
+          <div className="prose prose-lg dark:prose-invert mt-6 max-w-none space-y-6">
             {sec.paragraphs?.map((p) => (
               <p
                 key={p.slice(0, 40)}
-                className="text-base leading-relaxed text-muted-foreground"
+                className="max-w-4xl text-[15px] leading-8 text-muted-foreground"
               >
                 {p}
               </p>
@@ -198,14 +198,14 @@ export function ArticleTemplate({
             {sec.cards?.map((card, ci) => (
               <div
                 key={card.title}
-                className="rounded-lg border border-border bg-secondary/50 p-4"
+                className="rounded-xl border border-border bg-secondary/40 p-5 shadow-sm"
               >
-                <h3 className="font-semibold text-foreground">
+                <h3 className="text-lg font-semibold tracking-tight text-foreground">
                   {card.title.startsWith(String(ci + 1))
                     ? card.title
                     : `${ci + 1}. ${card.title}`}
                 </h3>
-                <p className="mt-2 text-sm text-muted-foreground">
+                <p className="mt-2 text-sm leading-7 text-muted-foreground">
                   {card.text}
                 </p>
               </div>
