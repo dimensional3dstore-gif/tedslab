@@ -11,6 +11,11 @@ const subjectQueryOptions = (slug: string) =>
   queryOptions({
     queryKey: ["subject", slug],
     queryFn: () => fetchCatalogRow<Subject>("subjects", "slug", slug, SUBJECTS),
+    initialData: SUBJECTS.find((subject) => subject.slug === slug),
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    retry: 1,
   });
 
 const subjectTopicsQueryOptions = (subjectId: string) =>
@@ -20,6 +25,11 @@ const subjectTopicsQueryOptions = (subjectId: string) =>
       const rows = await fetchCatalogRows<TopicRow>("topics", TOPICS);
       return rows.filter((row) => row.subject_id === subjectId);
     },
+    initialData: TOPICS.filter((topic) => topic.subject_id === subjectId),
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    retry: 1,
   });
 
 export const Route = createFileRoute("/$subject")({
