@@ -243,7 +243,9 @@ export async function fetchCatalogRow<T>(
       .select(columns)
       .eq(column, value)
       .limit(1);
-    if (!error) return data?.length ? data[0] as unknown as T : table === "subjects" ? null : fallback.find((row) => (row as Record<string, unknown>)[column] === value) ?? null;
+    if (!error) return data?.length
+      ? data[0] as unknown as T
+      : fallback.find((row) => (row as Record<string, unknown>)[column] === value) ?? null;
     if (table === "subjects" || table === "topics") throw error;
   } catch (error) {
     if (table === "subjects" || table === "topics") throw error;
