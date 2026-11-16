@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { AppShell } from "@/components/biopedia/AppShell";
 import { useAuth } from "@/hooks/use-auth";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -82,6 +83,8 @@ export function NexiumAIPage() {
   const [loadingModel, setLoadingModel] = useState(false);
   const [showSettings, setShowSettings] = useState(true);
   const [error, setError] = useState("");
+  const [savingConfig, setSavingConfig] = useState(false);
+  const [sharedConfigLoaded, setSharedConfigLoaded] = useState(false);
   const modelReady = Boolean(config.model) && loadedModel === config.model;
 
   useEffect(() => {
@@ -103,7 +106,7 @@ export function NexiumAIPage() {
     return () => {
       cancelled = true;
     };
-  }, [isAdmin]);
+  }, []);
 
   useEffect(() => {
     try {
@@ -179,6 +182,27 @@ export function NexiumAIPage() {
       );
     } finally {
       setLoadingModel(false);
+    }
+  };
+
+  const saveSharedConfig = async () => {
+    if (!isAdmin || !baseUrlDraft.trim() || !config.model) return;
+    setSavingConfig(true);
+    setError("");
+    try {
+      const rows = [
+        { key: "nexium_omlx_url", value: baseUrlDraft.trim() },
+        { key: "nexium_omlx_model", value: config.model },
+      ];
+      const { error: saveError } = await supabase.from("site_settings").upsert(rows, { onConflict: "key" });
+      if (saveError) throw saveError;
+      setConfig((current) => ({ ...current, baseUrl: baseUrlDraft.trim() }));
+      setSharedConfigLoaded(true);
+      setError("");
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Nexium settings could not be saved.");
+    } finally {
+      setSavingConfig(false);
     }
   };
 
@@ -364,7 +388,7 @@ export function NexiumAIPage() {
               </p>
             </div>
             <p className="text-xs text-muted-foreground md:col-span-3">
-              Only administrators can discover or load local models. The desktop app connects to loopback through its native bridge.
+              Administrators configure and save the shared oMLX server. Everyone can use the saved Nexium model. The server must be reachable by users; localhost/127.0.0.1 only works on the same computer.
               Browser access requires the oMLX CORS allowlist to include this
               site's origin.
             </p>
