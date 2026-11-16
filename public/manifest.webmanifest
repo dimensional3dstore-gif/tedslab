@@ -1,0 +1,19 @@
+{
+  "name": "Ted's Lab — The Learning Encyclopedia",
+  "short_name": "Ted's Lab",
+  "description": "An illustrated learning encyclopedia for study and exploration.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f6f4ee",
+  "theme_color": "#142018",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
