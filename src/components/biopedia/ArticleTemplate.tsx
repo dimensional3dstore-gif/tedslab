@@ -18,6 +18,7 @@ import {
 } from "@/lib/article-layout";
 import { resolveImage } from "@/lib/images";
 import { StudyLesson } from "@/components/study/StudyLesson";
+import { ArticleConceptExplainer } from "@/components/biopedia/ArticleConceptExplainer";
 
 export function ArticleTemplate({
   article,
@@ -212,6 +213,8 @@ export function ArticleTemplate({
           </div>
         </section>
       ))}
+
+      {!preview && <ArticleConceptExplainer article={article} />}
 
       {!preview && <StudyLesson article={article} layout={layout} />}
 
