@@ -203,7 +203,8 @@ export function Sidebar({
             ) : (subjects ?? []).map((subject) => {
               const subjectTopics = (topics ?? [])
                 .filter((topic) => topic.subject_slug === subject.slug)
-                .sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0) || a.title.localeCompare(b.title));
+                .sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0) || a.title.localeCompare(b.title))
+                .slice(0, 5);
               const subjectKey = "subject:" + subject.slug;
               const subjectOpen = expanded.has(subjectKey);
               return (
