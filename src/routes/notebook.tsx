@@ -14,6 +14,7 @@ const description =
 type Note = { id: string; text: string; created: string };
 type TutorTurn = { role: "user" | "assistant"; content: string };
 type NexiumConfig = { baseUrl: string; model: string };
+const EMPTY_NOTES: Note[] = [];
 
 export const Route = createFileRoute("/notebook")({
   head: () => ({
@@ -37,7 +38,7 @@ function NotebookPage() {
     user,
     isLoading,
     error,
-  } = useUserCollection<Note[]>("notebook", "notes", []);
+  } = useUserCollection<Note[]>("notebook", "notes", EMPTY_NOTES);
   const [draft, setDraft] = useState("");
   const [nexium, setNexium] = useState<NexiumConfig | null>(null);
   const [tutorPrompt, setTutorPrompt] = useState("");
