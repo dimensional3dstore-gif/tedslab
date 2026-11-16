@@ -291,11 +291,11 @@ export function DocsEditor() {
   });
 
   useEffect(() => {
-    if (editor && !cloudLoading && cloudDocument && cloudDocument.content !== initial.content) {
+    if (editor && !cloudLoading && cloudDocument && (cloudDocument.content !== initial.content || cloudDocument.title !== initial.title)) {
       editor.commands.setContent(cloudDocument.content);
       setTitle(cloudDocument.title || "Untitled document");
     }
-  }, [editor, cloudLoading]);
+  }, [editor, cloudLoading, cloudDocument, initial.content, initial.title]);
 
   const saveToAccount = async () => {
     if (!user || !editor) return;
