@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import {
   Bot,
   CircleStop,
+  Save,
   LoaderCircle,
   MessageSquarePlus,
   Send,
@@ -58,6 +59,8 @@ const initialMessage: ChatMessage = {
 
 export function NexiumAIPage() {
   const { isAdmin, loading: authLoading } = useAuth();
+  const { value: cloudChat, saveAsync: saveCloudChat, user } = useUserCollection<ChatMessage[]>("chats", "nexium-main", [initialMessage]);
+  const [chatSaveStatus, setChatSaveStatus] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>(() =>
     readStored(CHAT_KEY, [initialMessage]),
   );
@@ -86,6 +89,30 @@ export function NexiumAIPage() {
   const [savingConfig, setSavingConfig] = useState(false);
   const [sharedConfigLoaded, setSharedConfigLoaded] = useState(false);
   const modelReady = Boolean(config.model) && loadedModel === config.model;
+
+  useEffect(() => {
+    if (!user) return;
+    if (cloudChat.length) setMessages(cloudChat);
+  }, [user?.id]);
+
+  const saveConversation = async () => {
+    if (!user) { setChatSaveStatus("Sign in to save chats."); return; }
+    try { await saveCloudChat(messages); setChatSaveStatus("Chat saved to your account."); }
+    catch { setChatSaveStatus("Chat could not be saved. Try again."); }
+  };
+
+  useEffect(() => {
+    let active = true;
+    void supabase.from("site_settings").select("key,value").in("key", ["nexium_omlx_url", "nexium_omlx_model"]).then(({data,error}) => {
+      if (!active || error) return;
+      const values = Object.fromEntries((data ?? []).map((row) => [row.key,row.value]));
+      if (!values.nexium_omlx_url || !values.nexium_omlx_model) return;
+      const shared = {baseUrl:values.nexium_omlx_url,model:values.nexium_omlx_model};
+      setConfig(shared);
+      if (!isAdmin) { setLoadedModel(shared.model); setSharedConfigLoaded(true); }
+    });
+    return () => { active = false; };
+  }, [isAdmin]);
 
   useEffect(() => {
     if (!("serviceWorker" in navigator)) return;
@@ -207,10 +234,9 @@ export function NexiumAIPage() {
   };
 
   useEffect(() => {
-    if (authLoading || !config.model || !config.baseUrl || loadingModel || modelReady) return;
-    if (!isAdmin && !sharedConfigLoaded) return;
+    if (authLoading || !isAdmin || !config.model || !config.baseUrl || loadingModel || modelReady) return;
     void loadSelectedModel();
-  }, [authLoading, config.model, config.baseUrl, isAdmin, sharedConfigLoaded, loadingModel, modelReady]);
+  }, [authLoading, config.model, config.baseUrl, isAdmin, loadingModel, modelReady]);
 
   const sendMessage = async (text = draft) => {
     const question = text.trim();
@@ -387,6 +413,9 @@ export function NexiumAIPage() {
                     ? "Model loaded"
                     : "Load selected model"}
               </Button>
+              <Button type="button" variant="outline" onClick={() => void saveSharedConfig()} disabled={!isAdmin || !modelReady || savingConfig}>
+                {savingConfig ? "Saving for everyone…" : "Save for everyone"}
+              </Button>
               <p role="status" className="text-xs text-muted-foreground">
                 {modelReady
                   ? `${loadedModel} is loaded. Chat is enabled.`
@@ -409,8 +438,8 @@ export function NexiumAIPage() {
               </p>
               <p className="text-xs text-muted-foreground">
                 {modelReady
-                  ? `Local model · ${config.model}`
-                  : "Load a model to enable chat."}
+                  ? `Shared local model · ${config.model}`
+                  : "The administrator must load and publish a model to enable chat."}
               </p>
             </div>
             {busy && (
@@ -463,6 +492,10 @@ export function NexiumAIPage() {
               ))}
             </div>
           )}
+          <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border px-4 py-2">
+            <Button type="button" size="sm" variant="outline" onClick={() => void saveConversation()} disabled={!user}><Save className="mr-2 size-4"/>Save chat</Button>
+            <span className="text-xs text-muted-foreground">{chatSaveStatus}</span>
+          </div>
           <form
             onSubmit={(event) => {
               event.preventDefault();
@@ -500,8 +533,7 @@ export function NexiumAIPage() {
             </div>
             <div className="mt-2 flex items-center justify-between gap-2 text-[11px] text-muted-foreground">
               <span>
-                Prompts go to the selected local oMLX server. Chat history stays
-                in this browser.
+                Prompts use the administrator-published Nexium model. Save this conversation to sync it to your account.
               </span>
               {error && (
                 <span role="status" className="text-amber-700">
