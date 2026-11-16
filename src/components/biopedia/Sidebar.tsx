@@ -35,7 +35,7 @@ import { useAuth } from "@/hooks/use-auth";
 
 export const studyTools = [
   { label: "AI Tutor", icon: BrainCircuit, to: "/ai" },
-  { label: "Chronium AI", icon: LucideIcons.Brackets, to: "/llm" },
+  { label: "Nexium", icon: LucideIcons.Brackets, to: "/llm" },
   { label: "Notebook", icon: NotebookPen, to: "/notebook" },
   { label: "Docs", icon: FilePenLine, to: "/docs" },
   { label: "Flashcards", icon: Layers, to: "/flashcards" },
