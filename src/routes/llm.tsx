@@ -5,5 +5,5 @@ export const Route = createFileRoute("/llm")({
   head: () => ({
     meta: [{ title: "Nexium — Ted's Lab" }],
   }),
-  component: ChroniumAIPage,
+  component: NexiumAIPage,
 });
