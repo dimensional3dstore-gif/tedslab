@@ -86,6 +86,91 @@ const ATLAS_SUBJECT_MAP: Record<string, string> = {
   systems: "systems",
 };
 
+// Curated cross-disciplinary placement for Knowledge Atlas articles.
+// The source cluster remains intact in the Atlas graph; this mapping controls
+// the broad subject shelves shown in the Ted's Lab encyclopedia.
+const ATLAS_ARTICLE_SUBJECT_OVERRIDES: Record<string, string> = {
+  "abstract-algebra": "biology",
+  "cell-biology": "biology",
+  "natural-selection": "biology",
+  photosynthesis: "biology",
+  "immune-system": "biology",
+  microbiome: "biology",
+  crispr: "biology",
+  darwin: "biology",
+
+  "classical-mechanics": "science",
+  "quantum-mechanics": "science",
+  relativity: "science",
+  thermodynamics: "science",
+  cosmology: "science",
+  "black-holes": "science",
+  electromagnetism: "science",
+  einstein: "science",
+  "higgs-boson": "science",
+
+  calculus: "mathematics",
+  "linear-algebra": "mathematics",
+  "number-theory": "mathematics",
+  "graph-theory": "mathematics",
+  "category-theory": "mathematics",
+  "set-theory": "mathematics",
+  "complex-numbers": "mathematics",
+  godel: "mathematics",
+
+  algorithms: "technology",
+  "machine-learning": "technology",
+  "neural-networks": "technology",
+  "computation-theory": "technology",
+  cryptography: "technology",
+  "operating-systems": "technology",
+  turing: "technology",
+  "open-source": "technology",
+
+  "cognitive-psychology": "mind",
+  consciousness: "mind",
+  perception: "mind",
+  "working-memory": "mind",
+  neuroplasticity: "mind",
+  "cognitive-bias": "mind",
+  "dual-process": "mind",
+  kahneman: "mind",
+
+  epistemology: "philosophy",
+  ethics: "philosophy",
+  metaphysics: "philosophy",
+  existentialism: "philosophy",
+  "philosophy-of-mind": "philosophy",
+  utilitarianism: "philosophy",
+  kant: "philosophy",
+  socrates: "philosophy",
+
+  "systems-thinking": "systems",
+  "chaos-theory": "systems",
+  emergence: "systems",
+  "feedback-control": "systems",
+  "scale-free-networks": "systems",
+  autopoiesis: "systems",
+  meadows: "systems",
+
+  "ancient-civilizations": "history",
+  "classical-greece": "history",
+  "industrial-revolution": "history",
+  "scientific-revolution": "history",
+  "french-revolution": "history",
+  "world-wars": "history",
+  "silk-road": "history",
+  decolonization: "history",
+
+  "language-acquisition": "english",
+  syntax: "english",
+  "information-theory": "english",
+  "narrative-form": "english",
+  poetry: "english",
+  chomsky: "english",
+  shannon: "english",
+};
+
 /** Code-structured Knowledge Atlas articles are first-class website articles too. */
 export const atlasArticleRows: ArticleRow[] = Object.values(ATLAS_ARTICLES).map((article) => ({
   id: "atlas-" + article.id,
@@ -95,7 +180,7 @@ export const atlasArticleRows: ArticleRow[] = Object.values(ATLAS_ARTICLES).map(
   body: article.body,
   minutes: Math.max(4, Math.round(article.wordCount / 220)),
   tone: "atlas",
-  subject_slug: ATLAS_SUBJECT_MAP[article.cluster] ?? article.cluster,
+  subject_slug: ATLAS_ARTICLE_SUBJECT_OVERRIDES[article.id] ?? ATLAS_SUBJECT_MAP[article.cluster] ?? article.cluster,
   section_slug: "knowledge-atlas",
   topic_slug: (() => {
     const text = (article.title + " " + article.summary).toLowerCase();
