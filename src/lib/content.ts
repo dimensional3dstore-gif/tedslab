@@ -97,7 +97,31 @@ export const atlasArticleRows: ArticleRow[] = Object.values(ATLAS_ARTICLES).map(
   tone: "atlas",
   subject_slug: ATLAS_SUBJECT_MAP[article.cluster] ?? article.cluster,
   section_slug: "knowledge-atlas",
-  topic_slug: "knowledge-atlas",
+  topic_slug: (() => {
+    const text = (article.title + " " + article.summary).toLowerCase();
+    if (article.cluster === "philosophy") {
+      if (/ethic|moral|virtue|justice/.test(text)) return "ethics";
+      if (/knowledge|evidence|belief|truth/.test(text)) return "epistemology";
+      if (/reality|exist|caus|time|identity/.test(text)) return "metaphysics";
+      if (/politic|state|democra|liberty|rights/.test(text)) return "political-philosophy";
+      if (/mind|conscious|self|mental/.test(text)) return "philosophy-of-mind";
+      return "logic";
+    }
+    if (article.cluster === "mind") {
+      if (/memory|learn|recall/.test(text)) return "learning-memory";
+      if (/language|speech|linguistic/.test(text)) return "language-mind";
+      if (/percept|vision|sensory|conscious/.test(text)) return "perception";
+      return "cognition";
+    }
+    if (article.cluster === "systems") {
+      if (/network|graph|connect/.test(text)) return "networks";
+      if (/complex|emerg|adapt/.test(text)) return "complexity";
+      if (/feedback|control|regulat/.test(text)) return "feedback-control";
+      if (/information|entropy|signal|communicat/.test(text)) return "information";
+      return "systems-thinking";
+    }
+    return "foundations";
+  })(),
   image_key: null,
   image_url: null,
   video_url: null,
