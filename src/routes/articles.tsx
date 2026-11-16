@@ -22,7 +22,7 @@ export const Route = createFileRoute("/articles")({
 
 function ArticlesPage() {
   const { pathname } = useLocation();
-  const { data: articles = [], isFetching } = useArticles();
+  const { data: articles = [], isFetching, error } = useArticles();
 
   if (pathname !== "/articles") {
     return <Outlet />;
@@ -31,7 +31,9 @@ function ArticlesPage() {
   return (
     <AppShell>
       {(q) => {
-        const publishedArticles = articles.filter((a) => a.published);
+        const publishedArticles = articles.filter(
+          (a) => a.published === true && (a.status == null || a.status === "published"),
+        );
         const filtered = publishedArticles.filter(
           (a) =>
             !q || `${a.title} ${a.excerpt ?? ""}`.toLowerCase().includes(q),
@@ -40,32 +42,38 @@ function ArticlesPage() {
         return (
           <>
             <PageHeader title="All Articles" description={description} />
+            {isFetching && filtered.length === 0 && (
+              <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" aria-label="Loading articles" aria-busy="true">
+                {Array.from({ length: 6 }, (_, index) => (
+                  <div key={`article-skeleton-${index}`} aria-hidden="true" className="bio-panel animate-pulse overflow-hidden">
+                    <div className="h-40 w-full bg-muted" />
+                    <div className="space-y-3 p-4">
+                      <div className="h-4 w-24 rounded bg-muted" />
+                      <div className="h-5 w-4/5 rounded bg-muted" />
+                      <div className="h-3 w-full rounded bg-muted" />
+                      <div className="h-3 w-2/3 rounded bg-muted" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
             {!isFetching && filtered.length === 0 && (
               <p className="mt-6 text-sm text-muted-foreground">
-                No articles match your search.
+                {error ? "Articles are temporarily unavailable. Please try again shortly." : "No articles match your search."}
               </p>
             )}
-            <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {filtered.map((article) => (
-                <ArticleCard
-                  key={article.id}
-                  article={article}
-                  showBookmark={false}
-                  variant="default"
-                />
-              ))}
-              {isFetching && Array.from({ length: 3 }, (_, index) => (
-                <div key={`article-skeleton-${index}`} aria-hidden="true" className="bio-panel animate-pulse overflow-hidden">
-                  <div className="h-40 w-full bg-muted" />
-                  <div className="space-y-3 p-4">
-                    <div className="h-4 w-24 rounded bg-muted" />
-                    <div className="h-5 w-4/5 rounded bg-muted" />
-                    <div className="h-3 w-full rounded bg-muted" />
-                    <div className="h-3 w-2/3 rounded bg-muted" />
-                  </div>
-                </div>
-              ))}
-            </div>
+            {filtered.length > 0 && (
+              <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {filtered.map((article) => (
+                  <ArticleCard
+                    key={article.id}
+                    article={article}
+                    showBookmark={false}
+                    variant="default"
+                  />
+                ))}
+              </div>
+            )}
           </>
         );
       }}
