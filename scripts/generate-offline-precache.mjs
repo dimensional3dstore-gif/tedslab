@@ -1,8 +1,9 @@
 import { readdir, readFile, writeFile } from "node:fs/promises";
 import { join, relative, resolve } from "node:path";
 
-const dist = resolve("dist");
-const swPath = join(dist, "sw.js");
+// TanStack Start + Nitro's Vercel preset writes browser assets here.
+const staticDir = resolve(".vercel/output/static");
+const swPath = join(staticDir, "sw.js");
 
 async function walk(dir) {
   const entries = await readdir(dir, { withFileTypes: true });
@@ -15,9 +16,9 @@ async function walk(dir) {
   return files;
 }
 
-const files = await walk(dist);
+const files = await walk(staticDir);
 const urls = files
-  .map((file) => "/" + relative(dist, file).replaceAll("\\", "/"))
+  .map((file) => "/" + relative(staticDir, file).replaceAll("\\", "/"))
   .filter((url) => url !== "/sw.js")
   .sort();
 
@@ -28,8 +29,8 @@ const injected = source.replace(
 );
 
 if (injected === source) {
-  throw new Error("Offline service worker placeholder was not found.");
+  throw new Error("Offline service worker placeholder was not found in .vercel/output/static/sw.js");
 }
 
 await writeFile(swPath, injected, "utf8");
-console.log(`Offline precache: ${urls.length} build files added to ${swPath}`);
+console.log(`Offline precache: ${urls.length} production static files added to ${swPath}`);
