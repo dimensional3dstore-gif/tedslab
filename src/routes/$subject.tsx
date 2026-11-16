@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react";
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, redirect } from "@tanstack/react-router";
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import { AppShell, PageHeader } from "@/components/biopedia/AppShell";
 import type { ArticleRow, Subject, TopicRow } from "@/lib/content";
-import { fetchCatalogRow, fetchCatalogRows, useArticles } from "@/lib/content";
+import { fetchCatalogRow, fetchCatalogRows, useArticles, websiteFallbackArticles } from "@/lib/content";
 import { TOPICS, SUBJECTS } from "@/lib/catalog";
 import { resolveImage } from "@/lib/images";
 
@@ -37,7 +37,18 @@ export const Route = createFileRoute("/$subject")({
     const subject = await context.queryClient.ensureQueryData(
       subjectQueryOptions(params.subject),
     );
-    if (!subject) throw notFound();
+    if (!subject) {
+      const article = websiteFallbackArticles.find(
+        (row) => row.slug === params.subject && row.published,
+      );
+      if (article) {
+        throw redirect({
+          to: "/articles/$slug",
+          params: { slug: article.slug },
+        });
+      }
+      throw notFound();
+    }
     const topics = await context.queryClient.ensureQueryData(
       subjectTopicsQueryOptions(subject.id),
     );
@@ -111,7 +122,7 @@ function SubjectPage() {
             </div>
             <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
               {visibleArticles.map((article) => (
-                <Link key={article.id} to={"/articles/" + article.slug} className="bio-panel block p-4 transition-colors hover:border-primary/50" aria-label={`Read article: ${article.title}`}>
+                <Link key={article.id} to={"/" + article.slug} className="bio-panel block p-4 transition-colors hover:border-primary/50" aria-label={`Read article: ${article.title}`}>
                   <p className="text-[11px] uppercase tracking-wide text-muted-foreground">{(topics ?? []).find((topic) => topic.slug === article.topic_slug)?.title ?? article.topic_slug}</p>
                   <h3 className="mt-1 text-sm font-semibold">{article.title}</h3>
                   <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-muted-foreground">{article.excerpt}</p>
