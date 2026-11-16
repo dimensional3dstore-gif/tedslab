@@ -12,6 +12,7 @@ import {
   NAV_LINKS,
   SETTINGS,
 } from "@/lib/catalog";
+import { ARTICLES as ATLAS_ARTICLES } from "@/data/articles/compose";
 
 export type Subject = {
   id: string;
@@ -72,6 +73,34 @@ export type ArticleRow = {
 };
 
 export const fallbackArticles: ArticleRow[] = ARTICLES;
+
+const ATLAS_SUBJECT_MAP: Record<string, string> = {
+  physics: "science",
+  computing: "technology",
+};
+
+/** Code-structured Knowledge Atlas articles are first-class website articles too. */
+export const atlasArticleRows: ArticleRow[] = Object.values(ATLAS_ARTICLES).map((article) => ({
+  id: "atlas-" + article.id,
+  slug: "atlas-" + article.id,
+  title: article.title,
+  excerpt: article.summary,
+  body: article.body,
+  minutes: Math.max(4, Math.round(article.wordCount / 220)),
+  tone: "atlas",
+  subject_slug: ATLAS_SUBJECT_MAP[article.cluster] ?? article.cluster,
+  section_slug: "knowledge-atlas",
+  topic_slug: "knowledge-atlas",
+  image_key: null,
+  image_url: null,
+  video_url: null,
+  published: true,
+  expert_reviewed: true,
+  status: "published",
+  sort: 0,
+}));
+
+export const websiteFallbackArticles: ArticleRow[] = [...ARTICLES, ...atlasArticleRows];
 
 export type HeroSlideRow = {
   id: string;
@@ -200,7 +229,11 @@ export const topicsQueryOptions = queryOptions({
 
 export const articlesQueryOptions = queryOptions({
   queryKey: ["articles"],
-  queryFn: () => fetchCatalogRows("articles", ARTICLES),
+  queryFn: async () => {
+    const remote = await fetchCatalogRows("articles", ARTICLES);
+    const remoteSlugs = new Set(remote.map((article) => article.slug));
+    return [...remote, ...atlasArticleRows.filter((article) => !remoteSlugs.has(article.slug))];
+  },
   initialData: supabaseAuthConfigured ? [] : ARTICLES,
 });
 
@@ -267,7 +300,7 @@ export const articleByIdQueryOptions = (id: string) =>
     queryKey: ["article", "id", id],
     queryFn: async () => {
       if (!supabaseAuthConfigured) {
-        return ARTICLES.find((article) => article.id === id) ?? null;
+        return websiteFallbackArticles.find((article) => article.id === id) ?? null;
       }
 
       try {
