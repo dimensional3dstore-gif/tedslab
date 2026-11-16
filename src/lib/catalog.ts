@@ -618,7 +618,7 @@ export const ARTICLES: ArticleRow[] = TOPICS.map((t, i) => {
   });
   return {
     id: `art-${t.id}`,
-    slug: `${section?.slug ?? "topic"}-${t.slug}`,
+    slug: `${section?.slug ?? ("topic-" + (subject?.slug ?? "biology"))}-${t.slug}`,
     title: t.title,
     excerpt: layout.overview[0] ?? t.blurb,
     body: JSON.stringify(layout),
