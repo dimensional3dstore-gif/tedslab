@@ -44,6 +44,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { AppShell } from "@/components/biopedia/AppShell";
+import { Button } from "@/components/ui/button";
+import { Save, Cloud } from "lucide-react";
+import { useUserCollection } from "@/lib/user-data";
 
 const STORAGE_KEY = "biopedia:docs:v1";
 const FONTS = [
@@ -239,6 +242,9 @@ function ToolButton({
 
 export function DocsEditor() {
   const initial = useMemo(loadDocument, []);
+  const { value: cloudDocument, saveAsync, user, isLoading: cloudLoading } = useUserCollection<SavedDocument>("documents", "main", initial);
+  const [cloudStatus, setCloudStatus] = useState("Not saved to your account");
+  const [savingCloud, setSavingCloud] = useState(false);
   const [title, setTitle] = useState(initial.title);
   const [fontFamily, setFontFamily] = useState("Arial");
   const [fontSize, setFontSize] = useState("11pt");
@@ -283,6 +289,25 @@ export function DocsEditor() {
       }
     },
   });
+
+  useEffect(() => {
+    if (editor && !cloudLoading && cloudDocument && cloudDocument.content !== initial.content) {
+      editor.commands.setContent(cloudDocument.content);
+      setTitle(cloudDocument.title || "Untitled document");
+    }
+  }, [editor, cloudLoading]);
+
+  const saveToAccount = async () => {
+    if (!user || !editor) return;
+    setSavingCloud(true);
+    try {
+      await saveAsync({ title, content: editor.getHTML() });
+      setCloudStatus("Saved to your account");
+      setSaved(true);
+    } catch {
+      setCloudStatus("Cloud save failed — try again");
+    } finally { setSavingCloud(false); }
+  };
 
   useEffect(() => {
     try {
@@ -352,9 +377,11 @@ export function DocsEditor() {
               {saved ? "Saved in this browser" : "Saving…"}
             </div>
           </div>
+          <Button type="button" onClick={() => void saveToAccount()} disabled={!user || savingCloud || cloudLoading} className="gap-2"><Cloud className="size-4"/>{savingCloud ? "Saving…" : "Save document"}</Button>
+          <span className="text-xs text-muted-foreground">{user ? cloudStatus : "Sign in to save across devices"}</span>
           <button
             type="button"
-            onClick={() => window.print()}
+            onClick={() => window.print()
             className="rounded-md border border-border bg-background px-3 py-2 text-sm font-medium text-foreground hover:bg-secondary"
           >
             Print / PDF
