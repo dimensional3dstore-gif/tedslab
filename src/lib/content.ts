@@ -75,8 +75,15 @@ export type ArticleRow = {
 export const fallbackArticles: ArticleRow[] = ARTICLES;
 
 const ATLAS_SUBJECT_MAP: Record<string, string> = {
+  philosophy: "philosophy",
   physics: "science",
+  mathematics: "mathematics",
+  biology: "biology",
   computing: "technology",
+  history: "history",
+  english: "english",
+  mind: "mind",
+  systems: "systems",
 };
 
 /** Code-structured Knowledge Atlas articles are first-class website articles too. */
