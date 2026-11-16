@@ -93,7 +93,7 @@ export function NexiumAIPage() {
   useEffect(() => {
     if (!user) return;
     if (cloudChat.length) setMessages(cloudChat);
-  }, [user?.id]);
+  }, [user?.id, cloudChat]);
 
   const saveConversation = async () => {
     if (!user) { setChatSaveStatus("Sign in to save chats."); return; }
