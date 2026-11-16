@@ -10,6 +10,7 @@ import {
   WifiOff,
 } from "lucide-react";
 import { AppShell } from "@/components/biopedia/AppShell";
+import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -21,8 +22,8 @@ import {
   type OmlxModel,
 } from "@/lib/omlx";
 
-const CHAT_KEY = "chronium-ai:conversation:v1";
-const CONFIG_KEY = "chronium-ai:local-config:v1";
+const CHAT_KEY = "nexium-ai:conversation:v1";
+const CONFIG_KEY = "nexium-ai:local-config:v1";
 const STARTER_PROMPTS = [
   "Explain photosynthesis in simple steps.",
   "Make me a 20-minute revision plan.",
@@ -54,7 +55,8 @@ const initialMessage: ChatMessage = {
     "Connect to your local oMLX server, choose a model, and load it to start a private chat.",
 };
 
-export function ChroniumAIPage() {
+export function NexiumAIPage() {
+  const { isAdmin, loading: authLoading } = useAuth();
   const [messages, setMessages] = useState<ChatMessage[]>(() =>
     readStored(CHAT_KEY, [initialMessage]),
   );
@@ -101,7 +103,7 @@ export function ChroniumAIPage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [isAdmin]);
 
   useEffect(() => {
     try {
@@ -120,6 +122,7 @@ export function ChroniumAIPage() {
   }, [config]);
 
   const discoverModels = useCallback(async (baseUrl: string, key = "") => {
+    if (!isAdmin) return;
     setDiscovering(true);
     setError("");
     try {
@@ -151,9 +154,7 @@ export function ChroniumAIPage() {
     }
   }, []);
 
-  useEffect(() => {
-    void discoverModels(config.baseUrl);
-  }, [config.baseUrl, discoverModels]);
+
 
   useEffect(() => {
     setBaseUrlDraft(config.baseUrl);
@@ -204,7 +205,7 @@ export function ChroniumAIPage() {
         {
           role: "system",
           content:
-            "You are Chronium AI, a concise, accurate study assistant. Explain ideas clearly and support learning.",
+            "You are Nexium, a concise, accurate study assistant. Explain ideas clearly and support learning.",
         },
         ...history,
       ]);
@@ -241,7 +242,7 @@ export function ChroniumAIPage() {
                 Ted's Lab · Local AI
               </p>
               <h1 className="font-display text-2xl font-bold text-foreground">
-                Chronium AI
+                Nexium
               </h1>
             </div>
           </div>
@@ -286,7 +287,7 @@ export function ChroniumAIPage() {
           </div>
         </header>
 
-        {showSettings && (
+        {showSettings && isAdmin && !authLoading && (
           <section className="bio-panel grid gap-4 p-4 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto] md:items-end">
             <label className="space-y-1 text-xs text-muted-foreground">
               Local oMLX server
@@ -365,7 +366,7 @@ export function ChroniumAIPage() {
               </p>
             </div>
             <p className="text-xs text-muted-foreground md:col-span-3">
-              The desktop app connects to loopback through its native bridge.
+              Only administrators can discover or load local models. The desktop app connects to loopback through its native bridge.
               Browser access requires the oMLX CORS allowlist to include this
               site's origin.
             </p>
@@ -398,7 +399,7 @@ export function ChroniumAIPage() {
                 className={`max-w-[88%] rounded-xl border px-4 py-3 ${message.role === "user" ? "ml-auto border-primary/20 bg-primary/10" : "border-border bg-background"}`}
               >
                 <div className="mb-1 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
-                  <span>{message.role === "user" ? "You" : "Chronium AI"}</span>
+                  <span>{message.role === "user" ? "You" : "Nexium"}</span>
                   {message.source && (
                     <span className="normal-case tracking-normal">
                       ·{" "}
