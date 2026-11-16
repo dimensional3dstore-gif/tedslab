@@ -160,15 +160,21 @@ export async function fetchCatalogRows<T extends { id: string }>(
       .from(table)
       .select("*")
       .order("sort", { ascending: true });
-    if (result.error) { if (table === "subjects" || table === "topics" || table === "articles") throw result.error; return fallback; }
+    if (result.error) { if (table === "subjects" || table === "topics") throw result.error; return fallback; }
     data = result.data;
   } catch (error) {
-    if (table === "subjects" || table === "topics" || table === "articles") throw error;
+    if (table === "subjects" || table === "topics") throw error;
     return fallback;
   }
   const remoteRows = (data ?? []) as unknown as T[];
-  // A successful empty query is the database's truth for editorial records.
-  if (table === "subjects" || table === "topics" || table === "articles") return remoteRows;
+  // Subjects and topics are database-authoritative. Articles merge remote records with the bundled catalogue.
+  if (table === "subjects" || table === "topics") return remoteRows;
+  if (table === "articles") {
+    const remoteBySlug = new Map(remoteRows.map((row) => [(row as { slug?: string }).slug, row]));
+    const merged = fallback.map((row) => remoteBySlug.get((row as { slug?: string }).slug) ?? row);
+    const fallbackSlugs = new Set(fallback.map((row) => (row as { slug?: string }).slug));
+    return [...merged, ...remoteRows.filter((row) => !fallbackSlugs.has((row as { slug?: string }).slug))];
+  }
   if (!remoteRows.length) return fallback;
   const remoteById = new Map(remoteRows.map((row) => [row.id, row]));
   const fallbackIds = new Set(fallback.map((row) => row.id));
@@ -197,7 +203,7 @@ export async function fetchCatalogRow<T>(
       .select("*")
       .eq(column, value);
     if (!error) return data?.length ? data[0] as unknown as T : table === "subjects" ? null : fallback.find((row) => (row as Record<string, unknown>)[column] === value) ?? null;
-    if (table === "subjects") throw error;
+    if (table === "subjects" || table === "topics") throw error;
   } catch (error) {
     if (table === "subjects") throw error;
     // Keep the bundled catalog available when the backing service is offline.
@@ -229,12 +235,8 @@ export const topicsQueryOptions = queryOptions({
 
 export const articlesQueryOptions = queryOptions({
   queryKey: ["articles"],
-  queryFn: async () => {
-    const remote = await fetchCatalogRows("articles", ARTICLES);
-    const remoteSlugs = new Set(remote.map((article) => article.slug));
-    return [...remote, ...atlasArticleRows.filter((article) => !remoteSlugs.has(article.slug))];
-  },
-  initialData: supabaseAuthConfigured ? [] : websiteFallbackArticles,
+  queryFn: () => fetchCatalogRows("articles", websiteFallbackArticles),
+  initialData: websiteFallbackArticles,
 });
 
 export const heroSlidesQueryOptions = queryOptions({
