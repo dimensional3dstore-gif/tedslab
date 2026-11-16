@@ -28,6 +28,7 @@ function NotebookPage() {
   const {
     value: notes,
     save,
+    saveAsync,
     user,
     isLoading,
     error,
