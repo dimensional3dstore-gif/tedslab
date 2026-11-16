@@ -23,6 +23,7 @@ import { useState } from "react";
 import {
   useSubjects,
   useSections,
+  useTopics,
   useArticles,
   useNavLinks,
   useSettings,
@@ -58,6 +59,7 @@ export function Sidebar({
 }) {
   const { data: subjects, isLoading: subjectsLoading } = useSubjects();
   const { data: sections, isLoading: sectionsLoading } = useSections();
+  const { data: topics } = useTopics();
   const { data: articles } = useArticles();
   const { data: navLinks } = useNavLinks();
   const { data: settings } = useSettings();
@@ -88,13 +90,13 @@ export function Sidebar({
       ) === index
     );
   });
-  const sectionsBySubject = new Map<string, typeof sections>();
+  const topicsBySubject = new Map<string, typeof topics>();
   for (const subject of subjects ?? []) {
-    sectionsBySubject.set(
+    topicsBySubject.set(
       subject.id,
-      (sections ?? [])
-        .filter((s) => s.subject_id === subject.id)
-        .sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0)),
+      (topics ?? [])
+        .filter((topic) => topic.subject_id === subject.id)
+        .sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0) || a.title.localeCompare(b.title)),
     );
   }
 
@@ -199,7 +201,7 @@ export function Sidebar({
             {subjectsLoading ? (
               <li className="space-y-1 px-3 py-2">{Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-8 w-full rounded-lg" />)}</li>
             ) : (subjects ?? []).map((subject) => {
-              const subjectTopics = (sectionsBySubject.get(subject.id) ?? []).slice(0, 10);
+              const subjectTopics = (topicsBySubject.get(subject.id) ?? []).slice(0, 12);
               const subjectKey = "subject:" + subject.slug;
               const subjectOpen = expanded.has(subjectKey);
               return (
@@ -226,7 +228,7 @@ export function Sidebar({
                         const topicKey = "topic:" + subject.slug + ":" + topic.slug;
                         const topicOpen = expanded.has(topicKey);
                         const topicArticles = (articles ?? [])
-                          .filter((article) => article.published === true && article.section_slug === topic.slug && article.subject_slug === subject.slug)
+                          .filter((article) => article.published === true && article.topic_slug === topic.slug && article.subject_slug === subject.slug)
                           .sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0) || a.title.localeCompare(b.title));
                         return (
                           <li key={topic.id}>
