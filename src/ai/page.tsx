@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowUpRight,
+  Save,
   BrainCircuit,
   FileText,
   MessageCircle,
@@ -9,6 +10,7 @@ import {
   Zap,
 } from "lucide-react";
 import { buildAiResponse, readKnowledge } from "@/ai";
+import { useUserCollection } from "@/lib/user-data";
 
 const starterPrompts = [
   "How should I study biology efficiently?",
@@ -23,14 +25,17 @@ type ChatMessage = {
 };
 
 export function Pate() {
+  const initialMessages: ChatMessage[] = [{ role: "assistant", content: "Hi! I can help with biology, revision planning, and understanding the study material on this site. Ask me anything." }];
+  const { value: cloudMessages, saveAsync, user } = useUserCollection<ChatMessage[]>("chats", "ai-tutor", initialMessages);
+  const [chatStatus, setChatStatus] = useState("");
   const [question, setQuestion] = useState("");
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      role: "assistant",
-      content:
-        "Hi! I can help with biology, revision planning, and understanding the study material on this site. Ask me anything.",
-    },
-  ]);
+  const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
+  useEffect(() => { if (user && cloudMessages.length) setMessages(cloudMessages); }, [user?.id]);
+  const saveConversation = async () => {
+    if (!user) { setChatStatus("Sign in to save chats."); return; }
+    try { await saveAsync(messages); setChatStatus("Chat saved to your account."); }
+    catch { setChatStatus("Chat could not be saved. Try again."); }
+  };
   const [isThinking, setIsThinking] = useState(false);
   const [typingIndex, setTypingIndex] = useState(0);
   const [fullResponse, setFullResponse] = useState("");
@@ -113,6 +118,7 @@ export function Pate() {
             <Zap className="size-3.5" />
             Live tutor
           </div>
+          <div className="flex items-center gap-2"><button type="button" onClick={() => void saveConversation()} disabled={!user} className="inline-flex items-center gap-2 rounded-lg border border-border bg-background px-3 py-2 text-xs font-medium text-foreground disabled:opacity-50"><Save className="size-3.5"/>Save chat</button><span className="text-xs text-muted-foreground">{chatStatus}</span></div>
         </div>
 
         <div className="mb-4 flex flex-wrap gap-2">
