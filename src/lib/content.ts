@@ -205,7 +205,7 @@ export async function fetchCatalogRow<T>(
     if (!error) return data?.length ? data[0] as unknown as T : table === "subjects" ? null : fallback.find((row) => (row as Record<string, unknown>)[column] === value) ?? null;
     if (table === "subjects" || table === "topics") throw error;
   } catch (error) {
-    if (table === "subjects") throw error;
+    if (table === "subjects" || table === "topics") throw error;
     // Keep the bundled catalog available when the backing service is offline.
   }
   return (
@@ -313,10 +313,10 @@ export const articleByIdQueryOptions = (id: string) =>
           .maybeSingle();
         if (!error) return (data as ArticleRow | null) ?? null;
       } catch {
-        return null;
+        return websiteFallbackArticles.find((article) => article.id === id) ?? null;
       }
 
-      return null;
+      return websiteFallbackArticles.find((article) => article.id === id) ?? null;
     },
   });
 
