@@ -88,7 +88,6 @@ export function NexiumAIPage() {
   const [showSettings, setShowSettings] = useState(true);
   const [error, setError] = useState("");
   const [savingConfig, setSavingConfig] = useState(false);
-  const [sharedConfigLoaded, setSharedConfigLoaded] = useState(false);
   const modelReady = Boolean(config.model) && loadedModel === config.model;
 
   useEffect(() => {
@@ -110,7 +109,7 @@ export function NexiumAIPage() {
       if (!values.nexium_omlx_url || !values.nexium_omlx_model) return;
       const shared = {baseUrl:values.nexium_omlx_url,model:values.nexium_omlx_model};
       setConfig(shared);
-      if (!isAdmin) { setLoadedModel(shared.model); setSharedConfigLoaded(true); }
+      if (!isAdmin) { setLoadedModel(shared.model); }
     });
     return () => { active = false; };
   }, [isAdmin]);
@@ -225,7 +224,6 @@ export function NexiumAIPage() {
       const { error: saveError } = await supabase.from("site_settings").upsert(rows, { onConflict: "key" });
       if (saveError) throw saveError;
       setConfig((current) => ({ ...current, baseUrl: baseUrlDraft.trim() }));
-      setSharedConfigLoaded(true);
       setError("");
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Nexium settings could not be saved.");
