@@ -22,7 +22,7 @@ function atlasRows(kind: "figure" | "concept"): ArticleRow[] {
     const article = getArticle(node.id)!;
     return {
       id: `atlas-${node.id}`,
-      slug: node.id,
+      slug: `atlas-${node.id}`,
       title: article.title,
       excerpt: article.summary,
       body: article.body,
@@ -68,7 +68,7 @@ function Scroller({ title, items, viewAll }: {
       ) : (
         <div ref={ref} className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-3 [scrollbar-width:thin]">
           {items.map((article) => (
-            <ArticleCard key={article.id} article={article} showBookmark={false} variant="featured" className="w-[min(78vw,16rem)] shrink-0 snap-start" link={article.id.startsWith("atlas-") ? `/knowledge-atlas#article=${article.slug}` : undefined} />
+            <ArticleCard key={article.id} article={article} showBookmark={false} variant="featured" className="w-[min(78vw,16rem)] shrink-0 snap-start" />
           ))}
         </div>
       )}
