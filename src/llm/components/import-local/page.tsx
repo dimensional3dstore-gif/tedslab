@@ -56,10 +56,11 @@ const initialMessage: ChatMessage = {
   content:
     "Connect to your local oMLX server, choose a model, and load it to start a private chat.",
 };
+const initialChatMessages: ChatMessage[] = [initialMessage];
 
 export function NexiumAIPage() {
   const { isAdmin, loading: authLoading } = useAuth();
-  const { value: cloudChat, saveAsync: saveCloudChat, user } = useUserCollection<ChatMessage[]>("chats", "nexium-main", [initialMessage]);
+  const { value: cloudChat, saveAsync: saveCloudChat, user } = useUserCollection<ChatMessage[]>("chats", "nexium-main", initialChatMessages);
   const [chatSaveStatus, setChatSaveStatus] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>(() =>
     readStored(CHAT_KEY, [initialMessage]),
