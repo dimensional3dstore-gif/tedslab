@@ -1,13 +1,14 @@
-const VERSION = "tedslab-offline-v2";
+const VERSION = "tedslab-offline-v3";
 const STATIC_CACHE = VERSION + "-static";
 const PAGE_CACHE = VERSION + "-pages";
 const API_CACHE = VERSION + "-public-api";
-const MAX_PAGE_CACHE = 600;
+const MAX_PAGE_CACHE = 1000;
+const PRECACHE_URLS = [];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(STATIC_CACHE)
-      .then((cache) => cache.addAll(["/", "/offline.html", "/manifest.webmanifest", "/favicon.png"]))
+      .then((cache) => cache.addAll(["/", "/offline.html", "/manifest.webmanifest", "/favicon.png", ...PRECACHE_URLS]))
       .then(() => self.skipWaiting())
   );
 });
@@ -98,8 +99,9 @@ self.addEventListener("fetch", (event) => {
   }
 
   if (
-    url.pathname.startsWith("/assets/") ||
-    /\.(js|css|woff2?|png|jpg|jpeg|webp|svg|ico)$/i.test(url.pathname)
+    isSameOrigin &&
+    (url.pathname.startsWith("/assets/") ||
+      /\.(js|css|woff2?|png|jpg|jpeg|webp|svg|ico)$/i.test(url.pathname))
   ) {
     event.respondWith(
       caches.match(request).then((cached) => {
