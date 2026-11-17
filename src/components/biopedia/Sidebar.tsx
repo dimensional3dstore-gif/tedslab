@@ -190,6 +190,7 @@ export function Sidebar({
           )}
           <ul className="space-y-0.5">
             <li><NavLink label="Knowledge Atlas" Icon={LucideIcons.Network} to="/knowledge-atlas" collapsed={collapsed} /></li>
+            <li><NavLink label="QuantumPedia" Icon={LucideIcons.Atom} to="/quantumpedia" collapsed={collapsed} featured /></li>
             <li><NavLink label="ChronosOS Deepmind" Icon={BrainCircuit} to="/chronosos-deepmind" collapsed={collapsed} featured /></li>
             <li><NavLink label="Micro-Atlas" Icon={Microscope} to="/microatlas" collapsed={collapsed} /></li>
             <li><NavLink label="Lost Atlas" Icon={LucideIcons.EarthIcon} to="/lost-atlas" collapsed={collapsed} /></li>
