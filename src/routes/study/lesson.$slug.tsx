@@ -261,18 +261,20 @@ function StudyModePage() {
   );
   const articleLayout = useMemo(() => article ? layoutFromArticleBody(article.body) : null, [article]);
 
-  const studyDay = useMemo(() => study ? getStudyDay(7, study.day) : null, [study]);
-  const level = useMemo(() => study ? GRADE_LEVELS.find((item) => item.grade === 7) : null, [study]);
-  const subject = study && level ? level.subjects[(study.day - 1 + study.subjectNumber - 1) % level.subjects.length] : null;
-  const concept = study && subject ? getStudyDay(7, Math.min(365, study.day + study.subjectNumber - 1)).topic : null;
-  const phase = study && study.lessonIndex >= 0 && study.lessonIndex < 4 ? (["learn", "example", "practice", "independent"] as Phase[])[study.lessonIndex] : null;
+  const lessonContext = study ?? (article ? { day: 1, subjectNumber: 1, lessonIndex: 0 } : null);
+  const isArticleLesson = !study && !!article;
+  const studyDay = useMemo(() => lessonContext ? getStudyDay(7, lessonContext.day) : null, [lessonContext]);
+  const level = useMemo(() => lessonContext ? GRADE_LEVELS.find((item) => item.grade === 7) : null, [lessonContext]);
+  const subject = isArticleLesson ? "Knowledge Atlas" : lessonContext && level ? level.subjects[(lessonContext.day - 1 + lessonContext.subjectNumber - 1) % level.subjects.length] : null;
+  const concept = isArticleLesson ? article?.title ?? null : lessonContext && subject ? getStudyDay(7, Math.min(365, lessonContext.day + lessonContext.subjectNumber - 1)).topic : null;
+  const phase = lessonContext && lessonContext.lessonIndex >= 0 && lessonContext.lessonIndex < 4 ? (["learn", "example", "practice", "independent"] as Phase[])[lessonContext.lessonIndex] : null;
   const lesson = subject && concept && phase ? makeLesson(subject, concept, phase) : null;
   const questions = subject && concept ? makeQuestions(subject, concept) : [];
   const score = questions.filter((q, i) => answers[i] === q.answer).length;
   const activeMinutes = Math.floor(activeSeconds / 60);
   const plannedMinutes = 60;
   const remainingMinutes = Math.max(0, plannedMinutes - Math.floor(activeSeconds / 60));
-  const lessonProgress = lessonComplete ? 100 : Math.min(95, Math.round(((study?.lessonIndex ?? 0) + 0.25) / 4 * 100));
+  const lessonProgress = lessonComplete ? 100 : Math.min(95, Math.round(((lessonContext?.lessonIndex ?? 0) + 0.25) / 4 * 100));
 
   useEffect(() => {
     const key = `tedslab:study-notes:${slug}`;
@@ -320,7 +322,7 @@ function StudyModePage() {
     return () => window.clearInterval(id);
   }, [mode, testStarted, seconds]);
 
-  if (!study || !studyDay || !level || !subject || !concept || !phase || !lesson) {
+  if (!lessonContext || !studyDay || !level || !subject || !concept || !phase || !lesson) {
     if (article && articleLayout) {
       return <AppShell><PageHeader title="Study Mode" description={article.excerpt || article.title} /><div className="bio-panel p-6"><h2 className="text-2xl font-bold">{article.title}</h2><p className="mt-3 text-sm leading-7 text-muted-foreground">{articleLayout.overview.join(" ")}</p><Link to="/study" className="mt-5 inline-flex rounded-lg bg-primary px-4 py-2 text-sm font-bold text-primary-foreground">Return to Study Lab</Link></div></AppShell>;
     }
@@ -362,7 +364,7 @@ function StudyModePage() {
           <div className="bg-primary/5 p-6 md:p-8">
             <div className="flex flex-wrap items-start justify-between gap-5">
               <div className="max-w-3xl">
-                <p className="text-xs font-bold uppercase tracking-[0.16em] text-primary">Day {study.day} · {studyDay.type} · Lesson {study.lessonIndex + 1} of 4</p>
+                <p className="text-xs font-bold uppercase tracking-[0.16em] text-primary">{isArticleLesson ? "Knowledge Atlas · Article lesson" : `Day ${lessonContext.day} · ${studyDay.type}`} · Lesson {lessonContext.lessonIndex + 1} of 4</p>
                 <h1 className="mt-2 font-display text-3xl font-black tracking-tight text-foreground md:text-4xl">{subject}: {concept}</h1>
                 <p className="mt-3 text-sm leading-7 text-muted-foreground">{lesson.purpose} This is a {level.label} lesson designed to be completed actively, not just read.</p>
                 <div className="mt-4 flex flex-wrap gap-2">
@@ -373,7 +375,7 @@ function StudyModePage() {
               </div>
               <div className="grid min-w-[190px] gap-2 rounded-xl border border-border bg-background/80 p-4 text-xs">
                 <div className="flex justify-between"><span className="text-muted-foreground">Programme</span><strong>365-day Study Lab</strong></div>
-                <div className="flex justify-between"><span className="text-muted-foreground">Week</span><strong>{studyDay.week}</strong></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">{isArticleLesson ? "Source" : "Week"}</span><strong>{isArticleLesson ? "Ted's Lab article" : studyDay.week}</strong></div>
                 <div className="flex justify-between"><span className="text-muted-foreground">Assessment</span><strong>Exit check + quiz</strong></div>
               </div>
             </div>
@@ -480,7 +482,7 @@ function StudyModePage() {
             <section className="bio-panel p-4">
               <h2 className="flex items-center gap-2 text-sm font-bold"><TimerReset className="size-4 text-primary" /> Lesson sequence</h2>
               <ol className="mt-3 space-y-2 text-xs leading-5 text-muted-foreground">
-                {["Concept briefing", "Worked example", "Guided practice", "Independent application"].map((item, i) => <li key={item} className={`flex gap-2 ${i === study.lessonIndex ? "font-bold text-primary" : ""}`}><span>{i + 1}.</span><span>{item}</span></li>)}
+                {["Concept briefing", "Worked example", "Guided practice", "Independent application"].map((item, i) => <li key={item} className={`flex gap-2 ${i === lessonContext.lessonIndex ? "font-bold text-primary" : ""}`}><span>{i + 1}.</span><span>{item}</span></li>)}
               </ol>
               <div className="mt-4 rounded-lg border border-primary/20 bg-primary/5 p-3 text-xs leading-5 text-muted-foreground">
                 <strong className="text-foreground">Progress is earned through active study.</strong> Leaving the lesson or remaining inactive pauses the active-time clock, so the lesson may take longer to finish.
