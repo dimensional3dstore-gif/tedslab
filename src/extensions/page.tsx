@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Download, ShieldCheck } from "lucide-react";
+import { Download, ShieldCheck, Chrome } from "lucide-react";
 import { AppShell } from "@/components/biopedia/AppShell";
 import { getChronosOSDownloadUrl } from "@/lib/chronos-os-download";
 import { FontBar } from "./components/noter/font-bar";
@@ -58,6 +58,37 @@ export default function ExtensionsPage() {
             </Link>
           ))}
         </div>
+        <section className="rounded-xl border border-primary/20 bg-primary/5 p-5">
+          <div className="flex items-start gap-3">
+            <ShieldCheck className="mt-0.5 size-5 shrink-0 text-primary" />
+            <div className="min-w-0">
+              <h2 className="font-semibold text-foreground">Sentinel for Chrome</h2>
+              <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                A public Manifest V3 browser extension that pauses suspicious social links and explains risk locally before navigation.
+              </p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <a
+                  href="https://github.com/dimensional3dstore-gif/sentinel"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 rounded-md border border-border bg-background px-4 py-2 text-sm font-semibold text-foreground hover:border-primary/40 hover:text-primary"
+                >
+                  <Chrome className="size-4" />
+                  Public extension source
+                </a>
+                <Link
+                  to="/sentinel"
+                  className="inline-flex items-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
+                >
+                  Open Sentinel
+                </Link>
+              </div>
+              <p className="mt-3 text-xs text-muted-foreground">
+                The package is prepared for Chrome Web Store submission. The first public Store submission must be completed from a Chrome Web Store developer account.
+              </p>
+            </div>
+          </div>
+        </section>
         <a
           href={chronosDownloadUrl}
           download
