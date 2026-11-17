@@ -22,7 +22,7 @@ type Lesson = {
 
 type Question = { prompt: string; options: string[]; answer: number; explanation: string };
 
-function makeLesson(subject: string, topic: string, phase: Phase, grade: number): Lesson {
+function makeLesson(subject: string, topic: string, phase: Phase): Lesson {
   const common = {
     learn: {
       title: "Concept briefing",
@@ -262,7 +262,7 @@ function StudyModePage() {
   const subject = study && level ? level.subjects[(study.day - 1 + study.subjectNumber - 1) % level.subjects.length] : null;
   const concept = study && subject ? getStudyDay(7, Math.min(365, study.day + study.subjectNumber - 1)).topic : null;
   const phase = study && study.lessonIndex >= 0 && study.lessonIndex < 4 ? (["learn", "example", "practice", "independent"] as Phase[])[study.lessonIndex] : null;
-  const lesson = subject && concept && phase ? makeLesson(subject, concept, phase, 7) : null;
+  const lesson = subject && concept && phase ? makeLesson(subject, concept, phase) : null;
   const questions = subject && concept ? makeQuestions(subject, concept) : [];
   const score = questions.filter((q, i) => answers[i] === q.answer).length;
 
