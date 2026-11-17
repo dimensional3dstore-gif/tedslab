@@ -104,7 +104,14 @@ export function QuantumPediaShell({ section, onSectionChange, children }: { sect
             </aside>
           </div>
         )}
-        <main className="min-w-0 flex-1 p-4 md:p-6 lg:p-8">{children}</main>
+        <div className="min-w-0 flex-1"><main className="p-4 md:p-6 lg:p-8">{children}</main>
+        <footer className="mt-10 border-t px-4 py-7 md:px-6 lg:px-8" style={{ borderColor: "#39d98a18" }}>
+          <div className="flex flex-col gap-2 text-[9px] uppercase tracking-[0.16em] text-[#4f6b88] sm:flex-row sm:items-center sm:justify-between">
+            <span>Ted's Lab · Scientific Knowledge Organisation</span>
+            <Link to="/about" className="hover:text-[#39d98a]" style={{ color: "#39d98a" }}>About the organisation</Link>
+          </div>
+        </footer>
+        </div>
       </div>
     </div>
   );
