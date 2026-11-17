@@ -2,6 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, BookOpen, ExternalLink } from "lucide-react";
 import { AppShell } from "@/components/biopedia/AppShell";
 import { QuantumPediaShell, QPPanel } from "@/components/quantumpedia/QuantumPediaShell";
+import { ArticleBody } from "@/components/article/ArticleBody";
 import { QUANTUMPEDIA_ARTICLES } from "@/data/quantumpedia";
 
 export const Route = createFileRoute("/quantumpedia/articles/$slug")({
@@ -49,6 +50,10 @@ function QuantumPediaArticlePage() {
             </div>
           </header>
 
+          <div className="mb-5 rounded-xl border bg-[#061225]/80 p-4" style={{ borderColor: "#39d98a18" }}>
+            <p className="text-[9px] font-semibold uppercase tracking-[0.18em]" style={{ color: "#39d98a" }}>Ted's Lab article system</p>
+            <p className="mt-1.5 text-[11px] leading-relaxed text-[#8fa8c2]">This QuantumPedia article uses Ted's Lab's standard article presentation and remains available from both knowledge environments.</p>
+          </div>
           <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_260px]">
             <article className="space-y-5">
               <QPPanel className="p-5 sm:p-7">
