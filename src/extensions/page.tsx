@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Download } from "lucide-react";
+import { Download, ShieldCheck } from "lucide-react";
 import { AppShell } from "@/components/biopedia/AppShell";
 import { getChronosOSDownloadUrl } from "@/lib/chronos-os-download";
 import { FontBar } from "./components/noter/font-bar";
@@ -12,6 +12,11 @@ const extensions = [
     title: "Noter",
     description: "Write and format notes locally, then export them as text.",
     path: "/extensions/noter" as const,
+  },
+  {
+    title: "Sentinel",
+    description: "Advanced systems monitoring, diagnostics, integrity and security.",
+    path: "/sentinel" as const,
   },
   {
     title: "Species scan",
