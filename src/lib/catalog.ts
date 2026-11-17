@@ -868,18 +868,18 @@ export const PAGES: PageRow[] = [
 
 export const NAV_LINKS: NavLinkRow[] = [
   {
-    id: "nav-atlas",
-    label: "Knowledge Atlas",
-    href: "/knowledge-atlas",
-    icon: "Network",
+    id: "nav-knowledge",
+    label: "Knowledge",
+    href: "/quantumpedia",
+    icon: "Atom",
     group_name: "tools",
     sort: 0,
   },
   {
-    id: "nav-quantumpedia",
-    label: "QuantumPedia",
-    href: "/quantumpedia",
-    icon: "Atom",
+    id: "nav-atlas",
+    label: "Knowledge Atlas",
+    href: "/knowledge-atlas",
+    icon: "Network",
     group_name: "tools",
     sort: 1,
   },
