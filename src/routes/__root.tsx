@@ -7,7 +7,7 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { AuthProvider } from "@/lib/auth/provider";
 import { PreviewHostBridge } from "@/components/preview-host-bridge";
 import { OfflineSupport } from "@/components/biopedia/OfflineSupport";
@@ -65,6 +65,41 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   },
 );
 
+function UpdateNotice() {
+  const [available, setAvailable] = useState(false);
+  const buildId = import.meta.env.VITE_BUILD_ID ?? "dev";
+
+  useEffect(() => {
+    if (!buildId || buildId === "dev") return;
+    const key = "tedslab:last-seen-build";
+    const seen = window.localStorage.getItem(key);
+    if (!seen) {
+      window.localStorage.setItem(key, buildId);
+      return;
+    }
+    if (seen !== buildId) setAvailable(true);
+  }, [buildId]);
+
+  if (!available) return null;
+  return (
+    <div className="fixed inset-x-0 top-0 z-[100] border-b border-primary/30 bg-primary px-4 py-2 text-primary-foreground shadow-lg">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 text-sm">
+        <p className="font-medium">Ted&apos;s Lab has been updated. Refresh to load the latest version.</p>
+        <button
+          type="button"
+          onClick={() => {
+            window.localStorage.setItem("tedslab:last-seen-build", buildId);
+            window.location.reload();
+          }}
+          className="shrink-0 rounded-md bg-background px-3 py-1.5 text-xs font-semibold text-foreground hover:opacity-90"
+        >
+          Update Ted&apos;s Lab
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function RootDocument() {
   const { queryClient } = Route.useRouteContext();
   useEffect(() => {
@@ -80,6 +115,7 @@ function RootDocument() {
       </head>
       <body>
         <PreviewHostBridge />
+        <UpdateNotice />
         <AuthProvider>
           <QueryClientProvider client={queryClient}>
             <Outlet />
