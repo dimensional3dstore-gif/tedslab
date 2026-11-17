@@ -27,8 +27,7 @@ export function ArticleCard({
   const imageHeight =
     variant === "featured" ? "h-32" : variant === "compact" ? "h-20" : "h-40";
   const articleSlug = article.slug?.trim();
-  const destination =
-    link ?? (articleSlug ? `/articles/${articleSlug}` : "/articles");
+  const destination = link ?? "/articles/$slug";
   const topicLabel = article.topic_slug?.replace(/-/g, " ") ?? "Article";
   const subjectLabel = article.subject_slug?.replace(/-/g, " ") ?? "General";
   const summary =
@@ -45,6 +44,7 @@ export function ArticleCard({
   return (
     <Link
       to={destination}
+      params={link ? undefined : { slug: articleSlug ?? "" }}
       className={`group flex flex-col overflow-hidden bio-panel transition-all duration-200 hover:border-primary/50 hover:shadow-md ${className ?? ""}`}
     >
       {/* Image Section */}
