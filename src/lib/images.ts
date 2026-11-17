@@ -63,6 +63,21 @@ export const imageMap: Record<string, string> = {
 
 export const imageKeys = Object.keys(imageMap);
 
+/** Article-specific banner artwork. These keys keep the ten biology articles visually distinct
+ * while remaining bundled/offline-safe for Ted's Lab. */
+export const articleImageKey: Record<string, string> = {
+  "cellular-respiration": "hero-cell",
+  "dna-structure-function": "cat-genetics",
+  "protein-synthesis": "cat-genetics",
+  "mitosis-cell-division": "cat-organisms",
+  "enzyme-catalysis": "sci-chemistry",
+  "evolution-natural-selection": "cat-evolution",
+  "human-anatomy-systems": "cat-human",
+  "food-chains-energy-flow": "cat-ecology",
+  "photosynthesis-light-reactions": "cat-plants",
+  "meiosis-gamete-formation": "cat-genetics",
+};
+
 /** Default artwork key per subject, used when a row has no image of its own. */
 export const subjectImageKey: Record<string, string> = {
   biology: "hero-cell",
