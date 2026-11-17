@@ -66,7 +66,7 @@ export function Sidebar({
   const { isAdmin } = useAuth();
   const chronosDownloadUrl = getChronosOSDownloadUrl();
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
-  const [collapsed, setCollapsed] = useState(false);
+  const collapsed = false;
 
   const brandName = settings?.["site_name"] ?? "Ted's Lab";
   const brandTagline =
@@ -151,33 +151,13 @@ export function Sidebar({
               </div>
             )}
           </Link>
-          {!collapsed && (
-            <button
-              type="button"
-              title="Collapse sidebar"
-              aria-label="Collapse sidebar"
-              onClick={() => setCollapsed(true)}
-              className="grid size-8 shrink-0 place-items-center rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground"
-            >
-              <PanelLeftClose className="size-4" />
-            </button>
-          )}
+
         </div>
 
         <nav
           className={`flex-1 overflow-y-auto py-3 ${collapsed ? "px-2" : "px-3"}`}
         >
-          {collapsed && (
-            <button
-              type="button"
-              title="Expand sidebar"
-              aria-label="Expand sidebar"
-              onClick={() => setCollapsed(false)}
-              className="mx-auto mb-3 grid size-10 place-items-center rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground"
-            >
-              <PanelLeftOpen className="size-4" />
-            </button>
-          )}
+
           <ul className="space-y-0.5">
             <li><NavLink label="Home" Icon={LucideIcons.Home} to="/" exact collapsed={collapsed} /></li>
             <li><NavLink label="Study Lab" Icon={LucideIcons.GraduationCap} to="/study" collapsed={collapsed} /></li>
