@@ -23,174 +23,183 @@ type Lesson = {
 type Question = { prompt: string; options: string[]; answer: number; explanation: string };
 
 function makeLesson(subject: string, topic: string, phase: Phase): Lesson {
-  const common = {
+  const phaseContent: Record<Phase, { title: string; purpose: string }> = {
     learn: {
-      title: "Concept briefing",
-      purpose: "Build the core knowledge before you practise it.",
+      title: "Build the concept",
+      purpose: "Learn the key idea, vocabulary, relationships and mental model before attempting independent work.",
     },
     example: {
       title: "Worked example",
-      purpose: "See a complete model and understand why each step works.",
+      purpose: "Follow a complete model, identify the reasoning behind each step and compare it with the lesson objective.",
     },
     practice: {
       title: "Guided practice",
-      purpose: "Try the skill with prompts that gradually remove support.",
+      purpose: "Use the new knowledge with scaffolding, then remove the support as your confidence increases.",
     },
     independent: {
       title: "Independent application",
-      purpose: "Transfer the knowledge to a new problem without a worked solution.",
+      purpose: "Transfer the learning to a new situation and justify your answer without copying the worked model.",
     },
-  }[phase];
+  };
 
-  if (subject === "Mathematics" || subject === "Advanced Mathematics") {
+  const phaseInfo = phaseContent[phase];
+  const mathematics = /fraction|decimal|percent|number|algebra|pattern|measurement|geometry|statistic|probability|modelling|proof|function|calculus|vector|matrix|equation|ratio/i.test(topic);
+  const science = /inquiry|living|ecosystem|matter|material|force|energy|motion|earth|space|climate|cell|heredity|evolution|experimental|atomic|bond|reaction|stoichiometry|rate|equilibrium|acid|organic|quantum|wave|electric|field/i.test(topic);
+  const humanities = /history|chronology|source|geography|place|environment|civic|citizen|economic|resource|culture|identity|sustainability|global|conflict|revolution|trade|population|settlement|market|policy/i.test(topic);
+  const technology = /digital|algorithm|comput|program|debug|network|cyber|data|information|software|system|security|ai|database/i.test(topic);
+  const literacy = /reading|vocabulary|sentence|grammar|narrative|writing|persuasive|argument|informative|speaking|text|research|referenc|thesis|evidence|citation/i.test(topic);
+
+  if (subject === "Mathematics" || subject === "Advanced Mathematics" || mathematics) {
     return {
-      ...common,
+      ...phaseInfo,
       teach: [
-        `Today's mathematical focus is ${topic}. Start by identifying the quantities, relationships or structures that the problem is describing.`,
-        "Use mathematical language precisely. Write down what is known, what must be found, and which operation, representation or rule connects them.",
-        "A correct solution is more than an answer: show the method, keep units where relevant, and check whether the result is reasonable.",
+        `Start with the structure of ${topic}: identify the quantities, representations, rules or relationships before choosing a calculation.`,
+        "Write the known information and the target separately. This prevents a familiar formula or procedure from being used simply because it looks relevant.",
+        "Choose a representation that makes the relationship visible: a number line, table, diagram, equation, graph, formula or worked calculation.",
+        `For ${topic}, keep each transformation explicit. After every major step ask: what changed, why is that step valid, and what does the result mean in the original problem?`,
+        "Finish with a check: estimate, substitute, use a second method, or compare the answer with the original conditions.",
       ],
-      example: `Worked model: take a simple case related to ${topic}. First identify the known information, choose the relevant representation or rule, complete one step at a time, then substitute the result back into the original situation to check it.`,
+      example: `Worked model for ${topic}: identify the goal → list the known values → choose the relevant representation or rule → complete one transformation at a time → interpret the result → check it against the original conditions.`,
       practice: [
-        `Explain what ${topic} means in your own words.`,
-        "Create one easy example and solve it, showing every step.",
-        "Change one value in your example and solve the new version.",
+        `Define ${topic} in your own words and give one example not copied from the lesson.`,
+        "Solve a short problem using a clearly labelled method.",
+        "Change one condition in your problem and explain how the solution changes.",
+        "Write one plausible mistake and explain exactly why it is wrong.",
       ],
       success: [
         "I can identify the mathematical structure before calculating.",
-        "I can show a complete method rather than only an answer.",
-        "I can check my result using estimation, substitution or another representation.",
+        "I can show and justify each important step.",
+        "I can apply the idea to a changed problem.",
+        "I can check whether my result is reasonable.",
       ],
     };
   }
 
-  if (subject === "Science" || subject === "Biology" || subject === "Chemistry" || subject === "Physics" || subject === "Advanced Sciences") {
+  if (subject === "Science" || subject === "Biology" || subject === "Chemistry" || subject === "Physics" || subject === "Advanced Sciences" || science) {
     return {
-      ...common,
+      ...phaseInfo,
       teach: [
-        `The scientific focus is ${topic}. Scientific understanding connects observations to models, mechanisms and evidence rather than relying on memorised statements alone.`,
-        "Separate an observation from an explanation. An observation describes what was measured or seen; an explanation proposes why the pattern occurred.",
-        "When evidence is collected, look for variables, patterns, uncertainty and alternative explanations. A strong conclusion is proportional to the evidence.",
+        `Today's scientific idea is ${topic}. Separate what can be observed or measured from the model used to explain it.`,
+        "Identify the system, variables and mechanism. A strong explanation tells the learner what changes, what stays controlled and why the observed pattern follows.",
+        "Use evidence rather than certainty language. Measurements have uncertainty, investigations have limitations and one result rarely proves a universal claim.",
+        `For ${topic}, connect the concept to a prediction: if the model is correct, what should we observe, measure or calculate?`,
+        "Evaluate the explanation by asking whether the evidence supports it, whether another explanation could fit the same evidence, and what further test would discriminate between them.",
       ],
-      example: `Worked model: investigate a question connected to ${topic}. State a testable question, identify the independent and dependent variables, predict a result, describe how evidence would be collected, and explain what result would support the prediction.`,
+      example: `Worked model for ${topic}: question → hypothesis/model → variables → method or evidence → predicted pattern → observed result → explanation → limitation → next investigation.`,
       practice: [
         `Write one testable question about ${topic}.`,
-        "Identify the variables and one factor that should be controlled.",
-        "Describe what evidence would make your conclusion stronger or weaker.",
+        "Identify the independent variable, dependent variable and one important control.",
+        "Predict a result and explain which observation would support your prediction.",
+        "Name one limitation and one improvement that would make the evidence stronger.",
       ],
       success: [
-        "I can distinguish evidence from an explanation.",
-        "I can identify variables and describe a fair investigation.",
-        "I can use evidence to support a conclusion and acknowledge limitations.",
+        "I can distinguish an observation from an explanation.",
+        "I can connect a scientific model to a prediction.",
+        "I can use evidence and uncertainty appropriately.",
+        "I can identify a limitation and propose a useful improvement.",
       ],
     };
   }
 
-  if (subject === "English" || subject === "Academic Writing") {
+  if (subject === "Humanities" || subject === "Modern History" || subject === "Geography" || subject === "Economics" || humanities) {
     return {
-      ...common,
+      ...phaseInfo,
       teach: [
-        `Today's literacy focus is ${topic}. Strong communication begins with a clear purpose, audience and central idea.`,
-        "Build claims from evidence. A useful paragraph makes a point, gives relevant evidence or an example, explains its significance, and links back to the argument.",
-        "Revise for meaning before polishing grammar. Ask whether each sentence contributes to the purpose and whether the evidence actually supports the claim.",
+        `Today's focus is ${topic}. Define the central concept and the question a learner is actually being asked to answer.`,
+        "Place evidence in context: ask who produced it, when, why, what perspective it represents and what it can or cannot establish.",
+        "Separate description from explanation. Description tells us what happened or what the data shows; explanation connects causes, consequences, relationships or incentives.",
+        `For ${topic}, compare at least two pieces of evidence or perspectives before reaching a judgement.`,
+        "A strong conclusion is proportionate to the evidence. State the judgement, identify the strongest support and acknowledge the most important limitation or counterargument.",
       ],
-      example: `Worked model: write a short response about ${topic}. Begin with a clear claim, introduce one relevant example, explain how it supports the claim, then finish with a sentence that connects the evidence to the overall idea.`,
+      example: `Worked model for ${topic}: establish context → state a claim → select evidence → explain how the evidence supports the claim → compare another perspective → evaluate limitations → reach a justified judgement.`,
+      practice: [
+        `Write one investigable claim about ${topic}.`,
+        "List two pieces of evidence that could support or challenge the claim.",
+        "Explain why one source, statistic or perspective is more useful for the question than another.",
+        "Write a two-sentence judgement that includes evidence and one limitation.",
+      ],
+      success: [
+        "I can distinguish claims, evidence and explanations.",
+        "I can evaluate the usefulness and limitations of evidence.",
+        "I can compare perspectives rather than relying on one source.",
+        "I can reach a justified judgement.",
+      ],
+    };
+  }
+
+  if (subject === "Digital Technologies" || subject === "Computer Science" || technology) {
+    return {
+      ...phaseInfo,
+      teach: [
+        `Today's computing focus is ${topic}. Define the problem, inputs, outputs and constraints before writing a solution.`,
+        "Decompose the task into smaller operations that can be tested independently.",
+        "Represent information explicitly using variables, tables, data structures, diagrams, algorithms or interfaces as appropriate.",
+        `For ${topic}, test normal cases as well as boundary and unexpected cases. A solution is not complete until you know where it fails and why.`,
+        "When debugging, reproduce the failure, isolate the smallest faulty step, change one thing at a time and retest.",
+      ],
+      example: `Worked model for ${topic}: define the problem → specify input/output → decompose → design the algorithm or representation → test an ordinary case → test an edge case → diagnose → refine.`,
+      practice: [
+        `Decompose a small problem involving ${topic} into at least four steps.`,
+        "Write one example input and the exact output you expect.",
+        "Create an edge case that could break a first attempt.",
+        "Describe one likely bug and the test that would reveal it.",
+      ],
+      success: [
+        "I can define inputs, outputs and constraints.",
+        "I can decompose a problem into testable parts.",
+        "I can test normal and edge cases.",
+        "I can explain a bug and a reasoned fix.",
+      ],
+    };
+  }
+
+  if (subject === "English" || subject === "Academic Writing" || subject === "Critical Thinking" || literacy) {
+    return {
+      ...phaseInfo,
+      teach: [
+        `Today's communication focus is ${topic}. Begin with purpose, audience and the central claim or idea.`,
+        "A strong paragraph introduces a point, uses relevant evidence or an example, explains its significance and connects back to the overall purpose.",
+        "Evidence does not speak for itself. Explain what a quotation, example, statistic or observation shows and why it matters.",
+        `For ${topic}, revise for reasoning before surface polish. Remove repetition, unsupported claims and sentences that do not advance the central idea.`,
+        "Test the response from the reader's perspective: Is the claim clear? Is the evidence sufficient? Could a reasonable reader misunderstand the intended meaning?",
+      ],
+      example: `Worked model for ${topic}: establish purpose → state a precise claim → select evidence → integrate it → explain its significance → connect it to the argument → revise for clarity and precision.`,
       practice: [
         `Write a one-sentence claim about ${topic}.`,
-        "Add one specific example or piece of evidence.",
-        "Explain why that evidence matters rather than merely repeating it.",
+        "Add one specific example or piece of evidence and explain what it demonstrates.",
+        "Write one counterargument or alternative interpretation, then respond to it fairly.",
+        "Revise your paragraph by removing one unsupported or unnecessary sentence.",
       ],
       success: [
-        "I can state a clear claim.",
-        "I can select relevant evidence and explain it.",
-        "I can revise a response so every paragraph has a clear purpose.",
-      ],
-    };
-  }
-
-  if (subject === "Humanities" || subject === "Modern History" || subject === "Geography" || subject === "Economics") {
-    return {
-      ...common,
-      teach: [
-        `Today's humanities focus is ${topic}. The key skill is constructing an explanation from evidence, context and competing perspectives.`,
-        "Ask who created a source, when and why. Context can change how reliable or useful a source is for a particular question.",
-        "Avoid treating a single source as the whole story. Compare evidence, identify patterns and differences, then make a reasoned judgement.",
-      ],
-      example: `Worked model: examine a claim connected to ${topic}. Identify the claim, select two pieces of evidence, explain what each supports, compare their limitations, and finish with a justified conclusion.`,
-      practice: [
-        `Write one claim about ${topic} that could be investigated.`,
-        "List two kinds of evidence that could support or challenge the claim.",
-        "Explain one limitation or alternative interpretation.",
-      ],
-      success: [
-        "I can distinguish a claim from evidence.",
-        "I can explain why a source or data point is useful.",
-        "I can reach a conclusion that is justified by multiple pieces of evidence.",
-      ],
-    };
-  }
-
-  if (subject === "Digital Technologies" || subject === "Computer Science") {
-    return {
-      ...common,
-      teach: [
-        `Today's computing focus is ${topic}. Good digital problem solving begins by decomposing a problem into smaller, testable parts.`,
-        "Represent information clearly, define inputs and outputs, and make the sequence of operations explicit.",
-        "Test with normal, boundary and unexpected cases. When something fails, isolate the smallest part that could be wrong and change one thing at a time.",
-      ],
-      example: `Worked model: design a small solution related to ${topic}. State the problem, define the input and expected output, sketch the algorithm or data structure, test it with an example, then record the result and any correction.`,
-      practice: [
-        `Decompose a small problem related to ${topic} into at least three steps.`,
-        "Write the expected input and output.",
-        "Invent an edge case that could make your first solution fail.",
-      ],
-      success: [
-        "I can break a problem into manageable components.",
-        "I can describe an algorithm or representation clearly.",
-        "I can test and debug rather than assuming a solution works.",
-      ],
-    };
-  }
-
-  if (subject === "Health & Physical Education") {
-    return {
-      ...common,
-      teach: [
-        `Today's health and physical education focus is ${topic}. Effective decisions combine knowledge, personal goals, safety and evidence.`,
-        "Use specific observations rather than vague judgements. In movement or fitness work, describe technique, intensity, recovery and the reason for a change.",
-        "Health decisions should consider immediate and longer-term consequences, available support, and the context in which the decision is made.",
-      ],
-      example: `Worked model: apply ${topic} to a realistic scenario. Identify the goal, describe the safest or most effective option, justify it using relevant principles, and explain how you would evaluate the result.`,
-      practice: [
-        `Describe one goal related to ${topic}.`,
-        "Choose an action that could help achieve it and justify the choice.",
-        "Name one risk or limitation and explain how you would manage it.",
-      ],
-      success: [
-        "I can explain a choice using relevant principles.",
-        "I can identify risks and practical ways to manage them.",
-        "I can evaluate whether a strategy is working and adjust it.",
+        "I can state a precise claim and purpose.",
+        "I can select relevant evidence.",
+        "I can explain evidence instead of merely repeating it.",
+        "I can revise for clarity, relevance and logical strength.",
       ],
     };
   }
 
   return {
-    ...common,
+    ...phaseInfo,
     teach: [
-      `Today's focus is ${topic}. Begin by defining the key idea and identifying the knowledge needed to use it.`,
-      "Connect the idea to a concrete example, then explain the relationship rather than simply naming it.",
-      "Strong learning includes retrieval, application and correction. If an answer is wrong, identify the exact step or assumption that caused the error.",
+      `Today's focus is ${topic}. Define the central idea and the vocabulary needed to discuss it accurately.`,
+      "Connect the idea to a concrete example and explain the relationship rather than only naming the example.",
+      "Retrieve the idea from memory, then compare your explanation with the lesson. Correction is part of learning.",
+      `Use ${topic} in a new situation. Ask what stays the same, what changes and which part of the original idea still applies.`,
+      "Finish by explaining the concept in plain language and identifying one question that would take the learning further.",
     ],
-    example: `Worked model: take a simple situation involving ${topic}. Identify the central idea, apply it step by step, explain the reasoning, and check the result against the original question.`,
+    example: `Worked model for ${topic}: define → illustrate → explain the relationship → apply to a new situation → check the reasoning → identify a limitation or extension.`,
     practice: [
       `Explain ${topic} without looking at your notes.`,
-      "Create a new example and solve or explain it.",
+      "Create a new example and explain why it demonstrates the concept.",
       "Write one misconception a learner might have and correct it.",
+      "Write one extension question that could lead to deeper study.",
     ],
     success: [
-      "I can explain the idea without copying the lesson.",
+      "I can explain the central idea without copying the lesson.",
       "I can apply it to a new situation.",
-      "I can identify and correct an error.",
+      "I can identify and correct a misconception.",
+      "I can ask a useful next question.",
     ],
   };
 }
