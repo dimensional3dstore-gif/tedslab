@@ -124,7 +124,7 @@ export function ArticleTemplate({
           <p className="mt-4 max-w-3xl text-sm leading-relaxed text-muted-foreground">
             {article.excerpt || layout.overview[0]}
           </p>
-          <div className="mt-5 flex flex-wrap gap-2">
+          <div className="mt-5 flex flex-wrap items-center gap-2">
             {layout.tags.map((tag) => (
               <span
                 key={tag}
@@ -134,6 +134,26 @@ export function ArticleTemplate({
               </span>
             ))}
           </div>
+          {article.subject_slug === "quantum" && (
+            <div className="mt-4 rounded-xl border border-primary/20 bg-primary/5 p-4">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">
+                    QuantumPedia knowledge
+                  </p>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    Continue exploring this article's quantum knowledge, concepts and related references in QuantumPedia.
+                  </p>
+                </div>
+                <Link
+                  to="/quantumpedia"
+                  className="inline-flex shrink-0 items-center justify-center rounded-lg border border-primary/25 bg-background px-3 py-2 text-xs font-semibold text-primary hover:bg-primary/10"
+                >
+                  Open QuantumPedia
+                </Link>
+              </div>
+            </div>
+          )}
         </div>
       </header>
 
