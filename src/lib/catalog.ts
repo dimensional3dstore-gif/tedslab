@@ -873,6 +873,14 @@ export const NAV_LINKS: NavLinkRow[] = [
     group_name: "tools",
     sort: 0,
   },
+  {
+    id: "nav-quantumpedia",
+    label: "QuantumPedia",
+    href: "/quantumpedia",
+    icon: "Atom",
+    group_name: "tools",
+    sort: 1,
+  },
 ];
 
 export const SETTINGS: Record<string, string> = {
