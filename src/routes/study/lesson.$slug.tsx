@@ -250,6 +250,10 @@ function StudyModePage() {
   const [testStarted, setTestStarted] = useState(false);
   const [seconds, setSeconds] = useState(20 * 60);
   const [notes, setNotes] = useState("");
+  const [activeSeconds, setActiveSeconds] = useState(0);
+  const [lastActivity, setLastActivity] = useState(() => Date.now());
+  const [lessonComplete, setLessonComplete] = useState(false);
+  const [activityState, setActivityState] = useState<"active" | "paused">("active");
 
   const article = useMemo(
     () => (articles.length ? articles : websiteFallbackArticles).find((item) => item.slug === slug),
@@ -265,11 +269,50 @@ function StudyModePage() {
   const lesson = subject && concept && phase ? makeLesson(subject, concept, phase) : null;
   const questions = subject && concept ? makeQuestions(subject, concept) : [];
   const score = questions.filter((q, i) => answers[i] === q.answer).length;
+  const activeMinutes = Math.floor(activeSeconds / 60);
+  const plannedMinutes = 60;
+  const remainingMinutes = Math.max(0, plannedMinutes - Math.floor(activeSeconds / 60));
+  const lessonProgress = lessonComplete ? 100 : Math.min(95, Math.round(((study?.lessonIndex ?? 0) + 0.25) / 4 * 100));
 
   useEffect(() => {
     const key = `tedslab:study-notes:${slug}`;
     setNotes(localStorage.getItem(key) ?? "");
+    setLessonComplete(localStorage.getItem(`tedslab:study-complete:${slug}`) === "true");
   }, [slug]);
+
+  useEffect(() => {
+    const onActivity = () => {
+      setLastActivity(Date.now());
+      setActivityState("active");
+    };
+    const onVisibility = () => {
+      if (document.hidden) setActivityState("paused");
+      else {
+        setLastActivity(Date.now());
+        setActivityState("active");
+      }
+    };
+    window.addEventListener("mousemove", onActivity, { passive: true });
+    window.addEventListener("keydown", onActivity);
+    window.addEventListener("touchstart", onActivity, { passive: true });
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      window.removeEventListener("mousemove", onActivity);
+      window.removeEventListener("keydown", onActivity);
+      window.removeEventListener("touchstart", onActivity);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, []);
+
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      const inactive = Date.now() - lastActivity > 90_000;
+      const active = !document.hidden && !inactive;
+      setActivityState(active ? "active" : "paused");
+      if (active) setActiveSeconds((value) => value + 1);
+    }, 1000);
+    return () => window.clearInterval(id);
+  }, [lastActivity]);
 
   useEffect(() => {
     if (mode !== "test" || !testStarted || seconds <= 0) return;
@@ -286,6 +329,10 @@ function StudyModePage() {
   }
 
   const saveNotes = () => localStorage.setItem(`tedslab:study-notes:${slug}`, notes);
+  const completeLesson = () => {
+    setLessonComplete(true);
+    localStorage.setItem(`tedslab:study-complete:${slug}`, "true");
+  };
   const startTest = () => { setMode("test"); setTestStarted(true); setSeconds(20 * 60); setAnswers({}); setMarked(false); };
 
   return (
@@ -294,6 +341,22 @@ function StudyModePage() {
         <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
           <Link to="/study" className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground"><ArrowLeft className="size-4" /> Back to Study Lab</Link>
           <div className="flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1.5 text-xs font-semibold text-primary"><GraduationCap className="size-4" /> Ted's Lab Study Mode</div>
+        </div>
+        <section className="mb-5 rounded-2xl border border-border bg-card p-4 shadow-sm">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-wide text-primary">Lesson progress</p>
+              <p className="mt-1 text-sm text-muted-foreground">{lessonComplete ? "Lesson completed. You can continue to the next lesson." : "Work through the lesson, practise, then complete the lesson when you are ready."}</p>
+            </div>
+            <span className="text-sm font-bold text-foreground">{lessonProgress}%</span>
+          </div>
+          <div className="mt-3 h-2 overflow-hidden rounded-full bg-secondary"><div className="h-full rounded-full bg-primary transition-all" style={{ width: `${lessonProgress}%` }} /></div>
+          <div className="mt-3 flex flex-wrap items-center justify-between gap-3 text-xs">
+            <span className="inline-flex items-center gap-2 font-medium text-muted-foreground"><Clock3 className="size-4 text-primary" /> Active study: {activeMinutes} min · {remainingMinutes} min remaining</span>
+            <span className={`rounded-full px-2.5 py-1 font-semibold ${activityState === "active" ? "bg-emerald-500/10 text-emerald-700" : "bg-amber-500/10 text-amber-700"}`}>{activityState === "active" ? "Active study time" : "Study time paused"}</span>
+          </div>
+          <p className="mt-3 text-xs leading-5 text-muted-foreground">Study time is based on active learning. If you leave the browser, switch tabs, or remain inactive, the active timer pauses and your expected study time extends. This keeps progress based on time actually spent studying.</p>
+        </section>
         </div>
 
         <header className="overflow-hidden rounded-2xl border border-primary/20 bg-card shadow-sm">
@@ -364,6 +427,7 @@ function StudyModePage() {
                     <p className="text-xs font-bold uppercase tracking-wide text-primary">Exit ticket</p>
                     <p className="mt-2 text-sm text-foreground">Without looking back, write three sentences explaining what you learned, one example, and one question you still have.</p>
                   </div>
+                  <button type="button" onClick={completeLesson} disabled={lessonComplete} className="mt-4 rounded-lg bg-primary px-4 py-2 text-sm font-bold text-primary-foreground disabled:cursor-default disabled:opacity-60">{lessonComplete ? "Lesson completed" : "Complete lesson"}</button>
                 </section>
               </div>
             )}
@@ -419,6 +483,9 @@ function StudyModePage() {
               <ol className="mt-3 space-y-2 text-xs leading-5 text-muted-foreground">
                 {["Concept briefing", "Worked example", "Guided practice", "Independent application"].map((item, i) => <li key={item} className={`flex gap-2 ${i === study.lessonIndex ? "font-bold text-primary" : ""}`}><span>{i + 1}.</span><span>{item}</span></li>)}
               </ol>
+              <div className="mt-4 rounded-lg border border-primary/20 bg-primary/5 p-3 text-xs leading-5 text-muted-foreground">
+                <strong className="text-foreground">Progress is earned through active study.</strong> Leaving the lesson or remaining inactive pauses the active-time clock, so the lesson may take longer to finish.
+              </div>
             </section>
           </aside>
         </div>
