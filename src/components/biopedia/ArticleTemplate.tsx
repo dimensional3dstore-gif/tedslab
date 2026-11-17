@@ -16,7 +16,7 @@ import {
   layoutFromArticleBody,
   type ArticleLayout,
 } from "@/lib/article-layout";
-import { resolveImage } from "@/lib/images";
+import { articleImageKey, resolveImage } from "@/lib/images";
 import { StudyLesson } from "@/components/study/StudyLesson";
 import { ArticleConceptExplainer } from "@/components/biopedia/ArticleConceptExplainer";
 
@@ -54,7 +54,10 @@ export function ArticleTemplate({
     } satisfies ArticleLayout);
 
   const tabs = ["Scientific overview", ...layout.sections.map((section) => section.heading)];
-  const image = resolveImage(article.image_url, article.image_key);
+  const image = resolveImage(
+    article.image_url,
+    articleImageKey[article.slug] ?? article.image_key,
+  );
   const crumbs = [
     "Home",
     subjectTitle,
@@ -85,46 +88,51 @@ export function ArticleTemplate({
       </nav>
 
       <header className="mt-6 overflow-hidden rounded-2xl border border-border bg-card/80">
-        <div className="grid gap-6 p-6 md:grid-cols-[1.3fr_1fr] md:items-center">
-          <div>
-            <h1 className="font-display text-4xl font-black tracking-tight text-foreground">
-              {article.title}
-            </h1>
-            <div className="mt-3 flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-2 rounded-md border border-primary/30 bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary">
-                <CheckCircle2 className="size-3.5" />
-                Scientific reference
-              </span>
-              <span className="inline-flex items-center gap-2 rounded-md border border-border bg-secondary px-2.5 py-1 text-xs font-medium text-foreground">
-                Subject: {subjectTitle}
-              </span>
-            </div>
-            {article.published && article.expert_reviewed && (
-              <div className="mt-2 inline-flex items-center gap-2 rounded-md border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-xs font-semibold text-emerald-600">
-                <CheckCircle2 className="size-3.5" />
-                Expert reviewed
-              </div>
-            )}
-            <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground">
-              {article.excerpt || layout.overview[0]}
-            </p>
-            <div className="mt-5 flex flex-wrap gap-2">
-              {layout.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="rounded-full border border-border bg-secondary px-2.5 py-1 text-xs text-muted-foreground"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
+        <div className="relative overflow-hidden border-b border-border bg-secondary">
+          <img
+            src={image}
+            alt=""
+            aria-hidden="true"
+            className="h-56 w-full object-cover sm:h-72 md:h-80"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/10 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-7">
+            <span className="inline-flex items-center rounded-full border border-white/30 bg-black/30 px-3 py-1 text-xs font-semibold text-white backdrop-blur">
+              Ted's Lab · Scientific reference
+            </span>
           </div>
-          <div className="overflow-hidden rounded-2xl border border-border bg-secondary">
-            <img
-              src={image}
-              alt={article.title}
-              className="h-full min-h-[220px] w-full object-cover"
-            />
+        </div>
+        <div className="p-6 md:p-8">
+          <h1 className="font-display text-4xl font-black tracking-tight text-foreground">
+            {article.title}
+          </h1>
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-2 rounded-md border border-primary/30 bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary">
+              <CheckCircle2 className="size-3.5" />
+              Scientific reference
+            </span>
+            <span className="inline-flex items-center gap-2 rounded-md border border-border bg-secondary px-2.5 py-1 text-xs font-medium text-foreground">
+              Subject: {subjectTitle}
+            </span>
+          </div>
+          {article.published && article.expert_reviewed && (
+            <div className="mt-2 inline-flex items-center gap-2 rounded-md border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-xs font-semibold text-emerald-600">
+              <CheckCircle2 className="size-3.5" />
+              Expert reviewed
+            </div>
+          )}
+          <p className="mt-4 max-w-3xl text-sm leading-relaxed text-muted-foreground">
+            {article.excerpt || layout.overview[0]}
+          </p>
+          <div className="mt-5 flex flex-wrap gap-2">
+            {layout.tags.map((tag) => (
+              <span
+                key={tag}
+                className="rounded-full border border-border bg-secondary px-2.5 py-1 text-xs text-muted-foreground"
+              >
+                {tag}
+              </span>
+            ))}
           </div>
         </div>
       </header>
