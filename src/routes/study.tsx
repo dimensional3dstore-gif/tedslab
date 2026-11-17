@@ -227,7 +227,7 @@ function StudySubjectCard({
               practice and exit ticket there. The next lesson unlocks after completion.
             </p>
           </div>
-        )
+        )}
 
         {quizOpen && !completed && (
           <div className="mt-5 rounded-xl border border-border bg-secondary/20 p-4">
