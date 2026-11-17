@@ -171,6 +171,7 @@ export function Sidebar({
           <ul className="space-y-0.5">
             <li><NavLink label="QuantumPedia" Icon={LucideIcons.Atom} to="/quantumpedia" collapsed={collapsed} featured /></li>
             <li><NavLink label="Extensions" Icon={LucideIcons.Puzzle} to="/extensions" collapsed={collapsed} featured /></li>
+            <li><NavLink label="Sentinel" Icon={LucideIcons.ShieldCheck} to="/sentinel" collapsed={collapsed} /></li>
             <li><NavLink label="Knowledge Atlas" Icon={LucideIcons.Network} to="/knowledge-atlas" collapsed={collapsed} />
             <li><NavLink label="ChronosOS Deepmind" Icon={BrainCircuit} to="/chronosos-deepmind" collapsed={collapsed} featured /></li>
             <li><NavLink label="Micro-Atlas" Icon={Microscope} to="/microatlas" collapsed={collapsed} /></li>
