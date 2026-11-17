@@ -35,8 +35,6 @@ import { Route as DownloadRouteImport } from './routes/download'
 import { Route as DownloadableSoftwareRouteImport } from './routes/downloadable-software'
 import { Route as EcologyEnvironmentRouteImport } from './routes/ecology-environment'
 import { Route as EvolutionRouteImport } from './routes/evolution'
-import { Route as ExtensionToolsUploadRouteImport } from './routes/extension-tools-upload'
-import { Route as ExtensionsRouteImport } from './routes/extensions'
 import { Route as FlashcardsRouteImport } from './routes/flashcards'
 import { Route as GeneticsDnaRouteImport } from './routes/genetics-dna'
 import { Route as GlossaryRouteImport } from './routes/glossary'
@@ -85,7 +83,6 @@ import { Route as ArticlesMeiosisGameteFormationRouteImport } from './routes/art
 import { Route as ArticlesMitosisCellDivisionRouteImport } from './routes/articles.mitosis-cell-division'
 import { Route as ArticlesPhotosynthesisLightReactionsRouteImport } from './routes/articles.photosynthesis-light-reactions'
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
-import { Route as ExtensionsNoterRouteImport } from './routes/extensions.noter'
 import { Route as LostAtlasSlugRouteImport } from './routes/lost-atlas.$slug'
 import { Route as PagesSlugRouteImport } from './routes/pages.$slug'
 import { Route as TutorialsSlugRouteImport } from './routes/tutorials.$slug'
@@ -221,16 +218,6 @@ const EcologyEnvironmentRoute = EcologyEnvironmentRouteImport.update({
 const EvolutionRoute = EvolutionRouteImport.update({
   id: '/evolution',
   path: '/evolution',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ExtensionToolsUploadRoute = ExtensionToolsUploadRouteImport.update({
-  id: '/extension-tools-upload',
-  path: '/extension-tools-upload',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ExtensionsRoute = ExtensionsRouteImport.update({
-  id: '/extensions',
-  path: '/extensions',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FlashcardsRoute = FlashcardsRouteImport.update({
@@ -480,11 +467,6 @@ const AuthCallbackRoute = AuthCallbackRouteImport.update({
   path: '/callback',
   getParentRoute: () => AuthRoute,
 } as any)
-const ExtensionsNoterRoute = ExtensionsNoterRouteImport.update({
-  id: '/noter',
-  path: '/noter',
-  getParentRoute: () => ExtensionsRoute,
-} as any)
 const LostAtlasSlugRoute = LostAtlasSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -543,8 +525,6 @@ export interface FileRoutesByFullPath {
   '/downloadable-software': typeof DownloadableSoftwareRoute
   '/ecology-environment': typeof EcologyEnvironmentRoute
   '/evolution': typeof EvolutionRoute
-  '/extension-tools-upload': typeof ExtensionToolsUploadRoute
-  '/extensions': typeof ExtensionsRouteWithChildren
   '/flashcards': typeof FlashcardsRoute
   '/genetics-dna': typeof GeneticsDnaRoute
   '/glossary': typeof GlossaryRoute
@@ -593,7 +573,6 @@ export interface FileRoutesByFullPath {
   '/articles/mitosis-cell-division': typeof ArticlesMitosisCellDivisionRoute
   '/articles/photosynthesis-light-reactions': typeof ArticlesPhotosynthesisLightReactionsRoute
   '/auth/callback': typeof AuthCallbackRoute
-  '/extensions/noter': typeof ExtensionsNoterRoute
   '/lost-atlas/$slug': typeof LostAtlasSlugRoute
   '/pages/$slug': typeof PagesSlugRoute
   '/tutorials/$slug': typeof TutorialsSlugRoute
@@ -628,8 +607,6 @@ export interface FileRoutesByTo {
   '/downloadable-software': typeof DownloadableSoftwareRoute
   '/ecology-environment': typeof EcologyEnvironmentRoute
   '/evolution': typeof EvolutionRoute
-  '/extension-tools-upload': typeof ExtensionToolsUploadRoute
-  '/extensions': typeof ExtensionsRouteWithChildren
   '/flashcards': typeof FlashcardsRoute
   '/genetics-dna': typeof GeneticsDnaRoute
   '/glossary': typeof GlossaryRoute
@@ -678,7 +655,6 @@ export interface FileRoutesByTo {
   '/articles/mitosis-cell-division': typeof ArticlesMitosisCellDivisionRoute
   '/articles/photosynthesis-light-reactions': typeof ArticlesPhotosynthesisLightReactionsRoute
   '/auth/callback': typeof AuthCallbackRoute
-  '/extensions/noter': typeof ExtensionsNoterRoute
   '/lost-atlas/$slug': typeof LostAtlasSlugRoute
   '/pages/$slug': typeof PagesSlugRoute
   '/tutorials/$slug': typeof TutorialsSlugRoute
@@ -714,8 +690,6 @@ export interface FileRoutesById {
   '/downloadable-software': typeof DownloadableSoftwareRoute
   '/ecology-environment': typeof EcologyEnvironmentRoute
   '/evolution': typeof EvolutionRoute
-  '/extension-tools-upload': typeof ExtensionToolsUploadRoute
-  '/extensions': typeof ExtensionsRouteWithChildren
   '/flashcards': typeof FlashcardsRoute
   '/genetics-dna': typeof GeneticsDnaRoute
   '/glossary': typeof GlossaryRoute
@@ -764,7 +738,6 @@ export interface FileRoutesById {
   '/articles/mitosis-cell-division': typeof ArticlesMitosisCellDivisionRoute
   '/articles/photosynthesis-light-reactions': typeof ArticlesPhotosynthesisLightReactionsRoute
   '/auth/callback': typeof AuthCallbackRoute
-  '/extensions/noter': typeof ExtensionsNoterRoute
   '/lost-atlas/$slug': typeof LostAtlasSlugRoute
   '/pages/$slug': typeof PagesSlugRoute
   '/tutorials/$slug': typeof TutorialsSlugRoute
@@ -801,8 +774,6 @@ export interface FileRouteTypes {
     | '/downloadable-software'
     | '/ecology-environment'
     | '/evolution'
-    | '/extension-tools-upload'
-    | '/extensions'
     | '/flashcards'
     | '/genetics-dna'
     | '/glossary'
@@ -851,7 +822,6 @@ export interface FileRouteTypes {
     | '/articles/mitosis-cell-division'
     | '/articles/photosynthesis-light-reactions'
     | '/auth/callback'
-    | '/extensions/noter'
     | '/lost-atlas/$slug'
     | '/pages/$slug'
     | '/tutorials/$slug'
@@ -886,8 +856,6 @@ export interface FileRouteTypes {
     | '/downloadable-software'
     | '/ecology-environment'
     | '/evolution'
-    | '/extension-tools-upload'
-    | '/extensions'
     | '/flashcards'
     | '/genetics-dna'
     | '/glossary'
@@ -936,7 +904,6 @@ export interface FileRouteTypes {
     | '/articles/mitosis-cell-division'
     | '/articles/photosynthesis-light-reactions'
     | '/auth/callback'
-    | '/extensions/noter'
     | '/lost-atlas/$slug'
     | '/pages/$slug'
     | '/tutorials/$slug'
@@ -971,8 +938,6 @@ export interface FileRouteTypes {
     | '/downloadable-software'
     | '/ecology-environment'
     | '/evolution'
-    | '/extension-tools-upload'
-    | '/extensions'
     | '/flashcards'
     | '/genetics-dna'
     | '/glossary'
@@ -1021,7 +986,6 @@ export interface FileRouteTypes {
     | '/articles/mitosis-cell-division'
     | '/articles/photosynthesis-light-reactions'
     | '/auth/callback'
-    | '/extensions/noter'
     | '/lost-atlas/$slug'
     | '/pages/$slug'
     | '/tutorials/$slug'
@@ -1057,8 +1021,6 @@ export interface RootRouteChildren {
   DownloadableSoftwareRoute: typeof DownloadableSoftwareRoute
   EcologyEnvironmentRoute: typeof EcologyEnvironmentRoute
   EvolutionRoute: typeof EvolutionRoute
-  ExtensionToolsUploadRoute: typeof ExtensionToolsUploadRoute
-  ExtensionsRoute: typeof ExtensionsRouteWithChildren
   FlashcardsRoute: typeof FlashcardsRoute
   GeneticsDnaRoute: typeof GeneticsDnaRoute
   GlossaryRoute: typeof GlossaryRoute
@@ -1277,18 +1239,8 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EvolutionRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/extension-tools-upload': {
-      id: '/extension-tools-upload'
-      path: '/extension-tools-upload'
-      fullPath: '/extension-tools-upload'
-      preLoaderRoute: typeof ExtensionToolsUploadRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/extensions': {
-      id: '/extensions'
-      path: '/extensions'
-      fullPath: '/extensions'
-      preLoaderRoute: typeof ExtensionsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/flashcards': {
@@ -1627,12 +1579,7 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthCallbackRouteImport
       parentRoute: typeof AuthRoute
     }
-    '/extensions/noter': {
-      id: '/extensions/noter'
       path: '/noter'
-      fullPath: '/extensions/noter'
-      preLoaderRoute: typeof ExtensionsNoterRouteImport
-      parentRoute: typeof ExtensionsRoute
     }
     '/lost-atlas/$slug': {
       id: '/lost-atlas/$slug'
@@ -1772,16 +1719,10 @@ const AuthRouteChildren: AuthRouteChildren = {
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
-interface ExtensionsRouteChildren {
-  ExtensionsNoterRoute: typeof ExtensionsNoterRoute
 }
 
-const ExtensionsRouteChildren: ExtensionsRouteChildren = {
-  ExtensionsNoterRoute: ExtensionsNoterRoute,
 }
 
-const ExtensionsRouteWithChildren = ExtensionsRoute._addFileChildren(
-  ExtensionsRouteChildren,
 )
 
 interface LostAtlasRouteChildren {
@@ -1856,8 +1797,6 @@ const rootRouteChildren: RootRouteChildren = {
   DownloadableSoftwareRoute: DownloadableSoftwareRoute,
   EcologyEnvironmentRoute: EcologyEnvironmentRoute,
   EvolutionRoute: EvolutionRoute,
-  ExtensionToolsUploadRoute: ExtensionToolsUploadRoute,
-  ExtensionsRoute: ExtensionsRouteWithChildren,
   FlashcardsRoute: FlashcardsRoute,
   GeneticsDnaRoute: GeneticsDnaRoute,
   GlossaryRoute: GlossaryRoute,
