@@ -170,6 +170,7 @@ export function Sidebar({
           )}
           <ul className="space-y-0.5">
             <li><NavLink label="QuantumPedia" Icon={LucideIcons.Atom} to="/quantumpedia" collapsed={collapsed} featured /></li>
+            <li><NavLink label="Dictionary" Icon={LucideIcons.BookMarked} to="/dictionary" collapsed={collapsed} /></li>
             <li><NavLink label="Sentinel" Icon={LucideIcons.ShieldCheck} to="/sentinel" collapsed={collapsed} /></li>
             <li><NavLink label="Knowledge Atlas" Icon={LucideIcons.Network} to="/knowledge-atlas" collapsed={collapsed} /></li>
             <li><NavLink label="ChronosOS Deepmind" Icon={BrainCircuit} to="/chronosos-deepmind" collapsed={collapsed} featured /></li>
