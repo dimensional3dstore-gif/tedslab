@@ -171,7 +171,7 @@ function StudySubjectCard({
                 {(index < lessonIndex || completed) && (
                   <CheckCircle2 className="ml-auto size-4 shrink-0 text-primary" />
                 )}
-              </div>
+              </Link>
             ))}
           </div>
         </div>
