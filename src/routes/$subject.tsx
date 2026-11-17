@@ -145,7 +145,8 @@ function SubjectPage() {
               .map((s) => (
                 <Link
                   key={s.id}
-                  to={`/${subject!.slug}/${s.slug}`}
+                  to="/articles/$slug"
+                  params={{ slug: `topic-${subject!.slug}-${s.slug}` }}
                   className="block overflow-hidden bio-panel transition-colors hover:border-primary/50"
                 >
                   <img
