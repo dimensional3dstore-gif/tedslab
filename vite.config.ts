@@ -7,6 +7,9 @@
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
 export default defineConfig({
+  define: {
+    "import.meta.env.VITE_BUILD_ID": JSON.stringify(process.env.VERCEL_GIT_COMMIT_SHA ?? process.env.VITE_BUILD_ID ?? "dev"),
+  },
   vite: {
     envPrefix: ["VITE_", "NEXT_PUBLIC_"],
   },
