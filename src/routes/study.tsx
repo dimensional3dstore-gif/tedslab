@@ -72,6 +72,7 @@ function StudySubjectCard({
   subjectNumber,
   onComplete,
   completed,
+  day,
 }: {
   item: DailySubject;
   subjectNumber: number;
