@@ -83,6 +83,7 @@ function TopicPage() {
         const filtered = articles.filter((article) =>
           !q || `${article.title} ${article.excerpt ?? ""}`.toLowerCase().includes(q),
         );
+        const overviewArticle = filtered.find((article) => article.slug === `topic-${subject.slug}-${topic.slug}`) ?? filtered.find((article) => article.tone === "topic-overview") ?? filtered[0];
         return (
           <>
             <Link to="/$subject" params={{ subject: subject.slug }} className="inline-flex items-center gap-2 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground">
@@ -123,7 +124,7 @@ function TopicPage() {
                   <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">Featured reading</p>
                 </div>
                 <div className="grid gap-4 lg:grid-cols-[1.4fr_1fr]">
-                  <ArticleCard article={filtered[0]} variant="featured" className="lg:flex-row" saved={bookmarks.includes(filtered[0].slug)} onBookmarkClick={toggleBookmark} />
+                  {overviewArticle && <ArticleCard article={overviewArticle} variant="featured" className="lg:flex-row" saved={bookmarks.includes(overviewArticle.slug)} onBookmarkClick={toggleBookmark} />}
                   <div className="bio-panel flex flex-col justify-between gap-5 p-6 md:p-7">
                     <div>
                       <div className="flex size-11 items-center justify-center rounded-xl bg-primary/10 text-primary"><BrainCircuit className="size-5" /></div>
