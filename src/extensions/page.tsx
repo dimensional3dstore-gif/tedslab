@@ -76,15 +76,23 @@ export default function ExtensionsPage() {
                   <Chrome className="size-4" />
                   Public extension source
                 </a>
+                <a
+                  href="https://sentinel-download-dimensional3dstore-gif.vercel.app/sentinel-extension-v1.0.0.zip"
+                  download
+                  className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
+                >
+                  <Download className="size-4" />
+                  Download Sentinel
+                </a>
                 <Link
                   to="/sentinel"
-                  className="inline-flex items-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
+                  className="inline-flex items-center rounded-md border border-border bg-background px-4 py-2 text-sm font-semibold text-foreground hover:border-primary/40 hover:text-primary"
                 >
                   Open Sentinel
                 </Link>
               </div>
               <p className="mt-3 text-xs text-muted-foreground">
-                The package is prepared for Chrome Web Store submission. The first public Store submission must be completed from a Chrome Web Store developer account.
+                Download the ZIP, extract it, then open chrome://extensions, enable Developer mode, and choose Load unpacked. The first public Chrome Web Store submission must be completed from a Chrome Web Store developer account.
               </p>
             </div>
           </div>
