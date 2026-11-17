@@ -357,7 +357,6 @@ function StudyModePage() {
           </div>
           <p className="mt-3 text-xs leading-5 text-muted-foreground">Study time is based on active learning. If you leave the browser, switch tabs, or remain inactive, the active timer pauses and your expected study time extends. This keeps progress based on time actually spent studying.</p>
         </section>
-        </div>
 
         <header className="overflow-hidden rounded-2xl border border-primary/20 bg-card shadow-sm">
           <div className="bg-primary/5 p-6 md:p-8">
