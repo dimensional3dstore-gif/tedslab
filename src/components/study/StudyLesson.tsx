@@ -42,7 +42,7 @@ export function StudyLesson({ article, layout }: { article: ArticleRow; layout: 
         </div>
         <h2 className="mt-3 font-display text-2xl font-bold text-foreground">Master this article: {article.title}</h2>
         <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted-foreground">A structured lesson follows every encyclopedia article: clear outcomes, direct instruction, worked examples, guided practice, independent application and a mastery check.</p>
-        <Link to="/study" className="mt-4 inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90">Open the 365-day Study Enlist curriculum <GraduationCap className="size-4" /></Link>
+        <Link to="/study/lesson/$slug" params={{ slug: article.slug }} className="mt-4 inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90">Enter Study Mode <GraduationCap className="size-4" /></Link>
       </div>
 
       <div className="space-y-7 p-6">
