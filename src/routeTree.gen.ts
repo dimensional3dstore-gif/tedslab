@@ -30,6 +30,7 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as DecipherRouteImport } from './routes/decipher'
 import { Route as DevDashboardRouteImport } from './routes/dev-dashboard'
 import { Route as DevToolsRouteImport } from './routes/dev-tools'
+import { Route as DictionaryRouteImport } from './routes/dictionary'
 import { Route as DocsRouteImport } from './routes/docs'
 import { Route as DownloadRouteImport } from './routes/download'
 import { Route as DownloadableSoftwareRouteImport } from './routes/downloadable-software'
@@ -193,6 +194,11 @@ const DevDashboardRoute = DevDashboardRouteImport.update({
 const DevToolsRoute = DevToolsRouteImport.update({
   id: '/dev-tools',
   path: '/dev-tools',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DictionaryRoute = DictionaryRouteImport.update({
+  id: '/dictionary',
+  path: '/dictionary',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DocsRoute = DocsRouteImport.update({
@@ -1792,6 +1798,7 @@ const rootRouteChildren: RootRouteChildren = {
   DecipherRoute: DecipherRoute,
   DevDashboardRoute: DevDashboardRoute,
   DevToolsRoute: DevToolsRoute,
+  DictionaryRoute: DictionaryRoute,
   DocsRoute: DocsRoute,
   DownloadRoute: DownloadRoute,
   DownloadableSoftwareRoute: DownloadableSoftwareRoute,
