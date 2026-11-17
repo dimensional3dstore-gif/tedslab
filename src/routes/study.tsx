@@ -177,6 +177,15 @@ function StudySubjectCard({
           </div>
         </div>
 
+        <Link
+          to="/study/lesson/$slug"
+          params={{ slug: `study-day-${day}-subject-${subjectNumber}-lesson-${lessonIndex + 1}` }}
+          className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-bold text-primary-foreground shadow-sm transition-all hover:opacity-90 hover:shadow-md"
+        >
+          <PlayCircle className="size-4" />
+          Enter Lesson
+        </Link>
+
         <div className="mt-5 rounded-xl border border-border bg-secondary/30 p-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2 text-sm font-bold text-foreground">
