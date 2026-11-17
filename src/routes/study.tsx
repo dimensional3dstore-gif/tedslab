@@ -147,14 +147,15 @@ function StudySubjectCard({
           </p>
           <div className="mt-3 space-y-2">
             {item.lessons.map((lesson, index) => (
-              <div
-                key={lesson}
-                className={`flex items-start gap-3 rounded-xl border p-3 ${
+              <Link
+                to="/study/lesson/$slug"
+                params={{ slug: `study-day-${day}-subject-${subjectNumber}-lesson-${index + 1}` }}
+                className={`flex items-start gap-3 rounded-xl border p-3 transition-colors ${
                   index === lessonIndex && !completed
-                    ? "border-primary/40 bg-primary/5"
+                    ? "border-primary/40 bg-primary/5 hover:bg-primary/10"
                     : index < lessonIndex || completed
-                      ? "border-primary/20 bg-secondary/20"
-                      : "border-border bg-card"
+                      ? "border-primary/20 bg-secondary/20 hover:bg-secondary"
+                      : "border-border bg-card hover:border-primary/30 hover:bg-secondary/30"
                 }`}
               >
                 <span className="grid size-7 shrink-0 place-items-center rounded-full bg-secondary text-xs font-bold text-foreground">
