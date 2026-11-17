@@ -131,12 +131,21 @@ export function ArticleTemplate({
 
       <div className="mt-6 flex flex-wrap gap-2 rounded-2xl border border-border bg-card/80 p-2">
         <Link
-          to={preview ? "/articles/$slug" : "/articles/$slug/annotations"}
+          to="/articles/$slug"
           params={{ slug: article.slug }}
           className="inline-flex items-center gap-2 rounded-lg bg-primary/10 px-3 py-2 text-sm font-medium text-primary shadow-sm"
         >
-          Article annotations
+          Article
         </Link>
+        {!preview && (
+          <Link
+            to="/articles/$slug/annotations"
+            params={{ slug: article.slug }}
+            className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
+          >
+            Annotations
+          </Link>
+        )}
         <a href={preview ? undefined : "#study-lesson"} className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground">Study lesson</a>
         {tabs.map((tab, index) => (
           <a
