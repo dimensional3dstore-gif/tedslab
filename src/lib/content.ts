@@ -446,11 +446,21 @@ export async function fetchCatalogRows<T extends { id: string }>(
     const remoteBySlug = new Map(
       publicRows.map((row) => [(row as { slug?: string }).slug, row]),
     );
-    // Bundled catalogue and Knowledge Atlas articles are the guaranteed baseline.
-    // Supabase may enrich/replace them when a published CMS version exists.
-    const merged = fallback.map(
-      (row) => remoteBySlug.get((row as { slug?: string }).slug) ?? row,
-    );
+    // QuantumPedia articles are bundled with their expanded source context.
+    // Do not let an older CMS seed overwrite the expanded offline catalogue.
+    const merged = fallback.map((row) => {
+      const remote = remoteBySlug.get((row as { slug?: string }).slug) as ArticleRow | undefined;
+      if (!remote) return row;
+      if ((row as ArticleRow).slug.startsWith("quantumpedia-")) {
+        try {
+          const remoteVersion = JSON.parse(remote.body ?? "{}")?.version ?? 0;
+          if (remoteVersion < 2) return row;
+        } catch {
+          return row;
+        }
+      }
+      return remote;
+    });
     const fallbackSlugs = new Set(
       fallback.map((row) => (row as { slug?: string }).slug),
     );
@@ -612,7 +622,19 @@ export const articleByIdQueryOptions = (id: string) =>
           .select("*")
           .eq("id", id)
           .maybeSingle();
-        if (!error && data) return data as ArticleRow;
+        if (!error && data) {
+          const remote = data as ArticleRow;
+          if (remote.slug?.startsWith("quantumpedia-")) {
+            const bundled = websiteFallbackArticles.find((article) => article.id === id);
+            try {
+              const remoteVersion = JSON.parse(remote.body ?? "{}")?.version ?? 0;
+              if (bundled && remoteVersion < 2) return bundled;
+            } catch {
+              if (bundled) return bundled;
+            }
+          }
+          return remote;
+        }
       } catch {
         return websiteFallbackArticles.find((article) => article.id === id) ?? null;
       }
