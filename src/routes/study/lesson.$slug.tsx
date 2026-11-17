@@ -270,14 +270,65 @@ function StudyModePage() {
   );
   const articleLayout = useMemo(() => article ? layoutFromArticleBody(article.body) : null, [article]);
 
-  const lessonContext = study ?? (article ? { day: 1, subjectNumber: 1, lessonIndex: 0 } : null);
-  const isArticleLesson = !study && !!article;
-  const studyDay = useMemo(() => lessonContext ? getStudyDay(7, lessonContext.day) : null, [lessonContext]);
+  const isArticleLesson = !study && !!article && !!articleLayout;
+  const lessonContext = study ?? (isArticleLesson ? { day: 1, subjectNumber: 1, lessonIndex: 0 } : null);
+  const studyDay = useMemo(() => lessonContext && !isArticleLesson ? getStudyDay(7, lessonContext.day) : null, [lessonContext, isArticleLesson]);
   const level = useMemo(() => lessonContext ? GRADE_LEVELS.find((item) => item.grade === 7) : null, [lessonContext]);
-  const subject = isArticleLesson ? "Knowledge Atlas" : lessonContext && level ? level.subjects[(lessonContext.day - 1 + lessonContext.subjectNumber - 1) % level.subjects.length] : null;
+  const subject = isArticleLesson ? (article?.subject_slug === "quantum" ? "Quantum" : article?.subject_slug ? article.subject_slug : "Ted's Lab") : lessonContext && level ? level.subjects[(lessonContext.day - 1 + lessonContext.subjectNumber - 1) % level.subjects.length] : null;
   const concept = isArticleLesson ? article?.title ?? null : lessonContext && subject ? getStudyDay(7, Math.min(365, lessonContext.day + lessonContext.subjectNumber - 1)).topic : null;
   const phase = lessonContext && lessonContext.lessonIndex >= 0 && lessonContext.lessonIndex < 4 ? (["learn", "example", "practice", "independent"] as Phase[])[lessonContext.lessonIndex] : null;
-  const lesson = subject && concept && phase ? makeLesson(subject, concept, phase) : null;
+  const articleLesson = useMemo<Lesson | null>(() => {
+    if (!isArticleLesson || !article || !articleLayout) return null;
+    const sections = articleLayout.sections;
+    const cards = sections.flatMap((s) => s.cards ?? []);
+    const phaseData: Record<Phase, { title: string; purpose: string }> = {
+      learn: { title: "Understand the concept", purpose: "Build a clear mental model from the article's scientific overview and key sections." },
+      example: { title: "Work through the evidence", purpose: "Use the article's examples, mechanisms and supporting details to see how the concept works." },
+      practice: { title: "Guided practice", purpose: "Retrieve the article's ideas and use them to answer structured questions without simply copying the text." },
+      independent: { title: "Independent application", purpose: "Transfer the article's knowledge to a new question and justify your reasoning." },
+    };
+    const info = phaseData[phase ?? "learn"];
+    return {
+      ...info,
+      teach: phase === "learn"
+        ? articleLayout.overview.slice(0, 5)
+        : phase === "example"
+          ? sections.slice(0, 4).map((s) => s.heading + ": " + (s.paragraphs ?? []).slice(0, 2).join(" "))
+          : phase === "practice"
+            ? [
+                "Retrieve the central idea of " + article.title + " without looking at the article.",
+                ...cards.slice(0, 3).map((c) => c.title + ": " + c.text),
+              ]
+            : [
+                "Explain how two major ideas in " + article.title + " connect.",
+                "Use one specific example or mechanism from the article to support your explanation.",
+                "Identify one limitation, uncertainty, open question or condition that affects the article's claims.",
+              ],
+      example: phase === "example"
+        ? cards.slice(0, 4).map((c) => c.title + ": " + c.text).join(" ")
+        : "Worked model: identify the central claim → locate the supporting concept → explain the mechanism or evidence → state what the evidence allows you to conclude.",
+      practice: phase === "independent"
+        ? [
+            "Write a 5–7 sentence explanation answering: What is the most important idea in " + article.title + ", and why?",
+            "Use at least two specific concepts from the article as evidence.",
+            "Apply the knowledge to a new scenario that was not directly described in the article.",
+            "Finish with one uncertainty, limitation or follow-up question.",
+          ]
+        : [
+            "Write a 3–5 sentence explanation of " + article.title + " from memory.",
+            "Choose one section and turn its main mechanism or relationship into a labelled diagram or flowchart.",
+            "Answer one question using evidence from the article, then explain why that evidence supports your answer.",
+            "Identify one misconception a learner could have and correct it using the article.",
+          ],
+      success: [
+        "I can explain " + article.title + " without copying the article.",
+        "I can use specific evidence, examples or mechanisms from the article.",
+        "I can apply the knowledge to a new situation.",
+        "I can identify an uncertainty, limitation or useful extension question.",
+      ],
+    };
+  }, [article, articleLayout, isArticleLesson, phase]);
+  const lesson = isArticleLesson ? articleLesson : subject && concept && phase ? makeLesson(subject, concept, phase) : null;
   const questions = subject && concept ? makeQuestions(subject, concept) : [];
   const score = questions.filter((q, i) => answers[i] === q.answer).length;
   const activeMinutes = Math.floor(activeSeconds / 60);
@@ -373,9 +424,9 @@ function StudyModePage() {
           <div className="bg-primary/5 p-6 md:p-8">
             <div className="flex flex-wrap items-start justify-between gap-5">
               <div className="max-w-3xl">
-                <p className="text-xs font-bold uppercase tracking-[0.16em] text-primary">{isArticleLesson ? "Knowledge Atlas · Article lesson" : `Day ${lessonContext.day} · ${studyDay.type}`} · Lesson {lessonContext.lessonIndex + 1} of 4</p>
+                <p className="text-xs font-bold uppercase tracking-[0.16em] text-primary">{isArticleLesson ? "Ted's Lab · Article lesson" : `Day ${lessonContext.day} · ${studyDay.type}`} · Lesson {lessonContext.lessonIndex + 1} of 4</p>
                 <h1 className="mt-2 font-display text-3xl font-black tracking-tight text-foreground md:text-4xl">{subject}: {concept}</h1>
-                <p className="mt-3 text-sm leading-7 text-muted-foreground">{lesson.purpose} This is a {level.label} lesson designed to be completed actively, not just read.</p>
+                <p className="mt-3 text-sm leading-7 text-muted-foreground">{lesson.purpose} This is an active lesson built from the article content, not a redirect to the Study Lab.</p>
                 <div className="mt-4 flex flex-wrap gap-2">
                   <span className="rounded-full border border-border bg-background px-2.5 py-1 text-xs text-muted-foreground">{level.stage}</span>
                   <span className="rounded-full border border-border bg-background px-2.5 py-1 text-xs text-muted-foreground">60 minutes</span>
@@ -383,8 +434,8 @@ function StudyModePage() {
                 </div>
               </div>
               <div className="grid min-w-[190px] gap-2 rounded-xl border border-border bg-background/80 p-4 text-xs">
-                <div className="flex justify-between"><span className="text-muted-foreground">Programme</span><strong>365-day Study Lab</strong></div>
-                <div className="flex justify-between"><span className="text-muted-foreground">{isArticleLesson ? "Source" : "Week"}</span><strong>{isArticleLesson ? "Ted's Lab article" : studyDay.week}</strong></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">Programme</span><strong>{isArticleLesson ? "Article learning" : "365-day Study Lab"}</strong></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">{isArticleLesson ? "Source" : "Week"}</span><strong>{isArticleLesson ? article?.title ?? "Ted's Lab article" : studyDay.week}</strong></div>
                 <div className="flex justify-between"><span className="text-muted-foreground">Assessment</span><strong>Exit check + quiz</strong></div>
               </div>
             </div>
