@@ -82,6 +82,7 @@ function StudySubjectCard({
 }) {
   const [lessonIndex, setLessonIndex] = useState(0);
   const [quizOpen, setQuizOpen] = useState(false);
+  const [completedLessonIndexes, setCompletedLessonIndexes] = useState<number[]>([]);
   const [secondsRemaining, setSecondsRemaining] = useState(LESSON_DURATION_MINUTES * 60);
 
   useEffect(() => {
@@ -101,13 +102,29 @@ function StudySubjectCard({
   const seconds = secondsRemaining % 60;
   const lessonTime = hours.toString().padStart(2, "0") + ":" + minutes.toString().padStart(2, "0") + ":" + seconds.toString().padStart(2, "0");
 
-  const nextLesson = () => {
-    if (lessonIndex < item.lessons.length - 1) {
-      setLessonIndex((value) => value + 1);
-      return;
+  useEffect(() => {
+    const completedIndexes = item.lessons
+      .map((_, index) =>
+        window.localStorage.getItem(
+          `tedslab:study-complete:study-day-${day}-subject-${subjectNumber}-lesson-${index + 1}`,
+        ) === "true"
+          ? index
+          : -1,
+      )
+      .filter((index) => index >= 0);
+
+    setCompletedLessonIndexes(completedIndexes);
+
+    const firstIncomplete = item.lessons.findIndex(
+      (_, index) => !completedIndexes.includes(index),
+    );
+    setLessonIndex(firstIncomplete === -1 ? item.lessons.length - 1 : firstIncomplete);
+
+    if (completedIndexes.length === item.lessons.length) {
+      setQuizOpen(true);
+      onComplete();
     }
-    setQuizOpen(true);
-  };
+  }, [day, item.lessons, onComplete, subjectNumber]);
 
   return (
     <article className="bio-panel overflow-hidden">
@@ -168,6 +185,9 @@ function StudySubjectCard({
                     {LESSON_SEQUENCE[index]}
                   </p>
                   <p className="mt-1 text-sm text-foreground">{lesson}</p>
+                  <p className="mt-1 text-[11px] font-semibold text-primary">
+                    {completedLessonIndexes.includes(index) ? "Completed · review lesson" : "Open full lesson →"}
+                  </p>
                 </div>
                 {(index < lessonIndex || completed) && (
                   <CheckCircle2 className="ml-auto size-4 shrink-0 text-primary" />
@@ -200,17 +220,14 @@ function StudySubjectCard({
         </div>
 
         {!quizOpen && !completed && (
-          <button
-            type="button"
-            onClick={nextLesson}
-            className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90"
-          >
-            <PlayCircle className="size-4" />
-            {lessonIndex === item.lessons.length - 1
-              ? "Finish lessons & open quiz"
-              : "Complete lesson & continue"}
-          </button>
-        )}
+          <div className="mt-5 rounded-xl border border-primary/20 bg-primary/5 p-4">
+            <p className="text-sm font-bold text-foreground">Open the lesson to learn</p>
+            <p className="mt-1 text-xs leading-5 text-muted-foreground">
+              Each lesson opens the full Study Lab lesson. Complete the teaching,
+              practice and exit ticket there. The next lesson unlocks after completion.
+            </p>
+          </div>
+        )
 
         {quizOpen && !completed && (
           <div className="mt-5 rounded-xl border border-border bg-secondary/20 p-4">
