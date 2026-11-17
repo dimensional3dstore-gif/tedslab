@@ -670,11 +670,122 @@ function buildSectionsAndTopics() {
   return { sectionRows, topicRows: [...topicRows, ...atlasSubjectTopics] };
 }
 
+
+// Broad subject taxonomy used by both the live database and the offline catalogue.
+// These are intentionally high-level containers; specific concepts remain articles.
+const BROAD_TOPIC_DEFS: Array<[string,string,string,string]> = [
+  ["biology","life-science","Life Science","Living systems, organisms, processes and biological diversity."],
+  ["biology","cells-and-molecular-life","Cells & Molecular Life","Cells, molecules, metabolism and the mechanisms that make life work."],
+  ["biology","genes-and-evolution","Genes & Evolution","DNA, heredity, variation, natural selection and evolutionary change."],
+  ["biology","organisms-and-animal-kingdom","Organisms & Animal Kingdom","Organismal diversity, classification, anatomy and the major animal lineages."],
+  ["biology","plants-and-fungi","Plants & Fungi","Plant biology, photosynthesis, fungi, decomposition and symbiosis."],
+  ["biology","microbiology-and-microbes","Microbiology & Microbes","Bacteria, archaea, protists, microbes and microbiomes."],
+  ["biology","ecology-and-environment","Ecology & Environment","Ecosystems, populations, biodiversity, environmental change and conservation."],
+  ["science","matter-and-energy","Matter & Energy","Matter, energy, chemistry and thermodynamics."],
+  ["science","forces-and-motion","Forces & Motion","Motion, forces, gravity, momentum and mechanics."],
+  ["science","fields-waves-and-light","Fields, Waves & Light","Electromagnetism, waves, optics, radiation and sound."],
+  ["science","earth-and-environment","Earth & Environment","Geology, climate, atmosphere, oceans and Earth systems."],
+  ["science","space-and-universe","Space & Universe","Astronomy, cosmology, stars, galaxies, planets and black holes."],
+  ["science","scientific-practice","Scientific Practice","Scientific methods, evidence, measurement, experiments and models."],
+  ["mathematics","numbers-and-quantity","Numbers & Quantity","Numbers, operations, magnitude, ratios and quantitative reasoning."],
+  ["mathematics","algebra-and-functions","Algebra & Functions","Equations, inequalities, polynomials, functions and mathematical relationships."],
+  ["mathematics","geometry-and-space","Geometry & Space","Shape, measurement, coordinates, transformations and mathematical space."],
+  ["mathematics","calculus-and-change","Calculus & Change","Limits, derivatives, integrals and continuous change."],
+  ["mathematics","statistics-and-probability","Statistics & Probability","Data, uncertainty, distributions, inference, chance and risk."],
+  ["mathematics","discrete-mathematics-and-logic","Discrete Mathematics & Logic","Sets, graphs, combinatorics, algorithms, proofs and formal reasoning."],
+  ["philosophy","knowledge-and-reason","Knowledge & Reason","Knowledge, evidence, truth, logic, skepticism and rational thought."],
+  ["philosophy","ethics-and-values","Ethics & Values","Moral action, responsibility, justice, virtue and the good life."],
+  ["philosophy","reality-and-existence","Reality & Existence","Existence, identity, causation, time, reality and being."],
+  ["philosophy","mind-and-consciousness","Mind & Consciousness","Thought, consciousness, perception, identity and the mind."],
+  ["philosophy","society-and-politics","Society & Politics","Power, authority, liberty, democracy, rights and social organisation."],
+  ["philosophy","art-and-meaning","Art & Meaning","Aesthetics, art, interpretation, purpose and human meaning."],
+  ["technology","computing-foundations","Computing Foundations","Computation, information, computer architecture and foundational concepts."],
+  ["technology","software-and-programming","Software & Programming","Programming, algorithms, software engineering and development."],
+  ["technology","computer-systems-and-networks","Computer Systems & Networks","Hardware, operating systems, networking and distributed computing."],
+  ["technology","data-and-artificial-intelligence","Data & Artificial Intelligence","Data, databases, machine learning, neural networks and AI."],
+  ["technology","security-and-privacy","Security & Privacy","Cybersecurity, cryptography, privacy, authentication and defence."],
+  ["technology","human-technology-and-design","Human Technology & Design","Human-computer interaction, interfaces, usability and accessibility."],
+  ["english","language-and-linguistics","Language & Linguistics","Language structure, meaning, acquisition, communication and change."],
+  ["english","grammar-and-usage","Grammar & Usage","Grammar, syntax, morphology, punctuation and effective usage."],
+  ["english","reading-and-literature","Reading & Literature","Reading, literary analysis, narrative, texts and interpretation."],
+  ["english","writing-and-composition","Writing & Composition","Composition, essays, argument, structure, style and revision."],
+  ["english","poetry-and-expression","Poetry & Expression","Poetry, rhythm, rhyme, imagery, symbolism and form."],
+  ["english","rhetoric-media-and-communication","Rhetoric, Media & Communication","Persuasion, rhetoric, media, information and audience."],
+  ["history","ancient-and-classical-world","Ancient & Classical World","Early civilisations, cities, empires, Greece, Rome and antiquity."],
+  ["history","medieval-and-global-world","Medieval & Global World","Medieval societies, trade, religion, empires and cultural exchange."],
+  ["history","revolutions-and-industrialisation","Revolutions & Industrialisation","Scientific, political and industrial transformations."],
+  ["history","wars-and-international-conflict","Wars & International Conflict","Wars, diplomacy, military change and international conflict."],
+  ["history","colonialism-and-global-change","Colonialism & Global Change","Imperialism, colonisation, decolonisation and global change."],
+  ["history","society-culture-and-memory","Society, Culture & Memory","Everyday life, social change, culture, identity and historical memory."],
+  ["mind","cognition-and-thinking","Cognition & Thinking","Thinking, reasoning, judgement, decisions and problem solving."],
+  ["mind","perception-and-consciousness","Perception & Consciousness","Sensation, perception, attention, awareness and consciousness."],
+  ["mind","learning-and-memory","Learning & Memory","Learning, memory, practice, forgetting and recall."],
+  ["mind","language-and-thought","Language & Thought","Language, concepts, communication and thinking."],
+  ["mind","emotion-and-motivation","Emotion & Motivation","Emotion, motivation, reward, goals and behaviour."],
+  ["mind","development-and-social-behaviour","Development & Social Behaviour","Development, relationships, social behaviour and individual differences."],
+  ["systems","systems-thinking-and-modelling","Systems Thinking & Modelling","Whole systems, boundaries, relationships, models and leverage points."],
+  ["systems","complexity-and-emergence","Complexity & Emergence","Complexity, adaptation, nonlinear behaviour and emergent patterns."],
+  ["systems","feedback-and-control","Feedback & Control","Feedback loops, regulation, control and stability."],
+  ["systems","networks-and-connectivity","Networks & Connectivity","Graphs, relationships, connectivity and network dynamics."],
+  ["systems","dynamics-and-change","Dynamics & Change","Cycles, delays, stocks, flows and systems changing through time."],
+  ["systems","information-resilience-and-sustainability","Information, Resilience & Sustainability","Information flow, communication, resilience, risk and sustainability."]
+];
+
+const BROAD_TOPIC_MAP: Record<string, string> = {
+  "biology:cell-biology":"cells-and-molecular-life","biology:genetics":"genes-and-evolution","biology:evolution":"genes-and-evolution",
+  "biology:animalia":"organisms-and-animal-kingdom","biology:plant-animal-biology":"organisms-and-animal-kingdom",
+  "biology:plantae":"plants-and-fungi","biology:fungi":"plants-and-fungi","biology:microbiology":"microbiology-and-microbes",
+  "biology:bacteria-archaea":"microbiology-and-microbes","biology:protista":"microbiology-and-microbes","biology:ecology":"ecology-and-environment",
+  "biology:human-biology":"ecology-and-environment","biology:atlas-biology":"life-science",
+  "science:chemistry":"matter-and-energy","science:energy":"matter-and-energy","science:materials":"matter-and-energy",
+  "science:atlas-physics":"forces-and-motion","science:waves":"fields-waves-and-light","science:earth-science":"earth-and-environment",
+  "science:astronomy":"space-and-universe","science:scientific-method":"scientific-practice",
+  "mathematics:arithmetic-number":"numbers-and-quantity","mathematics:algebra":"algebra-and-functions","mathematics:geometry":"geometry-and-space",
+  "mathematics:calculus":"calculus-and-change","mathematics:statistics":"statistics-and-probability","mathematics:probability":"statistics-and-probability",
+  "mathematics:discrete-mathematics":"discrete-mathematics-and-logic","mathematics:atlas-mathematics":"numbers-and-quantity",
+  "philosophy:logic":"knowledge-and-reason","philosophy:epistemology":"knowledge-and-reason","philosophy:ethics":"ethics-and-values",
+  "philosophy:metaphysics":"reality-and-existence","philosophy:philosophy-of-mind":"mind-and-consciousness","philosophy:political-philosophy":"society-and-politics",
+  "philosophy:aesthetics":"art-and-meaning","philosophy:atlas-philosophy":"knowledge-and-reason","philosophy:atlas-overview":"knowledge-and-reason",
+  "technology:computer-systems":"computing-foundations","technology:programming":"software-and-programming","technology:networks":"computer-systems-and-networks",
+  "technology:data":"data-and-artificial-intelligence","technology:ai":"data-and-artificial-intelligence","technology:cybersecurity":"security-and-privacy",
+  "technology:human-computer":"human-technology-and-design","technology:atlas-computing":"computing-foundations",
+  "english:language-linguistics":"language-and-linguistics","english:grammar-syntax":"grammar-and-usage","english:reading-literature":"reading-and-literature",
+  "english:drama":"reading-and-literature","english:writing-composition":"writing-and-composition","english:poetry":"poetry-and-expression",
+  "english:rhetoric-media":"rhetoric-media-and-communication","english:research-communication":"rhetoric-media-and-communication",
+  "history:ancient-world":"ancient-and-classical-world","history:medieval-world":"medieval-and-global-world","history:modern-history":"revolutions-and-industrialisation",
+  "history:world-wars":"wars-and-international-conflict","history:australian-history":"colonialism-and-global-change","history:social-cultural":"society-culture-and-memory",
+  "history:historical-method":"society-culture-and-memory","history:atlas-history":"ancient-and-classical-world",
+  "mind:cognition":"cognition-and-thinking","mind:perception":"perception-and-consciousness","mind:learning-memory":"learning-and-memory",
+  "mind:language-mind":"language-and-thought","mind:emotion-motivation":"emotion-and-motivation","mind:development":"development-and-social-behaviour",
+  "mind:social-behaviour":"development-and-social-behaviour","mind:atlas-mind":"cognition-and-thinking",
+  "systems:systems-thinking":"systems-thinking-and-modelling","systems:complexity":"complexity-and-emergence","systems:feedback-control":"feedback-and-control",
+  "systems:networks":"networks-and-connectivity","systems:dynamics":"dynamics-and-change","systems:information":"information-resilience-and-sustainability",
+  "systems:resilience":"information-resilience-and-sustainability","systems:atlas-systems":"systems-thinking-and-modelling"
+};
+
+const broadTopicRows: TopicRow[] = BROAD_TOPIC_DEFS.map(([subjectSlug, slug, title, blurb], i) => ({
+  id: `broad-topic-${subjectSlug}-${slug}`,
+  section_id: null,
+  subject_id: SUBJECTS.find((s) => s.slug === subjectSlug)?.id ?? `sub-${subjectSlug}`,
+  subject_slug: subjectSlug,
+  slug,
+  title,
+  blurb,
+  body: blurb,
+  image_url: null,
+  sort: i,
+}));
+
+function broadTopicForArticle(article: ArticleRow) {
+  return BROAD_TOPIC_MAP[`${article.subject_slug ?? ""}:${article.topic_slug}`] ?? 
+    (BROAD_TOPIC_DEFS.find(([subjectSlug]) => subjectSlug === article.subject_slug)?.[1] ?? article.topic_slug);
+}
+
 const built = buildSectionsAndTopics();
 export const SECTIONS: SectionRow[] = built.sectionRows;
-export const TOPICS: TopicRow[] = built.topicRows;
+export const TOPICS: TopicRow[] = broadTopicRows;
 
-export const ARTICLES: ArticleRow[] = TOPICS.map((t, i) => {
+const LEGACY_ARTICLES: ArticleRow[] = built.topicRows.map((t, i) => {
   const section = SECTIONS.find((s) => s.id === t.section_id);
   const subject = SUBJECTS.find((s) => s.id === t.subject_id);
   const layout = buildTopicLayout({
@@ -693,8 +804,36 @@ export const ARTICLES: ArticleRow[] = TOPICS.map((t, i) => {
     tone: "educational",
     subject_slug: subject?.slug ?? "biology",
     section_slug: section?.slug ?? null,
-    topic_slug: t.slug,
+    topic_slug: broadTopicForArticle({ topic_slug: t.slug, subject_slug: subject?.slug ?? "biology" } as ArticleRow),
     image_key: section?.image_key ?? "hero-cell",
+    image_url: null,
+    video_url: null,
+    published: true,
+    status: "published" as const,
+    sort: i + 100,
+  };
+});
+
+const BROAD_OVERVIEW_ARTICLES: ArticleRow[] = broadTopicRows.map((t, i) => {
+  const subject = SUBJECTS.find((s) => s.slug === t.subject_slug);
+  const layout = buildTopicLayout({
+    title: t.title,
+    blurb: t.blurb ?? "",
+    subject: subject?.title ?? "Ted's Lab",
+    section: "Knowledge",
+  });
+  return {
+    id: `broad-overview-${t.subject_slug}-${t.slug}`,
+    slug: `topic-${t.subject_slug}-${t.slug}`,
+    title: `${t.title}: Overview`,
+    excerpt: t.blurb,
+    body: JSON.stringify(layout),
+    minutes: 5,
+    tone: "topic-overview",
+    subject_slug: t.subject_slug,
+    section_slug: null,
+    topic_slug: t.slug,
+    image_key: subject?.image_key ?? null,
     image_url: null,
     video_url: null,
     published: true,
@@ -702,6 +841,8 @@ export const ARTICLES: ArticleRow[] = TOPICS.map((t, i) => {
     sort: i,
   };
 });
+
+export const ARTICLES: ArticleRow[] = [...BROAD_OVERVIEW_ARTICLES, ...LEGACY_ARTICLES];
 
 export const HERO_SLIDES: HeroSlideRow[] = BANNER_SLIDES;
 
