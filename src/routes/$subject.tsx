@@ -126,7 +126,7 @@ function SubjectPage() {
             </div>
             <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
               {visibleArticles.map((article) => (
-                <Link key={article.id} to={"/" + article.slug} className="bio-panel block p-4 transition-colors hover:border-primary/50" aria-label={`Read article: ${article.title}`}>
+                <Link key={article.id} to={"/articles/" + article.slug} className="bio-panel block p-4 transition-colors hover:border-primary/50" aria-label={`Read article: ${article.title}`}>
                   <p className="text-[11px] uppercase tracking-wide text-muted-foreground">{(topics ?? []).find((topic) => topic.slug === article.topic_slug)?.title ?? article.topic_slug}</p>
                   <h3 className="mt-1 text-sm font-semibold">{article.title}</h3>
                   <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-muted-foreground">{article.excerpt}</p>
