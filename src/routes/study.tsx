@@ -78,6 +78,7 @@ function StudySubjectCard({
   subjectNumber: number;
   onComplete: () => void;
   completed: boolean;
+  day: number;
 }) {
   const [lessonIndex, setLessonIndex] = useState(0);
   const [quizOpen, setQuizOpen] = useState(false);
