@@ -32,6 +32,11 @@ if (!skipAppBuild) {
 
 await stat(appPath);
 
+if (unsignedDmg) {
+  execFileSync("codesign", ["--force", "--deep", "--sign", "-", appPath], { cwd: projectRoot, stdio: "inherit" });
+  execFileSync("codesign", ["--verify", "--deep", "--strict", "--verbose=2", appPath], { cwd: projectRoot, stdio: "inherit" });
+}
+
 execFileSync("npm", ["rebuild", "macos-alias"], {
   cwd: projectRoot,
   stdio: "inherit",
