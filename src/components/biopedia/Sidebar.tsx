@@ -322,6 +322,18 @@ export function Sidebar({
 
           {!collapsed && (
             <p className="px-3 pt-6 pb-2 text-[11px] font-semibold tracking-widest text-primary/80">
+              TED'S LAB APPS
+            </p>
+          )}
+          <ul className="space-y-0.5 pb-3">
+            <li><NavLink label="Unit Converter" Icon={LucideIcons.Calculator} to="https://unit-converter.tedslab.app" collapsed={collapsed} /></li>
+            <li><NavLink label="JSON Formatter" Icon={LucideIcons.Braces} to="https://json-formatter.tedslab.app" collapsed={collapsed} /></li>
+            <li><NavLink label="Regex Tester" Icon={LucideIcons.Regex} to="https://regex-tester.tedslab.app" collapsed={collapsed} /></li>
+            <li><NavLink label="Markdown Previewer" Icon={LucideIcons.FileCode2} to="https://markdown-previewer.tedslab.app" collapsed={collapsed} /></li>
+          </ul>
+
+          {!collapsed && (
+            <p className="px-3 pt-6 pb-2 text-[11px] font-semibold tracking-widest text-primary/80">
               STUDY TOOLS
             </p>
           )}
