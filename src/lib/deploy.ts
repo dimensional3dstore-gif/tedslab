@@ -1,38 +1,72 @@
 import { createServerFn } from "@tanstack/react-start";
-import { execFile } from "node:child_process";
-import { promisify } from "node:util";
+import { adminMiddleware } from "@/lib/auth/admin-middleware";
 
-const execFileAsync = promisify(execFile);
+const TEAM_ID = process.env.VERCEL_TEAM_ID || "team_n1Ahg19MaVMKeE6YxDZ2e8Ea";
+const REPO_OWNER = process.env.GITHUB_REPO_OWNER || "dimensional3dstore-gif";
+const REPO_NAME = process.env.GITHUB_REPO_NAME || "tedslab";
+const PRODUCTION_BRANCH = process.env.GITHUB_PRODUCTION_BRANCH || "main";
 
-export const deployWebsite = createServerFn({ method: "POST" }).handler(
-  async () => {
-    const cwd = process.cwd();
+async function vercelRequest(path: string, init: RequestInit = {}) {
+  if (!process.env.VERCEL_TOKEN) {
+    throw new Error("Vercel deployment is not configured. Add VERCEL_TOKEN to production.");
+  }
 
-    try {
-      await execFileAsync("npm", ["run", "build:prod"], {
-        cwd,
-        env: process.env,
-        shell: true,
-      });
+  const response = await fetch("https://api.vercel.com" + path, {
+    ...init,
+    headers: {
+      Authorization: "Bearer " + process.env.VERCEL_TOKEN,
+      "Content-Type": "application/json",
+      ...(init.headers || {}),
+    },
+  });
 
-      const deployCommand =
-        process.env.DEPLOY_COMMAND || "npm run preview -- --host 0.0.0.0";
-      await execFileAsync(deployCommand, {
-        cwd,
-        env: process.env,
-        shell: true,
-      });
+  const text = await response.text();
+  let body: any = {};
+  try {
+    body = JSON.parse(text);
+  } catch {}
 
-      return {
-        success: true,
-        message:
-          "Production build and local deployment command completed successfully.",
-        url: process.env.SITE_URL || "http://localhost:4173",
-      };
-    } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Unknown deployment error";
-      throw new Error(`Deploy failed: ${message}`);
-    }
-  },
-);
+  if (!response.ok) {
+    throw new Error(
+      body?.error?.message ||
+        body?.message ||
+        "Vercel request failed (" + response.status + ").",
+    );
+  }
+
+  return body;
+}
+
+export const deployWebsite = createServerFn({ method: "POST" })
+  .middleware([adminMiddleware])
+  .handler(async () => {
+    const projectName = process.env.VERCEL_PROJECT_NAME || "tedslab";
+
+    const deployment = await vercelRequest(
+      "/v13/deployments?teamId=" + encodeURIComponent(TEAM_ID),
+      {
+        method: "POST",
+        body: JSON.stringify({
+          name: projectName,
+          project: projectName,
+          target: "production",
+          gitSource: {
+            type: "github",
+            org: REPO_OWNER,
+            repo: REPO_NAME,
+            ref: PRODUCTION_BRANCH,
+          },
+        }),
+      },
+    );
+
+    return {
+      success: true,
+      deploymentId: deployment.id || null,
+      status: deployment.status || "INITIALIZING",
+      url: deployment.url ? "https://" + deployment.url : null,
+      project: projectName,
+      repository: REPO_OWNER + "/" + REPO_NAME,
+      branch: PRODUCTION_BRANCH,
+    };
+  });
