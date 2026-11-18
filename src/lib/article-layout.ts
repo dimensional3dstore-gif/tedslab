@@ -13,6 +13,7 @@ export type ArticleLayout = {
   overview: string[];
   equation?: { formula: string; caption: string };
   sections: ArticleSectionBlock[];
+  references?: string[];
 };
 
 export const DEFAULT_ARTICLE_LAYOUT: ArticleLayout = {
@@ -117,6 +118,7 @@ function normalizeArticleLayout(value: Partial<ArticleLayout>): ArticleLayout {
         (paragraph): paragraph is string => typeof paragraph === "string",
       ) ?? [],
     ...(equation ? { equation } : {}),
+    ...(Array.isArray((value as { references?: unknown }).references) ? { references: (value as { references?: unknown }).references?.filter((reference): reference is string => typeof reference === "string") } : {}),
     sections: Array.isArray(value.sections)
       ? value.sections
           .filter(
