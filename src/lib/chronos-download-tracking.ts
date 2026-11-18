@@ -41,3 +41,6 @@ export async function trackChronosOSDownload(releaseTag: string) {
     });
   }
 }
+
+
+export const trackAquariusDownload = trackChronosOSDownload;
