@@ -1,4 +1,4 @@
-name: Build and publish Aquarius DMG
+name: Build and publish Aquarius 1.0.6 DMG
 
 on:
   push:
