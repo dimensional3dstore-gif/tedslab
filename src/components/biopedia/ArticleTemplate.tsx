@@ -17,7 +17,6 @@ import {
   type ArticleLayout,
 } from "@/lib/article-layout";
 import { articleImageKey, resolveImage } from "@/lib/images";
-import { StudyLesson } from "@/components/study/StudyLesson";
 import { ArticleConceptExplainer } from "@/components/biopedia/ArticleConceptExplainer";
 
 export function ArticleTemplate({
@@ -174,7 +173,6 @@ export function ArticleTemplate({
             Annotations
           </Link>
         )}
-        <a href={preview ? undefined : "#study-lesson"} className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground">Study lesson</a>
         {tabs.map((tab, index) => (
           <a
             key={tab}
@@ -253,7 +251,6 @@ export function ArticleTemplate({
 
       {!preview && <ArticleConceptExplainer article={article} />}
 
-      {!preview && <StudyLesson article={article} layout={layout} />}
 
       <div className="mt-8 flex items-center justify-between gap-3 rounded-xl border border-border bg-card/80 p-3 text-sm text-muted-foreground">
         <span>Was this reference useful?</span>
