@@ -8,7 +8,7 @@
 :root{font-family:Arial,Helvetica,sans-serif;color:#202124;background:#fff;--green:#168a4a;--soft:#eef8f1}
 *{box-sizing:border-box}body{margin:0;min-height:100vh}button,input{font:inherit}
 .top{height:64px;border-bottom:1px solid #e6e6e6;display:flex;align-items:center;padding:0 18px;gap:12px}
-.logo{font-size:20px;font-weight:700;color:var(--green);letter-spacing:-.5px}
+.logo{font-size:20px;font-weight:700;color:var(--green);letter-spacing:-.5px;display:flex;align-items:center;gap:8px}.logo img{width:28px;height:28px;display:block}
 .url{height:38px;flex:1;max-width:720px;border:1px solid #dadce0;border-radius:20px;padding:0 16px;outline:none}
 .url:focus,.search:focus{border-color:#9bd5b2;box-shadow:0 1px 5px rgba(22,138,74,.16)}
 .icon{border:0;background:transparent;color:#5f6368;cursor:pointer;padding:8px}.icon:hover{background:#f1f3f4;border-radius:50%}
@@ -30,7 +30,7 @@ footer{text-align:center;color:#9aa0a6;font-size:11px;padding:20px}
 <header class="top">
   <button class="icon" onclick="history.back()" aria-label="Back">←</button>
   <button class="icon" onclick="history.forward()" aria-label="Forward">→</button>
-  <div class="logo">Aquarius</div>
+  <div class="logo"><img src="aquarius-logo.svg" alt="" aria-hidden="true">Aquarius</div>
   <input id="url" class="url" aria-label="Ted's Lab address" value="tedslab.com" onkeydown="if(event.key==='Enter')goUrl()">
   <button class="icon" onclick="goUrl()">↵</button>
   <div class="launcher">
