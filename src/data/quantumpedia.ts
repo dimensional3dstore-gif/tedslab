@@ -552,4 +552,361 @@ export const QUANTUMPEDIA_ARTICLES: ArticleRow[] = [
     ],
     "https://quantumpedia.uk/quantum-algorithm-1-shors-algorithm-for-factorization-part-2-a4f1090d633a",
   ),
+  article(
+    "quantum-superposition",
+    "Quantum Superposition: States, Amplitudes and Interference",
+    "An introduction to superposition, probability amplitudes and interference, and why these ideas are central to quantum mechanics and quantum computing.",
+    "quantum-mechanics",
+    9,
+    [
+      {
+        heading: "What superposition means",
+        paragraphs: [
+          "A quantum system can be described by a state that is a linear combination of possible basis states. For a qubit, a general pure state can be written as |ψ⟩ = α|0⟩ + β|1⟩, where α and β are complex probability amplitudes.",
+          "Superposition does not mean that a measurement simply reveals two classical values at once. Instead, the amplitudes determine the probabilities and phases that govern what happens when the system is measured or allowed to interfere."
+        ],
+        cards: [
+          { title: "Amplitude", text: "A complex number whose magnitude and phase contribute to measurement probabilities and interference." },
+          { title: "Probability", text: "For a computational-basis measurement, the probability of an outcome is the squared magnitude of its amplitude." },
+          { title: "Interference", text: "Amplitudes can reinforce or cancel one another, changing the probabilities of measurement outcomes." }
+        ]
+      },
+      {
+        heading: "Superposition in a qubit",
+        paragraphs: [
+          "Applying a Hadamard gate to |0⟩ produces the equal superposition (|0⟩ + |1⟩)/√2. Applying another Hadamard returns the state to |0⟩ because the two paths interfere constructively for |0⟩ and destructively for |1⟩.",
+          "This simple experiment captures a central principle of quantum computing: useful algorithms manipulate amplitudes so that desired outcomes are amplified while unwanted outcomes cancel."
+        ]
+      },
+      {
+        heading: "Why it matters",
+        paragraphs: [
+          "Superposition is one of the mathematical resources used by quantum algorithms, but it should not be described as a simple claim that a quantum computer evaluates every possible answer independently and then reads them all out. Measurement still produces a single outcome for each run.",
+          "The computational advantage of a quantum algorithm comes from the full sequence of state preparation, controlled operations, interference and measurement."
+        ]
+      }
+    ],
+    "https://quantumpedia.uk/quantum-superposition"
+  ),
+  article(
+    "quantum-entanglement",
+    "Quantum Entanglement: Correlations Beyond Classical Models",
+    "A guide to entangled quantum states, measurement correlations and Bell's theorem, with attention to what entanglement does and does not imply.",
+    "quantum-physics",
+    10,
+    [
+      {
+        heading: "What is entanglement?",
+        paragraphs: [
+          "Two or more quantum systems are entangled when their joint state cannot be represented as independent states for each subsystem. A standard example is the Bell state (|00⟩ + |11⟩)/√2.",
+          "Measuring one part of an entangled system produces correlations with measurements of the other part. These correlations are stronger than those allowed by broad classes of classical local hidden-variable models."
+        ],
+        cards: [
+          { title: "Joint state", text: "The complete description belongs to the combined system rather than being reducible to separate states." },
+          { title: "Correlation", text: "Measurement results can exhibit statistically structured relationships that cannot be reproduced by classical local models." },
+          { title: "No faster-than-light messaging", text: "Entanglement correlations do not provide a controllable channel for sending classical information instantaneously." }
+        ]
+      },
+      {
+        heading: "Bell's theorem",
+        paragraphs: [
+          "John Bell showed that certain statistical inequalities must hold for local hidden-variable theories. Quantum mechanics predicts violations of these Bell inequalities for appropriately chosen measurements.",
+          "Experiments have repeatedly observed the predicted quantum correlations, making Bell tests a major experimental distinction between quantum theory and local hidden-variable explanations."
+        ]
+      },
+      {
+        heading: "Applications",
+        paragraphs: [
+          "Entanglement is an important resource in quantum teleportation, quantum communication, distributed quantum information and some sensing protocols. Its practical usefulness depends on creating, controlling and preserving entanglement in noisy physical systems."
+        ]
+      }
+    ],
+    "https://quantumpedia.uk/quantum-entanglement"
+  ),
+  article(
+    "uncertainty-principle",
+    "Heisenberg's Uncertainty Principle",
+    "An explanation of why certain pairs of quantum observables have intrinsic limits on the precision with which their values can be jointly prepared or predicted.",
+    "quantum-mechanics",
+    8,
+    [
+      {
+        heading: "The core idea",
+        paragraphs: [
+          "For position x and momentum p, the uncertainty relation is Δx Δp ≥ ħ/2 for a suitable quantum state. The relation is not simply a statement about poor experimental instruments; it follows from the mathematical structure of quantum observables.",
+          "More generally, non-commuting observables obey uncertainty relations connected to their commutator. The principle therefore describes a property of quantum states and measurements."
+        ]
+      },
+      {
+        heading: "Why non-commutation matters",
+        paragraphs: [
+          "Position and momentum are represented by operators that do not commute. This means the order and compatibility of measurements matter, and it leads directly to limits on the spreads of their probability distributions.",
+          "The uncertainty principle should be distinguished from the idea that a particle secretly possesses exact classical values that are merely hidden from us. Quantum theory assigns a state and predicts probability distributions for measurements."
+        ],
+        cards: [
+          { title: "Δx", text: "The statistical spread of position outcomes for the chosen quantum state." },
+          { title: "Δp", text: "The statistical spread of momentum outcomes for the same state." },
+          { title: "ħ", text: "The reduced Planck constant, which sets the scale of quantum effects." }
+        ]
+      },
+      {
+        heading: "Physical consequences",
+        paragraphs: [
+          "Uncertainty relations appear throughout quantum physics, including zero-point motion, confinement, spectroscopy and quantum sensing. They are part of the mathematical framework rather than an optional correction added to classical physics."
+        ]
+      }
+    ],
+    "https://quantumpedia.uk/heisenberg-uncertainty-principle"
+  ),
+  article(
+    "quantum-measurement",
+    "Quantum Measurement: From State to Outcome",
+    "A structured introduction to quantum measurement, observables, probability amplitudes, collapse and the difference between a quantum state and a measurement result.",
+    "quantum-mechanics",
+    9,
+    [
+      {
+        heading: "State versus outcome",
+        paragraphs: [
+          "A quantum state contains the information needed to predict probabilities for possible measurements. A measurement produces a particular classical outcome according to those probabilities.",
+          "For a qubit in α|0⟩ + β|1⟩, measurement in the computational basis returns 0 with probability |α|² and 1 with probability |β|²."
+        ]
+      },
+      {
+        heading: "Observables and bases",
+        paragraphs: [
+          "Different measurements correspond to different observables and therefore different bases. A state that is definite in one basis can appear as a superposition in another.",
+          "This basis dependence is essential to quantum algorithms. Gates change the state before measurement so that interference encodes useful information into the basis in which the final measurement is performed."
+        ],
+        cards: [
+          { title: "Observable", text: "A quantum-mechanical quantity represented by an operator whose possible measurement values are associated with its eigenvalues." },
+          { title: "Born rule", text: "The rule connecting quantum amplitudes to probabilities of measurement outcomes." },
+          { title: "Post-measurement state", text: "After an ideal projective measurement, the state is described by the outcome's corresponding eigenspace." }
+        ]
+      },
+      {
+        heading: "The measurement problem",
+        paragraphs: [
+          "The relationship between continuous quantum evolution and definite measurement outcomes is one of the foundational interpretive questions in quantum theory. Different interpretations describe this transition differently while agreeing on the standard experimental predictions.",
+          "For practical quantum computing, the key engineering concern is controlling when and how measurements occur, because measurement can destroy the coherence needed for subsequent quantum operations."
+        ]
+      }
+    ],
+    "https://quantumpedia.uk/quantum-measurement"
+  ),
+  article(
+    "quantum-tunnelling",
+    "Quantum Tunnelling: Crossing a Classically Forbidden Barrier",
+    "An explanation of quantum tunnelling and how wavefunction amplitudes allow particles to appear across barriers that classical mechanics would forbid.",
+    "quantum-physics",
+    8,
+    [
+      {
+        heading: "The barrier problem",
+        paragraphs: [
+          "In classical mechanics, a particle with energy lower than a potential barrier cannot cross that barrier. Quantum mechanics describes the particle with a wavefunction, and the wavefunction can extend into and through a finite barrier.",
+          "When the barrier is sufficiently thin, a non-zero probability of finding the particle on the other side remains. This phenomenon is quantum tunnelling."
+        ]
+      },
+      {
+        heading: "Wavefunction behaviour",
+        paragraphs: [
+          "Inside a classically forbidden region, the wavefunction generally decreases exponentially rather than becoming exactly zero. The transmitted probability therefore depends strongly on the barrier width and height.",
+          "Tunnelling is not a particle accelerating through a barrier in the classical sense. It is a consequence of the quantum state and the boundary conditions imposed by the potential."
+        ],
+        cards: [
+          { title: "Alpha decay", text: "Alpha particles can tunnel through the nuclear potential barrier, providing a classic example of tunnelling in nature." },
+          { title: "Scanning tunnelling microscopy", text: "A tunnelling current between a sharp tip and a surface can be used to image matter at very small scales." },
+          { title: "Semiconductors", text: "Tunnel junctions and other electronic devices exploit quantum tunnelling in controlled ways." }
+        ]
+      },
+      {
+        heading: "Why it matters",
+        paragraphs: [
+          "Tunnelling demonstrates that quantum mechanics changes the meaning of a physically allowed process. It also underpins technologies ranging from tunnel diodes to scanning tunnelling microscopes and contributes to phenomena in nuclear and condensed-matter physics."
+        ]
+      }
+    ],
+    "https://quantumpedia.uk/quantum-tunnelling"
+  ),
+  article(
+    "quantum-decoherence",
+    "Quantum Decoherence: Why Quantum States Lose Their Coherence",
+    "A guide to decoherence, environmental interaction and the practical challenge of preserving quantum information in real devices.",
+    "quantum-mechanics",
+    9,
+    [
+      {
+        heading: "What decoherence means",
+        paragraphs: [
+          "Quantum coherence refers to stable phase relationships between components of a quantum state. When a quantum system interacts with its environment, information about those phases can become correlated with environmental degrees of freedom.",
+          "The reduced state of the system can then lose the interference terms that distinguish a coherent superposition from a classical statistical mixture. This process is called decoherence."
+        ]
+      },
+      {
+        heading: "Why environments matter",
+        paragraphs: [
+          "Real qubits are never perfectly isolated. Thermal fluctuations, electromagnetic noise, material defects, control errors and unwanted coupling to nearby systems can all disturb quantum states.",
+          "Decoherence is therefore a central engineering problem. Quantum processors must perform gates and measurements quickly and accurately enough, while maintaining coherence for the duration of the computation."
+        ],
+        cards: [
+          { title: "T1", text: "A commonly used timescale associated with energy relaxation of a qubit." },
+          { title: "T2", text: "A commonly used coherence timescale associated with loss of phase coherence." },
+          { title: "Isolation", text: "Reducing unwanted coupling to the environment helps preserve quantum information." }
+        ]
+      },
+      {
+        heading: "Decoherence and error correction",
+        paragraphs: [
+          "Quantum error correction does not make physical noise disappear. Instead, information is encoded redundantly across multiple physical qubits so that certain errors can be detected and corrected without directly measuring the logical quantum information.",
+          "The long-term goal is fault-tolerant quantum computation, where logical error rates can be reduced sufficiently for large computations to run reliably."
+        ]
+      }
+    ],
+    "https://quantumpedia.uk/quantum-decoherence"
+  ),
+  article(
+    "quantum-error-correction",
+    "Quantum Error Correction: Protecting Fragile Quantum Information",
+    "An introduction to logical qubits, stabilizer codes, error syndromes and the role of fault tolerance in scalable quantum computing.",
+    "quantum-computing",
+    11,
+    [
+      {
+        heading: "Why quantum errors are different",
+        paragraphs: [
+          "Classical computers can often copy bits directly and use redundancy to recover from errors. Unknown quantum states cannot be copied arbitrarily because of the no-cloning theorem, so quantum error correction requires a different strategy.",
+          "A logical qubit is encoded into multiple physical qubits. Carefully chosen measurements reveal an error syndrome without revealing the logical state itself."
+        ]
+      },
+      {
+        heading: "Syndromes and correction",
+        paragraphs: [
+          "Stabilizer-based codes define sets of measurements whose expected values identify classes of errors. The syndrome can then be processed to infer a likely error and apply a correction or update the interpretation of the logical state.",
+          "The surface code is a prominent architecture because it uses local interactions on a two-dimensional layout and can, under suitable noise assumptions, support fault-tolerant logical operations."
+        ],
+        cards: [
+          { title: "Physical qubit", text: "A hardware-level quantum system that is directly controlled and measured." },
+          { title: "Logical qubit", text: "Quantum information encoded across multiple physical qubits to protect it from errors." },
+          { title: "Syndrome", text: "Measurement information that indicates which error pattern may have occurred without directly measuring the encoded state." }
+        ]
+      },
+      {
+        heading: "Fault tolerance",
+        paragraphs: [
+          "Fault tolerance is the broader engineering framework for performing reliable quantum computation even though the underlying components are imperfect. A key threshold idea is that if physical error rates are sufficiently low and the code and architecture are suitable, logical error rates can be reduced through increasing code size.",
+          "This is one reason useful large-scale quantum computers are expected to require many physical qubits for each high-quality logical qubit."
+        ]
+      }
+    ],
+    "https://quantumpedia.uk/quantum-error-correction"
+  ),
+  article(
+    "quantum-fourier-transform",
+    "Quantum Fourier Transform: The Frequency Tool Behind Major Algorithms",
+    "An introduction to the quantum Fourier transform, its circuit structure and its role in phase estimation and Shor's algorithm.",
+    "quantum-computing",
+    10,
+    [
+      {
+        heading: "What the QFT does",
+        paragraphs: [
+          "The quantum Fourier transform maps amplitudes in the computational basis into a Fourier-transformed representation. It is the quantum analogue of a discrete Fourier transform, implemented as a unitary operation.",
+          "The transformation can expose periodic structure in a quantum state. This makes it a key component of phase estimation and several quantum algorithms."
+        ]
+      },
+      {
+        heading: "Circuit construction",
+        paragraphs: [
+          "A standard QFT circuit uses Hadamard gates followed by controlled phase rotations, with the order arranged so that information from different qubits contributes to the final phase structure. A final sequence of swaps reverses the qubit order when required.",
+          "The exact circuit can be implemented with O(n²) elementary gates for n input qubits, while approximate QFT circuits can omit very small rotations to reduce gate counts."
+        ],
+        cards: [
+          { title: "Hadamard", text: "Creates and recombines superpositions, forming the basic interference structure of the QFT circuit." },
+          { title: "Controlled rotation", text: "Adds a phase conditioned on another qubit, allowing relative phase information to be accumulated." },
+          { title: "Phase information", text: "The QFT converts periodic phase structure into amplitudes that can be sampled by measurement." }
+        ]
+      },
+      {
+        heading: "Why Shor needs it",
+        paragraphs: [
+          "Shor's algorithm uses the QFT after modular exponentiation to extract information about the period of a function. Classical post-processing then turns the measured information into candidate periods and, ultimately, factors.",
+          "The QFT is therefore not an isolated trick: it is part of a larger pattern in quantum algorithms where interference is used to reveal structure that is difficult to access directly."
+        ]
+      }
+    ],
+    "https://quantumpedia.uk/quantum-fourier-transform"
+  ),
+  article(
+    "quantum-teleportation",
+    "Quantum Teleportation: Moving a Quantum State Without Moving the Particle",
+    "A step-by-step explanation of quantum teleportation, entanglement, Bell measurements and the classical communication required to reconstruct a quantum state.",
+    "quantum-physics",
+    10,
+    [
+      {
+        heading: "What is actually teleported?",
+        paragraphs: [
+          "Quantum teleportation transfers an unknown quantum state from one location to another using a shared entangled pair, a joint measurement and two classical bits of communication. The original state is not physically transported from sender to receiver.",
+          "The protocol transfers the state information while the original state is destroyed by the sender's measurement. It therefore does not violate the no-cloning theorem."
+        ]
+      },
+      {
+        heading: "The three-part protocol",
+        paragraphs: [
+          "First, the sender and receiver share an entangled Bell pair. The sender then performs a Bell-basis measurement on the unknown input state and their half of the entangled pair.",
+          "The sender communicates the two-bit measurement result classically. The receiver uses that information to apply one of four possible correction operations, recovering the original quantum state up to the fidelity allowed by the physical implementation."
+        ],
+        cards: [
+          { title: "Entanglement", text: "Provides the shared quantum resource needed for the protocol." },
+          { title: "Bell measurement", text: "Produces one of four classical outcomes that determine the receiver's correction." },
+          { title: "Classical channel", text: "Two classical bits are required, so teleportation cannot send usable information faster than light." }
+        ]
+      },
+      {
+        heading: "Why it matters",
+        paragraphs: [
+          "Quantum teleportation is a foundational protocol for quantum networking and distributed quantum information. In a future quantum internet, teleportation-like procedures could help move logical quantum states between network nodes without directly transmitting fragile physical qubits over the entire distance."
+        ]
+      }
+    ],
+    "https://quantumpedia.uk/quantum-teleportation"
+  ),
+  article(
+    "bell-theorem",
+    "Bell's Theorem and the Limits of Local Hidden Variables",
+    "A guide to Bell inequalities, entangled correlations and why experiments can distinguish quantum predictions from local hidden-variable models.",
+    "quantum-physics",
+    10,
+    [
+      {
+        heading: "The classical question",
+        paragraphs: [
+          "Before Bell's work, one could ask whether quantum probabilities reflected an incomplete description of underlying classical variables. A local hidden-variable model attempts to explain correlations using pre-existing properties while preserving locality.",
+          "Bell's theorem showed that this class of explanations imposes mathematical constraints on observable correlations."
+        ]
+      },
+      {
+        heading: "Bell inequalities",
+        paragraphs: [
+          "A Bell inequality is a bound that must be satisfied by correlations generated by a broad class of local hidden-variable theories. Quantum mechanics predicts violations for particular entangled states and measurement settings.",
+          "Experiments choose measurement settings randomly or according to carefully designed protocols and compare the observed correlations with the classical bound. Modern loophole-aware Bell tests have provided strong evidence for the quantum predictions."
+        ]
+      },
+      {
+        heading: "What Bell does not prove",
+        paragraphs: [
+          "Bell's theorem does not establish a simple statement that quantum mechanics permits faster-than-light communication. Standard quantum theory preserves the no-signalling principle: the local statistics available to one observer cannot be controlled to transmit a classical message instantaneously.",
+          "The theorem instead constrains the kinds of classical local hidden-variable explanations that can reproduce quantum correlations."
+        ],
+        cards: [
+          { title: "Locality", text: "The assumption that physical influences do not propagate outside the causal structure allowed by relativity." },
+          { title: "Hidden variable", text: "An additional variable proposed to complete or explain quantum probabilities in a more classical framework." },
+          { title: "Bell violation", text: "An experimentally observed correlation exceeding the bound predicted by local hidden-variable models." }
+        ]
+      }
+    ],
+    "https://quantumpedia.uk/bells-theorem"
+  ),
+
 ];
