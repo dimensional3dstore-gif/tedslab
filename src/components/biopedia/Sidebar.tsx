@@ -326,10 +326,10 @@ export function Sidebar({
             </p>
           )}
           <ul className="space-y-0.5 pb-3">
-            <li><NavLink label="Unit Converter" Icon={LucideIcons.Calculator} to="https://unit-converter.tedslab.app" collapsed={collapsed} /></li>
-            <li><NavLink label="JSON Formatter" Icon={LucideIcons.Braces} to="https://json-formatter.tedslab.app" collapsed={collapsed} /></li>
-            <li><NavLink label="Regex Tester" Icon={LucideIcons.Regex} to="https://regex-tester.tedslab.app" collapsed={collapsed} /></li>
-            <li><NavLink label="Markdown Previewer" Icon={LucideIcons.FileCode2} to="https://markdown-previewer.tedslab.app" collapsed={collapsed} /></li>
+            <li><a href="https://unit-converter.tedslab.app" className="group flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-sidebar-foreground transition-colors hover:bg-secondary"><LucideIcons.Calculator className="size-4 text-muted-foreground group-hover:text-primary" /><span>Unit Converter</span></a></li>
+            <li><a href="https://json-formatter.tedslab.app" className="group flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-sidebar-foreground transition-colors hover:bg-secondary"><LucideIcons.Braces className="size-4 text-muted-foreground group-hover:text-primary" /><span>JSON Formatter</span></a></li>
+            <li><a href="https://regex-tester.tedslab.app" className="group flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-sidebar-foreground transition-colors hover:bg-secondary"><LucideIcons.Regex className="size-4 text-muted-foreground group-hover:text-primary" /><span>Regex Tester</span></a></li>
+            <li><a href="https://markdown-previewer.tedslab.app" className="group flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-sidebar-foreground transition-colors hover:bg-secondary"><FileText className="size-4 text-muted-foreground group-hover:text-primary" /><span>Markdown Previewer</span></a></li>
           </ul>
 
           {!collapsed && (
