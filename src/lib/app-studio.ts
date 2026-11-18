@@ -166,6 +166,17 @@ export const deployAppProject = createServerFn({ method: "POST" })
     return { ...deployment, customDomain };
   });
 
+export const listPublishedApps = createServerFn({ method: "GET" })
+  .handler(async () => {
+    const sql = await ensureTable();
+    return await sql`
+      select id,name,slug,prompt,status,custom_domain,deployment_url,updated_at
+      from tedslab_app_projects
+      where status = 'deployed' and custom_domain is not null
+      order by name asc
+    ` as Array<Pick<AppProject, "id" | "name" | "slug" | "prompt" | "status" | "custom_domain" | "deployment_url" | "updated_at">>;
+  });
+
 export const listAppProjects = createServerFn({ method: "GET" })
   .middleware([adminMiddleware])
   .handler(async () => {
