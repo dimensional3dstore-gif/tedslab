@@ -13,12 +13,12 @@ const projectRoot = path.resolve(
   "..",
 );
 const sourceSvg = path.join(projectRoot, "public", "aquarius-logo.svg");
-const sourceIcon = path.join(temporaryDirectory, "Aquarius-logo.png");
 const outputIcon = path.join(projectRoot, "build", "Aquarius.icns");
 const temporaryDirectory = await mkdtemp(
   path.join(os.tmpdir(), "aquarius-iconset-"),
 );
 const iconsetDirectory = path.join(temporaryDirectory, "Aquarius.iconset");
+const sourceIcon = path.join(temporaryDirectory, "Aquarius-logo.png");
 
 try {
   await mkdir(iconsetDirectory);
