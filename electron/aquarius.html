@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aquarius — Ted's Lab</title>
+<style>
+:root{font-family:Arial,Helvetica,sans-serif;color:#202124;background:#fff;--green:#168a4a;--soft:#eef8f1}
+*{box-sizing:border-box}body{margin:0;min-height:100vh}button,input{font:inherit}
+.top{height:64px;border-bottom:1px solid #e6e6e6;display:flex;align-items:center;padding:0 18px;gap:12px}
+.logo{font-size:20px;font-weight:700;color:var(--green);letter-spacing:-.5px}
+.url{height:38px;flex:1;max-width:720px;border:1px solid #dadce0;border-radius:20px;padding:0 16px;outline:none}
+.url:focus,.search:focus{border-color:#9bd5b2;box-shadow:0 1px 5px rgba(22,138,74,.16)}
+.icon{border:0;background:transparent;color:#5f6368;cursor:pointer;padding:8px}.icon:hover{background:#f1f3f4;border-radius:50%}
+.launcher{position:relative}.apps{position:absolute;right:0;top:46px;width:330px;background:#fff;border:1px solid #dadce0;border-radius:16px;padding:14px;display:none;grid-template-columns:repeat(3,1fr);gap:8px;z-index:20;box-shadow:0 8px 30px rgba(0,0,0,.12)}
+.apps.open{display:grid}.app{border:0;background:#fff;border-radius:12px;padding:12px 6px;cursor:pointer;color:#202124}.app:hover{background:#f1f8f3}.app .mark{width:36px;height:36px;margin:auto;border-radius:10px;background:var(--soft);color:var(--green);display:grid;place-items:center;font-weight:700}.app span{display:block;font-size:11px;margin-top:7px}
+.hero{min-height:290px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:50px 20px 30px}
+.brand{font-size:56px;font-weight:700;letter-spacing:-3px;color:#202124}.brand b{color:var(--green)}
+.search{width:min(680px,92vw);height:50px;border:1px solid #dfe1e5;border-radius:26px;padding:0 20px;font-size:16px;outline:none;box-shadow:0 1px 6px rgba(32,33,36,.08)}
+.hint{margin-top:14px;font-size:12px;color:#70757a}.green{color:var(--green)}
+.results{width:min(900px,92vw);margin:0 auto 70px}.ai{border:1px solid #d8e9de;background:#f7fbf8;border-radius:14px;padding:18px 20px;margin-bottom:22px}
+.ai h2{font-size:15px;margin:0 0 8px;color:var(--green)}.ai p{margin:0;font-size:14px;line-height:1.6;color:#3c4043}
+.result{padding:15px 4px;border-bottom:1px solid #eee}.urltext{font-size:12px;color:#5f6368}.title{display:block;color:#1769d2;font-size:20px;margin:5px 0;text-decoration:none}.title:hover{text-decoration:underline}.desc{font-size:13px;line-height:1.55;color:#4d5156}
+.meta{display:flex;gap:8px;margin-top:8px}.pill{font-size:10px;border:1px solid #dfe1e5;border-radius:999px;padding:4px 8px;color:#5f6368}
+.section-title{font-size:13px;color:#5f6368;margin:28px 0 5px}.empty{text-align:center;color:#70757a;padding:40px}
+footer{text-align:center;color:#9aa0a6;font-size:11px;padding:20px}
+</style>
+</head>
+<body>
+<header class="top">
+  <button class="icon" onclick="history.back()" aria-label="Back">←</button>
+  <button class="icon" onclick="history.forward()" aria-label="Forward">→</button>
+  <div class="logo">Aquarius</div>
+  <input id="url" class="url" aria-label="Ted's Lab address" value="tedslab.com" onkeydown="if(event.key==='Enter')goUrl()">
+  <button class="icon" onclick="goUrl()">↵</button>
+  <div class="launcher">
+    <button class="icon" onclick="toggleApps()" aria-label="Apps">⋮⋮</button>
+    <div id="apps" class="apps"></div>
+  </div>
+</header>
+<main>
+<section class="hero">
+  <div class="brand">Aqua<b>rius</b></div>
+  <input id="search" class="search" autofocus placeholder="Ask Aquarius or search Ted's Lab" onkeydown="if(event.key==='Enter')search()">
+  <div class="hint">AI answers first · Search <span class="green">Ted's Lab</span> · Use apps://, articles://, dict-articles://, features://, settings://, history:// or ai://</div>
+</section>
+<section id="results" class="results"></section>
+</main>
+<footer>Ted's Lab Browser · Aquarius</footer>
+<script>
+const apps=[
+["Core","Ted's Lab","tedslab.com"],["Knowledge Atlas","Knowledge Atlas","apps://knowledge-atlas"],
+["Quantumpaedia","QuantumPedia","apps://quantumpedia"],["Dictionary","Dictionary","apps://dictionary"],
+["Study Lab","Study Lab","apps://study"],["Study Archive","Study Archive","apps://study-archive"],
+["Nexium AI","Nexium AI","ai://"],["Docs","Docs","apps://docs"],["Notebooks","Notebooks","apps://notebooks"],
+["Flashcards","Flashcards","apps://flashcards"],["Help","Help","apps://help"]
+];
+function toggleApps(){document.getElementById("apps").classList.toggle("open")}
+function renderApps(){document.getElementById("apps").innerHTML=apps.map(([label,_,url])=>'<button class="app" onclick="navigate(''+url+'')"><div class="mark">'+label[0]+'</div><span>'+label+'</span></button>').join("")}
+function aiAnswer(q){
+ const l=q.toLowerCase();
+ if(!q.trim())return "Ask a question about Ted's Lab, its articles, apps, dictionary, QuantumPedia or features.";
+ if(l.includes("quantum"))return "QuantumPedia is Ted's Lab's quantum knowledge environment. Start with concepts, equations, laboratory material and research articles.";
+ if(l.includes("dictionary"))return "The Dictionary uses the Free Dictionary API for live definitions, pronunciation, examples, synonyms and antonyms.";
+ if(l.includes("aquarius"))return "Aquarius is Ted's Lab's dedicated search browser. The address bar supports Ted's Lab's internal addressing schemes.";
+ if(l.includes("study"))return "Study Lab turns Ted's Lab knowledge into structured learning and practice.";
+ return "Aquarius can search Ted's Lab content and route directly to its apps, articles, dictionary articles and features. Try a topic, article title, or a question.";
+}
+function resultCard(title,url,desc,kind){
+ return '<article class="result"><div class="urltext">'+url+'</div><a class="title" href="#" onclick="navigate(''+url+'');return false">'+title+'</a><div class="desc">'+desc+'</div><div class="meta"><span class="pill">'+kind+'</span></div></article>';
+}
+function search(){
+ const q=document.getElementById("search").value.trim();
+ const r=document.getElementById("results");
+ r.innerHTML='<div class="ai"><h2>AI response</h2><p>'+aiAnswer(q)+'</p></div>';
+ if(!q){r.innerHTML+='<div class="empty">Search Ted\'s Lab or ask Aquarius a question.</div>';return}
+ const l=q.toLowerCase();
+ const cards=[];
+ if(l.includes("dictionary")||l.match(/^[a-z-]+$/))cards.push(resultCard("Dictionary — "+q,"dict-articles://"+encodeURIComponent(q),"Look up the word in Ted's Lab's dictionary article format.","Dictionary article"));
+ if(l.includes("quantum"))cards.push(resultCard("QuantumPedia","apps://quantumpedia","Explore quantum concepts, equations, laboratory material and research.","App"));
+ if(l.includes("study"))cards.push(resultCard("Study Lab","apps://study","Structured lessons, practice and knowledge checks.","App"));
+ cards.push(resultCard("Ted's Lab","tedslab.com","The main Ted's Lab knowledge platform, apps and scientific content.","Website"));
+ r.innerHTML+='<div class="section-title">Search results</div>'+cards.join("");
+}
+function normalize(value){
+ const v=value.trim();
+ if(!v)return "tedslab.com";
+ if(/^[a-z]+:\/\//i.test(v))return v;
+ if(v==="tedslab.com"||v==="www.tedslab.com")return v;
+ if(/^https?:\/\//i.test(v))return v;
+ return "https://"+v;
+}
+function navigate(value){
+ const v=normalize(value);
+ if(window.aquarius?.navigate) window.aquarius.navigate(v); else document.getElementById("url").value=v;
+}
+function goUrl(){navigate(document.getElementById("url").value)}
+renderApps();
+search();
+</script>
+</body>
+</html>
