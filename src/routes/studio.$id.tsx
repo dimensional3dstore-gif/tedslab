@@ -3,6 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAppProject, deployAppProject } from "@/lib/app-studio";
 import { AppShell } from "@/components/biopedia/AppShell";
+import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/studio/$id")({
   head: () => ({ meta: [{ title: "App Project — Ted's Lab" }] }),
@@ -11,7 +12,11 @@ export const Route = createFileRoute("/studio/$id")({
 
 function ProjectPage() {
   const { id } = Route.useParams();
+  const { isAdmin, loading: authLoading } = useAuth();
   const queryClient = useQueryClient();
+  if (authLoading) return <AppShell><main className="mx-auto max-w-5xl px-5 py-12">Checking administrator access…</main></AppShell>;
+  if (!isAdmin) return <AppShell><main className="mx-auto max-w-5xl px-5 py-12"><h1 className="text-2xl font-bold">Admin only</h1><p className="mt-2 text-sm text-muted-foreground">Only Ted's Lab administrators can manage deployed apps.</p></main></AppShell>;
+
   const query = useQuery({ queryKey: ["tedslab-app-project", id], queryFn: () => getAppProject({ data: { id } }) });
   const deploy = useMutation({
     mutationFn: () => deployAppProject({ data: { id } }),
