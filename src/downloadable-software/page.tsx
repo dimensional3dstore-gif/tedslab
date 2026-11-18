@@ -10,10 +10,10 @@ import {
 } from "lucide-react";
 import { AppShell } from "@/components/biopedia/AppShell";
 import {
-  CHRONOSOS_GITHUB_RELEASES_URL,
-  CHRONOSOS_LATEST_RELEASE_API_URL,
+  AQUARIUS_GITHUB_RELEASES_URL,
+  AQUARIUS_LATEST_RELEASE_API_URL,
 } from "@/lib/chronos-os-download";
-import { trackChronosOSDownload } from "@/lib/chronos-download-tracking";
+import { trackAquariusDownload } from "@/lib/chronos-download-tracking";
 
 type GitHubRelease = {
   html_url: string;
@@ -40,7 +40,7 @@ export default function DownloadableSoftwarePage() {
 
     async function loadLatestRelease() {
       try {
-        const response = await fetch(CHRONOSOS_LATEST_RELEASE_API_URL, {
+        const response = await fetch(AQUARIUS_LATEST_RELEASE_API_URL, {
           headers: { Accept: "application/vnd.github+json" },
           signal: controller.signal,
         });
@@ -64,8 +64,8 @@ export default function DownloadableSoftwarePage() {
   }, []);
 
   const dmg =
-    release?.assets.find((asset) => asset.name === "Chronos.dmg") ??
-    release?.assets.find((asset) => /^ChronosOS.*\.dmg$/i.test(asset.name));
+    release?.assets.find((asset) => asset.name === "Aquarius.dmg") ??
+    release?.assets.find((asset) => /^Aquarius.*\.dmg$/i.test(asset.name));
   const releaseDate = release?.published_at
     ? new Date(release.published_at)
     : null;
@@ -74,8 +74,8 @@ export default function DownloadableSoftwarePage() {
   function recordDownloadClick() {
     if (!release?.tag_name) return;
 
-    void trackChronosOSDownload(release.tag_name).catch((error: unknown) => {
-      console.error("[ChronosOS download tracking]", error);
+    void trackAquariusDownload(release.tag_name).catch((error: unknown) => {
+      console.error("[Aquarius download tracking]", error);
       setTrackingError(true);
     });
   }
@@ -88,16 +88,16 @@ export default function DownloadableSoftwarePage() {
             Ted&apos;s Lab / Desktop
           </p>
           <h1 className="font-display text-3xl font-bold text-foreground sm:text-4xl">
-            ChronosOS releases
+            Aquarius releases
           </h1>
           <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">
-            Get the latest ChronosOS installer for Mac, see what&apos;s
+            Get the latest Aquarius installer for Mac, see what&apos;s
             included, and follow the quick setup guide.
           </p>
         </header>
 
         <section
-          aria-labelledby="chronosos-release-title"
+          aria-labelledby="aquarius-release-title"
           className="relative overflow-hidden rounded-3xl border border-primary/20 bg-gradient-to-br from-primary/10 via-card to-secondary/40 shadow-sm"
         >
           <div className="grid gap-8 p-6 sm:p-8 lg:grid-cols-[minmax(0,1fr)_280px] lg:items-center lg:p-10">
@@ -123,10 +123,10 @@ export default function DownloadableSoftwarePage() {
                 />
                 <div>
                   <h2
-                    id="chronosos-release-title"
+                    id="aquarius-release-title"
                     className="font-display text-3xl font-bold text-foreground sm:text-5xl"
                   >
-                    ChronosOS
+                    Aquarius
                   </h2>
                   <p className="mt-1 text-sm text-muted-foreground sm:text-base">
                     Your Ted&apos;s Lab sign-in, on desktop.
@@ -159,7 +159,7 @@ export default function DownloadableSoftwarePage() {
               </div>
 
               <p className="mt-6 max-w-xl text-sm leading-relaxed text-muted-foreground">
-                A native macOS app for the ChronosOS sign-in experience. An
+                A native macOS app for the Aquarius sign-in experience. An
                 internet connection is required to sign in.
               </p>
 
@@ -175,7 +175,7 @@ export default function DownloadableSoftwarePage() {
                   "Could not load release details. You can still browse GitHub Releases."}
                 {status === "available" &&
                   !dmg &&
-                  "The latest release is published, but Chronos.dmg is not attached yet."}
+                  "The latest release is published, but Aquarius.dmg is not attached yet."}
               </p>
             </div>
 
@@ -226,7 +226,7 @@ export default function DownloadableSoftwarePage() {
                 </p>
               )}
               <a
-                href={release?.html_url ?? CHRONOSOS_GITHUB_RELEASES_URL}
+                href={release?.html_url ?? AQUARIUS_GITHUB_RELEASES_URL}
                 target="_blank"
                 rel="noreferrer"
                 className="mt-3 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-border bg-background/70 px-4 py-2.5 text-sm font-semibold text-foreground transition hover:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
@@ -277,15 +277,15 @@ export default function DownloadableSoftwarePage() {
         )}
 
         <section
-          aria-labelledby="install-chronosos-title"
+          aria-labelledby="install-aquarius-title"
           className="grid gap-8 rounded-2xl border border-border bg-card/80 p-6 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] sm:p-8"
         >
           <div>
             <h2
-              id="install-chronosos-title"
+              id="install-aquarius-title"
               className="font-display text-xl font-semibold text-foreground"
             >
-              Install ChronosOS
+              Install Aquarius
             </h2>
             <ol className="mt-4 space-y-3 text-sm leading-relaxed text-muted-foreground">
               <li className="flex gap-3">
@@ -298,7 +298,7 @@ export default function DownloadableSoftwarePage() {
                 <span className="grid size-6 shrink-0 place-items-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
                   2
                 </span>
-                Drag ChronosOS into Applications.
+                Drag Aquarius into Applications.
               </li>
               <li className="flex gap-3">
                 <span className="grid size-6 shrink-0 place-items-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
