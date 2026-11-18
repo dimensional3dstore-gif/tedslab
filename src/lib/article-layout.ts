@@ -205,7 +205,7 @@ export function layoutFromArticleBody(
 
   return {
     version: 1,
-    tags: ["Article", "Study"],
+    tags: ["Article", "Scientific reference"],
     facts: [],
     overview: overview.length > 0 ? overview : [bodyToPlainText(body)],
     sections,
