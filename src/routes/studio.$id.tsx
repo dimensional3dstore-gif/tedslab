@@ -23,7 +23,7 @@ function ProjectPage() {
 
   const app = query.data;
   const srcDoc = "<!doctype html><html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><style>" +
-    app.css + "</style></head><body>" + app.html + "<script>" + app.js.replace(/<\\/script/gi, "<\\\\/script") + "<\\/script></body></html>";
+    app.css + "</style></head><body>" + app.html + "<script>" + app.js.split("</script").join("<\\/script") + "<\\/script></body></html>";
 
   return (
     <AppShell>
