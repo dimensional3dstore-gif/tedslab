@@ -3,6 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { listAppProjects } from "@/lib/app-studio";
 import { AppShell } from "@/components/biopedia/AppShell";
+import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/studio")({
   head: () => ({ meta: [{ title: "App Studio — Ted's Lab" }] }),
@@ -10,7 +11,11 @@ export const Route = createFileRoute("/studio")({
 });
 
 function StudioPage() {
+  const { isAdmin, loading: authLoading } = useAuth();
   const query = useQuery({ queryKey: ["tedslab-app-projects"], queryFn: () => listAppProjects() });
+  if (authLoading) return <AppShell><main className="mx-auto max-w-5xl px-5 py-12">Checking administrator access…</main></AppShell>;
+  if (!isAdmin) return <AppShell><main className="mx-auto max-w-5xl px-5 py-12"><h1 className="text-2xl font-bold">Deployment Platform</h1><p className="mt-2 text-sm text-muted-foreground">Ted's Lab app deployment is available to administrators only.</p></main></AppShell>;
+
   return (
     <AppShell>
       <main className="mx-auto w-full max-w-6xl px-5 py-10">
