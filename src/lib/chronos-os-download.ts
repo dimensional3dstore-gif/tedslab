@@ -20,3 +20,6 @@ export function getAquariusDownloadUrl() {
 
   return isLocalPreview ? AQUARIUS_LOCAL_DOWNLOAD_URL : AQUARIUS_DOWNLOAD_URL;
 }
+
+
+export const getChronosOSDownloadUrl = getAquariusDownloadUrl;
