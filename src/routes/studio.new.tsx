@@ -3,6 +3,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { createAppProject } from "@/lib/app-studio";
 import { AppShell } from "@/components/biopedia/AppShell";
+import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/studio/new")({
   head: () => ({ meta: [{ title: "Create App — Ted's Lab" }] }),
@@ -11,10 +12,14 @@ export const Route = createFileRoute("/studio/new")({
 
 function NewAppPage() {
   const navigate = useNavigate();
+  const { isAdmin, loading: authLoading } = useAuth();
   const [name, setName] = useState("");
   const [prompt, setPrompt] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+
+  if (authLoading) return <AppShell><main className="mx-auto max-w-4xl px-5 py-12">Checking administrator access…</main></AppShell>;
+  if (!isAdmin) return <AppShell><main className="mx-auto max-w-4xl px-5 py-12"><h1 className="text-2xl font-bold">Admin only</h1><p className="mt-2 text-sm text-muted-foreground">Only Ted's Lab administrators can create and deploy apps.</p></main></AppShell>;
 
   async function create() {
     setError(""); setBusy(true);
