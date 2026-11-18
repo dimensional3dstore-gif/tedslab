@@ -103,11 +103,16 @@ async function deployStaticProject(slug: string, files: { html: string; css: str
     throw error;
   });
 
+  const projectId = project.id || slug;
+  // Bind the Ted's Lab hostname before publishing. If the domain cannot be
+  // attached to this project, no production deployment is created.
+  await bindTedslabDomain(projectId, hostname);
+
   const deployment = await vercelRequest("/v13/deployments?teamId=" + encodeURIComponent(TEAM_ID), {
     method: "POST",
     body: JSON.stringify({
       name: slug,
-      project: project.id || slug,
+      project: projectId,
       target: "production",
       files: [
         { file: "index.html", data: files.html },
@@ -116,9 +121,6 @@ async function deployStaticProject(slug: string, files: { html: string; css: str
       ],
     }),
   });
-
-  const projectId = project.id || slug;
-  await bindTedslabDomain(projectId, hostname);
 
   return {
     projectId: project.id || null,
