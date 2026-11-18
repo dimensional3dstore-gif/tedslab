@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/use-auth";
-import { getChronosOSDownloadUrl } from "@/lib/chronos-os-download";
+import { getAquariusDownloadUrl } from "@/lib/chronos-os-download";
 
 export function TopBar({
   query,
@@ -28,7 +28,7 @@ export function TopBar({
   onToggleSidebar: () => void;
 }) {
   const { user } = useAuth();
-  const chronosDownloadUrl = getChronosOSDownloadUrl();
+  const aquariusDownloadUrl = getAquariusDownloadUrl();
 
   return (
     <header className="sticky top-0 z-20 flex items-center gap-4 border-b border-border bg-background/90 px-4 py-3 backdrop-blur md:px-6">
@@ -53,10 +53,10 @@ export function TopBar({
       </label>
 
       <a
-        href={chronosDownloadUrl}
-        download="Chronos.dmg"
-        aria-label="Download ChronosOS DMG"
-        title="Download ChronosOS DMG"
+        href={aquariusDownloadUrl}
+        download="Aquarius.dmg"
+        aria-label="Download Aquarius DMG"
+        title="Download Aquarius DMG"
         className="inline-flex h-10 shrink-0 items-center gap-2 rounded-md border border-border px-3 text-sm font-medium text-foreground hover:bg-secondary"
       >
         <Download className="size-4" />
