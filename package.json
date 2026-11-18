@@ -15,10 +15,11 @@
     "format": "prettier --write .",
     "generate:sitemap": "node scripts/generate-sitemap.mjs",
     "desktop:app": "electron-builder --mac dir --arm64",
-    "desktop:mac": "node scripts/package-chronosos-macos.mjs",
-    "desktop:download": "node scripts/package-chronosos-macos.mjs",
+    "desktop:mac": "node scripts/package-aquarius-macos.mjs",
+    "desktop:download": "node scripts/package-aquarius-macos.mjs",
     "prebuild": "node scripts/verify-build-config.mjs",
-    "postbuild": "node scripts/generate-offline-precache.mjs"
+    "postbuild": "node scripts/generate-offline-precache.mjs",
+    "check:desktop-download": "node scripts/check-aquarius-download.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.27.0",
@@ -120,18 +121,19 @@
     "appdmg": "^0.6.6"
   },
   "build": {
-    "appId": "com.tedslab.chronosos",
-    "productName": "ChronosOS",
+    "appId": "com.tedslab.aquarius",
+    "productName": "Aquarius",
     "files": [
       "electron/main.cjs",
       "electron/preload.cjs",
+      "electron/aquarius.html",
       "package.json"
     ],
     "directories": {
       "output": "release"
     },
     "mac": {
-      "icon": "build/ChronosOS.icns",
+      "icon": "build/Aquarius.icns",
       "target": [
         "dir"
       ],
