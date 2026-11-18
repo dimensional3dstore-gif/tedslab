@@ -42,6 +42,7 @@ export const studyTools = [
   { label: "Saved Content", icon: Bookmark, to: "/saved" },
   { label: "Create Custom List", icon: Plus, to: "/custom-lists" },
   { label: "Translate", icon: LucideIcons.SpeakerIcon, to: "/translate" },
+  { label: "Apps", icon: LucideIcons.Layers3, to: "/apps" },
 ] as const;
 
 function resolveIcon(name: string | null | undefined): LucideIcon {
