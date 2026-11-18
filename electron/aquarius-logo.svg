@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+<title id="title">Aquarius</title><desc id="desc">Aquarius green orbital A logo</desc>
+<defs><linearGradient id="aqua" x1="72" y1="64" x2="440" y2="448" gradientUnits="userSpaceOnUse"><stop stop-color="#19b86b"/><stop offset="1" stop-color="#08783e"/></linearGradient></defs>
+<rect width="512" height="512" rx="112" fill="#fff"/><circle cx="256" cy="256" r="178" fill="#eef9f2"/>
+<path d="M256 105 144 389h62l22-58h56l22 58h62L256 105Zm0 91 31 81h-62l31-81Z" fill="url(#aqua)"/>
+<ellipse cx="256" cy="256" rx="205" ry="78" fill="none" stroke="#168a4a" stroke-width="18" transform="rotate(-24 256 256)"/>
+<circle cx="421" cy="174" r="20" fill="#168a4a"/></svg>
