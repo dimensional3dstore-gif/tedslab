@@ -1,7 +1,6 @@
-
 import Anthropic from "@anthropic-ai/sdk";
 import { createServerFn } from "@tanstack/react-start";
-import { authMiddleware } from "@/lib/auth/middleware";
+import { adminMiddleware } from "@/lib/auth/admin-middleware";
 import { getSql } from "@/lib/db";
 
 export type AppProject = {
@@ -13,6 +12,7 @@ export type AppProject = {
 };
 
 const TEAM_ID = process.env.VERCEL_TEAM_ID || "team_n1Ahg19MaVMKeE6YxDZ2e8Ea";
+const APP_DOMAIN = (process.env.TEDSLAB_APP_DOMAIN || "tedslab.app").replace(/^https?:\/\//, "").replace(/\/$/, "");
 
 function slugify(value: string) {
   const slug = value.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 48);
@@ -51,7 +51,7 @@ async function generateFiles(prompt: string, name: string) {
   const response = await client.messages.create({
     model: process.env.TEDSLAB_APP_MODEL || "claude-3-5-sonnet-20241022",
     max_tokens: 12000,
-    system: "You are Ted's Lab App Builder. Generate a polished self-contained web app from a natural-language request. Return ONLY valid JSON with exactly these string fields: html, css, js. HTML is the complete page body, CSS is complete responsive CSS, and JS is vanilla browser JavaScript. Do not use npm packages, imports, external scripts, secrets, API keys, tracking code, or credential collection. Make it accessible, responsive, and production-quality. App name: " + name,
+    system: "You are Ted's Lab App Builder. Generate a polished self-contained web app from a natural-language request. Return ONLY valid JSON with exactly these string fields: html, css, js. HTML is the complete page body, CSS is complete responsive CSS, and JS is vanilla browser JavaScript. Do not use npm packages, imports, external scripts, secrets, API keys, tracking code, or credential collection. Make it accessible, responsive, and production-quality. App name: \"" + name + "\"",
     messages: [{ role: "user", content: prompt }],
   });
   const block = response.content.find((part) => part.type === "text");
@@ -77,7 +77,22 @@ async function vercelRequest(path: string, init: RequestInit = {}) {
   return body;
 }
 
+async function bindTedslabDomain(projectId: string, hostname: string) {
+  try {
+    return await vercelRequest("/v10/projects/" + encodeURIComponent(projectId) + "/domains?teamId=" + encodeURIComponent(TEAM_ID), {
+      method: "POST",
+      body: JSON.stringify({ name: hostname }),
+    });
+  } catch (error) {
+    if (/already exists|domain.*already/i.test(error instanceof Error ? error.message : "")) return null;
+    throw error;
+  }
+}
+
 async function deployStaticProject(slug: string, files: { html: string; css: string; js: string }) {
+  const hostname = slug + "." + APP_DOMAIN;
+  if (!hostname.endsWith("." + APP_DOMAIN)) throw new Error("Apps may only be deployed under " + APP_DOMAIN + ".");
+
   const project = await vercelRequest("/v11/projects?teamId=" + encodeURIComponent(TEAM_ID), {
     method: "POST",
     body: JSON.stringify({ name: slug, framework: null, buildCommand: null, outputDirectory: null, installCommand: null, devCommand: null }),
@@ -102,15 +117,19 @@ async function deployStaticProject(slug: string, files: { html: string; css: str
     }),
   });
 
+  const projectId = project.id || slug;
+  await bindTedslabDomain(projectId, hostname);
+
   return {
     projectId: project.id || null,
     deploymentId: deployment.id || null,
-    url: deployment.url ? "https://" + deployment.url : null,
+    url: "https://" + hostname,
+    vercelUrl: deployment.url ? "https://" + deployment.url : null,
   };
 }
 
 export const createAppProject = createServerFn({ method: "POST" })
-  .middleware([authMiddleware])
+  .middleware([adminMiddleware])
   .handler(async ({ data, context }) => {
     const input = data as { name: string; prompt: string };
     if (!input?.name?.trim() || !input?.prompt?.trim()) throw new Error("App name and prompt are required.");
@@ -128,38 +147,38 @@ export const createAppProject = createServerFn({ method: "POST" })
   });
 
 export const deployAppProject = createServerFn({ method: "POST" })
-  .middleware([authMiddleware])
+  .middleware([adminMiddleware])
   .handler(async ({ data, context }) => {
     const { id } = data as { id: string };
     const sql = await ensureTable();
-    const [project] = await sql`select * from tedslab_app_projects where id=${id} and user_id=${context.userId} limit 1`;
+    const [project] = await sql`select * from tedslab_app_projects where id=${id} limit 1`;
     if (!project) throw new Error("App project not found.");
     const deployment = await deployStaticProject(project.slug, { html: project.html, css: project.css, js: project.js });
-    const customDomain = project.slug + ".tedslab.app";
+    const customDomain = project.slug + "." + APP_DOMAIN;
     await sql`
       update tedslab_app_projects set status='deployed', deployment_url=${deployment.url},
         custom_domain=${customDomain}, vercel_project_id=${deployment.projectId},
         vercel_deployment_id=${deployment.deploymentId}, updated_at=now()
-      where id=${id} and user_id=${context.userId}
+      where id=${id}
     `;
     return { ...deployment, customDomain };
   });
 
 export const listAppProjects = createServerFn({ method: "GET" })
-  .middleware([authMiddleware])
-  .handler(async ({ context }) => {
+  .middleware([adminMiddleware])
+  .handler(async () => {
     const sql = await ensureTable();
     return await sql`
       select id,user_id,name,slug,prompt,status,deployment_url,custom_domain,vercel_project_id,vercel_deployment_id,created_at,updated_at
-      from tedslab_app_projects where user_id=${context.userId} order by updated_at desc
+      from tedslab_app_projects order by updated_at desc
     ` as AppProject[];
   });
 
 export const getAppProject = createServerFn({ method: "GET" })
-  .middleware([authMiddleware])
-  .handler(async ({ data, context }) => {
+  .middleware([adminMiddleware])
+  .handler(async ({ data }) => {
     const sql = await ensureTable();
-    const [row] = await sql`select * from tedslab_app_projects where id=${(data as { id: string }).id} and user_id=${context.userId} limit 1`;
+    const [row] = await sql`select * from tedslab_app_projects where id=${(data as { id: string }).id} limit 1`;
     if (!row) throw new Error("App project not found.");
     return row as AppProject;
   });
