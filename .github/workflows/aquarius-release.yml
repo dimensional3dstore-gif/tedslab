@@ -5,6 +5,7 @@ on:
     branches:
       - "aquarius-release"
       - "aquarius-release-v106"
+      - "aquarius-release-fix"
     tags:
       - "v*"
       - "aquarius-*"
