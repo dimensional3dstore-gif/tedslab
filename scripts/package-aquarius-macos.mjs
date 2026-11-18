@@ -8,6 +8,7 @@ const releaseDirectory = path.join(projectRoot, "release");
 const appPath = path.join(releaseDirectory, "mac-arm64", "Aquarius.app");
 const createDmgCli = path.join(projectRoot, "vendor", "create-dmg", "cli.js");
 const skipAppBuild = process.argv.includes("--skip-app-build");
+const unsignedDmg = process.env.AQUARIUS_UNSIGNED_DMG === "true";
 
 await stat(createDmgCli).catch((error) => {
   if (error.code === "ENOENT") {
@@ -43,6 +44,7 @@ execFileSync(
     "--overwrite",
     "--no-version-in-filename",
     "--dmg-title=Aquarius",
+    ...(unsignedDmg ? ["--no-code-sign"] : []),
     appPath,
     releaseDirectory,
   ],
