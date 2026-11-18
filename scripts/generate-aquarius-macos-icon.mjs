@@ -12,7 +12,8 @@ const projectRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   "..",
 );
-const sourceIcon = path.join(projectRoot, "public", "logo.png");
+const sourceSvg = path.join(projectRoot, "public", "aquarius-logo.svg");
+const sourceIcon = path.join(temporaryDirectory, "Aquarius-logo.png");
 const outputIcon = path.join(projectRoot, "build", "Aquarius.icns");
 const temporaryDirectory = await mkdtemp(
   path.join(os.tmpdir(), "aquarius-iconset-"),
@@ -21,6 +22,9 @@ const iconsetDirectory = path.join(temporaryDirectory, "Aquarius.iconset");
 
 try {
   await mkdir(iconsetDirectory);
+  execFileSync("qlmanage", ["-t", "-s", "1024", "-o", temporaryDirectory, sourceSvg], { stdio: "inherit" });
+  const renderedSvg = path.join(temporaryDirectory, "aquarius-logo.svg.png");
+  execFileSync("sips", ["-s", "format", "png", renderedSvg, "--out", sourceIcon], { stdio: "inherit" });
   const iconSizes = [
     ["icon_16x16.png", 16],
     ["icon_16x16@2x.png", 32],
