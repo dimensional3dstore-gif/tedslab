@@ -115,6 +115,8 @@ jobs:
           fi
 
       - name: Create Aquarius DMG
+        env:
+          AQUARIUS_UNSIGNED_DMG: ${{ steps.signing.outputs.signed != 'true' && 'true' || 'false' }}
         run: node scripts/package-aquarius-macos.mjs --skip-app-build
 
       - name: Notarize and staple DMG
