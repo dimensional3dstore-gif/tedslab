@@ -251,6 +251,22 @@ export function ArticleTemplate({
 
       {!preview && <ArticleConceptExplainer article={article} />}
 
+      {!preview && layout.references?.length ? (
+        <section className="mt-8 rounded-2xl border border-border bg-card/80 p-6 md:p-8">
+          <div className="flex items-center gap-2">
+            <BookOpenText className="size-4 text-primary" />
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">References</p>
+          </div>
+          <div className="mt-4 space-y-3">
+            {layout.references.map((reference) => (
+              <p key={reference} className="text-sm leading-7 text-muted-foreground">
+                {reference}
+              </p>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
 
       <div className="mt-8 flex items-center justify-between gap-3 rounded-xl border border-border bg-card/80 p-3 text-sm text-muted-foreground">
         <span>Was this reference useful?</span>
