@@ -2,6 +2,8 @@ name: Build and publish Aquarius DMG
 
 on:
   push:
+    branches:
+      - "aquarius-release"
     tags:
       - "v*"
       - "aquarius-*"
