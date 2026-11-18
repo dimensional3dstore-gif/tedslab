@@ -19,7 +19,8 @@
     "desktop:download": "node scripts/package-aquarius-macos.mjs",
     "prebuild": "node scripts/verify-build-config.mjs",
     "postbuild": "node scripts/generate-offline-precache.mjs",
-    "check:desktop-download": "node scripts/check-aquarius-download.mjs"
+    "check:desktop-download": "node scripts/check-aquarius-download.mjs",
+    "desktop:app:unsigned": "electron-builder --mac dir --arm64 -c.mac.identity=null -c.mac.hardenedRuntime=false"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.27.0",
