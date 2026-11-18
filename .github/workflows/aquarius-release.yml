@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - "aquarius-release"
+      - "aquarius-release-v106"
     tags:
       - "v*"
       - "aquarius-*"
