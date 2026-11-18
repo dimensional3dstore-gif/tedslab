@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import DownloadableSoftwarePage from "@/downloadable-software/page";
 
-const title = "Download ChronosOS";
+const title = "Download Aquarius";
 const description =
-  "Download the latest ChronosOS macOS installer from GitHub Releases.";
+  "Download the latest Aquarius macOS installer from GitHub Releases.";
 
 export const Route = createFileRoute("/download")({
   head: () => ({
