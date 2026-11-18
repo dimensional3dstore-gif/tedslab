@@ -41,3 +41,6 @@ export async function trackChronosOSDownload(releaseTag: string) {
     });
   }
 }
+
+// Backward-compatible Aquarius tracking export used by the downloads page.
+export const trackAquariusDownload = trackChronosOSDownload;
