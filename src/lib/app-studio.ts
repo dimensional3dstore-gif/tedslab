@@ -14,6 +14,13 @@ export type AppProject = {
 const TEAM_ID = process.env.VERCEL_TEAM_ID || "team_n1Ahg19MaVMKeE6YxDZ2e8Ea";
 const APP_DOMAIN = (process.env.TEDSLAB_APP_DOMAIN || "tedslab.app").replace(/^https?:\/\//, "").replace(/\/$/, "");
 
+const BUILT_IN_PUBLISHED_APPS = [
+  { id: "builtin-unit-converter", name: "Unit Converter", slug: "unit-converter", prompt: "Convert common scientific and measurement units.", status: "deployed", custom_domain: "unit-converter.tedslab.app", deployment_url: "https://unit-converter.tedslab.app", updated_at: new Date().toISOString() },
+  { id: "builtin-json-formatter", name: "JSON Formatter", slug: "json-formatter", prompt: "Format, validate, and minify JSON directly in your browser.", status: "deployed", custom_domain: "json-formatter.tedslab.app", deployment_url: "https://json-formatter.tedslab.app", updated_at: new Date().toISOString() },
+  { id: "builtin-regex-tester", name: "Regex Tester", slug: "regex-tester", prompt: "Test JavaScript regular expressions against sample text.", status: "deployed", custom_domain: "regex-tester.tedslab.app", deployment_url: "https://regex-tester.tedslab.app", updated_at: new Date().toISOString() },
+  { id: "builtin-markdown-previewer", name: "Markdown Previewer", slug: "markdown-previewer", prompt: "Write simple Markdown and preview the rendered result locally.", status: "deployed", custom_domain: "markdown-previewer.tedslab.app", deployment_url: "https://markdown-previewer.tedslab.app", updated_at: new Date().toISOString() },
+] as const;
+
 function slugify(value: string) {
   const slug = value.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 48);
   return slug || "tedslab-app";
@@ -181,12 +188,14 @@ export const deployAppProject = createServerFn({ method: "POST" })
 export const listPublishedApps = createServerFn({ method: "GET" })
   .handler(async () => {
     const sql = await ensureTable();
-    return await sql`
+    const rows = await sql`
       select id,name,slug,prompt,status,custom_domain,deployment_url,updated_at
       from tedslab_app_projects
       where status = 'deployed' and custom_domain is not null
       order by name asc
     ` as Array<Pick<AppProject, "id" | "name" | "slug" | "prompt" | "status" | "custom_domain" | "deployment_url" | "updated_at">>;
+    const seen = new Set(rows.map((row) => row.slug));
+    return [...BUILT_IN_PUBLISHED_APPS.filter((app) => !seen.has(app.slug)), ...rows];
   });
 
 export const listAppProjects = createServerFn({ method: "GET" })
