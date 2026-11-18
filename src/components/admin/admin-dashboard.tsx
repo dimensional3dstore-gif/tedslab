@@ -1,10 +1,8 @@
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { deployWebsite } from "@/lib/deploy";
 
 interface DeploymentMetrics {
   users: number;
@@ -109,10 +107,6 @@ export function AdminDashboard() {
     staleTime: 60000,
   });
 
-  const deployMutation = useMutation({
-    mutationFn: deployWebsite,
-  });
-
   if (isLoading) {
     return (
       <div className="text-sm text-muted-foreground">Loading statistics...</div>
@@ -189,58 +183,32 @@ export function AdminDashboard() {
       </Card>
 
       <Card className="p-6">
-        <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <h3 className="text-lg font-semibold">Deployment Platform</h3>
-          <Button
-            size="sm"
-            onClick={() => deployMutation.mutate()}
-            disabled={deployMutation.isPending}
-          >
-            {deployMutation.isPending ? "Deploying to Vercel..." : "Deploy to Vercel"}
-          </Button>
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">Admin-only deployment platform</p>
+            <h3 className="mt-1 text-lg font-semibold">Deploy Ted's Lab apps</h3>
+            <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+              Build and publish isolated apps to the Ted's Lab app network. Every public app address is constrained to <span className="font-mono">*.tedslab.app</span>.
+            </p>
+          </div>
+          <Link to="/studio" className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90">
+            Open Deployment Platform
+          </Link>
         </div>
-
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="mt-5 grid gap-4 md:grid-cols-3">
           <div className="rounded-md border border-border bg-secondary/40 p-4">
-            <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">
-              User board
-            </p>
-            <p className="mt-2 text-3xl font-bold text-foreground">
-              {deploymentMetrics?.users ?? 0}
-            </p>
+            <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">Users</p>
+            <p className="mt-2 text-3xl font-bold text-foreground">{deploymentMetrics?.users ?? 0}</p>
           </div>
           <div className="rounded-md border border-border bg-secondary/40 p-4">
-            <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">
-              Visit board
-            </p>
-            <p className="mt-2 text-3xl font-bold text-foreground">
-              {deploymentMetrics?.visits ?? 0}
-            </p>
+            <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">Visits</p>
+            <p className="mt-2 text-3xl font-bold text-foreground">{deploymentMetrics?.visits ?? 0}</p>
           </div>
           <div className="rounded-md border border-border bg-secondary/40 p-4">
-            <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">
-              Download board
-            </p>
-            <p className="mt-2 text-3xl font-bold text-foreground">
-              {deploymentMetrics?.downloads ?? 0}
-            </p>
+            <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">Downloads</p>
+            <p className="mt-2 text-3xl font-bold text-foreground">{deploymentMetrics?.downloads ?? 0}</p>
           </div>
         </div>
-
-        {deployMutation.isSuccess && (
-          <div className="mt-4 rounded-md border border-green-200 bg-green-50 p-3 text-sm text-green-800">
-            Deployment started successfully. Production URL:{" "}
-            {deployMutation.data?.url}
-          </div>
-        )}
-
-        {deployMutation.isError && (
-          <div className="mt-4 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700">
-            {deployMutation.error instanceof Error
-              ? deployMutation.error.message
-              : "Deployment failed."}
-          </div>
-        )}
       </Card>
 
       <Card className="p-6">
