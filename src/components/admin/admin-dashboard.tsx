@@ -190,13 +190,13 @@ export function AdminDashboard() {
 
       <Card className="p-6">
         <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <h3 className="text-lg font-semibold">Deployment</h3>
+          <h3 className="text-lg font-semibold">Deployment Platform</h3>
           <Button
             size="sm"
             onClick={() => deployMutation.mutate()}
             disabled={deployMutation.isPending}
           >
-            {deployMutation.isPending ? "Deploying..." : "Deploy to Internet"}
+            {deployMutation.isPending ? "Deploying to Vercel..." : "Deploy to Vercel"}
           </Button>
         </div>
 
