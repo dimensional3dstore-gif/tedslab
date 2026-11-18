@@ -115,9 +115,21 @@ async function deployStaticProject(slug: string, files: { html: string; css: str
       project: projectId,
       target: "production",
       files: [
-        { file: "index.html", data: files.html },
+        {
+          file: "index.html",
+          data:
+            "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"robots\" content=\"index,follow,max-image-preview:large\"><meta name=\"description\" content=\"" +
+            files.html.replace(/<[^>]*>/g, " ").replace(/\\s+/g, " ").trim().slice(0, 300).replace(/&/g, "&amp;").replace(/"/g, "&quot;") +
+            "\"><link rel=\"canonical\" href=\"https://" + hostname + "/\"><title>" +
+            slug.replace(/-/g, " ") +
+            " — Ted's Lab</title></head><body>" +
+            files.html +
+            "<link rel=\"stylesheet\" href=\"/styles.css\"><script src=\"/app.js\"></script></body></html>",
+        },
         { file: "styles.css", data: files.css },
         { file: "app.js", data: files.js },
+        { file: "robots.txt", data: "User-agent: *\\nAllow: /\\nSitemap: https://" + hostname + "/sitemap.xml\\n" },
+        { file: "sitemap.xml", data: "<?xml version=\"1.0\" encoding=\"UTF-8\"?><urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"><url><loc>https://" + hostname + "/</loc></url></urlset>" },
       ],
     }),
   });
