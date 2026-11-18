@@ -81,9 +81,6 @@ jobs:
           p12-file-base64: ${{ secrets.APPLE_DEVELOPER_CERTIFICATE_BASE64 }}
           p12-password: ${{ secrets.APPLE_DEVELOPER_CERTIFICATE_PASSWORD }}
 
-      - name: Build web app
-        run: npm run build
-
       - name: Generate macOS app icon
         run: node scripts/generate-aquarius-macos-icon.mjs
 
