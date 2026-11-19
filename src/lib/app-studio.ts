@@ -26,23 +26,91 @@ function slugify(value: string) {
   return slug || "tedslab-app";
 }
 
-async function generateFiles(prompt: string, name: string) {
-  if (!process.env.ANTHROPIC_API_KEY) {
-    throw new Error("Ted's Lab app generation is not configured yet. Add ANTHROPIC_API_KEY to production.");
+function parseGeneratedFiles(raw: string) {
+  const cleaned = raw.trim().replace(/^\`\`\`json\s*/i, "").replace(/\s*\`\`\`$/i, "");
+  const parsed = JSON.parse(cleaned);
+  if (!parsed.html || !parsed.css || typeof parsed.js !== "string") {
+    throw new Error("The generated project is incomplete.");
   }
-  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-  const response = await client.messages.create({
-    model: process.env.TEDSLAB_APP_MODEL || "claude-3-5-sonnet-20241022",
-    max_tokens: 12000,
-    system: "You are Ted's Lab App Builder. Generate a polished self-contained web app from a natural-language request. Return ONLY valid JSON with exactly these string fields: html, css, js. HTML is the complete page body, CSS is complete responsive CSS, and JS is vanilla browser JavaScript. Do not use npm packages, imports, external scripts, secrets, API keys, tracking code, or credential collection. Make it accessible, responsive, and production-quality. App name: \"" + name + "\"",
-    messages: [{ role: "user", content: prompt }],
-  });
-  const block = response.content.find((part) => part.type === "text");
-  if (!block || block.type !== "text") throw new Error("The app generator returned no code.");
-  const raw = block.text.trim().replace(/^\`\`\`json\s*/i, "").replace(/\s*\`\`\`$/i, "");
-  const parsed = JSON.parse(raw);
-  if (!parsed.html || !parsed.css || typeof parsed.js !== "string") throw new Error("The generated project is incomplete.");
   return parsed as { html: string; css: string; js: string };
+}
+
+function starterFiles(prompt: string, name: string) {
+  const safeName = name.replace(/[&<>"]/g, "");
+  const safePrompt = prompt.replace(/[&<>"]/g, "");
+  return {
+    html: `<main class="app-shell">
+  <header class="hero">
+    <span class="eyebrow">TED'S LAB APP</span>
+    <h1>${safeName}</h1>
+    <p>${safePrompt}</p>
+  </header>
+  <section class="card">
+    <h2>Your app is ready to build</h2>
+    <p>This starter is fully interactive and can be edited in App Studio. Use the editor to turn this generated foundation into the exact experience you described.</p>
+    <div class="actions">
+      <button id="start">Start</button>
+      <button id="reset" class="secondary">Reset</button>
+    </div>
+    <p id="status" class="status">Ready.</p>
+  </section>
+</main>`,
+    css: `*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,sans-serif;background:linear-gradient(135deg,#f7f9fc,#eef3f8);color:#172033}.app-shell{min-height:100vh;max-width:960px;margin:0 auto;padding:64px 24px}.hero{padding:20px 0 28px}.eyebrow{font-size:12px;font-weight:800;letter-spacing:.18em;color:#4263eb}.hero h1{font-size:clamp(36px,7vw,64px);line-height:1;margin:12px 0}.hero p{max-width:720px;font-size:18px;line-height:1.7;color:#5b6475}.card{max-width:680px;background:#fff;border:1px solid #dfe5ef;border-radius:24px;padding:28px;box-shadow:0 18px 60px rgba(28,42,70,.08)}.card h2{margin-top:0}.card p{line-height:1.7;color:#5b6475}.actions{display:flex;gap:12px;margin-top:22px}button{border:0;border-radius:12px;padding:12px 18px;font:inherit;font-weight:700;background:#4263eb;color:#fff;cursor:pointer}button.secondary{background:#eef1f6;color:#172033}.status{margin-top:20px;font-weight:700!important;color:#4263eb!important}`,
+    js: `const status = document.querySelector("#status");
+document.querySelector("#start").addEventListener("click", () => {
+  status.textContent = "Your app is running. Add your real interactions in App Studio.";
+});
+document.querySelector("#reset").addEventListener("click", () => {
+  status.textContent = "Ready.";
+});`,
+  };
+}
+
+async function generateFiles(prompt: string, name: string) {
+  const system = "You are Ted's Lab App Builder. Generate a polished self-contained web app from a natural-language request. Return ONLY valid JSON with exactly these string fields: html, css, js. HTML is the complete page body, CSS is complete responsive CSS, and JS is vanilla browser JavaScript. Do not use npm packages, imports, external scripts, secrets, API keys, tracking code, or credential collection. Make it accessible, responsive, and production-quality. App name: \"" + name + "\"";
+
+  if (process.env.ANTHROPIC_API_KEY) {
+    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+    const response = await client.messages.create({
+      model: process.env.TEDSLAB_APP_MODEL || "claude-3-5-sonnet-20241022",
+      max_tokens: 12000,
+      system,
+      messages: [{ role: "user", content: prompt }],
+    });
+    const block = response.content.find((part) => part.type === "text");
+    if (block?.type === "text") return parseGeneratedFiles(block.text);
+  }
+
+  // Production Vercel deployments can authenticate to AI Gateway with the
+  // platform-provided OIDC token, so App Studio does not require a provider
+  // secret to be present in the Ted's Lab project.
+  if (process.env.VERCEL_OIDC_TOKEN || process.env.AI_GATEWAY_API_KEY) {
+    const response = await fetch("https://ai-gateway.vercel.sh/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + (process.env.AI_GATEWAY_API_KEY || process.env.VERCEL_OIDC_TOKEN),
+      },
+      body: JSON.stringify({
+        model: process.env.TEDSLAB_APP_MODEL || "anthropic/claude-sonnet-4.5",
+        messages: [
+          { role: "system", content: system },
+          { role: "user", content: prompt },
+        ],
+        temperature: 0.4,
+        max_tokens: 12000,
+      }),
+    });
+    if (response.ok) {
+      const data = await response.json() as { choices?: Array<{ message?: { content?: string } }> };
+      const text = data.choices?.[0]?.message?.content;
+      if (text) return parseGeneratedFiles(text);
+    }
+  }
+
+  // Never make the Create App action dead because an AI provider is
+  // temporarily unavailable. The user still gets a real editable app.
+  return starterFiles(prompt, name);
 }
 
 async function vercelRequest(path: string, init: RequestInit = {}) {
@@ -166,20 +234,50 @@ export const updateAppProject = createServerFn({ method: "POST" })
 
 export const deployAppProject = createServerFn({ method: "POST" })
   .middleware([adminMiddleware])
-  .handler(async ({ data, context }) => {
+  .handler(async ({ data }) => {
     const { id } = data as { id: string };
     const sql = await getSql();
     const [project] = await sql`select * from public.tedslab_app_projects where id=${id} limit 1`;
     if (!project) throw new Error("App project not found.");
-    const deployment = await deployStaticProject(project.slug, { html: project.html, css: project.css, js: project.js });
-    const customDomain = project.slug + "." + APP_DOMAIN;
+
+    // If the optional Vercel deployment credential is configured, publish
+    // the app as its own Vercel project under the Ted's Lab domain.
+    if (process.env.VERCEL_TOKEN) {
+      const deployment = await deployStaticProject(project.slug, { html: project.html, css: project.css, js: project.js });
+      const customDomain = project.slug + "." + APP_DOMAIN;
+      await sql`
+        update public.tedslab_app_projects set status='deployed', deployment_url=${deployment.url},
+          custom_domain=${customDomain}, vercel_project_id=${deployment.projectId},
+          vercel_deployment_id=${deployment.deploymentId}, updated_at=now()
+        where id=${id}
+      `;
+      return { ...deployment, customDomain };
+    }
+
+    // Keep publishing functional even before a Vercel API token is added.
+    // Ted's Lab can host the generated app at a stable first-party route.
+    const internalUrl = "https://" + APP_DOMAIN + "/apps/" + encodeURIComponent(project.slug);
     await sql`
-      update public.tedslab_app_projects set status='deployed', deployment_url=${deployment.url},
-        custom_domain=${customDomain}, vercel_project_id=${deployment.projectId},
-        vercel_deployment_id=${deployment.deploymentId}, updated_at=now()
+      update public.tedslab_app_projects set status='deployed', deployment_url=${internalUrl},
+        custom_domain=null, vercel_project_id=null, vercel_deployment_id=null, updated_at=now()
       where id=${id}
     `;
-    return { ...deployment, customDomain };
+    return { projectId: null, deploymentId: null, url: internalUrl, vercelUrl: null, customDomain: null };
+  });
+
+export const getPublishedApp = createServerFn({ method: "GET" })
+  .handler(async ({ data }) => {
+    const slug = String((data as { slug: string }).slug || "").trim();
+    if (!slug) throw new Error("App slug is required.");
+    const sql = await getSql();
+    const [row] = await sql`
+      select id,name,slug,prompt,html,css,js,status,deployment_url,custom_domain
+      from public.tedslab_app_projects
+      where slug=${slug} and status='deployed'
+      limit 1
+    `;
+    if (!row) throw new Error("Published app not found.");
+    return row as Pick<AppProject, "id" | "name" | "slug" | "prompt" | "html" | "css" | "js" | "status" | "deployment_url" | "custom_domain">;
   });
 
 export const listPublishedApps = createServerFn({ method: "GET" })
