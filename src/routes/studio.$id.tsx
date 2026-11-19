@@ -41,9 +41,6 @@ function ProjectPage() {
     },
     onError: (error) => setEditorError(error instanceof Error ? error.message : "Could not save code."),
   });
-  const srcDoc = useMemo(() => "<!doctype html><html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><style>" +
-    code.css + "</style></head><body>" + code.html + "<script>" + code.js.split("</script").join("<\\/script") + "<\\/script></body></html>", [code]);
-
   const deploy = useMutation({
     mutationFn: () => deployAppProject({ data: { id } }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["tedslab-app-project", id] }),
@@ -53,8 +50,7 @@ function ProjectPage() {
   if (query.error || !query.data) return <AppShell><main className="mx-auto max-w-5xl px-5 py-12"><p className="text-destructive">Unable to load this app.</p></main></AppShell>;
 
   const app = query.data;
-  const srcDoc = "<!doctype html><html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><style>" +
-    app.css + "</style></head><body>" + app.html + "<script>" + app.js.split("</script").join("<\\/script") + "<\\/script></body></html>";
+  const srcDoc = "<!doctype html><html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><style>" + app.css + "</style></head><body>" + app.html + "<script>" + app.js.split("</script").join("<\\/script") + "<\\/script></body></html>";
 
   return (
     <AppShell>
@@ -70,9 +66,7 @@ function ProjectPage() {
             <button disabled={save.isPending || saved} onClick={() => save.mutate()} className="rounded-xl border border-border px-4 py-2.5 text-sm font-semibold hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50">{save.isPending ? "Saving…" : saved ? "Saved" : "Save code"}</button>
             <button disabled={deploy.isPending || !saved} onClick={() => deploy.mutate()} className="rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground disabled:cursor-not-allowed disabled:opacity-50">{deploy.isPending ? "Deploying…" : app.status === "deployed" ? "Redeploy" : "Deploy app"}</button>
           </div>
-            {app.deployment_url && <a href={app.deployment_url} target="_blank" rel="noreferrer" className="rounded-xl border border-border px-4 py-2.5 text-sm font-semibold hover:bg-accent">Open Vercel preview</a>}
-            <button disabled={deploy.isPending} onClick={() => deploy.mutate()} className="rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground disabled:opacity-50">{deploy.isPending ? "Deploying…" : app.status === "deployed" ? "Redeploy" : "Deploy app"}</button>
-          </div>
+
         </div>
 
         {deploy.error && <div className="mt-5 rounded-xl border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">{deploy.error.message}</div>}
