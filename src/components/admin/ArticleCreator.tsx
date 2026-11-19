@@ -12,6 +12,7 @@ import {
 import { slugifyTitle, upsertCustomArticle } from "@/lib/article-store";
 import { imageKeys } from "@/lib/images";
 import { useSections, useSubjects, useTopics } from "@/lib/content";
+import { ARTICLE_SECTORS, sectorForSubject } from "@/data/article-sectors";
 import type { ArticleRow } from "@/lib/content";
 
 function cloneDefault(): ArticleLayout {
@@ -32,6 +33,7 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
   const [subject, setSubject] = useState(existing?.subject_slug ?? "biology");
   const [section, setSection] = useState(existing?.section_slug ?? "organisms");
   const [topic, setTopic] = useState(existing?.topic_slug ?? "");
+  const [sector, setSector] = useState(existing?.sector_slug ?? sectorForSubject(existing?.subject_slug ?? "biology").slug);
   const [imageKey, setImageKey] = useState(existing?.image_key ?? "hero-cell");
   const [imageUrl, setImageUrl] = useState(existing?.image_url ?? "");
   const [videoUrl, setVideoUrl] = useState(existing?.video_url ?? "");
@@ -78,6 +80,7 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
       subject_slug: subject,
       section_slug: section,
       topic_slug: topic,
+      sector_slug: sector,
       image_key: imageKey,
       image_url: imageUrl.trim() || null,
       video_url: videoUrl.trim() || null,
@@ -185,6 +188,13 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
               </option>
             ))}
           </select>
+        </label>
+        <label className="block space-y-1 text-xs text-muted-foreground">
+          Sector
+          <select required className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm" value={sector} onChange={(e) => setSector(e.target.value)}>
+            {ARTICLE_SECTORS.map((item) => <option key={item.slug} value={item.slug}>{item.title}</option>)}
+          </select>
+          <span className="block text-[11px]">Top-level publishing category used for discovery and submissions.</span>
         </label>
         <label className="block space-y-1 text-xs text-muted-foreground">
           Section
