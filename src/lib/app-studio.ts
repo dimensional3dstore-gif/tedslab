@@ -143,6 +143,27 @@ export const createAppProject = createServerFn({ method: "POST" })
     return row as AppProject;
   });
 
+export const updateAppProject = createServerFn({ method: "POST" })
+  .middleware([adminMiddleware])
+  .handler(async ({ data }) => {
+    const input = data as { id: string; html: string; css: string; js: string };
+    if (!input?.id) throw new Error("App project id is required.");
+    if (typeof input.html !== "string" || typeof input.css !== "string" || typeof input.js !== "string") {
+      throw new Error("HTML, CSS, and JavaScript must all be text.");
+    }
+    const sql = await getSql();
+    const [row] = await sql`
+      update public.tedslab_app_projects
+      set html=${input.html}, css=${input.css}, js=${input.js},
+          status=case when status='deployed' then 'generated' else status end,
+          updated_at=now()
+      where id=${input.id}
+      returning *
+    `;
+    if (!row) throw new Error("App project not found.");
+    return row as AppProject;
+  });
+
 export const deployAppProject = createServerFn({ method: "POST" })
   .middleware([adminMiddleware])
   .handler(async ({ data, context }) => {
