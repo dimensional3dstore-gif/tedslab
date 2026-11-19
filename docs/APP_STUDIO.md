@@ -14,17 +14,27 @@ Ted's Lab App Studio is a prompt-to-web-app workflow inspired by platforms such 
 
 ## Production configuration
 
+Ted's Lab is wired as:
+
+- **GitHub:** `dimensional3dstore-gif/tedslab` is the source repository.
+- **Supabase:** the connected project stores App Studio projects in `public.tedslab_app_projects`.
+- **Vercel:** the `tedslab` project builds production from the GitHub `main` branch.
+- **App deployments:** generated apps are published as isolated Vercel projects.
+
 Server-side environment variables:
 
-- ANTHROPIC_API_KEY — required for generation.
-- VERCEL_TOKEN — required for deployment.
-- VERCEL_TEAM_ID — optional; defaults to Ted's Lab's current Vercel team.
-- TEDSLAB_APP_MODEL — optional Anthropic model override.
+- `TEDSLAB_DATABASE_POSTGRES_URL` — Supabase Postgres connection supplied by the Vercel/Supabase integration.
+- `ANTHROPIC_API_KEY` — required for prompt-to-app generation.
+- `VERCEL_TOKEN` — required by the App Studio server function for creating isolated app deployments.
+- `VERCEL_TEAM_ID` — optional; defaults to Ted's Lab's current Vercel team.
+- `TEDSLAB_APP_MODEL` — optional Anthropic model override.
+
+Never expose server-side secrets as `VITE_*` variables.
 
 These must never be exposed as VITE_* variables.
 
 ## Domain
 
-tedslab.app is currently available for registration, but the domain is not automatically purchased by this feature. After the domain is owned and connected to Vercel, generated apps can use subdomains such as calculator.tedslab.app and study-timer.tedslab.app.
+Generated apps are constrained in code to `<slug>.tedslab.app`. The Ted's Lab Vercel project currently has its `vercel.app` domains attached; the custom `tedslab.app` domain must be connected to Vercel before those generated subdomains can become live.
 
 The Vercel deployment URL remains available as a fallback for testing.
