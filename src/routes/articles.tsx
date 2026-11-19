@@ -1,4 +1,4 @@
-import { createFileRoute, Outlet, useLocation } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useLocation, Link } from "@tanstack/react-router";
 import { AppShell, PageHeader } from "@/components/biopedia/AppShell";
 import { ArticleCard } from "@/components/biopedia/ArticleCard";
 import { useArticles } from "@/lib/content";
@@ -41,7 +41,7 @@ function ArticlesPage() {
 
         return (
           <>
-            <PageHeader title="All Articles" description={description} />
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"><PageHeader title="All Articles" description={description} /><Link to="/articles/new" className="rounded-md bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground">Submit an article</Link></div>
             {isFetching && filtered.length === 0 && (
               <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" aria-label="Loading articles" aria-busy="true">
                 {Array.from({ length: 6 }, (_, index) => (
