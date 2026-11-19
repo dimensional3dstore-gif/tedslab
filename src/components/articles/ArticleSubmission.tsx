@@ -76,6 +76,7 @@ export function ArticleSubmission() {
         topic_slug: topic,
         submitted_by: user.id,
         status: "submitted",
+        video_url: videoUrl || null,
       });
       if (insertError) throw insertError;
       setStep(3);
@@ -138,10 +139,3 @@ export function ArticleSubmission() {
     </form>
   );
 }
-          <label className="block space-y-1 text-sm">
-            <span className="text-muted-foreground">Video</span>
-            <MediaUpload value={videoUrl} onChange={setVideoUrl} pathPrefix={`submissions/${user.id}`} />
-            <Input type="url" value={videoUrl} onChange={e=>setVideoUrl(e.target.value)} placeholder="Or paste a video URL…" />
-          </label>
-          <FlashcardDeckInserter onInsert={(title, cards) => setFlashcardDeck({ title, cards })} />
-          {flashcardDeck && <p className="text-xs text-muted-foreground">Flashcard deck “{flashcardDeck.title}” with {flashcardDeck.cards.length} cards will be included.</p>}
