@@ -326,10 +326,10 @@ export function Sidebar({
             </p>
           )}
           <ul className="space-y-0.5 pb-3">
-            <li><a href="https://unit-converter.tedslab.app" className="group flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-sidebar-foreground transition-colors hover:bg-secondary"><LucideIcons.Calculator className="size-4 text-muted-foreground group-hover:text-primary" /><span>Unit Converter</span></a></li>
-            <li><a href="https://json-formatter.tedslab.app" className="group flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-sidebar-foreground transition-colors hover:bg-secondary"><LucideIcons.Braces className="size-4 text-muted-foreground group-hover:text-primary" /><span>JSON Formatter</span></a></li>
-            <li><a href="https://regex-tester.tedslab.app" className="group flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-sidebar-foreground transition-colors hover:bg-secondary"><LucideIcons.Regex className="size-4 text-muted-foreground group-hover:text-primary" /><span>Regex Tester</span></a></li>
-            <li><a href="https://markdown-previewer.tedslab.app" className="group flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-sidebar-foreground transition-colors hover:bg-secondary"><FileText className="size-4 text-muted-foreground group-hover:text-primary" /><span>Markdown Previewer</span></a></li>
+            <li><a href="https://unit-converter-kiwuppmp5-dimensional3dstore-gif.vercel.app" className="group flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-sidebar-foreground transition-colors hover:bg-secondary"><LucideIcons.Calculator className="size-4 text-muted-foreground group-hover:text-primary" /><span>Unit Converter</span></a></li>
+            <li><a href="https://json-formatter-e064u7zcv-dimensional3dstore-gif.vercel.app" className="group flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-sidebar-foreground transition-colors hover:bg-secondary"><LucideIcons.Braces className="size-4 text-muted-foreground group-hover:text-primary" /><span>JSON Formatter</span></a></li>
+            <li><a href="https://regex-tester-dx11bkgon-dimensional3dstore-gif.vercel.app" className="group flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-sidebar-foreground transition-colors hover:bg-secondary"><LucideIcons.Regex className="size-4 text-muted-foreground group-hover:text-primary" /><span>Regex Tester</span></a></li>
+            <li><a href="https://markdown-previewer-1gzu17f42-dimensional3dstore-gif.vercel.app" className="group flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-sidebar-foreground transition-colors hover:bg-secondary"><FileText className="size-4 text-muted-foreground group-hover:text-primary" /><span>Markdown Previewer</span></a></li>
           </ul>
 
           {!collapsed && (
