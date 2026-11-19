@@ -6,6 +6,7 @@ import type { ArticleRow, Subject, TopicRow } from "@/lib/content";
 import { fetchCatalogRow, fetchCatalogRows, useArticles, websiteFallbackArticles } from "@/lib/content";
 import { TOPICS, SUBJECTS } from "@/lib/catalog";
 import { resolveImage } from "@/lib/images";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const subjectQueryOptions = (slug: string) =>
   queryOptions({
@@ -79,14 +80,14 @@ export const Route = createFileRoute("/$subject")({
 
 function SubjectPage() {
   const { subject: initialSubject } = Route.useLoaderData();
-  const { data: allArticles = [], error: articlesError } = useArticles();
+  const { data: allArticles = [], error: articlesError, isLoading: articlesLoading } = useArticles();
   const [articleSearch, setArticleSearch] = useState("");
   const [topicFilter, setTopicFilter] = useState("all");
   const { data: subject } = useQuery({
     ...subjectQueryOptions(initialSubject.slug),
     initialData: initialSubject,
   });
-  const { data: topics } = useQuery({
+  const { data: topics, isLoading: topicsLoading } = useQuery({
     ...subjectTopicsQueryOptions(subject!.id),
     initialData: Route.useLoaderData().topics,
   });
