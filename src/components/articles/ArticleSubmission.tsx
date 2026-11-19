@@ -6,6 +6,9 @@ import { useSubjects, useTopics } from "@/lib/content";
 import { ARTICLE_SECTORS, sectorForSubject } from "@/data/article-sectors";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { MediaUpload } from "@/components/admin/MediaUpload";
+import { FlashcardDeckInserter } from "@/components/admin/FlashcardDeckInserter";
+import type { ArticleCardBlock } from "@/lib/article-layout";
 
 function slugify(value: string) {
   return value.toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "").slice(0, 70) || "article";
@@ -22,6 +25,8 @@ export function ArticleSubmission() {
   const [topic, setTopic] = useState("");
   const [body, setBody] = useState("");
   const [references, setReferences] = useState("");
+  const [videoUrl, setVideoUrl] = useState("");
+  const [flashcardDeck, setFlashcardDeck] = useState<{ title: string; cards: ArticleCardBlock[] } | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [submitted, setSubmitted] = useState(false);
@@ -133,3 +138,10 @@ export function ArticleSubmission() {
     </form>
   );
 }
+          <label className="block space-y-1 text-sm">
+            <span className="text-muted-foreground">Video</span>
+            <MediaUpload value={videoUrl} onChange={setVideoUrl} pathPrefix={`submissions/${user.id}`} />
+            <Input type="url" value={videoUrl} onChange={e=>setVideoUrl(e.target.value)} placeholder="Or paste a video URL…" />
+          </label>
+          <FlashcardDeckInserter onInsert={(title, cards) => setFlashcardDeck({ title, cards })} />
+          {flashcardDeck && <p className="text-xs text-muted-foreground">Flashcard deck “{flashcardDeck.title}” with {flashcardDeck.cards.length} cards will be included.</p>}
