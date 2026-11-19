@@ -66,18 +66,18 @@ function ChangeEncyclopaediaPage() {
   return (
     <AppShell>
       <div className="space-y-6">
-        <PageHeader
-          title={CHANGE_SUBJECT.title}
-          description={CHANGE_SUBJECT.description}
-          actions={
-            <Link
-              to="/change-encyclopaedia/new"
-              className="rounded-md bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
-            >
-              Add an article
-            </Link>
-          }
-        />
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <PageHeader
+            title={CHANGE_SUBJECT.title}
+            description={CHANGE_SUBJECT.description}
+          />
+          <Link
+            to="/change-encyclopaedia/new"
+            className="rounded-md bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+          >
+            Add an article
+          </Link>
+        </div>
 
         <section className="bio-panel overflow-hidden">
           <div className="grid gap-0 md:grid-cols-[1.25fr_1fr]">
