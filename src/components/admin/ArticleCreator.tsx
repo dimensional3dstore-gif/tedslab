@@ -11,6 +11,8 @@ import {
 } from "@/lib/article-layout";
 import { slugifyTitle, upsertCustomArticle } from "@/lib/article-store";
 import { imageKeys } from "@/lib/images";
+import { MediaUpload } from "@/components/admin/MediaUpload";
+import { FlashcardDeckInserter } from "@/components/admin/FlashcardDeckInserter";
 import { useSections, useSubjects, useTopics } from "@/lib/content";
 import { ARTICLE_SECTORS, sectorForSubject } from "@/data/article-sectors";
 import type { ArticleRow } from "@/lib/content";
@@ -234,9 +236,18 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
           <Input type="number" min="1" max="180" value={minutes} onChange={(e) => setMinutes(Math.max(1, Number(e.target.value) || 1))} />
         </label>
         <label className="block space-y-1 text-xs text-muted-foreground">
-          Article video URL (optional)
-          <Input type="url" value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)} placeholder="https://…" />
+          Article video
+          <MediaUpload value={videoUrl} onChange={setVideoUrl} pathPrefix="articles" />
+          <Input type="url" value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)} placeholder="Or paste a video URL…" />
         </label>
+        <FlashcardDeckInserter
+          onInsert={(deckTitle, cards) =>
+            setLayout({
+              ...layout,
+              sections: [...layout.sections, { heading: deckTitle, cards }],
+            })
+          }
+        />
         <label className="block space-y-1 text-xs text-muted-foreground">
           Overview (one paragraph per line)
           <textarea
