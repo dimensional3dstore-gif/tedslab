@@ -17,14 +17,16 @@ function NewAppPage() {
   const [prompt, setPrompt] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [step, setStep] = useState(1);
 
   if (authLoading) return <AppShell><main className="mx-auto max-w-4xl px-5 py-12">Checking administrator access…</main></AppShell>;
   if (!isAdmin) return <AppShell><main className="mx-auto max-w-4xl px-5 py-12"><h1 className="text-2xl font-bold">Admin only</h1><p className="mt-2 text-sm text-muted-foreground">Only Ted's Lab administrators can create and deploy apps.</p></main></AppShell>;
 
   async function create() {
-    setError(""); setBusy(true);
+    setError(""); setBusy(true); setStep(2);
     try {
       const project = await createAppProject({ data: { name, prompt } });
+      setStep(3);
       await navigate({ to: "/studio/$id", params: { id: project.id } });
     } catch (err) {
       setError(err instanceof Error ? err.message : "App generation failed.");
@@ -50,7 +52,7 @@ function NewAppPage() {
             ))}
           </div>
           {error && <div className="mt-5 rounded-xl border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">{error}</div>}
-          <button disabled={busy || !name.trim() || !prompt.trim()} onClick={create} className="mt-6 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground disabled:cursor-not-allowed disabled:opacity-50">{busy ? "Generating your app…" : "Generate app"}</button>
+          <button disabled={busy || !name.trim() || !prompt.trim()} onClick={create} className="mt-6 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground disabled:cursor-not-allowed disabled:opacity-50">{busy ? (step === 2 ? "Building your app…" : "Opening App Studio…") : "Create app"}</button>
         </div>
       </main>
     </AppShell>
