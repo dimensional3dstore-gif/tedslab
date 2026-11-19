@@ -69,6 +69,14 @@ function ChangeEncyclopaediaPage() {
         <PageHeader
           title={CHANGE_SUBJECT.title}
           description={CHANGE_SUBJECT.description}
+          actions={
+            <Link
+              to="/change-encyclopaedia/new"
+              className="rounded-md bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+            >
+              Add an article
+            </Link>
+          }
         />
 
         <section className="bio-panel overflow-hidden">
@@ -88,7 +96,7 @@ function ChangeEncyclopaediaPage() {
               </p>
               <div className="mt-5 flex flex-wrap gap-2 text-xs text-muted-foreground">
                 <span className="rounded-full border px-3 py-1">10 topics</span>
-                <span className="rounded-full border px-3 py-1">11 reference articles</span>
+                <span className="rounded-full border px-3 py-1">{changeArticles.length} reference articles</span>
                 <span className="rounded-full border px-3 py-1">Earth systems</span>
               </div>
             </div>
