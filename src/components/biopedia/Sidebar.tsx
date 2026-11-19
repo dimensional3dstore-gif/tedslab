@@ -308,6 +308,7 @@ export function Sidebar({
                 <li><NavLink label="Admin dashboard" Icon={LucideIcons.LayoutDashboard} to="/admin" collapsed={collapsed} /></li>
                 <li><NavLink label="App Studio" Icon={LucideIcons.Layers3} to="/studio" collapsed={collapsed} /></li>
                 <li><NavLink label="Edit articles" Icon={FilePenLine} to="/admin/articles" collapsed={collapsed} /></li>
+                <li><NavLink label="Article submissions" Icon={FilePenLine} to="/admin/article-submissions" collapsed={collapsed} /></li>
                 <li><NavLink label="Add article" Icon={Plus} to="/admin/articles/new" collapsed={collapsed} /></li>
                 <li><NavLink label="Manage subjects" Icon={LucideIcons.BookOpen} to="/admin/subjects" collapsed={collapsed} /></li>
                 <li><NavLink label="Transfer Atlas articles" Icon={LucideIcons.Network} to="/admin/atlas-import" collapsed={collapsed} /></li>
