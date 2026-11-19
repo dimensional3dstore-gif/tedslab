@@ -25,6 +25,7 @@ export function ArticleSubmission() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [step, setStep] = useState(1);
 
   const availableTopics = topics.filter((item) => item.subject_slug === subject).slice(0, 100);
 
@@ -43,6 +44,7 @@ export function ArticleSubmission() {
       return;
     }
     setSaving(true);
+    setStep(2);
     try {
       const { error: insertError } = await supabase.from("article_submissions").insert({
         id: crypto.randomUUID(),
@@ -58,6 +60,7 @@ export function ArticleSubmission() {
         status: "submitted",
       });
       if (insertError) throw insertError;
+      setStep(3);
       setSubmitted(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to submit the article.");
@@ -71,7 +74,7 @@ export function ArticleSubmission() {
   if (submitted) return <div className="bio-panel space-y-4 p-6"><p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">Submitted</p><h2 className="font-display text-2xl font-semibold">Article submitted for review</h2><p className="text-sm text-muted-foreground">Your article has been stored as a submission. An editor can review, edit and publish it.</p><Link to="/articles"><Button>Back to articles</Button></Link></div>;
 
   return <form onSubmit={submit} className="bio-panel space-y-5 p-5">
-    <div><p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">Community publishing</p><h2 className="mt-1 font-display text-2xl font-semibold">Submit an article</h2><p className="mt-2 text-sm text-muted-foreground">Propose a scientific or educational article for Ted's Lab. All submissions go through editorial review.</p></div>
+    <div><div className="flex flex-wrap items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.14em]"><span className="rounded-full bg-primary/10 px-2.5 py-1 text-primary">1. Write</span><span className="text-muted-foreground">→</span><span className={`rounded-full px-2.5 py-1 ${step >= 2 ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>2. Create</span><span className="text-muted-foreground">→</span><span className={`rounded-full px-2.5 py-1 ${step >= 3 ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>3. Review</span></div><h2 className="mt-3 font-display text-2xl font-semibold">Create an article</h2><p className="mt-2 text-sm text-muted-foreground">Propose a scientific or educational article for Ted's Lab. All submissions go through editorial review.</p></div>
     <label className="block space-y-1 text-sm"><span className="text-muted-foreground">Title</span><Input required value={title} onChange={e=>setTitle(e.target.value)} placeholder="How Coral Reefs Change" /></label>
     <div className="grid gap-4 md:grid-cols-2">
       <label className="block space-y-1 text-sm"><span className="text-muted-foreground">Subject</span><select required className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm" value={subject} onChange={e=>changeSubject(e.target.value)}>{subjects.map(s=><option key={s.slug} value={s.slug}>{s.title}</option>)}</select></label>
@@ -82,6 +85,6 @@ export function ArticleSubmission() {
     <label className="block space-y-1 text-sm"><span className="text-muted-foreground">Article body</span><textarea required className="min-h-72 w-full rounded-md border border-input bg-background px-3 py-2 text-sm leading-6" value={body} onChange={e=>setBody(e.target.value)} placeholder="Explain the concept, evidence, examples, limits and uncertainties." /></label>
     <label className="block space-y-1 text-sm"><span className="text-muted-foreground">Sources and references</span><textarea className="min-h-28 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" value={references} onChange={e=>setReferences(e.target.value)} placeholder="One source per line" /></label>
     {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
-    <div className="flex gap-2"><Button type="submit" disabled={saving}>{saving ? "Submitting…" : "Submit for review"}</Button><Link to="/articles"><Button type="button" variant="outline">Cancel</Button></Link></div>
+    <div className="flex gap-2"><Button type="submit" disabled={saving}>{saving ? "Creating article…" : "Create article"}</Button><Link to="/articles"><Button type="button" variant="outline">Cancel</Button></Link></div>
   </form>;
 }
