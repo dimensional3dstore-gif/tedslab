@@ -69,7 +69,7 @@ export function ArticleSubmission() {
         title: title.trim(),
         slug: slugify(title) + "-" + crypto.randomUUID().slice(0, 8),
         excerpt: excerpt.trim(),
-        body: body.trim(),
+        body: body.trim() + (flashcardDeck ? `\n\n## ${flashcardDeck.title}\n\n${flashcardDeck.cards.map((card) => `**${card.title}** — ${card.text}`).join("\n\n")}` : ""),
         source_references: references.split("\n").map((line) => line.trim()).filter(Boolean),
         subject_slug: subject,
         sector_slug: sector,
