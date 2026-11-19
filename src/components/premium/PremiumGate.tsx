@@ -19,7 +19,7 @@ export function PremiumGate({ children }: { children: React.ReactNode }) {
           {["AI Tutor","Adaptive learning","Deep research","Course builder","AI exams","What-if science","Knowledge XP"].map(item => <span key={item} className="rounded-full border border-border bg-background/70 px-3 py-1.5">{item}</span>)}
         </div>
         <div className="mt-7 flex items-center justify-center gap-3">
-          <Link to="/account" className="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground">Manage plan</Link>
+          <Link to="/help-center" className="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground">Learn about plans</Link>
           <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground"><Lock className="size-3.5"/> Premium access required</span>
         </div>
       </div>
