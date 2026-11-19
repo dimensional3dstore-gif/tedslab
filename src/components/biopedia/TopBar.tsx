@@ -11,6 +11,7 @@ import {
 import { Link } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/use-auth";
 import { getAquariusDownloadUrl } from "@/lib/chronos-os-download";
+import { useArticles, useSubjects, useTopics } from "@/lib/content";
 
 export function TopBar({
   query,
@@ -29,6 +30,45 @@ export function TopBar({
 }) {
   const { user } = useAuth();
   const aquariusDownloadUrl = getAquariusDownloadUrl();
+  const { data: articles } = useArticles();
+  const { data: subjects } = useSubjects();
+  const { data: topics } = useTopics();
+
+  const normalized = query.trim().toLowerCase();
+  const results = normalized
+    ? [
+        ...(articles ?? []).map((article) => ({
+          type: "Article",
+          title: article.title,
+          description: article.excerpt ?? "",
+          href: "/articles/" + article.slug,
+          score:
+            (article.title.toLowerCase().includes(normalized) ? 100 : 0) +
+            ((article.excerpt ?? "").toLowerCase().includes(normalized) ? 25 : 0),
+        })),
+        ...(topics ?? []).map((topic) => ({
+          type: "Topic",
+          title: topic.title,
+          description: topic.blurb ?? "",
+          href: "/" + topic.subject_slug + "/" + topic.slug,
+          score:
+            (topic.title.toLowerCase().includes(normalized) ? 80 : 0) +
+            ((topic.blurb ?? "").toLowerCase().includes(normalized) ? 20 : 0),
+        })),
+        ...(subjects ?? []).map((subject) => ({
+          type: "Subject",
+          title: subject.title,
+          description: subject.description ?? "",
+          href: "/" + subject.slug,
+          score:
+            (subject.title.toLowerCase().includes(normalized) ? 70 : 0) +
+            ((subject.description ?? "").toLowerCase().includes(normalized) ? 15 : 0),
+        })),
+      ]
+        .filter((item) => item.score > 0)
+        .sort((a, b) => b.score - a.score || a.title.localeCompare(b.title))
+        .slice(0, 8)
+    : [];
 
   return (
     <header className="sticky top-0 z-20 flex items-center gap-4 border-b border-border bg-background/90 px-4 py-3 backdrop-blur md:px-6">
