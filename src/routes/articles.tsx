@@ -2,6 +2,7 @@ import { createFileRoute, Outlet, useLocation, Link } from "@tanstack/react-rout
 import { AppShell, PageHeader } from "@/components/biopedia/AppShell";
 import { ArticleCard } from "@/components/biopedia/ArticleCard";
 import { useArticles } from "@/lib/content";
+import { useAuth } from "@/hooks/use-auth";
 
 const title = "All Articles — Ted's Lab";
 const description = "Browse all articles across every Ted's Lab subject.";
@@ -23,6 +24,7 @@ export const Route = createFileRoute("/articles")({
 function ArticlesPage() {
   const { pathname } = useLocation();
   const { data: articles = [], isFetching, error } = useArticles();
+  const { isAdmin } = useAuth();
 
   if (pathname !== "/articles") {
     return <Outlet />;
@@ -41,7 +43,7 @@ function ArticlesPage() {
 
         return (
           <>
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"><PageHeader title="All Articles" description={description} /><Link to="/articles/new" className="rounded-md bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground">Submit an article</Link></div>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"><PageHeader title="All Articles" description={description} /><div className="flex flex-wrap gap-2">{isAdmin ? <Link to="/admin/articles/new" className="rounded-md bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground">Create article</Link> : <Link to="/articles/new" className="rounded-md bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground">Submit an article</Link>}</div></div>
             {isFetching && filtered.length === 0 && (
               <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" aria-label="Loading articles" aria-busy="true">
                 {Array.from({ length: 6 }, (_, index) => (
