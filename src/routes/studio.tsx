@@ -27,6 +27,24 @@ function StudioPage() {
           </div>
           <Link to="/studio/new" className="rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-sm hover:opacity-90">+ Create app</Link>
         </div>
+        <div className="mt-8 grid gap-3 md:grid-cols-3">
+          {[
+            { label: "GitHub", value: "dimensional3dstore-gif/tedslab", detail: "Source repository" },
+            { label: "Supabase", value: "Ted's Lab database", detail: "Projects + app metadata" },
+            { label: "Vercel", value: "tedslab", detail: "Production deployments" },
+          ].map((connection) => (
+            <div key={connection.label} className="rounded-2xl border border-border bg-card px-4 py-4">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">{connection.label}</p>
+              <p className="mt-1 text-sm font-semibold">{connection.value}</p>
+              <p className="mt-1 text-xs text-muted-foreground">{connection.detail}</p>
+            </div>
+          ))}
+        </div>
+        <div className="mt-6 rounded-2xl border border-primary/20 bg-primary/5 px-5 py-4">
+          <p className="text-sm font-semibold">Ted's Lab deployment pipeline</p>
+          <p className="mt-1 text-sm text-muted-foreground">App Studio stores project state in Supabase, keeps Ted's Lab as the source repository, and publishes generated apps through Vercel.</p>
+        </div>
+
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {(query.data ?? []).map((app) => (
             <Link key={app.id} to="/studio/$id" params={{ id: app.id }} className="group rounded-2xl border border-border bg-card p-5 transition hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg">
