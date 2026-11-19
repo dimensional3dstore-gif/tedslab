@@ -63,6 +63,7 @@ export type ArticleRow = {
   subject_slug: string | null;
   section_slug: string | null;
   topic_slug: string;
+  sector_slug?: string | null;
   image_key: string | null;
   image_url: string | null;
   video_url: string | null;
