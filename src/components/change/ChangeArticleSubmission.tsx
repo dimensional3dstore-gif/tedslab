@@ -4,6 +4,9 @@ import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { CHANGE_TOPICS } from "@/data/change-encyclopaedia";
 import { Button } from "@/components/ui/button";
+import { MediaUpload } from "@/components/admin/MediaUpload";
+import { FlashcardDeckInserter } from "@/components/admin/FlashcardDeckInserter";
+import type { ArticleCardBlock } from "@/lib/article-layout";
 import { Input } from "@/components/ui/input";
 
 function slugify(value: string) {
@@ -18,6 +21,8 @@ export function ChangeArticleSubmission() {
   const [topic, setTopic] = useState(CHANGE_TOPICS[0]?.slug ?? "");
   const [body, setBody] = useState("");
   const [references, setReferences] = useState("");
+  const [videoUrl, setVideoUrl] = useState("");
+  const [flashcardDeck, setFlashcardDeck] = useState<{ title: string; cards: ArticleCardBlock[] } | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [submitted, setSubmitted] = useState(false);
@@ -52,6 +57,9 @@ export function ChangeArticleSubmission() {
             heading: "Article",
             paragraphs: body.split(/\n\s*\n/).map((paragraph) => paragraph.trim()).filter(Boolean),
           },
+          ...(flashcardDeck
+            ? [{ heading: flashcardDeck.title, cards: flashcardDeck.cards }]
+            : []),
           ...(references.trim()
             ? [{
                 heading: "Sources and references",
@@ -150,6 +158,13 @@ export function ChangeArticleSubmission() {
         <span className="text-muted-foreground">Sources and references</span>
         <textarea className="min-h-28 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" value={references} onChange={(event) => setReferences(event.target.value)} placeholder="One source per line — author or organisation, title, year, DOI or URL" />
       </label>
+      <label className="block space-y-1 text-sm">
+        <span className="text-muted-foreground">Video</span>
+        <MediaUpload value={videoUrl} onChange={setVideoUrl} pathPrefix={`submissions/${user.id}`} />
+        <Input type="url" value={videoUrl} onChange={(event) => setVideoUrl(event.target.value)} placeholder="Or paste a video URL…" />
+      </label>
+      <FlashcardDeckInserter onInsert={(title, cards) => setFlashcardDeck({ title, cards })} />
+      {flashcardDeck && <p className="text-xs text-muted-foreground">Flashcard deck “{flashcardDeck.title}” with {flashcardDeck.cards.length} cards will be included in the submission.</p>}
 
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
 
