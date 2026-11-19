@@ -202,7 +202,7 @@ function ChangeEncyclopaediaPage() {
               {visibleArticles.map((article) => (
                 <Link
                   key={article.id}
-                  to={`/articles/${article.slug}`}
+                  to="/change-encyclopaedia/article/$slug" params={{ slug: article.slug }}
                   className="bio-panel block p-4 transition-colors hover:border-primary/50"
                 >
                   <p className="text-[11px] uppercase tracking-wide text-muted-foreground">
