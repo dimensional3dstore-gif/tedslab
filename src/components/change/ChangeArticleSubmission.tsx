@@ -62,22 +62,18 @@ export function ChangeArticleSubmission() {
         source_references: references.split("\n").map((line) => line.trim()).filter(Boolean),
       };
 
-      const { error: insertError } = await supabase.from("articles").insert({
+      const { error: insertError } = await supabase.from("article_submissions").insert({
         id: crypto.randomUUID(),
         slug,
         title: title.trim(),
         excerpt: excerpt.trim(),
         body: JSON.stringify(layout),
-        minutes: Math.max(2, Math.ceil(body.trim().split(/\s+/).length / 220)),
-        tone: "community",
+        source_references: references.split("\n").map((line) => line.trim()).filter(Boolean),
         subject_slug: "change-encyclopaedia",
         sector_slug: "planetary-change",
         topic_slug: topic,
-        image_key: "sci-earth",
-        image_url: null,
-        video_url: null,
-        status: "submitted",
         submitted_by: user.id,
+        status: "submitted",
       });
 
       if (insertError) throw insertError;
