@@ -4,7 +4,7 @@ import { AppShell, PageHeader } from "@/components/biopedia/AppShell";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useArticles, fetchCatalogRows } from "@/lib/content";
 import type { ArticleRow, TopicRow } from "@/lib/content";
-import { CHANGE_ARTICLES, CHANGE_SUBJECT, CHANGE_TOPICS } from "@/lib/catalog";
+import { CHANGE_SUBJECT, CHANGE_TOPICS } from "@/data/change-encyclopaedia";
 import { resolveImage } from "@/lib/images";
 import { useQuery } from "@tanstack/react-query";
 
