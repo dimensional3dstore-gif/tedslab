@@ -25,6 +25,7 @@ export async function upsertCustomArticle(article: ArticleRow) {
     subject_slug: article.subject_slug,
     section_slug: article.section_slug,
     topic_slug: article.topic_slug,
+    sector_slug: article.sector_slug,
     image_key: article.image_key,
     image_url: article.image_url,
     video_url: article.video_url,
