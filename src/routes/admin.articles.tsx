@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AdminPage } from "@/components/admin/AdminPage";
-import { useArticles } from "@/lib/content";
+import { useAdminArticles } from "@/lib/content";
 import { Input } from "@/components/ui/input";
 
 export const Route = createFileRoute("/admin/articles")({
@@ -10,12 +10,16 @@ export const Route = createFileRoute("/admin/articles")({
 });
 
 function AdminArticlesPage() {
-  const { data: articles = [], isLoading, error } = useArticles();
+  const { data: articles = [], isLoading, error } = useAdminArticles();
   const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState<"all" | "published" | "draft">("all");
+  const [filter, setFilter] = useState<"all" | "published" | "draft" | "review">("all");
   const visibleArticles = useMemo(() => articles.filter((article) => {
     const matchesSearch = `${article.title} ${article.slug} ${article.excerpt ?? ""}`.toLowerCase().includes(search.toLowerCase());
-    const matchesStatus = filter === "all" || (filter === "published" ? article.published : !article.published);
+    const matchesStatus =
+      filter === "all" ||
+      (filter === "published" ? article.published && article.status === "published" :
+        filter === "review" ? article.status === "review" :
+        !article.published && article.status !== "review");
     return matchesSearch && matchesStatus;
   }).sort((a, b) => (b.published ? 1 : 0) - (a.published ? 1 : 0) || a.title.localeCompare(b.title)), [articles, search, filter]);
 
@@ -28,7 +32,7 @@ function AdminArticlesPage() {
       <div className="flex flex-col gap-3 sm:flex-row">
         <Input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search titles, slugs and summaries…" />
         <select className="rounded-md border border-input bg-background px-3 py-2 text-sm" value={filter} onChange={(event) => setFilter(event.target.value as typeof filter)} aria-label="Filter articles">
-          <option value="all">All articles</option><option value="published">Published</option><option value="draft">Drafts</option>
+          <option value="all">All articles</option><option value="published">Published</option><option value="review">Review</option><option value="draft">Drafts</option>
         </select>
       </div>
       {error && <p role="alert" className="text-sm text-destructive">Unable to load articles. Check your connection and admin permissions.</p>}
@@ -37,7 +41,7 @@ function AdminArticlesPage() {
           {visibleArticles.map((article) => (
             <article key={article.id} className="bio-panel flex flex-wrap items-center justify-between gap-4 p-4">
               <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-2"><h2 className="font-semibold text-foreground">{article.title}</h2><span className={article.published ? "rounded-full bg-emerald-500/10 px-2 py-1 text-[11px] text-emerald-600" : "rounded-full bg-amber-500/10 px-2 py-1 text-[11px] text-amber-600"}>{article.published ? "Published" : "Draft"}</span></div>
+                <div className="flex flex-wrap items-center gap-2"><h2 className="font-semibold text-foreground">{article.title}</h2><span className={article.published ? "rounded-full bg-emerald-500/10 px-2 py-1 text-[11px] text-emerald-600" : "rounded-full bg-amber-500/10 px-2 py-1 text-[11px] text-amber-600"}>{article.status === "review" ? "Review" : article.published ? "Published" : "Draft"}</span></div>
                 <p className="mt-1 truncate text-xs text-muted-foreground">/{article.slug}{article.excerpt ? ` · ${article.excerpt}` : ""}</p>
               </div>
               <div className="flex items-center gap-2">
