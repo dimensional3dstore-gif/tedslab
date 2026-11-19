@@ -125,6 +125,19 @@ function SubjectPage() {
                 </select>
               </div>
             </div>
+            {articlesLoading ? (
+              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3" aria-label="Loading articles">
+                {Array.from({ length: 6 }).map((_, index) => (
+                  <div key={index} className="bio-panel p-4" aria-hidden="true">
+                    <Skeleton className="h-3 w-24" />
+                    <Skeleton className="mt-3 h-5 w-4/5" />
+                    <Skeleton className="mt-3 h-3 w-full" />
+                    <Skeleton className="mt-2 h-3 w-11/12" />
+                    <Skeleton className="mt-2 h-3 w-3/4" />
+                  </div>
+                ))}
+              </div>
+            ) : (
             <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
               {visibleArticles.map((article) => (
                 <Link key={article.id} to={"/articles/" + article.slug} className="bio-panel block p-4 transition-colors hover:border-primary/50" aria-label={`Read article: ${article.title}`}>
@@ -135,7 +148,22 @@ function SubjectPage() {
               ))}
               {!visibleArticles.length && <p className="bio-panel p-4 text-sm text-muted-foreground">No published articles match these filters.</p>}
             </div>
+            )}
           </section>
+          {topicsLoading ? (
+            <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-3" aria-label="Loading topics">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <div key={index} className="bio-panel overflow-hidden p-0" aria-hidden="true">
+                  <Skeleton className="h-28 w-full rounded-none" />
+                  <div className="p-4">
+                    <Skeleton className="h-4 w-2/3" />
+                    <Skeleton className="mt-3 h-3 w-full" />
+                    <Skeleton className="mt-2 h-3 w-5/6" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
           <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {(topics ?? [])
               .filter(
@@ -166,6 +194,7 @@ function SubjectPage() {
                 </Link>
               ))}
           </div>
+          )}
         </>
       )}
     </AppShell>
