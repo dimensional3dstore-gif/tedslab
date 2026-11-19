@@ -14,6 +14,7 @@ import { HERO_SLIDES as BANNER_SLIDES } from "@/lib/hero-slides";
 import { SECTION_IMAGE_KEY } from "@/lib/section-art";
 import { EXTINCT_SPECIES } from "@/data/lost-atlas-species";
 import { QUANTUM_SUBJECT, QUANTUM_TOPICS, QUANTUMPEDIA_ARTICLES } from "@/data/quantumpedia";
+import { CHANGE_SUBJECT, CHANGE_TOPICS, CHANGE_ARTICLES } from "@/data/change-encyclopaedia";
 
 function slugify(title: string) {
   return title
@@ -785,7 +786,7 @@ function broadTopicForArticle(article: ArticleRow) {
 
 const built = buildSectionsAndTopics();
 export const SECTIONS: SectionRow[] = built.sectionRows;
-export const TOPICS: TopicRow[] = [...broadTopicRows, ...QUANTUM_TOPICS];
+export const TOPICS: TopicRow[] = [...broadTopicRows, ...QUANTUM_TOPICS, ...CHANGE_TOPICS];
 
 const LEGACY_ARTICLES: ArticleRow[] = built.topicRows.map((t, i) => {
   const section = SECTIONS.find((s) => s.id === t.section_id);
@@ -844,7 +845,7 @@ const BROAD_OVERVIEW_ARTICLES: ArticleRow[] = broadTopicRows.map((t, i) => {
   };
 });
 
-export const ARTICLES: ArticleRow[] = [...BROAD_OVERVIEW_ARTICLES, ...LEGACY_ARTICLES, ...QUANTUMPEDIA_ARTICLES];
+export const ARTICLES: ArticleRow[] = [...BROAD_OVERVIEW_ARTICLES, ...LEGACY_ARTICLES, ...QUANTUMPEDIA_ARTICLES, ...CHANGE_ARTICLES];
 
 export const HERO_SLIDES: HeroSlideRow[] = BANNER_SLIDES;
 
