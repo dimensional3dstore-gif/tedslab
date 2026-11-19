@@ -26,30 +26,6 @@ function slugify(value: string) {
   return slug || "tedslab-app";
 }
 
-async function ensureTable() {
-  const sql = await getSql();
-  await sql`
-    create table if not exists tedslab_app_projects (
-      id uuid primary key default gen_random_uuid(),
-      user_id text not null,
-      name text not null,
-      slug text not null unique,
-      prompt text not null default '',
-      html text not null default '',
-      css text not null default '',
-      js text not null default '',
-      status text not null default 'draft',
-      deployment_url text,
-      custom_domain text,
-      vercel_project_id text,
-      vercel_deployment_id text,
-      created_at timestamptz not null default now(),
-      updated_at timestamptz not null default now()
-    )
-  `;
-  return sql;
-}
-
 async function generateFiles(prompt: string, name: string) {
   if (!process.env.ANTHROPIC_API_KEY) {
     throw new Error("Ted's Lab app generation is not configured yet. Add ANTHROPIC_API_KEY to production.");
@@ -154,11 +130,11 @@ export const createAppProject = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const input = data as { name: string; prompt: string };
     if (!input?.name?.trim() || !input?.prompt?.trim()) throw new Error("App name and prompt are required.");
-    const sql = await ensureTable();
+    const sql = await getSql();
     const slug = slugify(input.name);
     const files = await generateFiles(input.prompt, input.name.trim());
     const [row] = await sql`
-      insert into tedslab_app_projects (user_id, name, slug, prompt, html, css, js, status)
+      insert into public.tedslab_app_projects (user_id, name, slug, prompt, html, css, js, status)
       values (${context.userId}, ${input.name.trim()}, ${slug}, ${input.prompt.trim()}, ${files.html}, ${files.css}, ${files.js}, 'generated')
       on conflict (slug) do update set user_id=excluded.user_id, name=excluded.name, prompt=excluded.prompt,
         html=excluded.html, css=excluded.css, js=excluded.js, status='generated', updated_at=now()
@@ -171,13 +147,13 @@ export const deployAppProject = createServerFn({ method: "POST" })
   .middleware([adminMiddleware])
   .handler(async ({ data, context }) => {
     const { id } = data as { id: string };
-    const sql = await ensureTable();
-    const [project] = await sql`select * from tedslab_app_projects where id=${id} limit 1`;
+    const sql = await getSql();
+    const [project] = await sql`select * from public.tedslab_app_projects where id=${id} limit 1`;
     if (!project) throw new Error("App project not found.");
     const deployment = await deployStaticProject(project.slug, { html: project.html, css: project.css, js: project.js });
     const customDomain = project.slug + "." + APP_DOMAIN;
     await sql`
-      update tedslab_app_projects set status='deployed', deployment_url=${deployment.url},
+      update public.tedslab_app_projects set status='deployed', deployment_url=${deployment.url},
         custom_domain=${customDomain}, vercel_project_id=${deployment.projectId},
         vercel_deployment_id=${deployment.deploymentId}, updated_at=now()
       where id=${id}
@@ -187,10 +163,10 @@ export const deployAppProject = createServerFn({ method: "POST" })
 
 export const listPublishedApps = createServerFn({ method: "GET" })
   .handler(async () => {
-    const sql = await ensureTable();
+    const sql = await getSql();
     const rows = await sql`
       select id,name,slug,prompt,status,custom_domain,deployment_url,updated_at
-      from tedslab_app_projects
+      from public.tedslab_app_projects
       where status = 'deployed' and custom_domain is not null
       order by name asc
     ` as Array<Pick<AppProject, "id" | "name" | "slug" | "prompt" | "status" | "custom_domain" | "deployment_url" | "updated_at">>;
@@ -201,18 +177,18 @@ export const listPublishedApps = createServerFn({ method: "GET" })
 export const listAppProjects = createServerFn({ method: "GET" })
   .middleware([adminMiddleware])
   .handler(async () => {
-    const sql = await ensureTable();
+    const sql = await getSql();
     return await sql`
       select id,user_id,name,slug,prompt,status,deployment_url,custom_domain,vercel_project_id,vercel_deployment_id,created_at,updated_at
-      from tedslab_app_projects order by updated_at desc
+      from public.tedslab_app_projects order by updated_at desc
     ` as AppProject[];
   });
 
 export const getAppProject = createServerFn({ method: "GET" })
   .middleware([adminMiddleware])
   .handler(async ({ data }) => {
-    const sql = await ensureTable();
-    const [row] = await sql`select * from tedslab_app_projects where id=${(data as { id: string }).id} limit 1`;
+    const sql = await getSql();
+    const [row] = await sql`select * from public.tedslab_app_projects where id=${(data as { id: string }).id} limit 1`;
     if (!row) throw new Error("App project not found.");
     return row as AppProject;
   });
