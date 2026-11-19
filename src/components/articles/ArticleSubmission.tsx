@@ -50,7 +50,7 @@ export function ArticleSubmission() {
         slug: slugify(title) + "-" + crypto.randomUUID().slice(0, 8),
         excerpt: excerpt.trim(),
         body: body.trim(),
-        references: references.split("\n").map((line) => line.trim()).filter(Boolean),
+        source_references: references.split("\n").map((line) => line.trim()).filter(Boolean),
         subject_slug: subject,
         sector_slug: sector,
         topic_slug: topic,
