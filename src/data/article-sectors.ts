@@ -1,5 +1,3 @@
-import type { Subject } from "@/lib/content";
-
 export type ArticleSector = {
   slug: string;
   title: string;
