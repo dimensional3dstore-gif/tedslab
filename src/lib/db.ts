@@ -6,13 +6,19 @@ export type DbSource = "neon" | "pglite";
 // An empty/whitespace DATABASE_URL (an easy misconfig in deploy UIs) must mean
 // "unset" — otherwise production would silently run on the PGLite fallback.
 const rawDatabaseUrl =
-  typeof process !== "undefined" ? process.env.DATABASE_URL : undefined;
+  typeof process !== "undefined"
+    ? process.env.TEDSLAB_DATABASE_POSTGRES_URL ||
+      process.env.POSTGRES_URL ||
+      process.env.DATABASE_URL
+    : undefined;
 const databaseUrl =
   rawDatabaseUrl && rawDatabaseUrl.trim() ? rawDatabaseUrl : undefined;
 
 /**
- * Active backend: real **Neon** when `DATABASE_URL` is set (deployed / configured
- * sandbox), otherwise a local embedded **PGLite** (Postgres compiled to WASM) so
+ * Active backend: the connected **Supabase Postgres** database when
+ * `TEDSLAB_DATABASE_POSTGRES_URL` / `POSTGRES_URL` is available, with the
+ * legacy `DATABASE_URL` fallback retained, otherwise a local embedded
+ * **PGLite** (Postgres compiled to WASM) so
  * the app has a working database even with nothing configured — the live preview
  * included. Swap in Neon later by just setting `DATABASE_URL`; no code changes.
  */
@@ -96,7 +102,14 @@ function createNeonSql(): Promise<Sql> {
     types.setTypeParser(OID_INT8, Number);
     types.setTypeParser(OID_DATE, identity);
     types.setTypeParser(OID_INTERVAL, identity);
-    const pool = new Pool({ connectionString: databaseUrl });
+    const isSupabase =
+      databaseUrl.includes("supabase.co") ||
+      databaseUrl.includes("supabase.com");
+    const pool = new Pool({
+      connectionString: databaseUrl,
+      max: isSupabase ? 1 : 10,
+      ssl: isSupabase ? { rejectUnauthorized: false } : undefined,
+    });
     return toSql(async <T>(text: string, params: unknown[]) => {
       const res = await pool.query(text, params);
       return res.rows as T[];
