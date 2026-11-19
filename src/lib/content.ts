@@ -69,6 +69,7 @@ export type ArticleRow = {
   published: boolean | null;
   expert_reviewed?: boolean | null;
   status?: "draft" | "review" | "published" | null;
+  author_id?: string | null;
   sort: number | null;
 };
 
@@ -645,6 +646,22 @@ export const articleByIdQueryOptions = (id: string) =>
 
 export function useArticles() {
   return useQuery(articlesQueryOptions);
+}
+
+export function useAdminArticles() {
+  return useQuery({
+    queryKey: ["admin", "articles"],
+    queryFn: async () => {
+      if (!supabaseAuthConfigured) return websiteFallbackArticles;
+      const { data, error } = await supabase
+        .from("articles")
+        .select("*")
+        .order("updated_at", { ascending: false });
+      if (error) throw error;
+      return (data ?? []) as ArticleRow[];
+    },
+    staleTime: 30 * 1000,
+  });
 }
 
 export function useArticleById(id: string) {
