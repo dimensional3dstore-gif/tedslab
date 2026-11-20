@@ -27,7 +27,8 @@ export function TopBar({
   onToggleCompact: () => void;
   onToggleSidebar: () => void;
 }) {
-  const navigate = useNavigate();\n  const { user } = useAuth();
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const aquariusDownloadUrl = getAquariusDownloadUrl();
   const submitSearch = (event: React.FormEvent) => {
     event.preventDefault();
