@@ -273,17 +273,18 @@ function SearchLab() {
       setAiLoading(true);
       setAiError(false);
 
-      const context = results.slice(0, 8).map((result, index) =>
+      const context = results.slice(0, 12).map((result, index) =>
         `${index + 1}. ${result.title} [${result.type}]
 URL: ${result.href}
 Summary: ${result.description}`
       ).join("\n\n");
 
       const prompt = `You are the AI answer engine for Ted's Lab Search Lab.
-Answer the user's search query using the search results supplied below.
+Answer the user's search query using the search results supplied below and act as the AI search layer for Ted's Lab.
 
 Rules:
 - Give a concise, useful answer in 2-4 short paragraphs.
+- Start with the direct answer, then add the most useful context.
 - Synthesize the results rather than merely listing them.
 - Prefer information supported by the supplied results.
 - If the results do not contain enough information, say that clearly and avoid inventing facts.
@@ -450,10 +451,10 @@ ${context}`;
               <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
                 <div className="flex items-center gap-2 text-sm font-semibold">
                   <Sparkles className="size-4 text-primary" />
-                  <span>AI Overview</span>
+                  <span>AI Search</span>
                 </div>
                 {aiLoading ? (
-                  <div className="mt-4 space-y-3" aria-label="Generating AI overview">
+                  <div className="mt-4 space-y-3" aria-label="Generating AI search result">
                     <div className="h-4 w-11/12 animate-pulse rounded bg-secondary" />
                     <div className="h-4 w-10/12 animate-pulse rounded bg-secondary" />
                     <div className="h-4 w-7/12 animate-pulse rounded bg-secondary" />
@@ -464,14 +465,14 @@ ${context}`;
                   </p>
                 ) : aiError ? (
                   <p className="mt-3 text-sm text-muted-foreground">
-                    AI Overview is temporarily unavailable. Search results are still available below.
+                    AI Search is temporarily unavailable. Search results are still available below.
                   </p>
                 ) : null}
               </div>
             </section>
 
             <section className="mt-8 max-w-3xl">
-              <h2 className="mb-4 text-xl font-semibold">Search Results</h2>
+              <h2 className="mb-4 text-xl font-semibold">Web-style Results</h2>
 
             {contentLoading ? (
               <div
