@@ -48,7 +48,7 @@ export function TopBar({
         <span className="flex items-center gap-2 text-sm text-muted-foreground"><History className="size-4" />History</span>
         <button type="button" onClick={onToggleCompact} aria-pressed={compact} aria-label="Toggle compact reading mode"
           className="flex h-8 w-14 items-center rounded-full border border-border bg-secondary px-1 transition-colors">
-          <span className="flex size-6 items-center justify-center rounded-full bg-primary text-primary-foreground transition-transform ${compact ? "translate-x-6" : "translate-x-0"}">
+          <span className={"flex size-6 items-center justify-center rounded-full bg-primary text-primary-foreground transition-transform " + (compact ? "translate-x-6" : "translate-x-0")}>
             {compact ? <Moon className="size-3.5" /> : <Sun className="size-3.5" />}
           </span>
         </button>
