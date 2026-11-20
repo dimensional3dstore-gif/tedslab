@@ -1,137 +1,70 @@
 import {
-  Bookmark,
-  Download,
-  History,
-  Menu,
-  Search,
-  Sun,
-  Moon,
-  User,
+  Bookmark, Download, History, Menu, Search, Sun, Moon, User,
 } from "lucide-react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/use-auth";
 import { getAquariusDownloadUrl } from "@/lib/chronos-os-download";
 
 export function TopBar({
-  query,
-  onQueryChange,
-  bookmarkCount,
-  compact,
-  onToggleCompact,
-  onToggleSidebar,
+  query, onQueryChange, bookmarkCount, compact, onToggleCompact, onToggleSidebar,
 }: {
-  query: string;
-  onQueryChange: (value: string) => void;
-  bookmarkCount: number;
-  compact: boolean;
-  onToggleCompact: () => void;
-  onToggleSidebar: () => void;
+  query: string; onQueryChange: (value: string) => void; bookmarkCount: number;
+  compact: boolean; onToggleCompact: () => void; onToggleSidebar: () => void;
 }) {
   const navigate = useNavigate();
   const { user } = useAuth();
   const aquariusDownloadUrl = getAquariusDownloadUrl();
+
   const submitSearch = (event: React.FormEvent) => {
     event.preventDefault();
     const value = query.trim();
-    navigate({
-      to: "/search-lab",
-      search: value ? { q: value } : { q: undefined },
-    });
+    navigate({ to: "/search-lab", search: value ? { q: value } : { q: undefined } });
   };
 
   return (
     <header className="relative sticky top-0 z-20 flex items-center gap-4 border-b border-border bg-background/90 px-4 py-3 backdrop-blur md:px-6">
-      <button
-        type="button"
-        onClick={onToggleSidebar}
-        aria-label="Toggle navigation menu"
-        title="Toggle navigation menu"
-        className="grid size-10 shrink-0 place-items-center rounded-md border border-border text-foreground hover:bg-secondary lg:hidden"
-      >
+      <button type="button" onClick={onToggleSidebar} aria-label="Toggle navigation menu" title="Toggle navigation menu"
+        className="grid size-10 shrink-0 place-items-center rounded-md border border-border text-foreground hover:bg-secondary">
         <Menu className="size-4" />
       </button>
       <form onSubmit={submitSearch} className="relative flex-1 max-w-2xl">
         <span className="sr-only">Search Ted's Lab</span>
-        <input
-          value={query}
-          onChange={(e) => onQueryChange(e.target.value)}
+        <input value={query} onChange={(e) => onQueryChange(e.target.value)}
           placeholder="Search topics, organisms, processes..."
-          className="h-11 w-full rounded-full border border-border bg-card pr-11 pl-5 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-primary/60 focus:ring-2 focus:ring-ring/30"
-        />
-        <button type="submit" aria-label="Search Ted's Lab" title="Search Ted's Lab" className="absolute top-1/2 right-2 grid size-8 -translate-y-1/2 place-items-center rounded-full text-muted-foreground hover:bg-secondary hover:text-foreground">
+          className="h-11 w-full rounded-full border border-border bg-card pr-11 pl-5 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-primary/60 focus:ring-2 focus:ring-ring/30" />
+        <button type="submit" aria-label="Search Ted's Lab" title="Search Ted's Lab"
+          className="absolute top-1/2 right-2 grid size-8 -translate-y-1/2 place-items-center rounded-full text-muted-foreground hover:bg-secondary hover:text-foreground">
           <Search className="size-4" />
         </button>
       </form>
-
-      <a
-        href={aquariusDownloadUrl}
-        download="Aquarius.dmg"
-        aria-label="Download Aquarius DMG"
-        title="Download Aquarius DMG"
-        className="inline-flex h-10 shrink-0 items-center gap-2 rounded-md border border-border px-3 text-sm font-medium text-foreground hover:bg-secondary"
-      >
-        <Download className="size-4" />
-        <span className="hidden sm:inline">Download DMG</span>
+      <a href={aquariusDownloadUrl} download="Aquarius.dmg" aria-label="Download Aquarius DMG" title="Download Aquarius DMG"
+        className="inline-flex h-10 shrink-0 items-center gap-2 rounded-md border border-border px-3 text-sm font-medium text-foreground hover:bg-secondary">
+        <Download className="size-4" /><span className="hidden sm:inline">Download DMG</span>
       </a>
-
       <div className="ml-auto hidden items-center gap-5 md:flex">
-        <span className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Bookmark className="size-4" />
-          Bookmarks
-          <span className="rounded-full bg-secondary px-2 py-0.5 text-xs text-foreground">
-            {bookmarkCount}
-          </span>
+        <span className="flex items-center gap-2 text-sm text-muted-foreground"><Bookmark className="size-4" />Bookmarks
+          <span className="rounded-full bg-secondary px-2 py-0.5 text-xs text-foreground">{bookmarkCount}</span>
         </span>
-        <span className="flex items-center gap-2 text-sm text-muted-foreground">
-          <History className="size-4" />
-          History
-        </span>
-        <button
-          type="button"
-          onClick={onToggleCompact}
-          aria-pressed={compact}
-          aria-label="Toggle compact reading mode"
-          className="flex h-8 w-14 items-center rounded-full border border-border bg-secondary px-1 transition-colors"
-        >
-          <span
-            className={`flex size-6 items-center justify-center rounded-full bg-primary text-primary-foreground transition-transform ${
-              compact ? "translate-x-6" : "translate-x-0"
-            }`}
-          >
-            {compact ? (
-              <Moon className="size-3.5" />
-            ) : (
-              <Sun className="size-3.5" />
-            )}
+        <span className="flex items-center gap-2 text-sm text-muted-foreground"><History className="size-4" />History</span>
+        <button type="button" onClick={onToggleCompact} aria-pressed={compact} aria-label="Toggle compact reading mode"
+          className="flex h-8 w-14 items-center rounded-full border border-border bg-secondary px-1 transition-colors">
+          <span className="flex size-6 items-center justify-center rounded-full bg-primary text-primary-foreground transition-transform ${compact ? "translate-x-6" : "translate-x-0"}">
+            {compact ? <Moon className="size-3.5" /> : <Sun className="size-3.5" />}
           </span>
         </button>
         {!user && (
           <div className="flex items-center gap-2">
-            <Link
-              to="/login"
-              className="inline-flex h-10 items-center justify-center rounded-md border border-border px-3 text-sm font-semibold text-foreground transition hover:bg-secondary"
-            >
-              Sign in
-            </Link>
-            <Link
-              to="/signup"
-              className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
-            >
-              Create account
-            </Link>
+            <Link to="/login" className="inline-flex h-10 items-center justify-center rounded-md border border-border px-3 text-sm font-semibold text-foreground transition hover:bg-secondary">Sign in</Link>
+            <Link to="/signup" className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90">Create account</Link>
           </div>
         )}
         {user && (
           <div className="flex items-center gap-2 border-l border-border pl-4">
             <Link to="/dashboard" className="flex items-center gap-2">
-              <span className="flex size-9 items-center justify-center rounded-full bg-primary/15">
-                <User className="size-4 text-primary" />
-              </span>
+              <span className="flex size-9 items-center justify-center rounded-full bg-primary/15"><User className="size-4 text-primary" /></span>
               <div className="leading-tight">
                 <p className="text-sm font-medium">My dashboard</p>
-                <p className="max-w-[10rem] truncate text-xs text-muted-foreground">
-                  {user.email}
-                </p>
+                <p className="max-w-[10rem] truncate text-xs text-muted-foreground">{user.email}</p>
               </div>
             </Link>
           </div>
