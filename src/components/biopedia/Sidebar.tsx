@@ -162,6 +162,7 @@ export function Sidebar({
           <ul className="space-y-0.5">
             <li><NavLink label="Home" Icon={LucideIcons.Home} to="/" exact collapsed={collapsed} /></li>
             <li><NavLink label="Study Lab" Icon={LucideIcons.GraduationCap} to="/study" collapsed={collapsed} /></li>
+            <li><NavLink label="Search Lab" Icon={LucideIcons.Search} to="/search-lab" collapsed={collapsed} featured /></li>
           </ul>
 
           {!collapsed && (
