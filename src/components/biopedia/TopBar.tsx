@@ -11,7 +11,6 @@ import {
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/use-auth";
 import { getAquariusDownloadUrl } from "@/lib/chronos-os-download";
-import { useArticles, useSubjects, useTopics } from "@/lib/content";
 
 export function TopBar({
   query,
@@ -30,45 +29,14 @@ export function TopBar({
 }) {
   const navigate = useNavigate();\n  const { user } = useAuth();
   const aquariusDownloadUrl = getAquariusDownloadUrl();
-  const { data: articles } = useArticles();
-  const { data: subjects } = useSubjects();
-  const { data: topics } = useTopics();
-
-  const normalized = query.trim().toLowerCase();
-  const results = normalized
-    ? [
-        ...(articles ?? []).map((article) => ({
-          type: "Article",
-          title: article.title,
-          description: article.excerpt ?? "",
-          href: "/articles/" + article.slug,
-          score:
-            (article.title.toLowerCase().includes(normalized) ? 100 : 0) +
-            ((article.excerpt ?? "").toLowerCase().includes(normalized) ? 25 : 0),
-        })),
-        ...(topics ?? []).map((topic) => ({
-          type: "Topic",
-          title: topic.title,
-          description: topic.blurb ?? "",
-          href: "/" + topic.subject_slug + "/" + topic.slug,
-          score:
-            (topic.title.toLowerCase().includes(normalized) ? 80 : 0) +
-            ((topic.blurb ?? "").toLowerCase().includes(normalized) ? 20 : 0),
-        })),
-        ...(subjects ?? []).map((subject) => ({
-          type: "Subject",
-          title: subject.title,
-          description: subject.description ?? "",
-          href: "/" + subject.slug,
-          score:
-            (subject.title.toLowerCase().includes(normalized) ? 70 : 0) +
-            ((subject.description ?? "").toLowerCase().includes(normalized) ? 15 : 0),
-        })),
-      ]
-        .filter((item) => item.score > 0)
-        .sort((a, b) => b.score - a.score || a.title.localeCompare(b.title))
-        .slice(0, 8)
-    : [];
+  const submitSearch = (event: React.FormEvent) => {
+    event.preventDefault();
+    const value = query.trim();
+    navigate({
+      to: "/search-lab",
+      search: value ? { q: value } : { q: undefined },
+    });
+  };
 
   return (
     <header className="relative sticky top-0 z-20 flex items-center gap-4 border-b border-border bg-background/90 px-4 py-3 backdrop-blur md:px-6">
@@ -81,7 +49,7 @@ export function TopBar({
       >
         <Menu className="size-4" />
       </button>
-      <label className="relative flex-1 max-w-2xl">
+      <form onSubmit={submitSearch} className="relative flex-1 max-w-2xl">
         <span className="sr-only">Search Ted's Lab</span>
         <input
           value={query}
@@ -89,8 +57,10 @@ export function TopBar({
           placeholder="Search topics, organisms, processes..."
           className="h-11 w-full rounded-full border border-border bg-card pr-11 pl-5 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-primary/60 focus:ring-2 focus:ring-ring/30"
         />
-        <Search className="pointer-events-none absolute top-1/2 right-4 size-4 -translate-y-1/2 text-muted-foreground" />
-      </label>
+        <button type="submit" aria-label="Search Ted's Lab" title="Search Ted's Lab" className="absolute top-1/2 right-2 grid size-8 -translate-y-1/2 place-items-center rounded-full text-muted-foreground hover:bg-secondary hover:text-foreground">
+          <Search className="size-4" />
+        </button>
+      </form>
 
       <a
         href={aquariusDownloadUrl}
