@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import {
   ArrowUpRight,
   BookOpen,
@@ -12,119 +12,263 @@ import {
   X,
 } from "lucide-react";
 import { AppShell } from "@/components/biopedia/AppShell";
-import {
-  useArticles,
-  usePages,
-  useSubjects,
-  useTopics,
-} from "@/lib/content";
+import { useArticles, usePages, useSubjects, useTopics } from "@/lib/content";
 
 export const Route = createFileRoute("/search-lab")({
-  validateSearch: (search: Record<string, unknown>) => ({\n    q: typeof search.q === "string" ? search.q : "",\n  }),\n  head: () => ({
+  validateSearch: (search: Record<string, unknown>) => ({
+    q: typeof search.q === "string" ? search.q : "",
+  }),
+  head: () => ({
     meta: [
       { title: "Search Lab — Ted's Lab" },
       {
         name: "description",
-        content:
-          "Search Ted's Lab articles, subjects, topics and pages with Search Lab.",
+        content: "Search Ted's Lab articles, subjects, topics and pages with Search Lab.",
       },
     ],
   }),
   component: SearchLab,
 });
 
-function normalize(text: string) {\n  return text.toLowerCase().normalize("NFKD").replace(/[\\u0300-\\u036f]/g, "").replace(/[^a-z0-9\\s-]/g, " ").replace(/\\s+/g, " ").trim();\n}\n\ntype Result = {
+type Result = {
   id: string;
   title: string;
   description: string;
   href: string;
   type: "Article" | "Subject" | "Topic" | "Page";
   score: number;
+  matchedTerms: number;
+};
+
+function normalize(text: string) {
+  return text
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9\s-]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+const SEARCH_ALIASES: Record<string, string[]> = {
+  ai: ["artificial", "intelligence"],
+  artificial: ["ai"],
+  intelligence: ["ai"],
+  ml: ["machine", "learning"],
+  machine: ["ml"],
+  biology: ["life", "science"],
+  physics: ["physical", "science"],
+  chemistry: ["chemical", "science"],
+  maths: ["mathematics"],
+  math: ["mathematics"],
+  computing: ["computer", "science"],
+  computers: ["computer", "science"],
 };
 
 function SearchLab() {
-  const { data: articles } = useArticles();
-  const { data: subjects } = useSubjects();
-  const { data: topics } = useTopics();
-  const { data: pages } = usePages();
-  const [query, setQuery] = useState("");
-  const [submittedQuery, setSubmittedQuery] = useState("");
+  const navigate = useNavigate();
+  const { q: urlQuery } = Route.useSearch();
+  const { data: articles, isLoading: articlesLoading } = useArticles();
+  const { data: subjects, isLoading: subjectsLoading } = useSubjects();
+  const { data: topics, isLoading: topicsLoading } = useTopics();
+  const { data: pages, isLoading: pagesLoading } = usePages();
+  const [query, setQuery] = useState(urlQuery);
+  const [submittedQuery, setSubmittedQuery] = useState(urlQuery);
   const [filter, setFilter] = useState<"All" | Result["type"]>("All");
 
-  const results = useMemo(() => {
-    const q = normalize(submittedQuery);
-    if (!q) return [];
+  const contentLoading =
+    articlesLoading || subjectsLoading || topicsLoading || pagesLoading;
 
-    const terms = q.split(/\s+/).filter(Boolean);
-    const scoreText = (text: string) => {
-      const normalized = text.toLowerCase();
+  useEffect(() => {
+    setQuery(urlQuery);
+    setSubmittedQuery(urlQuery);
+  }, [urlQuery]);
+
+  const results = useMemo(() => {
+    const normalizedQuery = normalize(submittedQuery);
+    if (!normalizedQuery) return [];
+
+    const rawTerms = normalizedQuery.split(" ").filter(Boolean);
+    const terms = Array.from(
+      new Set([
+        ...rawTerms,
+        ...rawTerms.flatMap((term) => SEARCH_ALIASES[term] ?? []),
+      ]),
+    );
+
+    function scoreField(text: string, weight: number) {
+      const value = normalize(text);
+      if (!value) return { score: 0, matchedTerms: 0 };
+
       let score = 0;
-      if (normalized === q) score += 100;
-      if (normalized.startsWith(q)) score += 45;
-      if (normalized.includes(q)) score += 25;
+      let matchedTerms = 0;
+
+      if (value === normalizedQuery) score += 120 * weight;
+      if (value.includes(normalizedQuery)) score += 70 * weight;
+
       for (const term of terms) {
-        if (normalized.includes(term)) score += 8;
+        if (value === term) {
+          score += 45 * weight;
+          matchedTerms += 1;
+        } else if (value.startsWith(term)) {
+          score += 25 * weight;
+          matchedTerms += 1;
+        } else if (value.includes(" " + term + " ")) {
+          score += 20 * weight;
+          matchedTerms += 1;
+        } else if (value.includes(term)) {
+          score += 8 * weight;
+          matchedTerms += 1;
+        }
       }
-      return score;
-    };
+
+      return { score, matchedTerms };
+    }
+
+    function makeResult(
+      id: string,
+      title: string,
+      description: string,
+      href: string,
+      type: Result["type"],
+      fields: Array<[string, number]>,
+    ): Result {
+      const titleMatch = scoreField(title, 4);
+      const bodyMatch = fields.reduce(
+        (acc, [text, weight]) => {
+          const result = scoreField(text, weight);
+          return {
+            score: acc.score + result.score,
+            matchedTerms: acc.matchedTerms + result.matchedTerms,
+          };
+        },
+        { score: 0, matchedTerms: 0 },
+      );
+
+      let score = titleMatch.score + bodyMatch.score;
+
+      // Prefer results that match every meaningful query term.
+      const coverage = Math.min(matchedTerms, terms.length) / Math.max(terms.length, 1);
+      score += coverage * 60;
+
+      // A title match should beat a weak body-only match.
+      if (titleMatch.matchedTerms > 0) score += 35;
+      if (titleMatch.matchedTerms >= rawTerms.length) score += 45;
+
+      return {
+        id,
+        title,
+        description,
+        href,
+        type,
+        score,
+        matchedTerms: Math.min(
+          terms.length,
+          titleMatch.matchedTerms + bodyMatch.matchedTerms,
+        ),
+      };
+    }
 
     const all: Result[] = [
       ...(articles ?? [])
-        .filter((a) => a.published === true)
-        .map((a) => ({
-          id: "article-" + a.id,
-          title: a.title,
-          description: a.excerpt ?? a.body?.replace(/<[^>]+>/g, "").slice(0, 180) ?? "",
-          href: "/articles/" + a.slug,
-          type: "Article" as const,
-          score: scoreText(
-            [a.title, a.excerpt ?? "", a.body ?? "", a.subject_slug ?? "", a.topic_slug].join(" "),
+        .filter((article) => article.published === true)
+        .map((article) =>
+          makeResult(
+            "article-" + article.id,
+            article.title,
+            article.excerpt ??
+              article.body
+                ?.replace(/<[^>]+>/g, " ")
+                .replace(/\s+/g, " ")
+                .trim()
+                .slice(0, 180) ??
+              "",
+            "/articles/" + article.slug,
+            "Article",
+            [
+              [article.excerpt ?? "", 2],
+              [article.body ?? "", 1],
+              [article.subject_slug ?? "", 2],
+              [article.topic_slug ?? "", 2],
+            ],
           ),
-        })),
-      ...(subjects ?? []).map((s) => ({
-        id: "subject-" + s.id,
-        title: s.title,
-        description: s.description ?? "",
-        href: "/" + s.slug,
-        type: "Subject" as const,
-        score: scoreText(s.title, true) + scoreText(s.description ?? ""),
-      })),
-      ...(topics ?? []).map((t) => ({
-        id: "topic-" + t.id,
-        title: t.title,
-        description: t.blurb ?? t.body?.replace(/<[^>]+>/g, "").slice(0, 180) ?? "",
-        href: "/" + t.subject_slug + "/" + t.slug,
-        type: "Topic" as const,
-        score: scoreText(t.title, true) + scoreText([t.blurb ?? "", t.body ?? "", t.subject_slug].join(" ")),
-      })),
+        ),
+      ...(subjects ?? []).map((subject) =>
+        makeResult(
+          "subject-" + subject.id,
+          subject.title,
+          subject.description ?? "",
+          "/" + subject.slug,
+          "Subject",
+          [[subject.description ?? "", 2], [subject.slug ?? "", 2]],
+        ),
+      ),
+      ...(topics ?? []).map((topic) =>
+        makeResult(
+          "topic-" + topic.id,
+          topic.title,
+          topic.blurb ??
+            topic.body
+              ?.replace(/<[^>]+>/g, " ")
+              .replace(/\s+/g, " ")
+              .trim()
+              .slice(0, 180) ??
+            "",
+          "/" + topic.subject_slug + "/" + topic.slug,
+          "Topic",
+          [
+            [topic.blurb ?? "", 2],
+            [topic.body ?? "", 1],
+            [topic.subject_slug ?? "", 2],
+            [topic.slug ?? "", 2],
+          ],
+        ),
+      ),
       ...(pages ?? [])
-        .filter((p) => p.published === true)
-        .map((p) => ({
-          id: "page-" + p.id,
-          title: p.title,
-          description: p.description ?? "",
-          href: "/pages/" + p.slug,
-          type: "Page" as const,
-          score: scoreText(p.title, true) + scoreText([p.description ?? "", p.body ?? ""].join(" ")),
-        })),
+        .filter((page) => page.published === true)
+        .map((page) =>
+          makeResult(
+            "page-" + page.id,
+            page.title,
+            page.description ?? "",
+            "/pages/" + page.slug,
+            "Page",
+            [
+              [page.description ?? "", 2],
+              [page.body ?? "", 1],
+              [page.slug ?? "", 2],
+            ],
+          ),
+        ),
     ];
 
     return all
-      .filter((result) => result.score > 0)
+      .filter((result) => result.matchedTerms > 0 && result.score > 0)
       .filter((result) => filter === "All" || result.type === filter)
-      .sort((a, b) => b.score - a.score || a.title.localeCompare(b.title))
+      .sort(
+        (a, b) =>
+          b.score - a.score ||
+          b.matchedTerms - a.matchedTerms ||
+          a.title.localeCompare(b.title),
+      )
       .slice(0, 50);
   }, [articles, subjects, topics, pages, submittedQuery, filter]);
 
   const submit = (event: FormEvent) => {
     event.preventDefault();
-    setSubmittedQuery(query.trim());
+    const value = query.trim();
     setFilter("All");
+    navigate({
+      to: "/search-lab",
+      search: value ? { q: value } : { q: undefined },
+    });
   };
 
   const clear = () => {
     setQuery("");
     setSubmittedQuery("");
+    setFilter("All");
+    navigate({ to: "/search-lab", search: { q: undefined } });
   };
 
   return (
@@ -149,8 +293,8 @@ function SearchLab() {
             </h1>
             {!submittedQuery && (
               <p className="mt-3 max-w-xl text-sm leading-6 text-muted-foreground">
-                Search the knowledge inside Ted's Lab. Find articles, subjects,
-                topics and pages from one fast, simple search box.
+                Search the knowledge inside Ted's Lab. Find the most relevant
+                articles, subjects, topics and pages from one search box.
               </p>
             )}
           </div>
@@ -192,10 +336,9 @@ function SearchLab() {
                   <button
                     key={suggestion}
                     type="button"
-                    onClick={() => {
-                      setQuery(suggestion);
-                      setSubmittedQuery(suggestion);
-                    }}
+                    onClick={() =>
+                      navigate({ to: "/search-lab", search: { q: suggestion } })
+                    }
                     className="rounded-full border border-border bg-card px-3 py-1.5 hover:border-primary/40 hover:text-primary"
                   >
                     {suggestion}
@@ -211,12 +354,17 @@ function SearchLab() {
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-3">
               <div>
                 <p className="text-sm text-muted-foreground">
-                  {contentLoading ? "Searching…" : `${results.length} result${results.length === 1 ? "" : "s"} for`}
+                  {contentLoading
+                    ? "Searching…"
+                    : resultCountLabel(results.length)}
                 </p>
                 <h2 className="text-xl font-semibold">“{submittedQuery}”</h2>
               </div>
               <a
-                href={`https://www.google.com/search?q=${encodeURIComponent(submittedQuery)}`}
+                href={
+                  "https://www.google.com/search?q=" +
+                  encodeURIComponent(submittedQuery)
+                }
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center gap-2 rounded-full border border-border px-3 py-2 text-xs font-medium hover:border-primary/40 hover:text-primary"
@@ -227,32 +375,55 @@ function SearchLab() {
             </div>
 
             <div className="mt-4 flex flex-wrap gap-2">
-              {(["All", "Article", "Subject", "Topic", "Page"] as const).map((item) => (
-                <button
-                  key={item}
-                  type="button"
-                  onClick={() => setFilter(item)}
-                  className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
-                    filter === item
-                      ? "bg-primary text-primary-foreground"
-                      : "border border-border bg-card text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {item}
-                </button>
-              ))}
+              {(["All", "Article", "Subject", "Topic", "Page"] as const).map(
+                (item) => (
+                  <button
+                    key={item}
+                    type="button"
+                    onClick={() => setFilter(item)}
+                    className={
+                      "rounded-full px-3 py-1.5 text-xs font-medium transition-colors " +
+                      (filter === item
+                        ? "bg-primary text-primary-foreground"
+                        : "border border-border bg-card text-muted-foreground hover:text-foreground")
+                    }
+                  >
+                    {item}
+                  </button>
+                ),
+              )}
             </div>
 
-            {contentLoading ? (\n              <div className="mt-5 space-y-3" aria-label="Loading search results">\n                {[1, 2, 3, 4].map((item) => <div key={item} className="h-24 animate-pulse rounded-xl bg-secondary/60" />)}\n              </div>\n            ) : results.length ? (
+            {contentLoading ? (
+              <div
+                className="mt-5 space-y-3"
+                aria-label="Loading search results"
+              >
+                {[1, 2, 3, 4].map((item) => (
+                  <div
+                    key={item}
+                    className="h-24 animate-pulse rounded-xl bg-secondary/60"
+                  />
+                ))}
+              </div>
+            ) : results.length ? (
               <div className="mt-5 divide-y divide-border">
                 {results.map((result) => (
                   <article key={result.id} className="py-5">
                     <Link to={result.href} className="group block">
                       <div className="mb-1 flex items-center gap-2 text-xs text-muted-foreground">
-                        {result.type === "Article" && <BookOpen className="size-3.5" />}
-                        {result.type === "Subject" && <Atom className="size-3.5" />}
-                        {result.type === "Topic" && <Layers3 className="size-3.5" />}
-                        {result.type === "Page" && <FileText className="size-3.5" />}
+                        {result.type === "Article" && (
+                          <BookOpen className="size-3.5" />
+                        )}
+                        {result.type === "Subject" && (
+                          <Atom className="size-3.5" />
+                        )}
+                        {result.type === "Topic" && (
+                          <Layers3 className="size-3.5" />
+                        )}
+                        {result.type === "Page" && (
+                          <FileText className="size-3.5" />
+                        )}
                         <span>{result.type}</span>
                         <span>·</span>
                         <span className="truncate">{result.href}</span>
@@ -272,20 +443,30 @@ function SearchLab() {
             ) : (
               <div className="mt-8 rounded-2xl border border-dashed border-border bg-card p-10 text-center">
                 <Sparkles className="mx-auto size-7 text-primary" />
-                <h3 className="mt-3 text-lg font-semibold">No results found</h3>
+                <h3 className="mt-3 text-lg font-semibold">
+                  No relevant results
+                </h3>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  Try a broader term, a subject name, a topic, or a different spelling.
+                  Try a broader term, a subject name, a topic, or a different
+                  spelling.
                 </p>
               </div>
             )}
 
             <div className="mt-8 flex items-center justify-center gap-2 text-xs text-muted-foreground">
               <Globe2 className="size-3.5" />
-              <span>Search Lab indexes Ted's Lab content and opens results inside Ted's Lab.</span>
+              <span>
+                Search Lab ranks Ted's Lab content by relevance and opens
+                results inside Ted's Lab.
+              </span>
             </div>
           </section>
         )}
       </div>
     </AppShell>
   );
+}
+
+function resultCountLabel(count: number) {
+  return count === 1 ? "1 relevant result" : count + " relevant results";
 }
