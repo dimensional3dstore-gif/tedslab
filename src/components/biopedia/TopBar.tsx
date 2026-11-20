@@ -8,7 +8,7 @@ import {
   Moon,
   User,
 } from "lucide-react";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/use-auth";
 import { getAquariusDownloadUrl } from "@/lib/chronos-os-download";
 import { useArticles, useSubjects, useTopics } from "@/lib/content";
@@ -28,7 +28,7 @@ export function TopBar({
   onToggleCompact: () => void;
   onToggleSidebar: () => void;
 }) {
-  const { user } = useAuth();
+  const navigate = useNavigate();\n  const { user } = useAuth();
   const aquariusDownloadUrl = getAquariusDownloadUrl();
   const { data: articles } = useArticles();
   const { data: subjects } = useSubjects();
