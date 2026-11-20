@@ -153,7 +153,8 @@ function SearchLab() {
       let score = titleMatch.score + bodyMatch.score;
 
       // Prefer results that match every meaningful query term.
-      const coverage = Math.min(matchedTerms, terms.length) / Math.max(terms.length, 1);
+      const totalMatchedTerms = titleMatch.matchedTerms + bodyMatch.matchedTerms;
+      const coverage = Math.min(totalMatchedTerms, terms.length) / Math.max(terms.length, 1);
       score += coverage * 60;
 
       // A title match should beat a weak body-only match.
