@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { FormEvent, useMemo, useState } from "react";
 import {
   ArrowUpRight,
@@ -20,7 +20,7 @@ import {
 } from "@/lib/content";
 
 export const Route = createFileRoute("/search-lab")({
-  head: () => ({
+  validateSearch: (search: Record<string, unknown>) => ({\n    q: typeof search.q === "string" ? search.q : "",\n  }),\n  head: () => ({
     meta: [
       { title: "Search Lab — Ted's Lab" },
       {
@@ -33,7 +33,7 @@ export const Route = createFileRoute("/search-lab")({
   component: SearchLab,
 });
 
-type Result = {
+function normalize(text: string) {\n  return text.toLowerCase().normalize("NFKD").replace(/[\\u0300-\\u036f]/g, "").replace(/[^a-z0-9\\s-]/g, " ").replace(/\\s+/g, " ").trim();\n}\n\ntype Result = {
   id: string;
   title: string;
   description: string;
@@ -52,7 +52,7 @@ function SearchLab() {
   const [filter, setFilter] = useState<"All" | Result["type"]>("All");
 
   const results = useMemo(() => {
-    const q = submittedQuery.trim().toLowerCase();
+    const q = normalize(submittedQuery);
     if (!q) return [];
 
     const terms = q.split(/\s+/).filter(Boolean);
@@ -70,7 +70,7 @@ function SearchLab() {
 
     const all: Result[] = [
       ...(articles ?? [])
-        .filter((a) => a.published !== false)
+        .filter((a) => a.published === true)
         .map((a) => ({
           id: "article-" + a.id,
           title: a.title,
@@ -87,7 +87,7 @@ function SearchLab() {
         description: s.description ?? "",
         href: "/" + s.slug,
         type: "Subject" as const,
-        score: scoreText([s.title, s.description ?? ""].join(" ")),
+        score: scoreText(s.title, true) + scoreText(s.description ?? ""),
       })),
       ...(topics ?? []).map((t) => ({
         id: "topic-" + t.id,
@@ -95,17 +95,17 @@ function SearchLab() {
         description: t.blurb ?? t.body?.replace(/<[^>]+>/g, "").slice(0, 180) ?? "",
         href: "/" + t.subject_slug + "/" + t.slug,
         type: "Topic" as const,
-        score: scoreText([t.title, t.blurb ?? "", t.body ?? "", t.subject_slug].join(" ")),
+        score: scoreText(t.title, true) + scoreText([t.blurb ?? "", t.body ?? "", t.subject_slug].join(" ")),
       })),
       ...(pages ?? [])
-        .filter((p) => p.published !== false)
+        .filter((p) => p.published === true)
         .map((p) => ({
           id: "page-" + p.id,
           title: p.title,
           description: p.description ?? "",
           href: "/pages/" + p.slug,
           type: "Page" as const,
-          score: scoreText([p.title, p.description ?? "", p.body ?? ""].join(" ")),
+          score: scoreText(p.title, true) + scoreText([p.description ?? "", p.body ?? ""].join(" ")),
         })),
     ];
 
@@ -211,7 +211,7 @@ function SearchLab() {
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-3">
               <div>
                 <p className="text-sm text-muted-foreground">
-                  {results.length} result{results.length === 1 ? "" : "s"} for
+                  {contentLoading ? "Searching…" : `${results.length} result${results.length === 1 ? "" : "s"} for`}
                 </p>
                 <h2 className="text-xl font-semibold">“{submittedQuery}”</h2>
               </div>
@@ -243,7 +243,7 @@ function SearchLab() {
               ))}
             </div>
 
-            {results.length ? (
+            {contentLoading ? (\n              <div className="mt-5 space-y-3" aria-label="Loading search results">\n                {[1, 2, 3, 4].map((item) => <div key={item} className="h-24 animate-pulse rounded-xl bg-secondary/60" />)}\n              </div>\n            ) : results.length ? (
               <div className="mt-5 divide-y divide-border">
                 {results.map((result) => (
                   <article key={result.id} className="py-5">
@@ -272,9 +272,9 @@ function SearchLab() {
             ) : (
               <div className="mt-8 rounded-2xl border border-dashed border-border bg-card p-10 text-center">
                 <Sparkles className="mx-auto size-7 text-primary" />
-                <h3 className="mt-3 text-lg font-semibold">No results yet</h3>
+                <h3 className="mt-3 text-lg font-semibold">No results found</h3>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  Try a broader term, a subject name, or a different spelling.
+                  Try a broader term, a subject name, a topic, or a different spelling.
                 </p>
               </div>
             )}
