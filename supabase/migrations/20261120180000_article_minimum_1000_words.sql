@@ -7,16 +7,16 @@ returns integer
 language sql
 immutable
 as $$
-  select coalesce(
-    array_length(
+  select case
+    when trim(regexp_replace(coalesce(article_body, ''), '[^[:alnum:]''-]+', ' ', 'g')) = '' then 0
+    else array_length(
       regexp_split_to_array(
         trim(regexp_replace(coalesce(article_body, ''), '[^[:alnum:]''-]+', ' ', 'g')),
-        '\\s+'
+        ' +'
       ),
       1
-    ),
-    0
-  );
+    )
+  end;
 $$;
 
 create or replace function public.ensure_article_minimum_length()
@@ -29,22 +29,12 @@ declare
   current_words integer;
   body_json jsonb;
   extension jsonb;
-  source_text text;
 begin
   current_words := public.article_word_count(new.body);
 
   if current_words >= 1000 then
     return new;
   end if;
-
-  source_text := trim(
-    regexp_replace(
-      coalesce(new.excerpt, '') || ' ' || coalesce(new.body, ''),
-      '[^[:alnum:]''-]+',
-      ' ',
-      'g'
-    )
-  );
 
   extension := jsonb_build_object(
     'heading', 'Extended study guide',
