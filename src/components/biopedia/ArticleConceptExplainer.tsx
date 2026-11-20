@@ -2,68 +2,52 @@ import { useEffect, useState } from "react";
 import { BookOpen, Bookmark, BookmarkCheck, LoaderCircle, Send, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { supabase } from "@/integrations/supabase/client";
-import { chatWithOmlx } from "@/lib/omlx";
 import type { ArticleRow } from "@/lib/content";
 
-type SharedNexiumConfig = { baseUrl: string; model: string };
 type Turn = { role: "user" | "assistant"; content: string };
 type SavedExplanation = { id: string; articleSlug: string; articleTitle: string; content: string; savedAt: string };
 const SAVED_EXPLANATIONS_KEY = "tedslab:saved-nexium-explanations:v1";
 
 export function ArticleConceptExplainer({ article }: { article: ArticleRow }) {
-  const [config, setConfig] = useState<SharedNexiumConfig | null>(null);
   const [expanded, setExpanded] = useState(false);
   const [question, setQuestion] = useState("");
   const [turns, setTurns] = useState<Turn[]>([]);
-  const [loadingConfig, setLoadingConfig] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [savedIds, setSavedIds] = useState<string[]>([]);
 
-  useEffect(() => {
-    let active = true;
-    void (async () => {
-      try {
-        const { data, error: settingsError } = await supabase
-          .from("site_settings")
-          .select("key, value")
-          .in("key", ["nexium_omlx_url", "nexium_omlx_model"]);
-        if (settingsError) throw settingsError;
-        const values = Object.fromEntries((data ?? []).map((row) => [row.key, row.value]));
-        if (active && values.nexium_omlx_url && values.nexium_omlx_model) {
-          setConfig({ baseUrl: values.nexium_omlx_url, model: values.nexium_omlx_model });
-        }
-      } catch {
-        if (active) setError("Nexium settings could not be loaded.");
-      } finally {
-        if (active) setLoadingConfig(false);
-      }
-    })();
-    return () => { active = false; };
-  }, []);
-
   const explain = async (prompt?: string) => {
     const userPrompt = (prompt ?? question).trim();
-    if (!config || !userPrompt || busy) return;
+    if (!userPrompt || busy) return;
     const nextTurns: Turn[] = [...turns, { role: "user", content: userPrompt }];
     setTurns(nextTurns);
     setQuestion("");
     setBusy(true);
     setError("");
     try {
-      const response = await chatWithOmlx(config, [
-        {
-          role: "system",
-          content: "You are Nexium, the concept tutor inside Ted's Lab. Explain the requested concept accurately, patiently and at the learner's level. Start with a plain-language definition, then explain how and why it works, use a relatable analogy and a concrete example, define important vocabulary, and finish with one short check-for-understanding question. Use clear headings and concise paragraphs. If the article does not contain enough information, say so rather than inventing facts. Keep the explanation focused on the article context.",
-        },
-        {
-          role: "user",
-          content: `Article title: ${article.title}\nSubject: ${article.subject_slug ?? "General"}\nArticle summary: ${article.excerpt ?? ""}\nArticle content: ${(article.body ?? "").slice(0, 14000)}\n\nLearner request: ${userPrompt}`,
-        },
-        ...nextTurns.slice(1).map((turn) => ({ role: turn.role, content: turn.content })),
-      ]);
-      setTurns((current) => [...current, { role: "assistant", content: response }]);
+      const response = await fetch("/llm/api/nexium", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: [
+            {
+              role: "system",
+              content: "You are Nexium, the concept tutor inside Ted's Lab. Explain the requested concept accurately, patiently and at the learner's level. Start with a plain-language definition, then explain how and why it works, use a relatable analogy and a concrete example, define important vocabulary, and finish with one short check-for-understanding question. Use clear headings and concise paragraphs. If the article does not contain enough information, say so rather than inventing facts. Keep the explanation focused on the article context.",
+            },
+            {
+              role: "user",
+              content: `Article title: ${article.title}\nSubject: ${article.subject_slug ?? "General"}\nArticle summary: ${article.excerpt ?? ""}\nArticle content: ${(article.body ?? "").slice(0, 14000)}\n\nLearner request: ${userPrompt}`,
+            },
+            ...nextTurns.slice(1).map((turn) => ({ role: turn.role, content: turn.content })),
+          ],
+        }),
+      });
+      const payload = await response.json();
+      if (!response.ok || typeof payload.answer !== "string") {
+        throw new Error(payload.error ?? "Nexium could not explain this concept.");
+      }
+      const responseText = payload.answer;
+      setTurns((current) => [...current, { role: "assistant", content: responseText }]);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Nexium could not explain this concept.");
     } finally {
@@ -97,7 +81,7 @@ export function ArticleConceptExplainer({ article }: { article: ArticleRow }) {
                 "What are the most important ideas to remember?",
                 "Explain it step by step for a beginner",
               ].map((prompt) => (
-                <button key={prompt} type="button" disabled={!config || busy} onClick={() => void explain(prompt)} className="rounded-full border border-border bg-secondary px-3 py-2 text-xs text-foreground hover:border-primary/40 disabled:opacity-50">
+                <button key={prompt} type="button" disabled={busy} onClick={() => void explain(prompt)} className="rounded-full border border-border bg-secondary px-3 py-2 text-xs text-foreground hover:border-primary/40 disabled:opacity-50">
                   {prompt}
                 </button>
               ))}
@@ -118,11 +102,11 @@ export function ArticleConceptExplainer({ article }: { article: ArticleRow }) {
             </article>
           ))}
           {busy && <p className="flex items-center gap-2 text-sm text-muted-foreground"><LoaderCircle className="size-4 animate-spin" /> Nexium is preparing your explanation…</p>}
-          {!config && !loadingConfig && <p className="text-sm text-muted-foreground">Nexium has not been configured yet. An administrator must save the shared model in Nexium settings.</p>}
-          {loadingConfig && <p className="text-sm text-muted-foreground">Connecting to Nexium…</p>}
+          
+          
           <form onSubmit={(event) => { event.preventDefault(); void explain(); }} className="flex gap-2">
             <Input value={question} onChange={(event) => setQuestion(event.target.value)} placeholder="Ask a question about this article…" disabled={!config || busy} />
-            <Button type="submit" disabled={!config || busy || !question.trim()}><Send className="size-4" /><span className="sr-only">Send question</span></Button>
+            <Button type="submit" disabled={busy || !question.trim()}><Send className="size-4" /><span className="sr-only">Send question</span></Button>
           </form>
           {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
           <p className="flex items-center gap-2 text-xs text-muted-foreground"><BookOpen className="size-3.5" /> Explanations use this article as context. Check important facts against the reference.</p>
