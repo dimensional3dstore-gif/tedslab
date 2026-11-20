@@ -87,71 +87,7 @@ function SearchLab() {
     setSubmittedQuery(urlQuery);
   }, [urlQuery]);
 
-  useEffect(() => {
-    let cancelled = false;
 
-    async function generateSearchAnswer() {
-      if (!submittedQuery.trim() || contentLoading || !results.length) {
-        setAiAnswer("");
-        setAiError(false);
-        return;
-      }
-
-      setAiLoading(true);
-      setAiError(false);
-
-      const context = results.slice(0, 8).map((result, index) =>
-        `${index + 1}. ${result.title} [${result.type}]
-URL: ${result.href}
-Summary: ${result.description}`
-      ).join("\n\n");
-
-      const prompt = `You are the AI answer engine for Ted's Lab Search Lab.
-Answer the user's search query using the search results supplied below.
-
-Rules:
-- Give a concise, useful answer in 2-4 short paragraphs.
-- Synthesize the results rather than merely listing them.
-- Prefer information supported by the supplied results.
-- If the results do not contain enough information, say that clearly and avoid inventing facts.
-- Mention relevant result titles naturally when useful.
-- Do not use markdown tables.
-- Do not claim you browsed the wider web.
-
-User query: ${submittedQuery}
-
-Search results:
-${context}`;
-
-      try {
-        const response = await fetch("/llm/api/ai", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ prompt }),
-        });
-
-        if (!response.ok) throw new Error("AI request failed");
-
-        const data = (await response.json()) as { answer?: string };
-        if (!cancelled) {
-          setAiAnswer(data.answer?.trim() ?? "");
-          setAiError(!data.answer?.trim());
-        }
-      } catch {
-        if (!cancelled) {
-          setAiAnswer("");
-          setAiError(true);
-        }
-      } finally {
-        if (!cancelled) setAiLoading(false);
-      }
-    }
-
-    void generateSearchAnswer();
-    return () => {
-      cancelled = true;
-    };
-  }, [submittedQuery, results, contentLoading]);
 
   const results = useMemo(() => {
     const normalizedQuery = normalize(submittedQuery);
@@ -323,6 +259,72 @@ ${context}`;
       .slice(0, 50);
   }, [articles, subjects, topics, pages, submittedQuery, filter]);
 
+  useEffect(() => {
+    let cancelled = false;
+
+    async function generateSearchAnswer() {
+      if (!submittedQuery.trim() || contentLoading || !results.length) {
+        setAiAnswer("");
+        setAiError(false);
+        return;
+      }
+
+      setAiLoading(true);
+      setAiError(false);
+
+      const context = results.slice(0, 8).map((result, index) =>
+        `${index + 1}. ${result.title} [${result.type}]
+URL: ${result.href}
+Summary: ${result.description}`
+      ).join("\n\n");
+
+      const prompt = `You are the AI answer engine for Ted's Lab Search Lab.
+Answer the user's search query using the search results supplied below.
+
+Rules:
+- Give a concise, useful answer in 2-4 short paragraphs.
+- Synthesize the results rather than merely listing them.
+- Prefer information supported by the supplied results.
+- If the results do not contain enough information, say that clearly and avoid inventing facts.
+- Mention relevant result titles naturally when useful.
+- Do not use markdown tables.
+- Do not claim you browsed the wider web.
+
+User query: ${submittedQuery}
+
+Search results:
+${context}`;
+
+      try {
+        const response = await fetch("/llm/api/ai", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt }),
+        });
+
+        if (!response.ok) throw new Error("AI request failed");
+
+        const data = (await response.json()) as { answer?: string };
+        if (!cancelled) {
+          setAiAnswer(data.answer?.trim() ?? "");
+          setAiError(!data.answer?.trim());
+        }
+      } catch {
+        if (!cancelled) {
+          setAiAnswer("");
+          setAiError(true);
+        }
+      } finally {
+        if (!cancelled) setAiLoading(false);
+      }
+    }
+
+    void generateSearchAnswer();
+    return () => {
+      cancelled = true;
+    };
+  }, [submittedQuery, results, contentLoading]);
+
   const submit = (event: FormEvent) => {
     event.preventDefault();
     const value = query.trim();
@@ -438,7 +440,7 @@ ${context}`;
                 rel="noreferrer"
                 className="inline-flex items-center gap-2 rounded-full border border-border px-3 py-2 text-xs font-medium hover:border-primary/40 hover:text-primary"
               >
-                Search the web
+                Google
                 <ArrowUpRight className="size-3.5" />
               </a>
             </div>
@@ -446,7 +448,7 @@ ${context}`;
             <div className="mt-5 rounded-2xl border border-primary/20 bg-primary/[0.04] p-5">
               <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-primary">
                 <Sparkles className="size-4" />
-                AI answer
+                Instant answer
               </div>
               {aiLoading ? (
                 <div className="mt-3 space-y-2" aria-label="Generating AI answer">
@@ -455,12 +457,12 @@ ${context}`;
                   <div className="h-4 w-3/5 animate-pulse rounded bg-secondary" />
                 </div>
               ) : aiAnswer ? (
-                <p className="mt-3 max-w-3xl whitespace-pre-line text-sm leading-7 text-foreground/90">
+                <p className="mt-3 max-w-3xl whitespace-pre-line text-[15px] leading-7 text-foreground/90">
                   {aiAnswer}
                 </p>
               ) : aiError ? (
                 <p className="mt-3 text-sm text-muted-foreground">
-                  AI answer is temporarily unavailable. The ranked search results below are still available.
+                  Instant answer is temporarily unavailable. The ranked search results below are still available.
                 </p>
               ) : null}
             </div>
@@ -500,30 +502,16 @@ ${context}`;
             ) : results.length ? (
               <div className="mt-5 divide-y divide-border">
                 {results.map((result) => (
-                  <article key={result.id} className="py-5">
-                    <Link to={result.href} className="group block">
-                      <div className="mb-1 flex items-center gap-2 text-xs text-muted-foreground">
-                        {result.type === "Article" && (
-                          <BookOpen className="size-3.5" />
-                        )}
-                        {result.type === "Subject" && (
-                          <Atom className="size-3.5" />
-                        )}
-                        {result.type === "Topic" && (
-                          <Layers3 className="size-3.5" />
-                        )}
-                        {result.type === "Page" && (
-                          <FileText className="size-3.5" />
-                        )}
-                        <span>{result.type}</span>
-                        <span>·</span>
-                        <span className="truncate">{result.href}</span>
+                  <article key={result.id} className="py-4">
+                    <Link to={result.href} className="group block max-w-3xl">
+                      <div className="mb-1 truncate text-sm text-muted-foreground">
+                        tedslab.app{result.href}
                       </div>
-                      <h3 className="text-lg font-semibold text-primary group-hover:underline">
+                      <h3 className="text-xl font-medium text-primary group-hover:underline">
                         {result.title}
                       </h3>
                       {result.description && (
-                        <p className="mt-1 max-w-3xl text-sm leading-6 text-muted-foreground">
+                        <p className="mt-1 text-sm leading-6 text-muted-foreground">
                           {result.description}
                         </p>
                       )}
@@ -547,8 +535,8 @@ ${context}`;
             <div className="mt-8 flex items-center justify-center gap-2 text-xs text-muted-foreground">
               <Globe2 className="size-3.5" />
               <span>
-                Search Lab ranks Ted's Lab content by relevance and opens
-                results inside Ted's Lab.
+                Search Lab shows fast, Google-style results from Ted's Lab.
+                Use Google for the wider web.
               </span>
             </div>
           </section>
