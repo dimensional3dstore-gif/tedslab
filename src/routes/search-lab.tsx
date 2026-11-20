@@ -446,47 +446,32 @@ ${context}`;
               </a>
             </div>
 
-            <div className="mt-5 rounded-2xl border border-primary/20 bg-primary/[0.04] p-5">
-              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-primary">
-                <Sparkles className="size-4" />
-                Instant answer
-              </div>
-              {aiLoading ? (
-                <div className="mt-3 space-y-2" aria-label="Generating AI answer">
-                  <div className="h-4 w-11/12 animate-pulse rounded bg-secondary" />
-                  <div className="h-4 w-4/5 animate-pulse rounded bg-secondary" />
-                  <div className="h-4 w-3/5 animate-pulse rounded bg-secondary" />
+            <section className="mt-6 max-w-3xl">
+              <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
+                <div className="flex items-center gap-2 text-sm font-semibold">
+                  <Sparkles className="size-4 text-primary" />
+                  <span>AI Overview</span>
                 </div>
-              ) : aiAnswer ? (
-                <p className="mt-3 max-w-3xl whitespace-pre-line text-[15px] leading-7 text-foreground/90">
-                  {aiAnswer}
-                </p>
-              ) : aiError ? (
-                <p className="mt-3 text-sm text-muted-foreground">
-                  Instant answer is temporarily unavailable. The ranked search results below are still available.
-                </p>
-              ) : null}
-            </div>
+                {aiLoading ? (
+                  <div className="mt-4 space-y-3" aria-label="Generating AI overview">
+                    <div className="h-4 w-11/12 animate-pulse rounded bg-secondary" />
+                    <div className="h-4 w-10/12 animate-pulse rounded bg-secondary" />
+                    <div className="h-4 w-7/12 animate-pulse rounded bg-secondary" />
+                  </div>
+                ) : aiAnswer ? (
+                  <p className="mt-3 whitespace-pre-line text-[15px] leading-7 text-foreground/90">
+                    {aiAnswer}
+                  </p>
+                ) : aiError ? (
+                  <p className="mt-3 text-sm text-muted-foreground">
+                    AI Overview is temporarily unavailable. Search results are still available below.
+                  </p>
+                ) : null}
+              </div>
+            </section>
 
-            <div className="mt-4 flex flex-wrap gap-2">
-              {(["All", "Article", "Subject", "Topic", "Page"] as const).map(
-                (item) => (
-                  <button
-                    key={item}
-                    type="button"
-                    onClick={() => setFilter(item)}
-                    className={
-                      "rounded-full px-3 py-1.5 text-xs font-medium transition-colors " +
-                      (filter === item
-                        ? "bg-primary text-primary-foreground"
-                        : "border border-border bg-card text-muted-foreground hover:text-foreground")
-                    }
-                  >
-                    {item}
-                  </button>
-                ),
-              )}
-            </div>
+            <section className="mt-8 max-w-3xl">
+              <h2 className="mb-4 text-xl font-semibold">Search Results</h2>
 
             {contentLoading ? (
               <div
@@ -501,18 +486,21 @@ ${context}`;
                 ))}
               </div>
             ) : results.length ? (
-              <div className="mt-5 divide-y divide-border">
+              <div className="space-y-7">
                 {results.map((result) => (
-                  <article key={result.id} className="py-4">
-                    <Link to={result.href} className="group block max-w-3xl">
-                      <div className="mb-1 truncate text-sm text-muted-foreground">
-                        tedslab.app{result.href}
+                  <article key={result.id}>
+                    <Link to={result.href} className="group block">
+                      <div className="mb-1 flex items-center gap-2 text-sm text-muted-foreground">
+                        <span className="grid size-6 shrink-0 place-items-center rounded-full border border-border bg-background">
+                          <Globe2 className="size-3.5" />
+                        </span>
+                        <span className="truncate">tedslab.app{result.href}</span>
                       </div>
-                      <h3 className="text-xl font-medium text-primary group-hover:underline">
+                      <h3 className="text-xl font-medium leading-7 text-primary group-hover:underline">
                         {result.title}
                       </h3>
                       {result.description && (
-                        <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                        <p className="mt-1 max-w-2xl text-sm leading-6 text-muted-foreground">
                           {result.description}
                         </p>
                       )}
@@ -536,8 +524,7 @@ ${context}`;
             <div className="mt-8 flex items-center justify-center gap-2 text-xs text-muted-foreground">
               <Globe2 className="size-3.5" />
               <span>
-                Search Lab shows fast, Google-style results from Ted's Lab.
-                Use Google for the wider web.
+                Search results from Ted's Lab. Use Google for results from the wider web.
               </span>
             </div>
           </section>
