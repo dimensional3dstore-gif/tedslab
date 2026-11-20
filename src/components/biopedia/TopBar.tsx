@@ -71,7 +71,7 @@ export function TopBar({
     : [];
 
   return (
-    <header className="sticky top-0 z-20 flex items-center gap-4 border-b border-border bg-background/90 px-4 py-3 backdrop-blur md:px-6">
+    <header className="relative sticky top-0 z-20 flex items-center gap-4 border-b border-border bg-background/90 px-4 py-3 backdrop-blur md:px-6">
       <button
         type="button"
         onClick={onToggleSidebar}
