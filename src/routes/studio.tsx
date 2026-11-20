@@ -60,7 +60,10 @@ function StudioPage() {
         </div>
         {query.isLoading && <p className="mt-8 text-sm text-muted-foreground">Loading your apps…</p>}
         {!query.isLoading && !(query.data?.length) && (
-
+          <div className="mt-8 rounded-2xl border border-dashed border-border bg-card p-8 text-center">
+            <p className="text-sm font-semibold">No apps yet</p>
+            <p className="mt-1 text-sm text-muted-foreground">Create your first Ted's Lab app to get started.</p>
+          </div>
         )}
       </main>
     </AppShell>
