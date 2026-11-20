@@ -75,6 +75,9 @@ function SearchLab() {
   const [query, setQuery] = useState(urlQuery);
   const [submittedQuery, setSubmittedQuery] = useState(urlQuery);
   const [filter, setFilter] = useState<"All" | Result["type"]>("All");
+  const [aiAnswer, setAiAnswer] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState(false);
 
   const contentLoading =
     articlesLoading || subjectsLoading || topicsLoading || pagesLoading;
@@ -83,6 +86,72 @@ function SearchLab() {
     setQuery(urlQuery);
     setSubmittedQuery(urlQuery);
   }, [urlQuery]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function generateSearchAnswer() {
+      if (!submittedQuery.trim() || contentLoading || !results.length) {
+        setAiAnswer("");
+        setAiError(false);
+        return;
+      }
+
+      setAiLoading(true);
+      setAiError(false);
+
+      const context = results.slice(0, 8).map((result, index) =>
+        `${index + 1}. ${result.title} [${result.type}]
+URL: ${result.href}
+Summary: ${result.description}`
+      ).join("\n\n");
+
+      const prompt = `You are the AI answer engine for Ted's Lab Search Lab.
+Answer the user's search query using the search results supplied below.
+
+Rules:
+- Give a concise, useful answer in 2-4 short paragraphs.
+- Synthesize the results rather than merely listing them.
+- Prefer information supported by the supplied results.
+- If the results do not contain enough information, say that clearly and avoid inventing facts.
+- Mention relevant result titles naturally when useful.
+- Do not use markdown tables.
+- Do not claim you browsed the wider web.
+
+User query: ${submittedQuery}
+
+Search results:
+${context}`;
+
+      try {
+        const response = await fetch("/llm/api/ai", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt }),
+        });
+
+        if (!response.ok) throw new Error("AI request failed");
+
+        const data = (await response.json()) as { answer?: string };
+        if (!cancelled) {
+          setAiAnswer(data.answer?.trim() ?? "");
+          setAiError(!data.answer?.trim());
+        }
+      } catch {
+        if (!cancelled) {
+          setAiAnswer("");
+          setAiError(true);
+        }
+      } finally {
+        if (!cancelled) setAiLoading(false);
+      }
+    }
+
+    void generateSearchAnswer();
+    return () => {
+      cancelled = true;
+    };
+  }, [submittedQuery, results, contentLoading]);
 
   const results = useMemo(() => {
     const normalizedQuery = normalize(submittedQuery);
@@ -372,6 +441,28 @@ function SearchLab() {
                 Search the web
                 <ArrowUpRight className="size-3.5" />
               </a>
+            </div>
+
+            <div className="mt-5 rounded-2xl border border-primary/20 bg-primary/[0.04] p-5">
+              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-primary">
+                <Sparkles className="size-4" />
+                AI answer
+              </div>
+              {aiLoading ? (
+                <div className="mt-3 space-y-2" aria-label="Generating AI answer">
+                  <div className="h-4 w-11/12 animate-pulse rounded bg-secondary" />
+                  <div className="h-4 w-4/5 animate-pulse rounded bg-secondary" />
+                  <div className="h-4 w-3/5 animate-pulse rounded bg-secondary" />
+                </div>
+              ) : aiAnswer ? (
+                <p className="mt-3 max-w-3xl whitespace-pre-line text-sm leading-7 text-foreground/90">
+                  {aiAnswer}
+                </p>
+              ) : aiError ? (
+                <p className="mt-3 text-sm text-muted-foreground">
+                  AI answer is temporarily unavailable. The ranked search results below are still available.
+                </p>
+              ) : null}
             </div>
 
             <div className="mt-4 flex flex-wrap gap-2">
