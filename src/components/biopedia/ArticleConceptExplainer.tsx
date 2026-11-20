@@ -105,7 +105,7 @@ export function ArticleConceptExplainer({ article }: { article: ArticleRow }) {
           
           
           <form onSubmit={(event) => { event.preventDefault(); void explain(); }} className="flex gap-2">
-            <Input value={question} onChange={(event) => setQuestion(event.target.value)} placeholder="Ask a question about this article…" disabled={!config || busy} />
+            <Input value={question} onChange={(event) => setQuestion(event.target.value)} placeholder="Ask a question about this article…" disabled={busy} />
             <Button type="submit" disabled={busy || !question.trim()}><Send className="size-4" /><span className="sr-only">Send question</span></Button>
           </form>
           {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
