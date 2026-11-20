@@ -2,7 +2,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Bot, LoaderCircle, Save, Send, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
 import { AppShell, PageHeader } from "@/components/biopedia/AppShell";
 import { useUserCollection } from "@/lib/user-data";
 
