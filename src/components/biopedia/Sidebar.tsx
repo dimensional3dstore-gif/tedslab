@@ -64,7 +64,7 @@ export function Sidebar({
   const { data: articles } = useArticles();
   const { data: navLinks } = useNavLinks();
   const { data: settings } = useSettings();
-  const { isAdmin } = useAuth();
+  const { isAdmin, user, signOut } = useAuth();
   const chronosDownloadUrl = getChronosOSDownloadUrl();
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const collapsed = false;
@@ -372,6 +372,29 @@ export function Sidebar({
             </li>
           </ul>
         </nav>
+        {user && (
+          <div className="border-t border-sidebar-border p-3">
+            <div className="mb-2 flex items-center gap-2 rounded-lg bg-secondary/50 px-3 py-2">
+              <div className="grid size-8 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
+                <LucideIcons.User className="size-4" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-xs font-medium text-sidebar-foreground">Account</p>
+                <p className="truncate text-[11px] text-muted-foreground" title={user.email ?? undefined}>
+                  {user.email ?? "Signed in"}
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => void signOut()}
+              className="group flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-sidebar-foreground transition-colors hover:bg-secondary hover:text-primary"
+            >
+              <LogOut className="size-4 text-muted-foreground group-hover:text-primary" />
+              <span>Log out</span>
+            </button>
+          </div>
+        )}
       </aside>
     </>
   );
