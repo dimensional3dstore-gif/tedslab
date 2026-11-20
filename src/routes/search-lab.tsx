@@ -521,6 +521,8 @@ ${context}`;
               </div>
             )}
 
+            </section>
+
             <div className="mt-8 flex items-center justify-center gap-2 text-xs text-muted-foreground">
               <Globe2 className="size-3.5" />
               <span>
