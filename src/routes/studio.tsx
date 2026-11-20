@@ -60,11 +60,7 @@ function StudioPage() {
         </div>
         {query.isLoading && <p className="mt-8 text-sm text-muted-foreground">Loading your apps…</p>}
         {!query.isLoading && !(query.data?.length) && (
-          <div className="mt-10 rounded-2xl border border-dashed border-border p-10 text-center">
-            <h2 className="text-xl font-semibold">Your first app starts here.</h2>
-            <p className="mt-2 text-sm text-muted-foreground">Describe what you want to build and Ted's Lab will generate the first version.</p>
-            <Link to="/studio/new" className="mt-5 inline-flex rounded-xl border border-border px-4 py-2.5 text-sm font-semibold hover:bg-accent">Open App Builder</Link>
-          </div>
+
         )}
       </main>
     </AppShell>
