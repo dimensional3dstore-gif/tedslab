@@ -64,9 +64,10 @@ function resolveAquariusAddress(address) {
     if (value.startsWith(scheme)) {
       const target = value.slice(scheme.length).replace(/^\/+/, "");
       if (scheme === "articles://") return new URL("/articles/" + encodeURIComponent(target), appUrl).href;
-      if (scheme === "tools://" || scheme === "blog://" || scheme === "posts://" || scheme === "help://" || scheme === "category://") {
-        return new URL(route + encodeURIComponent(target), appUrl).href;
-      }
+      if (scheme === "tools://") return new URL("/search-lab?q=" + encodeURIComponent(target), appUrl).href;
+      if (scheme === "blog://" || scheme === "posts://") return new URL("/blogger/" + encodeURIComponent(target), appUrl).href;
+      if (scheme === "help://") return new URL("/help-center?q=" + encodeURIComponent(target), appUrl).href;
+      if (scheme === "category://") return new URL("/" + encodeURIComponent(target), appUrl).href;
       if (scheme === "admin://") return new URL(route + target, appUrl).href;
       return new URL(route + target, appUrl).href;
     }
