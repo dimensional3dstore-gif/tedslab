@@ -467,14 +467,16 @@ ${context}`;
                     <div className="h-4 w-7/12 animate-pulse rounded bg-secondary" />
                   </div>
                 ) : aiAnswer ? (
-                  <div className="mt-3 text-[15px] leading-7 text-foreground/90">
-                    {renderAiAnswer(aiAnswer)}
-                  </div>
-                  {aiGrounded && (
-                    <p className="mt-4 text-xs text-muted-foreground">
-                      Grounded with live web research and Ted's Lab results.
-                    </p>
-                  )}
+                  <>
+                    <div className="mt-3 text-[15px] leading-7 text-foreground/90">
+                      {renderAiAnswer(aiAnswer)}
+                    </div>
+                    {aiGrounded && (
+                      <p className="mt-4 text-xs text-muted-foreground">
+                        Grounded with live web research and Ted's Lab results.
+                      </p>
+                    )}
+                  </>
                 ) : aiError ? (
                   <p className="mt-3 text-sm text-muted-foreground">
                     AI Overview is temporarily unavailable. Search results are still available below.
