@@ -165,6 +165,7 @@ export function Sidebar({
             <li><NavLink label="Study Lab" Icon={LucideIcons.GraduationCap} to="/study" collapsed={collapsed} /></li>
             <li><NavLink label="Search Lab" Icon={LucideIcons.Search} to="/search-lab" collapsed={collapsed} featured /></li>
             <li><NavLink label="Blogger" Icon={LucideIcons.PenLine} to="/blogger" collapsed={collapsed} featured /></li>
+            <li><NavLink label="Slides" Icon={LucideIcons.Presentation} to="/slides" collapsed={collapsed} featured /></li>
           </ul>
 
           {!collapsed && (
@@ -313,6 +314,9 @@ export function Sidebar({
                 <li><NavLink label="Edit articles" Icon={FilePenLine} to="/admin/articles" collapsed={collapsed} /></li>
                 <li><NavLink label="Article submissions" Icon={FilePenLine} to="/admin/article-submissions" collapsed={collapsed} /></li>
                 <li><NavLink label="Add article" Icon={Plus} to="/admin/articles/new" collapsed={collapsed} /></li>
+                <li><NavLink label="Slides" Icon={LucideIcons.Presentation} to="/admin/slides" collapsed={collapsed} /></li>
+                <li><NavLink label="Create blog" Icon={LucideIcons.PenLine} to="/blogger/new" collapsed={collapsed} /></li>
+                <li><NavLink label="My blogs" Icon={LucideIcons.NotebookPen} to="/blogger/mine" collapsed={collapsed} /></li>
                 <li><NavLink label="Manage subjects" Icon={LucideIcons.BookOpen} to="/admin/subjects" collapsed={collapsed} /></li>
                 <li><NavLink label="Transfer Atlas articles" Icon={LucideIcons.Network} to="/admin/atlas-import" collapsed={collapsed} /></li>
                 <li><NavLink label="Add topic" Icon={LucideIcons.Tag} to="/admin/topics" collapsed={collapsed} /></li>
