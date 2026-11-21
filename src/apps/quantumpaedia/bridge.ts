@@ -1,0 +1,1 @@
+export const TED_LAB_QUANTUMPEDIA = { name:"Quantumpaedia", accent:"primary", hostRoute:"/quantumpedia" } as const;
