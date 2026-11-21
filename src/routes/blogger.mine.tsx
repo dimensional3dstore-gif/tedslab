@@ -1,8 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell, PageHeader } from "@/components/biopedia/AppShell";
-import { useMyBlogPosts } from "@/lib/blogger";
+import { useMyBlogPosts, useDeleteBlogPost } from "@/lib/blogger";
 import { useAuth } from "@/hooks/use-auth";
-import { useDeleteBlogPost } from "@/lib/blogger";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/blogger/mine")({
@@ -29,7 +28,7 @@ function MyBloggerPosts() {
             <div className="min-w-0"><h2 className="font-semibold">{post.title}</h2><p className="mt-1 text-xs text-muted-foreground">{post.status === "published" ? "Published" : "Draft"} · updated {new Date(post.updated_at).toLocaleDateString()}</p></div>
             <div className="flex flex-wrap gap-2">
                 {post.status === "published" && <Link to="/blogger/$slug" params={{slug: post.slug}} className="rounded-md border border-border px-3 py-2 text-xs">View</Link>}
-                <Link to="/blogger/new" className="rounded-md border border-primary/30 px-3 py-2 text-xs font-semibold text-primary">Edit / publish</Link>
+                <Link to="/blogger/edit/$id" params={{ id: post.id }} className="rounded-md border border-primary/30 px-3 py-2 text-xs font-semibold text-primary">Edit / publish</Link>
                 <Button variant="outline" size="sm" disabled={deletePost.isPending} onClick={() => { if (window.confirm("Delete this post?")) void deletePost.mutateAsync(post.id); }}>Delete</Button>
               </div>
           </div>
