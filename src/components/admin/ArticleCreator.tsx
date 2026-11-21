@@ -147,7 +147,7 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
         className="bio-panel space-y-4 p-4"
         onSubmit={(e) => {
           e.preventDefault();
-          void save(true);
+          void save(publishToSite);
         }}
       >
         <div className="flex items-center justify-between gap-3"><h2 className="font-display text-lg font-semibold">{existing ? "Edit article" : "Create article"}</h2>{existing && <span className={existing.published ? "rounded-full bg-emerald-500/10 px-2 py-1 text-xs text-emerald-600" : "rounded-full bg-amber-500/10 px-2 py-1 text-xs text-amber-600"}>{existing.published ? "Published" : "Draft"}</span>}</div>
