@@ -37,6 +37,7 @@ export type SectionRow = {
   image_key: string | null;
   image_url: string | null;
   sort: number | null;
+  published?: boolean | null;
 };
 
 export type TopicRow = {
@@ -72,6 +73,7 @@ export type ArticleRow = {
   status?: "draft" | "review" | "published" | null;
   author_id?: string | null;
   sort: number | null;
+  published?: boolean | null;
 };
 
 export const fallbackArticles: ArticleRow[] = ARTICLES;
@@ -384,6 +386,7 @@ export type PageRow = {
   status?: "draft" | "review" | "published" | null;
   show_in_nav: boolean | null;
   sort: number | null;
+  published?: boolean | null;
 };
 
 export type NavLinkRow = {
@@ -403,14 +406,16 @@ export async function fetchCatalogRows<T extends { id: string }>(
   let data: unknown[] | null = null;
   try {
     const columns = table === "subjects"
-      ? "id,slug,title,description,icon,image_key,image_url,sort"
+      ? "id,slug,title,description,icon,image_key,image_url,sort,published"
       : table === "topics"
-        ? "id,section_id,subject_id,subject_slug,slug,title,blurb,image_url,sort"
+        ? "id,section_id,subject_id,subject_slug,slug,title,blurb,image_url,sort,published"
         : "*";
     let query = supabase.from(table).select(columns);
     // Keep the public feed deterministic even for signed-in admins, whose RLS
     // policy also permits reading drafts.
     if (table === "articles") {
+      query = query.eq("published", true).eq("status", "published");
+    } else if (table === "sections" || table === "subjects" || table === "topics" || table === "pages") {
       query = query.eq("published", true).eq("status", "published");
     }
     const result = await query.order("sort", { ascending: true });
@@ -497,9 +502,9 @@ export async function fetchCatalogRow<T>(
   }
   try {
     const columns = table === "subjects"
-      ? "id,slug,title,description,icon,image_key,image_url,sort"
+      ? "id,slug,title,description,icon,image_key,image_url,sort,published"
       : table === "topics"
-        ? "id,section_id,subject_id,subject_slug,slug,title,blurb,image_url,sort"
+        ? "id,section_id,subject_id,subject_slug,slug,title,blurb,image_url,sort,published"
         : "*";
     const { data, error } = await supabase
       .from(table)
