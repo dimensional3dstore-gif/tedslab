@@ -5,6 +5,9 @@
 //     React/TanStack dedupe, error logger plugins, and sandbox detection (port/host/strictPort).
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
+import path from "node:path";
+
+const quantumpaediaRoot = path.resolve(process.cwd(), "src/apps/quantumpaedia");
 
 export default defineConfig({
   define: {
@@ -19,8 +22,13 @@ export default defineConfig({
         if (!importer?.includes("apps/quantumpaedia/") || !source.startsWith("@/")) return null;
         const area = source.slice(2).split("/")[0];
         if (!["components", "data", "lib", "hooks", "utils", "api"].includes(area)) return null;
-        return this.resolve(source.replace("@/", "@/apps/quantumpaedia/"), importer, { skipSelf: true });
-      }
+
+        // Quantumpaedia was imported as a self-contained app under src/apps/quantumpaedia.
+        // Its original "@/..." imports must resolve inside that app rather than the
+        // Ted's Lab root src directory. Returning an absolute path avoids re-entering
+        // the root @ alias and makes this deterministic in Vite/Rolldown production builds.
+        return path.resolve(quantumpaediaRoot, source.slice(2));
+      },
     }],
   },
   tanstackStart: {
