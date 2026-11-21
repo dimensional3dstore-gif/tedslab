@@ -200,11 +200,18 @@ function SearchLab() {
         ),
     ];
 
-    return all
-      .filter((result) => result.matchedTerms > 0)
+    const coverageRequired =
+      terms.length <= 1 ? 1 : terms.length === 2 ? 1 : Math.ceil(terms.length * 0.5);
+
+    const ranked = all
+      .filter((result) => result.matchedTerms >= coverageRequired)
       .filter((result) => filter === "All" || result.type === filter)
-      .sort((a, b) => b.score - a.score || b.matchedTerms - a.matchedTerms || a.title.localeCompare(b.title))
-      .slice(0, 12);
+      .sort((a, b) => b.score - a.score || b.matchedTerms - a.matchedTerms || a.title.localeCompare(b.title));
+
+    const bestScore = ranked[0]?.score ?? 0;
+    return ranked
+      .filter((result) => result.score >= Math.max(12, bestScore * 0.32))
+      .slice(0, 10);
   }, [articles, subjects, topics, pages, submittedQuery, filter]);
 
   useEffect(() => {
