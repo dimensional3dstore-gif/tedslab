@@ -23,7 +23,7 @@ export function ContentManager({ mode }: { mode: Mode }) {
   const [description, setDescription] = useState("");
   const [body, setBody] = useState("");
   const [parentId, setParentId] = useState("");
-  const [published, setPublished] = useState(false);
+  const [published, setPublished] = useState(true);
   const [showInNav, setShowInNav] = useState(false);
   const [icon, setIcon] = useState("BookOpen");
   const [imageUrl, setImageUrl] = useState("");
@@ -44,7 +44,7 @@ export function ContentManager({ mode }: { mode: Mode }) {
 
   const reset = () => {
     setEditing(null); setTitle(""); setSlug(""); setDescription(""); setBody("");
-    setParentId(""); setPublished(false); setShowInNav(false); setIcon("BookOpen"); setImageUrl(""); setError(""); setSavedMessage("");
+    setParentId(""); setPublished(true); setShowInNav(false); setIcon("BookOpen"); setImageUrl(""); setError(""); setSavedMessage("");
   };
 
   const startEdit = (row: Row) => {
@@ -59,9 +59,9 @@ export function ContentManager({ mode }: { mode: Mode }) {
     event.preventDefault(); setBusy(true); setError(""); setSavedMessage("");
     const base: Row = { id: editing?.id ?? `${mode.slice(0, -1)}-${crypto.randomUUID()}`, slug: slugify(slug || title), title, sort: editing?.sort ?? config.rows.length };
     if (mode === "pages") Object.assign(base, { description, body, published, status: published ? "published" : "draft", show_in_nav: showInNav, image_url: editing?.image_url ?? null });
-    if (mode === "subjects") Object.assign(base, { description, icon: icon.trim() || null, image_key: editing?.image_key ?? null, image_url: imageUrl.trim() || null });
-    if (mode === "sections") Object.assign(base, { subject_id: parentValue, label: title, description, body, icon: editing?.icon ?? null, image_key: editing?.image_key ?? null, image_url: editing?.image_url ?? null });
-    if (mode === "topics") Object.assign(base, { subject_id: parentValue, subject_slug: subjects.find((item) => item.id === parentValue)?.slug, section_id: null, blurb: description, body, image_url: imageUrl.trim() || null });
+    if (mode === "subjects") Object.assign(base, { description, icon: icon.trim() || null, image_key: editing?.image_key ?? null, image_url: imageUrl.trim() || null, published: true });
+    if (mode === "sections") Object.assign(base, { subject_id: parentValue, label: title, description, body, icon: editing?.icon ?? null, image_key: editing?.image_key ?? null, image_url: editing?.image_url ?? null, published: true });
+    if (mode === "topics") Object.assign(base, { subject_id: parentValue, subject_slug: subjects.find((item) => item.id === parentValue)?.slug, section_id: null, blurb: description, body, image_url: imageUrl.trim() || null, published: true });
     if (!title.trim() || !base.slug || ((mode === "sections" || mode === "topics") && !parentValue)) { setError("Complete the title, slug and parent selection."); setBusy(false); return; }
     try {
       if (mode === "subjects") {
@@ -114,6 +114,7 @@ export function ContentManager({ mode }: { mode: Mode }) {
       {mode === "topics" && <><label className="block space-y-1 text-xs text-muted-foreground">Summary / blurb<Input value={description} onChange={e=>setDescription(e.target.value)} /></label><label className="block space-y-1 text-xs text-muted-foreground">Topic image URL (optional)<Input type="url" value={imageUrl} onChange={e=>setImageUrl(e.target.value)} /></label></>}
       {mode !== "subjects" && <label className="block space-y-1 text-xs text-muted-foreground">Content<textarea className="min-h-48 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground" value={body} onChange={e=>setBody(e.target.value)} placeholder="Write the page content or detailed topic notes…" /></label>}
       {mode === "pages" && <div className="flex flex-wrap gap-4 text-sm"><label className="flex items-center gap-2"><input type="checkbox" checked={published} onChange={e=>setPublished(e.target.checked)} /> Published</label><label className="flex items-center gap-2"><input type="checkbox" checked={showInNav} onChange={e=>setShowInNav(e.target.checked)} /> Show in navigation</label></div>}
+      {mode !== "pages" && <p className="rounded-md bg-emerald-500/10 px-3 py-2 text-xs text-emerald-700">Published automatically — this {mode.slice(0, -1)} will be available on the public site after saving.</p>}
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
       {savedMessage && <p role="status" className="text-sm text-emerald-600">{savedMessage}</p>}
       <Button type="submit" disabled={busy}>{busy ? "Saving…" : editing ? "Save changes" : `Create ${mode.slice(0,-1)}`}</Button>
