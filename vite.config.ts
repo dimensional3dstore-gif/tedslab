@@ -12,6 +12,16 @@ export default defineConfig({
   },
   vite: {
     envPrefix: ["VITE_", "NEXT_PUBLIC_"],
+    plugins: [{
+      name: "quantumpaedia-local-aliases",
+      enforce: "pre",
+      resolveId(source, importer) {
+        if (!importer?.includes("/src/apps/quantumpaedia/") || !source.startsWith("@/")) return null;
+        const area = source.slice(2).split("/")[0];
+        if (!["components", "data", "lib", "hooks", "utils", "api"].includes(area)) return null;
+        return this.resolve(source.replace("@/", "@/apps/quantumpaedia/"), importer, { skipSelf: true });
+      }
+    }],
   },
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
