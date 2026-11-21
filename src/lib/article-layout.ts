@@ -83,7 +83,8 @@ export function parseArticleLayout(body?: string | null): ArticleLayout | null {
   if (!trimmed.startsWith("{")) return null;
   try {
     const parsed = JSON.parse(trimmed) as Partial<ArticleLayout>;
-    if (parsed && parsed.version === 1 && Array.isArray(parsed.overview)) {
+    // QuantumPedia previously used an expanded v2 JSON envelope. Normalize it through the same article renderer so serialized JSON is never shown to readers.
+    if (parsed && (parsed.version === 1 || parsed.version === 2) && Array.isArray(parsed.overview)) {
       return normalizeArticleLayout(parsed);
     }
     return null;
