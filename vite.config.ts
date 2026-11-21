@@ -16,7 +16,7 @@ export default defineConfig({
       name: "quantumpaedia-local-aliases",
       enforce: "pre",
       resolveId(source, importer) {
-        if (!importer?.includes("/src/apps/quantumpaedia/") || !source.startsWith("@/")) return null;
+        if (!importer?.includes("apps/quantumpaedia/") || !source.startsWith("@/")) return null;
         const area = source.slice(2).split("/")[0];
         if (!["components", "data", "lib", "hooks", "utils", "api"].includes(area)) return null;
         return this.resolve(source.replace("@/", "@/apps/quantumpaedia/"), importer, { skipSelf: true });
