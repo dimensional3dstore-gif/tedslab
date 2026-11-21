@@ -7,7 +7,7 @@ export const Route = createFileRoute("/admin/articles/new")({
   component: () => (
     <AdminPage
       title="New article"
-      description="Draft a structured article and verify its reader-facing layout."
+      description="Create a new Ted's Lab article, build its structured content, preview it live, and publish or save it as a draft."
     >
       <div className="mb-4 flex flex-wrap items-center gap-2 text-sm">
         <Link to="/admin/articles" className="text-primary hover:underline">Manage articles</Link>
