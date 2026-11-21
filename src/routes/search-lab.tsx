@@ -471,7 +471,7 @@ ${context}`;
               </div>
             </section>
 
-            <section className="mt-8 max-w-3xl">
+            <div className="mt-8 max-w-3xl">
               <h2 className="mb-4 text-xl font-semibold">Web-style Results</h2>
 
             {contentLoading ? (
@@ -522,7 +522,7 @@ ${context}`;
               </div>
             )}
 
-            </section>
+            </div>
 
             <div className="mt-8 flex items-center justify-center gap-2 text-xs text-muted-foreground">
               <Globe2 className="size-3.5" />
