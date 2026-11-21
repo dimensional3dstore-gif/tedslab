@@ -415,7 +415,9 @@ export async function fetchCatalogRows<T extends { id: string }>(
     // policy also permits reading drafts.
     if (table === "articles") {
       query = query.eq("published", true).eq("status", "published");
-    } else if (table === "sections" || table === "subjects" || table === "topics" || table === "pages") {
+    } else if (table === "sections" || table === "subjects" || table === "topics") {
+      query = query.eq("published", true);
+    } else if (table === "pages") {
       query = query.eq("published", true).eq("status", "published");
     }
     const result = await query.order("sort", { ascending: true });
