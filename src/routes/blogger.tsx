@@ -27,7 +27,7 @@ function BloggerPage() {
       <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm text-muted-foreground">{posts.length} published {posts.length === 1 ? "post" : "posts"}</p>
         <div className="flex gap-2">
-          {user && <Link to="/blogger/new" className="inline-flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground"><PenLine className="size-4" />Write a post</Link>}
+          {user && <Link to="/blogger/new" className="inline-flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground"><PenLine className="size-4" />Write & publish post</Link>}
           {user && <Link to="/blogger/mine" className="rounded-md border border-border px-3 py-2 text-sm font-medium hover:bg-secondary">My posts</Link>}
         </div>
       </div>
