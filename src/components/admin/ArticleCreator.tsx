@@ -48,7 +48,8 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
       ? (layoutFromArticleBody(existing.body) ?? cloneDefault())
       : cloneDefault(),
   );
-  const status = existing?.published ? "published" : "draft";
+  const [publishToSite, setPublishToSite] = useState(existing?.published ?? true);
+  const status = publishToSite ? "published" : "draft";
   const evidenceSection = layout.sections.find((section) =>
     /evidence|reference/i.test(section.heading),
   );
@@ -285,6 +286,10 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
           }} />
           {sectionEditorError && <span role="alert" className="text-destructive">{sectionEditorError}</span>}
         </label>
+        <label className="flex items-center gap-2 rounded-md border border-border bg-background/60 px-3 py-2 text-xs text-foreground">
+          <input type="checkbox" checked={publishToSite} onChange={(e) => setPublishToSite(e.target.checked)} />
+          Publish to site immediately
+        </label>
         <label className="block space-y-1 text-xs text-muted-foreground">
           Tags (comma separated)
           <Input
@@ -310,10 +315,10 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
             <Button
               type="button"
               variant="outline"
-              onClick={() => void save(Boolean(existing.published))}
+              onClick={() => void save(publishToSite)}
               disabled={saving || Boolean(sectionEditorError) || !subjects.some((item) => item.slug === subject) || !topic}
             >
-              {saving ? "Saving…" : "Save changes"}
+              {saving ? "Saving…" : publishToSite ? "Save & publish" : "Save changes"}
             </Button>
           )}
           <Button
@@ -322,10 +327,10 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
             onClick={() => void save(false)}
             disabled={saving || Boolean(sectionEditorError) || !subjects.some((item) => item.slug === subject)}
           >
-            {saving ? "Saving…" : existing?.published ? "Unpublish & save draft" : "Save draft"}
+            {saving ? "Saving…" : "Save draft"}
           </Button>
           <Button type="submit" disabled={saving || Boolean(sectionEditorError) || !subjects.some((item) => item.slug === subject)}>
-            {saving ? "Publishing…" : existing?.published ? "✓ Expert reviewed · Republish" : "✓ Expert reviewed · Publish"}
+            {saving ? "Publishing…" : publishToSite ? "✓ Publish to site" : "Save as draft"}
           </Button>
           <Button
             type="button"
