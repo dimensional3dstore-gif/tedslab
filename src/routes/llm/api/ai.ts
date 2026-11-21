@@ -157,6 +157,16 @@ async function requestOpenRouter(apiKey: string, model: string, prompt: string) 
         ],
         temperature: 0.2,
         max_tokens: 700,
+        plugins: model.endsWith(":online")
+          ? [
+              {
+                id: "web",
+                max_results: 6,
+                search_prompt:
+                  "Use web results as supporting evidence. Prefer primary and authoritative sources. Cite web sources with markdown links when they are used.",
+              },
+            ]
+          : undefined,
       }),
     });
 
