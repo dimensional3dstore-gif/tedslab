@@ -38,6 +38,7 @@ type Result = {
   type: "Article" | "Subject" | "Topic" | "Page";
   score: number;
   matchedTerms: number;
+  body?: string;
 };
 
 function normalize(text: string) {
@@ -95,37 +96,115 @@ function SearchLab() {
   const results = useMemo(() => {
     const normalizedQuery = normalize(submittedQuery);
     if (!normalizedQuery) return [];
-    const stopWords = new Set(["what","which","when","where","who","why","how","is","are","the","a","an","of","for","to","in","on","with","and","or","does","do","explain","about"]);
-    const terms = Array.from(new Set(normalizedQuery.split(" ").filter((term) => term && !stopWords.has(term))));
+
+    const stopWords = new Set([
+      "what", "which", "when", "where", "who", "why", "how", "is", "are",
+      "the", "a", "an", "of", "for", "to", "in", "on", "with", "and", "or",
+      "does", "do", "explain", "about", "can", "could", "please",
+    ]);
+
+    const rawTerms = normalizedQuery.split(" ").filter(Boolean);
+    const terms = Array.from(new Set(rawTerms.filter((term) => !stopWords.has(term))));
     if (!terms.length) return [];
-    function hasTerm(text: string, term: string) {
-      const words = new Set(normalize(text).split(" "));
-      const alias = SEARCH_ALIASES[term]?.[0];
-      return words.has(term) || Boolean(alias && words.has(normalize(alias)));
+
+    const expandedTerms = new Set(terms);
+    for (const term of terms) {
+      for (const alias of SEARCH_ALIASES[term] ?? []) expandedTerms.add(alias);
     }
-    function matches(text: string) {
-      return terms.filter((term) => hasTerm(text, term)).length;
+
+    function fieldMatches(text: string, term: string) {
+      const normalized = normalize(text);
+      if (!normalized) return 0;
+      const words = normalized.split(" ");
+      const exact = words.includes(term);
+      const phrase = normalized.includes(term);
+      const prefix = words.some((word) => word.startsWith(term) && term.length >= 4);
+      return exact ? 3 : phrase ? 2 : prefix ? 1 : 0;
     }
-    function makeResult(id: string, title: string, description: string, href: string, type: Result["type"], body: string): Result {
-      const titleHits = matches(title);
-      const summaryHits = matches(description);
-      const bodyHits = matches(body.slice(0, 1800));
-      const matchedTerms = new Set(terms.filter((term) => [title, description, body.slice(0, 1800)].some((field) => hasTerm(field, term)))).size;
-      const exactPhrase = normalize(title).includes(normalizedQuery) || normalize(description).includes(normalizedQuery);
-      const score = titleHits * 20 + summaryHits * 8 + bodyHits * 2 + (exactPhrase ? 100 : 0);
-      return { id, title, description, href, type, score, matchedTerms };
+
+    function makeResult(
+      id: string,
+      title: string,
+      description: string,
+      href: string,
+      type: Result["type"],
+      body: string,
+    ): Result {
+      const titleText = normalize(title);
+      const descriptionText = normalize(description);
+      const bodyText = normalize(body.slice(0, 3500));
+      const matchedTerms = terms.filter((term) =>
+        [titleText, descriptionText, bodyText].some((field) => fieldMatches(field, term) > 0),
+      ).length;
+
+      const titleScore = Array.from(expandedTerms).reduce((sum, term) => sum + fieldMatches(titleText, term), 0);
+      const descriptionScore = Array.from(expandedTerms).reduce((sum, term) => sum + fieldMatches(descriptionText, term), 0);
+      const bodyScore = Array.from(expandedTerms).reduce((sum, term) => sum + fieldMatches(bodyText, term), 0);
+      const exactPhrase = titleText.includes(normalizedQuery) || descriptionText.includes(normalizedQuery);
+      const score =
+        titleScore * 30 +
+        descriptionScore * 12 +
+        bodyScore * 3 +
+        (exactPhrase ? 80 : 0) +
+        (matchedTerms === terms.length ? 35 : 0);
+
+      return {
+        id,
+        title,
+        description,
+        href,
+        type,
+        score,
+        matchedTerms,
+        body,
+      };
     }
+
     const all: Result[] = [
-      ...(articles ?? []).filter((article) => article.published === true).map((article) => makeResult("article-" + article.id, article.title, article.excerpt ?? "", "/articles/" + article.slug, "Article", [article.subject_slug ?? "", article.topic_slug ?? "", article.body ?? ""].join(" "))),
-      ...(subjects ?? []).map((subject) => makeResult("subject-" + subject.id, subject.title, subject.description ?? "", "/" + subject.slug, "Subject", subject.slug ?? "")),
-      ...(topics ?? []).map((topic) => makeResult("topic-" + topic.id, topic.title, topic.blurb ?? "", "/" + topic.subject_slug + "/" + topic.slug, "Topic", [topic.subject_slug ?? "", topic.body ?? ""].join(" "))),
-      ...(pages ?? []).filter((page) => page.published === true).map((page) => makeResult("page-" + page.id, page.title, page.description ?? "", "/pages/" + page.slug, "Page", [page.slug ?? "", page.body ?? ""].join(" "))),
+      ...(articles ?? [])
+        .filter((article) => article.published === true)
+        .map((article) =>
+          makeResult(
+            "article-" + article.id,
+            article.title,
+            article.excerpt ?? "",
+            "/articles/" + article.slug,
+            "Article",
+            [article.subject_slug ?? "", article.topic_slug ?? "", article.body ?? ""].join(" "),
+          ),
+        ),
+      ...(subjects ?? []).map((subject) =>
+        makeResult("subject-" + subject.id, subject.title, subject.description ?? "", "/" + subject.slug, "Subject", subject.slug ?? ""),
+      ),
+      ...(topics ?? []).map((topic) =>
+        makeResult(
+          "topic-" + topic.id,
+          topic.title,
+          topic.blurb ?? "",
+          "/" + topic.subject_slug + "/" + topic.slug,
+          "Topic",
+          [topic.subject_slug ?? "", topic.body ?? ""].join(" "),
+        ),
+      ),
+      ...(pages ?? [])
+        .filter((page) => page.published === true)
+        .map((page) =>
+          makeResult(
+            "page-" + page.id,
+            page.title,
+            page.description ?? "",
+            "/pages/" + page.slug,
+            "Page",
+            [page.slug ?? "", page.body ?? ""].join(" "),
+          ),
+        ),
     ];
-    const requiredCoverage = terms.length <= 2 ? 1 : 0.75;
-    return all.filter((result) => result.matchedTerms / terms.length >= requiredCoverage)
-      .filter((result) => normalize(result.title).includes(normalizedQuery) || normalize(result.description).includes(normalizedQuery) || terms.some((term) => hasTerm(result.title, term)))
+
+    return all
+      .filter((result) => result.matchedTerms > 0)
       .filter((result) => filter === "All" || result.type === filter)
-      .sort((a, b) => b.score - a.score || b.matchedTerms - a.matchedTerms || a.title.localeCompare(b.title)).slice(0, 12);
+      .sort((a, b) => b.score - a.score || b.matchedTerms - a.matchedTerms || a.title.localeCompare(b.title))
+      .slice(0, 12);
   }, [articles, subjects, topics, pages, submittedQuery, filter]);
 
   useEffect(() => {
@@ -144,31 +223,25 @@ function SearchLab() {
       setAiError(false);
       setAiGrounded(false);
 
-      const context = results.slice(0, 8).map((result, index) =>
-        (index + 1) + ". " + result.title + " [" + result.type + "]\nURL: " + result.href + "\nSummary: " + result.description
-      ).join("\n\n");
+      const context = results.slice(0, 8).map((result, index) => ({
+        title: result.title,
+        type: result.type,
+        href: result.href,
+        description: result.description,
+        body: result.body,
+        rank: index + 1,
+      }));
 
-      const prompt = "You are the intelligent answer engine for Ted's Lab Search Lab.\n" +
-        "Understand the user's intent and answer the actual question, rather than explaining the search results.\n\n" +
-        "Rules:\n- Start with the direct answer.\n" +
-        "- Reason over the available evidence and synthesize it into a useful response.\n" +
-        "- Treat retrieved results as supporting evidence, not as the user's question.\n" +
-        "- Ignore results that are unrelated to the query. Never mention unrelated results just because they were retrieved.\n" +
-        "- For math, calculations, definitions, comparisons, explanations, and factual questions, answer those directly.\n" +
-        "- If the supplied results are insufficient, use the server's web-grounded model when available; otherwise be transparent about uncertainty.\n" +
-        "- Do not invent facts or pretend a result supports something it does not.\n" +
-        "- Mention Ted's Lab result titles only when they genuinely help answer the question.\n" +
-        "- Write a useful, ChatGPT-quality answer with clear explanations, normally 3-6 concise paragraphs. Use Markdown headings and bullets when helpful.\n" +
-        "- Do not use markdown tables.\n" +
-        "- Do not claim web research unless the server reports web grounding.\n\n" +
-        "User query: " + submittedQuery + "\n\n" +
-        "Potential Ted's Lab evidence:\n" + (context || "(No matching Ted's Lab results were found.)");
+      const prompt =
+        "Answer this user's search query directly. Use the retrieved Ted's Lab sources as evidence, but ignore anything that does not actually help answer the query. Do not describe the retrieval process or repeat a result-count sentence. If the query is simple, keep the answer simple; if it requires explanation, teach the concept clearly.";
+
+
 
       try {
         const response = await fetch("/llm/api/ai", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ prompt, query: submittedQuery, results: results.slice(0, 8) }),
+          body: JSON.stringify({ prompt, query: submittedQuery, results: context, searchMode: true }),
         });
 
         const data = (await response.json()) as {
@@ -392,7 +465,7 @@ function SearchLab() {
                     </div>
                     {aiGrounded && (
                       <p className="mt-4 text-xs text-muted-foreground">
-                        Generated by OpenRouter and grounded in Ted's Lab results{aiGrounded ? " with live web research when available" : ""}.
+                        Generated by OpenRouter using relevant Ted's Lab content.
                       </p>
                     )}
                   </>
