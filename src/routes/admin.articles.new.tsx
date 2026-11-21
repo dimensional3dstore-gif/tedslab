@@ -3,16 +3,16 @@ import { AdminPage } from "@/components/admin/AdminPage";
 import { ArticleCreator } from "@/components/admin/ArticleCreator";
 
 export const Route = createFileRoute("/admin/articles/new")({
-  head: () => ({ meta: [{ title: "New Article — Ted's Lab" }] }),
+  head: () => ({ meta: [{ title: "Write & Publish Article — Ted's Lab" }] }),
   component: () => (
     <AdminPage
-      title="New article"
-      description="Create a new Ted's Lab article, build its structured content, preview it live, and publish or save it as a draft."
+      title="Write & publish article"
+      description="Write a structured Ted's Lab article, preview the reader experience, save a draft, or publish it when ready."
     >
       <div className="mb-4 flex flex-wrap items-center gap-2 text-sm">
         <Link to="/admin/articles" className="text-primary hover:underline">Manage articles</Link>
         <span className="text-muted-foreground">/</span>
-        <span className="text-muted-foreground">Create article</span>
+        <span className="text-muted-foreground">Write & publish</span>
       </div>
       <ArticleCreator />
     </AdminPage>
