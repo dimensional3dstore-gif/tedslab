@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Clock3, Eye, PenLine, Save, Send } from "lucide-react";
-import { MediaUpload } from "@/components/admin/MediaUpload";
+import { ImageUpload } from "@/components/admin/ImageUpload";
 
 export function BlogPostCreator({ existing }: { existing?: BlogPost }) {
   const navigate = useNavigate();
@@ -109,7 +109,7 @@ export function BlogPostCreator({ existing }: { existing?: BlogPost }) {
 
             <label className="block space-y-1 text-xs text-muted-foreground">
               Cover image
-              <MediaUpload value={cover} onChange={setCover} pathPrefix="blogger" />
+              <ImageUpload value={cover} onChange={setCover} pathPrefix="blogger" />
               <Input value={cover} onChange={(event) => setCover(event.target.value)} placeholder="Or paste an image URL…" />
             </label>
 
