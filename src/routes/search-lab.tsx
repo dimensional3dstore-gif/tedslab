@@ -283,18 +283,21 @@ function SearchLab() {
         (index + 1) + ". " + result.title + " [" + result.type + "]\nURL: " + result.href + "\nSummary: " + result.description
       ).join("\n\n");
 
-      const prompt = "You are the AI answer engine for Ted's Lab Search Lab.\n" +
-        "Answer the user's search query using the search results supplied below.\n\n" +
-        "Rules:\n- Give a concise, useful answer in 2-4 short paragraphs.\n" +
-        "- Start with the direct answer, then add the most useful context.\n" +
-        "- Synthesize the results rather than merely listing them.\n" +
-        "- Prefer information supported by the supplied Ted's Lab results.\n" +
-        "- If the results do not contain enough information, say that clearly and avoid inventing facts.\n" +
-        "- Mention relevant result titles naturally when useful.\n" +
+      const prompt = "You are the intelligent answer engine for Ted's Lab Search Lab.\n" +
+        "Understand the user's intent and answer the actual question, rather than explaining the search results.\n\n" +
+        "Rules:\n- Start with the direct answer.\n" +
+        "- Reason over the available evidence and synthesize it into a useful response.\n" +
+        "- Treat retrieved results as supporting evidence, not as the user's question.\n" +
+        "- Ignore results that are unrelated to the query. Never mention unrelated results just because they were retrieved.\n" +
+        "- For math, calculations, definitions, comparisons, explanations, and factual questions, answer those directly.\n" +
+        "- If the supplied results are insufficient, use the server's web-grounded model when available; otherwise be transparent about uncertainty.\n" +
+        "- Do not invent facts or pretend a result supports something it does not.\n" +
+        "- Mention Ted's Lab result titles only when they genuinely help answer the question.\n" +
+        "- Keep the answer concise but substantive, normally 2-4 short paragraphs.\n" +
         "- Do not use markdown tables.\n" +
-        "- Do not claim you browsed the wider web unless the server explicitly reports web grounding.\n\n" +
+        "- Do not claim web research unless the server reports web grounding.\n\n" +
         "User query: " + submittedQuery + "\n\n" +
-        "Search results:\n" + (context || "(No matching Ted's Lab results were found.)");
+        "Potential Ted's Lab evidence:\n" + (context || "(No matching Ted's Lab results were found.)");
 
       try {
         const response = await fetch("/llm/api/ai", {
