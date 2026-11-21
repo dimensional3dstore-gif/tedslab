@@ -164,6 +164,7 @@ export function Sidebar({
             <li><NavLink label="Home" Icon={LucideIcons.Home} to="/" exact collapsed={collapsed} /></li>
             <li><NavLink label="Study Lab" Icon={LucideIcons.GraduationCap} to="/study" collapsed={collapsed} /></li>
             <li><NavLink label="Search Lab" Icon={LucideIcons.Search} to="/search-lab" collapsed={collapsed} featured /></li>
+            <li><NavLink label="Blogger" Icon={LucideIcons.PenLine} to="/blogger" collapsed={collapsed} featured /></li>
           </ul>
 
           {!collapsed && (
