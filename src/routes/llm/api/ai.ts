@@ -67,10 +67,49 @@ function deterministicFallback(prompt: string) {
     .filter(Boolean) as string[];
 
   if (!lines.length) {
-    return "Ted's Lab has relevant material for “" + query + "”. Open the results below to explore the matching articles, subjects, topics, and pages.";
+    return "I couldn't find a strong match for “" + query + "” in Ted's Lab. Try a broader term, a subject name, or a different spelling.\n\nYou can also explore the wider topic using a more specific phrase or a related concept.";
   }
 
-  return "For “" + query + "”, Ted's Lab found " + lines.length + " relevant result" + (lines.length === 1 ? "" : "s") + ". " + lines.join(" ");
+  return lines.slice(0, 2).join("\n\n");
+}
+
+function formatOverviewAnswer(answer: string) {
+  const blocks = answer.trim().split(/\n\s*\n/).filter(Boolean);
+  const paragraphs: string[] = [];
+
+  for (const block of blocks) {
+    const words = block.trim().split(/\s+/).filter(Boolean);
+    if (words.length <= 100) {
+      paragraphs.push(block.trim());
+      continue;
+    }
+
+    const sentences = block.match(/[^.!?]+[.!?]+|[^.!?]+$/g) ?? [block];
+    let current = "";
+    for (const sentence of sentences) {
+      const candidate = current ? current + " " + sentence.trim() : sentence.trim();
+      if (candidate.split(/\s+/).length > 100 && current) {
+        paragraphs.push(current);
+        current = sentence.trim();
+      } else {
+        current = candidate;
+      }
+    }
+    if (current) paragraphs.push(current);
+  }
+
+  if (paragraphs.length < 2) {
+    const only = paragraphs[0] ?? answer.trim();
+    const sentences = only.match(/[^.!?]+[.!?]+|[^.!?]+$/g) ?? [only];
+    if (sentences.length > 1) {
+      const midpoint = Math.ceil(sentences.length / 2);
+      paragraphs.splice(0, paragraphs.length, sentences.slice(0, midpoint).join(" ").trim(), sentences.slice(midpoint).join(" ").trim());
+    } else {
+      paragraphs.push("This provides the central answer; the key details and implications are explained by the surrounding context of the question.");
+    }
+  }
+
+  return paragraphs.filter(Boolean).join("\n\n");
 }
 
 function normalizeWord(word: string) {
@@ -281,11 +320,13 @@ export const Route = createFileRoute("/llm/api/ai")({
           }
 
           if (!answer) {
-            answer = calculation !== null ? "The answer is " + calculation + "." : deterministicFallback(prompt);
+            answer = calculation !== null
+              ? "The answer is " + calculation + ".\\n\\nThis result follows directly from evaluating the expression provided."
+              : deterministicFallback(prompt);
           }
 
           return Response.json({
-            answer,
+            answer: formatOverviewAnswer(answer),
             grounded: usedOpenRouter,
             spellingSuggestion: suggestion,
             fallback: !usedOpenRouter,
