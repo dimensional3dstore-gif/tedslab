@@ -23,6 +23,7 @@ export type Subject = {
   image_key: string | null;
   image_url: string | null;
   sort: number | null;
+  published?: boolean | null;
 };
 
 export type SectionRow = {
@@ -51,6 +52,7 @@ export type TopicRow = {
   body: string | null;
   image_url: string | null;
   sort: number | null;
+  published?: boolean | null;
 };
 
 export type ArticleRow = {
@@ -386,7 +388,6 @@ export type PageRow = {
   status?: "draft" | "review" | "published" | null;
   show_in_nav: boolean | null;
   sort: number | null;
-  published?: boolean | null;
 };
 
 export type NavLinkRow = {
@@ -630,6 +631,8 @@ export const articleByIdQueryOptions = (id: string) =>
           .from("articles")
           .select("*")
           .eq("id", id)
+          .eq("published", true)
+          .eq("status", "published")
           .maybeSingle();
         if (!error && data) {
           const remote = data as ArticleRow;
