@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ArticleTemplate } from "@/components/biopedia/ArticleTemplate";
 import { websiteFallbackArticles, useArticles } from "@/lib/content";
+import { QUANTUMPEDIA_ARTICLES } from "@/data/quantumpedia";
 
 export const Route = createFileRoute("/articles/$slug")({
   head: ({ params }) => ({
@@ -16,18 +17,25 @@ function ArticleDetailPage() {
   const { slug } = Route.useParams();
   const { data: articles = [], isLoading, isFetching } = useArticles();
 
-  const bundledArticle = websiteFallbackArticles.find((a) => a.slug === slug);
+  const bundledArticle =
+    websiteFallbackArticles.find((a) => a.slug === slug) ??
+    QUANTUMPEDIA_ARTICLES.find((a) => a.slug === slug);
   const remoteArticle =
     (articles.length > 0 ? articles : websiteFallbackArticles).find(
       (a) => a.slug === slug,
     );
   let article = remoteArticle ?? bundledArticle;
-  if (bundledArticle?.slug.startsWith("quantumpedia-")) {
-    try {
-      const remoteVersion = remoteArticle ? JSON.parse(remoteArticle.body ?? "{}")?.version ?? 0 : 0;
-      if (remoteVersion < 2) article = bundledArticle;
-    } catch {
-      article = bundledArticle;
+  if (slug.startsWith("quantumpedia-")) {
+    const quantumArticle = QUANTUMPEDIA_ARTICLES.find((a) => a.slug === slug);
+    if (quantumArticle) {
+      try {
+        const remoteVersion = remoteArticle
+          ? JSON.parse(remoteArticle.body ?? "{}")?.version ?? 0
+          : 0;
+        article = remoteVersion >= 2 ? remoteArticle : quantumArticle;
+      } catch {
+        article = quantumArticle;
+      }
     }
   }
   if (isLoading || (isFetching && !article)) {
@@ -57,5 +65,17 @@ function ArticleDetailPage() {
     );
   }
 
-  return <ArticleTemplate article={article} related={articles} />;
+  const related =
+    article.subject_slug === "quantum"
+      ? [
+          ...QUANTUMPEDIA_ARTICLES,
+          ...articles.filter((item) => item.subject_slug === "quantum"),
+        ].filter(
+          (item, index, all) =>
+            item.slug !== article.slug &&
+            all.findIndex((candidate) => candidate.slug === item.slug) === index,
+        )
+      : articles;
+
+  return <ArticleTemplate article={article} related={related} />;
 }
