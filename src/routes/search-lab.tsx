@@ -80,6 +80,7 @@ function SearchLab() {
   const [aiError, setAiError] = useState(false);
   const [aiGrounded, setAiGrounded] = useState(false);
   const [spellingSuggestion, setSpellingSuggestion] = useState<string | null>(null);
+  const [calculatorValue, setCalculatorValue] = useState("0");
 
   const contentLoading =
     articlesLoading || subjectsLoading || topicsLoading || pagesLoading;
@@ -334,6 +335,43 @@ function SearchLab() {
     };
   }, [submittedQuery, results, contentLoading]);
 
+  const isMathQuestion =
+    /\b(what is|calculate|compute|solve|evaluate|equals|how much is)\b/i.test(submittedQuery) &&
+    /\d/.test(submittedQuery);
+
+  const calculatorButtons = [
+    ["7", "8", "9", "÷"],
+    ["4", "5", "6", "×"],
+    ["1", "2", "3", "−"],
+    ["0", ".", "=", "+"],
+    ["C", "(", ")", "⌫"],
+  ];
+
+  const pressCalculator = (button: string) => {
+    if (button === "C") {
+      setCalculatorValue("0");
+      return;
+    }
+    if (button === "⌫") {
+      setCalculatorValue((value) => value.length > 1 ? value.slice(0, -1) : "0");
+      return;
+    }
+    if (button === "=") {
+      try {
+        const expression = calculatorValue.replace(/×/g, "*").replace(/÷/g, "/").replace(/−/g, "-");
+        if (!/^[0-9()+*/.\- ]+$/.test(expression)) return;
+        const result = Function("return (" + expression + ")")();
+        if (typeof result === "number" && Number.isFinite(result)) {
+          setCalculatorValue(String(Number(result.toFixed(10))));
+        }
+      } catch {
+        setCalculatorValue("Error");
+      }
+      return;
+    }
+    setCalculatorValue((value) => value === "0" || value === "Error" ? button : value + button);
+  };
+
   const submit = (event: FormEvent) => {
     event.preventDefault();
     const value = query.trim();
@@ -454,20 +492,21 @@ function SearchLab() {
               </a>
             </div>
 
-            <section className="mt-6 max-w-3xl">
-              {spellingSuggestion && spellingSuggestion.toLowerCase() !== submittedQuery.trim().toLowerCase() && (
-                <button
-                  type="button"
-                  onClick={() => navigate({ to: "/search-lab", search: { q: spellingSuggestion } })}
-                  className="mb-3 flex w-full items-center gap-2 rounded-xl border border-border bg-card px-4 py-3 text-left text-sm hover:border-primary/40"
-                >
-                  <Search className="size-4 text-primary" />
-                  <span>
-                    Did you mean <strong className="text-primary">{spellingSuggestion}</strong>?
-                  </span>
-                </button>
-              )}
-              <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
+            <section className={isMathQuestion ? "mt-6 grid max-w-5xl gap-5 lg:grid-cols-[minmax(0,1fr)_300px]" : "mt-6 max-w-3xl"}>
+              <div>
+                {spellingSuggestion && spellingSuggestion.toLowerCase() !== submittedQuery.trim().toLowerCase() && (
+                  <button
+                    type="button"
+                    onClick={() => navigate({ to: "/search-lab", search: { q: spellingSuggestion } })}
+                    className="mb-3 flex w-full items-center gap-2 rounded-xl border border-border bg-card px-4 py-3 text-left text-sm hover:border-primary/40"
+                  >
+                    <Search className="size-4 text-primary" />
+                    <span>
+                      Did you mean <strong className="text-primary">{spellingSuggestion}</strong>?
+                    </span>
+                  </button>
+                )}
+                <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
                 <div className="flex items-center gap-2 text-sm font-semibold">
                   <Sparkles className="size-4 text-primary" />
                   <span>AI Overview</span>
@@ -494,7 +533,31 @@ function SearchLab() {
                     AI Overview could not reach OpenRouter right now. Search results are still available below.
                   </p>
                 ) : null}
+                </div>
               </div>
+              {isMathQuestion && (
+                <aside className="rounded-2xl border border-border bg-card p-4 shadow-sm lg:sticky lg:top-6 lg:h-fit">
+                  <div className="mb-3 flex items-center gap-2 text-sm font-semibold">
+                    <span className="grid size-7 place-items-center rounded-lg bg-primary/10 text-primary">±</span>
+                    Calculator
+                  </div>
+                  <div className="mb-3 rounded-xl bg-secondary px-3 py-4 text-right font-mono text-2xl tabular-nums">
+                    {calculatorValue}
+                  </div>
+                  <div className="grid grid-cols-4 gap-2">
+                    {calculatorButtons.flat().map((button) => (
+                      <button
+                        key={button}
+                        type="button"
+                        onClick={() => pressCalculator(button)}
+                        className="h-11 rounded-xl border border-border bg-background text-sm font-medium hover:border-primary/40 hover:bg-secondary"
+                      >
+                        {button}
+                      </button>
+                    ))}
+                  </div>
+                </aside>
+              )}
             </section>
 
             <div className="mt-8 max-w-3xl">
