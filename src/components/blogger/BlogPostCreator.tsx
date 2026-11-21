@@ -4,7 +4,7 @@ import { useSaveBlogPost, type BlogPost } from "@/lib/blogger";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Clock3, Eye, PenLine } from "lucide-react";
+import { Clock3, Eye, PenLine, Save, Send } from "lucide-react";
 
 export function BlogPostCreator({ existing }: { existing?: BlogPost }) {
   const navigate = useNavigate();
@@ -15,6 +15,7 @@ export function BlogPostCreator({ existing }: { existing?: BlogPost }) {
   const [cover, setCover] = useState(existing?.cover_image_url ?? "");
   const [tags, setTags] = useState(existing?.tags.join(", ") ?? "");
   const [error, setError] = useState("");
+  const [savedStatus, setSavedStatus] = useState(existing?.status ?? "draft");
 
   const preview = useMemo(
     () => ({
@@ -29,6 +30,7 @@ export function BlogPostCreator({ existing }: { existing?: BlogPost }) {
 
   const submit = async (status: "draft" | "published") => {
     setError("");
+    setSavedStatus(status);
     if (!title.trim()) {
       setError("Add a title before saving.");
       return;
@@ -67,7 +69,7 @@ export function BlogPostCreator({ existing }: { existing?: BlogPost }) {
           </p>
         </div>
         <div className="rounded-lg border border-border bg-background/70 px-3 py-2 text-xs text-muted-foreground">
-          <span className="font-medium text-foreground">Status:</span> {existing?.status === "published" ? "Published" : "Draft"}
+          <span className="font-medium text-foreground">Status:</span> {savedStatus === "published" ? "Published" : "Draft"}
         </div>
       </div>
 
@@ -112,10 +114,10 @@ export function BlogPostCreator({ existing }: { existing?: BlogPost }) {
             {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
 
             <div className="flex flex-wrap gap-2 border-t border-border pt-4">
-              <Button disabled={save.isPending || !title.trim()} onClick={() => void submit("draft")} variant="outline">
+              <Button disabled={save.isPending || !title.trim()} onClick={() => void submit("draft")} variant="outline"><Save className="mr-2 size-4" />
                 {save.isPending ? "Saving…" : "Save draft"}
               </Button>
-              <Button disabled={save.isPending || !title.trim() || !body.trim()} onClick={() => void submit("published")}>
+              <Button disabled={save.isPending || !title.trim() || !body.trim()} onClick={() => void submit("published")}><Send className="mr-2 size-4" />
                 {save.isPending ? "Publishing…" : "Publish post"}
               </Button>
               <Button type="button" variant="ghost" onClick={() => void navigate({ to: "/blogger" })}>
