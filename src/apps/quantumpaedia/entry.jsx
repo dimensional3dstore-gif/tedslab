@@ -1,0 +1,1 @@
+import React from "react"; import { createRoot } from "react-dom/client"; import App from "./App"; import "./styles.css"; export default function QuantumpaediaApp(){return <App/>}
