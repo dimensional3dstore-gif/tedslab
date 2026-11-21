@@ -211,40 +211,35 @@ function getOpenRouterApiKey() {
   return undefined;
 }
 
-async function askOpenRouter(question: string): Promise<string | null> {
+async function askOpenRouter(
+  question: string,
+  systemPrompt = "You are a helpful study tutor for Ted's Lab. Give accurate, clear, useful answers. Answer the user's actual question first, then explain the reasoning or important context. Do not invent facts.",
+): Promise<string | null> {
   const apiKey = getOpenRouterApiKey();
   if (!apiKey) return null;
 
   try {
-    const response = await fetch(
-      "https://openrouter.ai/api/v1/chat/completions",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
-          "HTTP-Referer": "https://study-hub.local",
-          "X-Title": "Study Hub AI",
-        },
-        body: JSON.stringify({
-          model: "openai/gpt-4o-mini",
-          messages: [
-            {
-              role: "system",
-              content:
-                "You are a helpful study tutor for a biology and learning site. Give clear, concise, educational answers and keep them practical and student-friendly.",
-            },
-            { role: "user", content: question },
-          ],
-          temperature: 0.7,
-          max_tokens: 500,
-        }),
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+        "HTTP-Referer": "https://tedslab.app",
+        "X-Title": "Ted's Lab",
       },
-    );
+      body: JSON.stringify({
+        model: "openai/gpt-4o-mini",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: question },
+        ],
+        temperature: 0.45,
+        max_tokens: 900,
+      }),
+    });
 
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error("OpenRouter request failed:", response.status, errorText);
+      console.error("OpenRouter request failed:", response.status);
       return null;
     }
 
@@ -285,4 +280,38 @@ export async function buildAiResponse(question: string) {
 
   const directAnswer = await askOpenRouter(trimmed);
   return directAnswer ?? buildOfflineAiResponse(trimmed);
+}
+
+export async function buildSearchAiResponse(
+  query: string,
+  evidence: Array<{ title: string; type: string; href: string; description: string; body?: string }>,
+) {
+  const trimmed = query.trim();
+  if (!trimmed) return null;
+
+  const evidenceText = evidence
+    .slice(0, 8)
+    .map((item, index) => {
+      const body = item.body ? item.body.slice(0, 900) : "";
+      return `SOURCE ${index + 1}
+Title: ${item.title}
+Type: ${item.type}
+Path: ${item.href}
+Summary: ${item.description}
+Content excerpt: ${body}`;
+    })
+    .join("\n\n");
+
+  const prompt = `User search query:
+${trimmed}
+
+Retrieved Ted's Lab evidence:
+${evidenceText || "(No relevant Ted's Lab evidence was retrieved.)"}
+
+Answer the user's query as a high-quality search answer. The query is the user's question, not a request to summarize the retrieved sources. Use the evidence to ground claims when it is relevant, but do not force unrelated sources into the answer.`;
+
+  return askOpenRouter(
+    prompt,
+    "You are Ted's Lab Search Lab's answer engine. Answer the user's actual question directly and intelligently. Use retrieved Ted's Lab content as evidence, not as the question itself. Ignore irrelevant sources. Do not mention source counts or say that you are merely summarizing results. For simple factual or mathematical questions, give the answer immediately and explain it briefly. For conceptual questions, explain the concept clearly with useful context. If the evidence is insufficient, say what is uncertain rather than inventing facts. Normally use 2-4 concise paragraphs, with bullets only when they improve clarity. Do not use markdown tables.",
+  );
 }
