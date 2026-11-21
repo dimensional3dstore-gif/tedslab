@@ -37,19 +37,13 @@ export const Route = createFileRoute("/llm/api/ai")({
             },
             signal: controller.signal,
             body: JSON.stringify({
-              model: process.env.OPENROUTER_MODEL ?? "openai/gpt-5.2",
-              tools: [
+              model: process.env.OPENROUTER_MODEL ?? "openai/gpt-5.2:online",
+              plugins: [
                 {
-                  type: "openrouter:web_search",
-                  parameters: {
-                    engine: "auto",
-                    max_results: 6,
-                    search_context_size: "high",
-                  },
-                },
-                {
-                  type: "openrouter:web_fetch",
-                  parameters: { engine: "openrouter", max_content_tokens: 20000 },
+                  id: "web",
+                  max_results: 6,
+                  search_prompt:
+                    "Use these web results as supporting evidence. Prefer primary and authoritative sources. Cite sources with markdown links.",
                 },
               ],
               messages: [
@@ -80,7 +74,7 @@ export const Route = createFileRoute("/llm/api/ai")({
             return Response.json({ error: "OpenRouter returned an empty response." }, { status: 502 });
           }
 
-          return Response.json({ answer });
+          return Response.json({ answer, grounded: true });
         } catch (error) {
           console.error("Search Lab AI error:", error);
           return Response.json({ error: "Unable to generate an AI answer." }, { status: 500 });
