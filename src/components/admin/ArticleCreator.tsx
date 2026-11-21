@@ -119,7 +119,13 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
     }
     try {
       const saved = await upsertCustomArticle(row);
-      await queryClient.invalidateQueries({ queryKey: ["articles"] });
+      // Publishing is a database content update, not a site deployment. Refresh all
+      // article caches so the admin list and public feed pick up the saved row.
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["articles"] }),
+        queryClient.invalidateQueries({ queryKey: ["admin", "articles"] }),
+        queryClient.invalidateQueries({ queryKey: ["article"] }),
+      ]);
       await queryClient.invalidateQueries({ queryKey: ["article", saved.slug] });
       await queryClient.invalidateQueries({ queryKey: ["article", "id", saved.id] });
       await navigate({ to: "/admin/articles" });
@@ -136,7 +142,7 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">Ted's Lab Publishing Studio</p>
           <h2 className="mt-1 font-display text-2xl font-semibold text-foreground">{existing ? "Edit scientific article" : "Create scientific article"}</h2>
-          <p className="mt-1 max-w-2xl text-sm text-muted-foreground">Build a structured, publication-ready article, verify the reader view, then save it as a draft or publish it as expert reviewed.</p>
+          <p className="mt-1 max-w-2xl text-sm text-muted-foreground">Build a structured, publication-ready article, verify the reader view, then save it as a draft or publish it directly to Supabase. Published articles become available on the live site without a Vercel deployment.</p>
         </div>
         <div className="rounded-lg border border-border bg-background/70 px-3 py-2 text-xs text-muted-foreground">
           <span className="font-medium text-foreground">Status:</span> {existing?.published ? "Published" : "Draft"}
@@ -288,7 +294,7 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
         </label>
         <label className="flex items-center gap-2 rounded-md border border-border bg-background/60 px-3 py-2 text-xs text-foreground">
           <input type="checkbox" checked={publishToSite} onChange={(e) => setPublishToSite(e.target.checked)} />
-          Publish to site immediately
+          Publish to live site immediately (no Vercel deployment)
         </label>
         <label className="block space-y-1 text-xs text-muted-foreground">
           Tags (comma separated)
@@ -330,7 +336,7 @@ export function ArticleCreator({ existing }: { existing?: ArticleRow }) {
             {saving ? "Saving…" : "Save draft"}
           </Button>
           <Button type="submit" disabled={saving || Boolean(sectionEditorError) || !subjects.some((item) => item.slug === subject)}>
-            {saving ? "Publishing…" : publishToSite ? "✓ Publish to site" : "Save as draft"}
+            {saving ? "Publishing…" : publishToSite ? "✓ Publish live (no deploy)" : "Save as draft"}
           </Button>
           <Button
             type="button"
