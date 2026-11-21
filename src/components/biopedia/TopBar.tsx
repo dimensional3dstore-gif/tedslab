@@ -1,7 +1,8 @@
 import {
   Bookmark, Download, History, Menu, Search, Sun, Moon, User, ArrowRight,
 } from "lucide-react";
-import { Link, useNavigate, useRouterState } from "@tanstack/react-router";\nimport * as React from "react";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import * as React from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { getAquariusDownloadUrl } from "@/lib/chronos-os-download";
 
