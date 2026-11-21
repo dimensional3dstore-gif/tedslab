@@ -37,12 +37,26 @@ export const Route = createFileRoute("/llm/api/ai")({
             },
             signal: controller.signal,
             body: JSON.stringify({
-              model: process.env.OPENROUTER_MODEL ?? "openrouter/auto",
+              model: process.env.OPENROUTER_MODEL ?? "openai/gpt-5.2",
+              tools: [
+                {
+                  type: "openrouter:web_search",
+                  parameters: {
+                    engine: "auto",
+                    max_results: 6,
+                    search_context_size: "high",
+                  },
+                },
+                {
+                  type: "openrouter:web_fetch",
+                  parameters: { engine: "openrouter", max_content_tokens: 20000 },
+                },
+              ],
               messages: [
                 {
                   role: "system",
                   content:
-                    "You are Ted's Lab's search answer engine. Be accurate, concise, and grounded in the supplied search context. Never invent sources or claim to have browsed the web unless the supplied context says so.",
+                    "You are Ted's Lab AI Overview engine. Synthesize the supplied Ted's Lab results with live web research when useful. Give a direct answer first, then the most useful context. Prefer primary, authoritative, recent sources. Never invent facts or sources. When web sources are used, cite them with markdown links in the answer. Make clear when information comes from Ted's Lab versus the wider web. Keep the answer concise (2-4 short paragraphs) and useful for a learner.",
                 },
                 { role: "user", content: prompt },
               ],
