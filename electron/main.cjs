@@ -56,7 +56,7 @@ function resolveAquariusAddress(address) {
   if (value.startsWith("apps://")) {
     const route =
       internalRoutes[value] ??
-      "/" + value.slice("apps://".length).replace(/^\/+/, "");
+      "/apps/" + encodeURIComponent(value.slice("apps://".length).replace(/^\/+/, ""));
     return new URL(route, appUrl).href;
   }
 
