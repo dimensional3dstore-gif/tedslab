@@ -57,19 +57,19 @@ function resolveTedUrl(rawValue: string, isAdmin: boolean): string | null {
       case "tedslab":
         return target ? `/${target}` : "/";
       case "articles":
-        return target ? `/articles/${target}` : "/articles";
+        return target ? `/articles/${encodeURIComponent(target)}` : "/articles";
       case "apps":
-        return target ? `/apps/${target}` : "/apps";
+        return target ? `/apps/${encodeURIComponent(target)}` : "/apps";
       case "tools":
         return target ? `/search-lab?q=${encoded}` : "/search-lab";
       case "blog":
-        return target ? `/blogger?q=${encoded}` : "/blogger";
+        return target ? `/blogger/${encodeURIComponent(target)}` : "/blogger";
       case "posts":
-        return target ? `/blogger?q=${encoded}&type=post` : "/blogger";
+        return target ? `/blogger/${encodeURIComponent(target)}` : "/blogger";
       case "help":
-        return target ? `/search-lab?q=${encoded}&scope=help` : "/search-lab";
+        return target ? `/help-center?q=${encoded}` : "/help-center";
       case "category":
-        return target ? `/search-lab?q=${encoded}&scope=category` : "/search-lab";
+        return target ? `/${encodeURIComponent(target)}` : "/categories";
       case "admin":
         return target ? `/admin/${target}` : "/admin";
       default:
