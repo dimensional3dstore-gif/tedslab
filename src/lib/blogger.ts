@@ -40,8 +40,6 @@ export function usePublishedBlogPosts() {
       const totals = new Map<string, number>();
       for (const vote of votes ?? []) totals.set(vote.post_id, (totals.get(vote.post_id) ?? 0) + vote.value);
       return posts.map((post) => ({ ...post, vote_score: totals.get(post.id) ?? 0 })) as (BlogPost & { vote_score: number })[];
-      if (error) throw error;
-      return (data ?? []) as (BlogPost & { vote_score?: number })[];
     },
   });
 }
