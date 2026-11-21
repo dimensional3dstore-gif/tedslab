@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Clock3, Eye, PenLine, Save, Send } from "lucide-react";
+import { MediaUpload } from "@/components/admin/MediaUpload";
 
 export function BlogPostCreator({ existing }: { existing?: BlogPost }) {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ export function BlogPostCreator({ existing }: { existing?: BlogPost }) {
   const [tags, setTags] = useState(existing?.tags.join(", ") ?? "");
   const [error, setError] = useState("");
   const [savedStatus, setSavedStatus] = useState(existing?.status ?? "draft");
+  const [publishToSite, setPublishToSite] = useState(existing?.status === "published" || !existing);
 
   const preview = useMemo(
     () => ({
@@ -106,8 +108,9 @@ export function BlogPostCreator({ existing }: { existing?: BlogPost }) {
             </label>
 
             <label className="block space-y-1 text-xs text-muted-foreground">
-              Cover image URL
-              <Input value={cover} onChange={(event) => setCover(event.target.value)} placeholder="https://example.com/cover.jpg" />
+              Cover image
+              <MediaUpload value={cover} onChange={setCover} pathPrefix="blogger" />
+              <Input value={cover} onChange={(event) => setCover(event.target.value)} placeholder="Or paste an image URL…" />
             </label>
 
             <label className="block space-y-1 text-xs text-muted-foreground">
@@ -116,13 +119,17 @@ export function BlogPostCreator({ existing }: { existing?: BlogPost }) {
             </label>
 
             {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+            <label className="flex items-center gap-2 rounded-md border border-border bg-background/60 px-3 py-2 text-xs text-foreground">
+              <input type="checkbox" checked={publishToSite} onChange={(event) => setPublishToSite(event.target.checked)} />
+              Publish to site immediately
+            </label>
 
             <div className="flex flex-wrap gap-2 border-t border-border pt-4">
               <Button disabled={save.isPending || !title.trim()} onClick={() => void submit("draft")} variant="outline"><Save className="mr-2 size-4" />
                 {save.isPending ? "Saving…" : "Save draft"}
               </Button>
-              <Button disabled={save.isPending || !title.trim() || !body.trim()} onClick={() => void submit("published")}><Send className="mr-2 size-4" />
-                {save.isPending ? "Publishing…" : "Publish post"}
+              <Button disabled={save.isPending || !title.trim() || !body.trim()} onClick={() => void submit(publishToSite ? "published" : "draft")}><Send className="mr-2 size-4" />
+                {save.isPending ? "Saving…" : publishToSite ? "Publish post" : "Save draft"}
               </Button>
               <Button type="button" variant="ghost" onClick={() => void navigate({ to: "/blogger" })}>
                 Cancel
