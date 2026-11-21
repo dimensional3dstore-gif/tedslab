@@ -30,11 +30,11 @@ export function BlogPostCreator({ existing }: { existing?: BlogPost }) {
 
   const submit = async (status: "draft" | "published") => {
     setError("");
-    setSavedStatus(status);
     if (!title.trim()) {
       setError("Add a title before saving.");
       return;
     }
+    setSavedStatus(status);
     if (status === "published" && !body.trim()) {
       setError("Add some content before publishing.");
       return;
@@ -50,7 +50,11 @@ export function BlogPostCreator({ existing }: { existing?: BlogPost }) {
         tags: preview.tags,
         status,
       });
-      await navigate({ to: "/blogger/$slug", params: { slug: post.slug } });
+      if (status === "published") {
+        await navigate({ to: "/blogger/$slug", params: { slug: post.slug } });
+      } else {
+        await navigate({ to: "/blogger/mine" });
+      }
     } catch (saveError) {
       setError(saveError instanceof Error ? saveError.message : "Unable to save the post.");
     }
