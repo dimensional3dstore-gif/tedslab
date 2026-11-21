@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/biopedia/AppShell";
-import { useAddBlogPostComment, useBlogPost, useBlogPostComments, useVoteBlogPost } from "@/lib/blogger";
+import { useAddBlogPostComment, useBlogPost, useBlogPostComments, useVoteBlogPost, useBlogPostVoteSummary, useDeleteBlogPostComment } from "@/lib/blogger";
 import { ArrowLeft, Clock3, ArrowBigUp, ArrowBigDown, MessageSquare } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useState } from "react";
@@ -16,6 +16,8 @@ function BloggerPostPage() {
   const { data: comments = [] } = useBlogPostComments(post?.id ?? "");
   const { user } = useAuth();
   const vote = useVoteBlogPost();
+  const voteSummary = useBlogPostVoteSummary(post?.id ?? "");
+  const deleteComment = useDeleteBlogPostComment();
   const addComment = useAddBlogPostComment();
   const [comment, setComment] = useState("");
 
@@ -38,8 +40,9 @@ function BloggerPostPage() {
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2 text-sm font-semibold"><MessageSquare className="size-4 text-primary" />Discussion</div>
                 <div className="flex items-center gap-2">
-                  <button disabled={!user || vote.isPending} onClick={() => void vote.mutateAsync({ postId: post.id, value: 1 })} className="rounded-lg border border-border p-2 hover:border-primary/40 disabled:opacity-40" aria-label="Upvote"><ArrowBigUp className="size-5" /></button>
-                  <button disabled={!user || vote.isPending} onClick={() => void vote.mutateAsync({ postId: post.id, value: -1 })} className="rounded-lg border border-border p-2 hover:border-primary/40 disabled:opacity-40" aria-label="Downvote"><ArrowBigDown className="size-5" /></button>
+                  <button disabled={!user || vote.isPending} onClick={() => void vote.mutateAsync({ postId: post.id, value: 1 })} className={`rounded-lg border border-border p-2 disabled:opacity-40 ${voteSummary.data?.myVote === 1 ? "text-primary border-primary/50" : "hover:border-primary/40"}`} aria-label="Upvote"><ArrowBigUp className="size-5" /></button>
+                  <span className="min-w-6 text-center text-sm font-semibold tabular-nums">{voteSummary.data?.score ?? 0}</span>
+                  <button disabled={!user || vote.isPending} onClick={() => void vote.mutateAsync({ postId: post.id, value: -1 })} className={`rounded-lg border border-border p-2 disabled:opacity-40 ${voteSummary.data?.myVote === -1 ? "text-destructive border-destructive/50" : "hover:border-primary/40"}`} aria-label="Downvote"><ArrowBigDown className="size-5" /></button>
                 </div>
               </div>
 
@@ -60,7 +63,7 @@ function BloggerPostPage() {
               <div className="mt-5 space-y-3">
                 {comments.map((item) => (
                   <div key={item.id} className="rounded-xl border border-border bg-card p-4">
-                    <div className="text-[11px] text-muted-foreground">Community member · {new Date(item.created_at).toLocaleString()}</div>
+                    <div className="flex items-center justify-between gap-3"><div className="text-[11px] text-muted-foreground">Community member · {new Date(item.created_at).toLocaleString()}</div>{user?.id === item.author_id && <button type="button" disabled={deleteComment.isPending} onClick={() => void deleteComment.mutateAsync({ commentId: item.id, postId: post.id })} className="text-xs text-muted-foreground hover:text-destructive disabled:opacity-40">Delete</button>}</div>
                     <p className="mt-2 whitespace-pre-wrap text-sm leading-6">{item.body}</p>
                   </div>
                 ))}
