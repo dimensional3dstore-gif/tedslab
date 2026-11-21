@@ -33,7 +33,7 @@ function SlidesPage() {
                   <h2 className="mt-2 text-2xl font-bold">{slide.title}</h2>
                   {slide.subtitle && <p className="mt-2 text-base text-muted-foreground">{slide.subtitle}</p>}
                   {slide.body && <p className="mt-3 text-sm leading-6 text-muted-foreground">{slide.body}</p>}
-                  {slide.link_to && <Link to={slide.link_to as never} className="mt-4 inline-flex text-sm font-semibold text-primary hover:underline">Open slide →</Link>}
+                  {slide.link_to && <a href={slide.link_to} className="mt-4 inline-flex text-sm font-semibold text-primary hover:underline">Open slide →</a>}
                 </div>
               </article>
             ))}
