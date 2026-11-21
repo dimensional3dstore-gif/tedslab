@@ -10,6 +10,8 @@ const links = [
   ["Pages", "/admin/pages"],
   ["Sections", "/admin/sections"],
   ["Topics", "/admin/topics"],
+  ["Article submissions", "/admin/article-submissions"],
+  ["Blogger", "/blogger/mine"],
   ["Videos", "/admin/videos/new"],
   ["Quizzes", "/admin/quizzes/new"],
   ["Flashcards", "/admin/flashcards/new"],
