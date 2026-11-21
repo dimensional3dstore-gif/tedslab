@@ -96,7 +96,7 @@ function SearchLab() {
     const normalizedQuery = normalize(submittedQuery);
     if (!normalizedQuery) return [];
     const stopWords = new Set(["what","which","when","where","who","why","how","is","are","the","a","an","of","for","to","in","on","with","and","or","does","do","explain","about"]);
-    const terms = normalizedQuery.split(" ").filter((term) => term && !stopWords.has(term));
+    const terms = Array.from(new Set(normalizedQuery.split(" ").filter((term) => term && !stopWords.has(term))));
     if (!terms.length) return [];
     function hasTerm(text: string, term: string) {
       const words = new Set(normalize(text).split(" "));
@@ -158,7 +158,7 @@ function SearchLab() {
         "- If the supplied results are insufficient, use the server's web-grounded model when available; otherwise be transparent about uncertainty.\n" +
         "- Do not invent facts or pretend a result supports something it does not.\n" +
         "- Mention Ted's Lab result titles only when they genuinely help answer the question.\n" +
-        "- Keep the answer concise but substantive, normally 2-4 short paragraphs.\n" +
+        "- Write a useful, ChatGPT-quality answer with clear explanations, normally 3-6 concise paragraphs. Use Markdown headings and bullets when helpful.\n" +
         "- Do not use markdown tables.\n" +
         "- Do not claim web research unless the server reports web grounding.\n\n" +
         "User query: " + submittedQuery + "\n\n" +
@@ -377,7 +377,7 @@ function SearchLab() {
                 <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
                 <div className="flex items-center gap-2 text-sm font-semibold">
                   <Sparkles className="size-4 text-primary" />
-                  <span>AI Overview</span>
+                  <span>AI Overview</span><span className="text-xs font-normal text-muted-foreground">Ask anything</span>
                 </div>
                 {aiLoading ? (
                   <div className="mt-4 space-y-3" aria-label="Generating AI search result">
@@ -429,7 +429,7 @@ function SearchLab() {
             </section>
 
             <div className="mt-8 max-w-3xl">
-              <h2 className="mb-4 text-xl font-semibold">Web Results</h2>
+              <h2 className="mb-4 text-xl font-semibold">Relevant Ted's Lab Results</h2>
 
             {contentLoading ? (
               <div
