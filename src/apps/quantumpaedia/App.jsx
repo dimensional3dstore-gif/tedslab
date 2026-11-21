@@ -1,9 +1,9 @@
 import { Toaster } from "@/apps/quantumpaedia/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
-import { queryClientInstance } from '@/lib/query-client'
+import { queryClientInstance } from './lib/query-client'
 import { MemoryRouter as Router, Route, Routes } from "react-router-dom";
 import PageNotFound from './lib/PageNotFound';
-import { AuthProvider, useAuth } from '@/lib/AuthContext';
+import { AuthProvider, useAuth } from './lib/AuthContext';
 import UserNotRegisteredError from './components/UserNotRegisteredError';
 import ScrollToTop from './components/ScrollToTop';
 import Layout from './components/Layout';
