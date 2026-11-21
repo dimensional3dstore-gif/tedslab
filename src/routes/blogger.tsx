@@ -66,9 +66,9 @@ function BloggerPage() {
                   <article key={post.id} className="overflow-hidden rounded-xl border border-border bg-card transition hover:border-primary/30">
                     <div className="flex">
                       <div className="flex w-14 shrink-0 flex-col items-center bg-secondary/30 py-4">
-                        <button disabled={!user || vote.isPending} onClick={() => void vote.mutateAsync({ postId: post.id, value: 1 })} className="rounded-md p-1.5 text-muted-foreground hover:bg-background hover:text-primary disabled:opacity-40" aria-label="Upvote"><ArrowBigUp className="size-5" /></button>
+                        <button disabled={!user || vote.isPending} onClick={() => void vote.mutateAsync({ postId: post.id, value: 1 })} className={`rounded-md p-1.5 hover:bg-background disabled:opacity-40 ${post.my_vote === 1 ? "text-primary" : "text-muted-foreground hover:text-primary"}`} aria-label="Upvote"><ArrowBigUp className="size-5" /></button>
                         <span className="text-sm font-bold tabular-nums">{post.vote_score ?? 0}</span>
-                        <button disabled={!user || vote.isPending} onClick={() => void vote.mutateAsync({ postId: post.id, value: -1 })} className="rounded-md p-1.5 text-muted-foreground hover:bg-background hover:text-destructive disabled:opacity-40" aria-label="Downvote"><ArrowBigDown className="size-5" /></button>
+                        <button disabled={!user || vote.isPending} onClick={() => void vote.mutateAsync({ postId: post.id, value: -1 })} className={`rounded-md p-1.5 hover:bg-background disabled:opacity-40 ${post.my_vote === -1 ? "text-destructive" : "text-muted-foreground hover:text-destructive"}`} aria-label="Downvote"><ArrowBigDown className="size-5" /></button>
                       </div>
                       <div className="min-w-0 flex-1 p-4">
                         <div className="flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground">
