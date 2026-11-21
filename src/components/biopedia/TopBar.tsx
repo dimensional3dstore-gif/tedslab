@@ -59,6 +59,7 @@ function resolveTedUrl(rawValue: string, isAdmin: boolean): string | null {
       case "articles":
         return target ? `/articles/${encodeURIComponent(target)}` : "/articles";
       case "apps":
+        if (target.toLowerCase() === "quantumpaedia" || target.toLowerCase() === "quantumpedia") return "/quantumpedia";
         return target ? `/apps/${encodeURIComponent(target)}` : "/apps";
       case "tools":
         return target ? `/search-lab?q=${encoded}` : "/search-lab";
