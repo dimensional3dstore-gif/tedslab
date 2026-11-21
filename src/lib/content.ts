@@ -75,7 +75,6 @@ export type ArticleRow = {
   status?: "draft" | "review" | "published" | null;
   author_id?: string | null;
   sort: number | null;
-  published?: boolean | null;
 };
 
 export const fallbackArticles: ArticleRow[] = ARTICLES;
