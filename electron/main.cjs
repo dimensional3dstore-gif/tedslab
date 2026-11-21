@@ -10,6 +10,7 @@ if (!["https:", "http:"].includes(appUrl.protocol)) {
 }
 
 const internalRoutes = {
+  "tedslab://": "/",
   "apps://core": "/",
   "apps://knowledge-atlas": "/knowledge-atlas",
   "apps://quantumpedia": "/quantumpedia",
@@ -20,6 +21,13 @@ const internalRoutes = {
   "apps://notebooks": "/notebooks",
   "apps://flashcards": "/flashcards",
   "apps://help": "/help",
+  "articles://": "/articles/",
+  "tools://": "/search-lab?q=",
+  "blog://": "/blogger?q=",
+  "posts://": "/blogger?q=",
+  "help://": "/search-lab?q=",
+  "category://": "/search-lab?q=",
+  "admin://": "/admin/",
   "features://": "/features",
   "settings://": "/settings",
   "history://": "/history",
@@ -33,18 +41,16 @@ function resolveAquariusAddress(address) {
   }
   if (/^https?:\/\//i.test(value)) return value;
 
-  if (value.startsWith("articles://")) {
-    return new URL(
-      "/articles/" + encodeURIComponent(value.slice("articles://".length)),
-      appUrl,
-    ).href;
-  }
-
   if (value.startsWith("dict-articles://")) {
     return new URL(
       "/dictionary/" + encodeURIComponent(value.slice("dict-articles://".length)),
       appUrl,
     ).href;
+  }
+
+  if (value.startsWith("tedslab://")) {
+    const path = value.slice("tedslab://".length).replace(/^\/+/, "");
+    return new URL(path ? "/" + path : "/", appUrl).href;
   }
 
   if (value.startsWith("apps://")) {
@@ -55,7 +61,15 @@ function resolveAquariusAddress(address) {
   }
 
   for (const [scheme, route] of Object.entries(internalRoutes)) {
-    if (value.startsWith(scheme)) return new URL(route, appUrl).href;
+    if (value.startsWith(scheme)) {
+      const target = value.slice(scheme.length).replace(/^\/+/, "");
+      if (scheme === "articles://") return new URL("/articles/" + encodeURIComponent(target), appUrl).href;
+      if (scheme === "tools://" || scheme === "blog://" || scheme === "posts://" || scheme === "help://" || scheme === "category://") {
+        return new URL(route + encodeURIComponent(target), appUrl).href;
+      }
+      if (scheme === "admin://") return new URL(route + target, appUrl).href;
+      return new URL(route + target, appUrl).href;
+    }
   }
 
   if (/^[a-z0-9.-]+\.[a-z]{2,}\//i.test(value)) {
