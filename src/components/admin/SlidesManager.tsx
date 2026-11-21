@@ -85,10 +85,11 @@ export function SlidesManager() {
       updated_at: new Date().toISOString(),
     };
 
+    const newId = selected ?? crypto.randomUUID();
     const result = selected
       ? await supabase.from("hero_slides").update(payload).eq("id", selected)
       : await supabase.from("hero_slides").insert({
-          id: crypto.randomUUID(),
+          id: newId,
           ...payload,
         });
 
@@ -101,7 +102,10 @@ export function SlidesManager() {
 
     setMessage(selected ? "Slide saved." : "Slide created.");
     await refetch();
-    if (!selected && result.data?.[0]?.id) setSelected(result.data[0].id);
+    if (!selected) {
+      setSelected(newId);
+      setDraft({ ...draft, id: newId });
+    }
   };
 
   const remove = async () => {
