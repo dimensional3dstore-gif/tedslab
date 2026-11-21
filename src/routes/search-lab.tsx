@@ -98,16 +98,19 @@ function SearchLab() {
     const stopWords = new Set(["what","which","when","where","who","why","how","is","are","the","a","an","of","for","to","in","on","with","and","or","does","do","explain","about"]);
     const terms = normalizedQuery.split(" ").filter((term) => term && !stopWords.has(term));
     if (!terms.length) return [];
+    function hasTerm(text: string, term: string) {
+      const words = new Set(normalize(text).split(" "));
+      const alias = SEARCH_ALIASES[term]?.[0];
+      return words.has(term) || Boolean(alias && words.has(normalize(alias)));
+    }
     function matches(text: string) {
-      const value = normalize(text);
-      const words = new Set(value.split(" "));
-      return terms.filter((term) => words.has(term) || value.includes(normalize(SEARCH_ALIASES[term]?.[0] ?? "\u0000"))).length;
+      return terms.filter((term) => hasTerm(text, term)).length;
     }
     function makeResult(id: string, title: string, description: string, href: string, type: Result["type"], body: string): Result {
       const titleHits = matches(title);
       const summaryHits = matches(description);
       const bodyHits = matches(body.slice(0, 1800));
-      const matchedTerms = Math.min(terms.length, new Set(terms.filter((term) => [title, description, body.slice(0, 1800)].some((field) => normalize(field).split(" ").includes(term)))).size);
+      const matchedTerms = new Set(terms.filter((term) => [title, description, body.slice(0, 1800)].some((field) => hasTerm(field, term)))).size;
       const exactPhrase = normalize(title).includes(normalizedQuery) || normalize(description).includes(normalizedQuery);
       const score = titleHits * 20 + summaryHits * 8 + bodyHits * 2 + (exactPhrase ? 100 : 0);
       return { id, title, description, href, type, score, matchedTerms };
@@ -120,7 +123,7 @@ function SearchLab() {
     ];
     const requiredCoverage = terms.length <= 2 ? 1 : 0.75;
     return all.filter((result) => result.matchedTerms / terms.length >= requiredCoverage)
-      .filter((result) => normalize(result.title).includes(normalizedQuery) || normalize(result.description).includes(normalizedQuery) || terms.some((term) => normalize(result.title).split(" ").includes(term)))
+      .filter((result) => normalize(result.title).includes(normalizedQuery) || normalize(result.description).includes(normalizedQuery) || terms.some((term) => hasTerm(result.title, term)))
       .filter((result) => filter === "All" || result.type === filter)
       .sort((a, b) => b.score - a.score || b.matchedTerms - a.matchedTerms || a.title.localeCompare(b.title)).slice(0, 12);
   }, [articles, subjects, topics, pages, submittedQuery, filter]);
