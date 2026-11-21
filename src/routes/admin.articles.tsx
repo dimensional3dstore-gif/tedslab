@@ -27,7 +27,7 @@ function AdminArticlesPage() {
     <AdminPage title="Manage articles" description="Edit, preview, draft, publish and maintain every scientific article.">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div><p className="text-sm text-muted-foreground">{articles.length} articles · {articles.filter((item) => item.published).length} published · {articles.filter((item) => !item.published).length} drafts</p></div>
-        <Link to="/admin/articles/new" className="rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground">Create article</Link>
+        <Link to="/admin/articles/new" preload="intent" className="rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground">Create article</Link>
       </div>
       <div className="flex flex-col gap-3 sm:flex-row">
         <Input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search titles, slugs and summaries…" />
