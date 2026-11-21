@@ -15,9 +15,9 @@ type SearchResult = {
 function isMathQuery(query: string) {
   const normalized = query.toLowerCase().trim();
   return (
-    /\\b(what is|calculate|compute|solve|evaluate|equals|how much is)\\b/.test(normalized) &&
+    /\b(what is|calculate|compute|solve|evaluate|equals|how much is)\b/.test(normalized) &&
     /[0-9]/.test(normalized)
-  ) || /^\\s*[0-9().+\\-*/%^= ]+\\s*$/.test(normalized);
+  ) || /^\s*[0-9().+\-*/%^= ]+\s*$/.test(normalized);
 }
 
 function tryCalculate(query: string) {
@@ -27,7 +27,7 @@ function tryCalculate(query: string) {
     .replace(/what is|calculate|compute|solve|evaluate|equals|how much is/g, "")
     .replace(/x/g, "*")
     .replace(/÷/g, "/")
-    .replace(/[^0-9().+\\-*/%^ ]/g, "")
+    .replace(/[^0-9().+\-*/%^ ]/g, "")
     .trim();
 
   if (!expression || !/[0-9]/.test(expression)) return null;
