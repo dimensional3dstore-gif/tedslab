@@ -78,6 +78,7 @@ function SearchLab() {
   const [aiAnswer, setAiAnswer] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
   const [aiError, setAiError] = useState(false);
+  const [aiGrounded, setAiGrounded] = useState(false);
 
   const contentLoading =
     articlesLoading || subjectsLoading || topicsLoading || pagesLoading;
@@ -267,11 +268,13 @@ function SearchLab() {
       if (!submittedQuery.trim() || contentLoading || !results.length) {
         setAiAnswer("");
         setAiError(false);
+        setAiGrounded(false);
         return;
       }
 
       setAiLoading(true);
       setAiError(false);
+      setAiGrounded(false);
 
       const context = results.slice(0, 12).map((result, index) =>
         `${index + 1}. ${result.title} [${result.type}]
@@ -306,14 +309,16 @@ ${context}`;
 
         if (!response.ok) throw new Error("AI request failed");
 
-        const data = (await response.json()) as { answer?: string };
+        const data = (await response.json()) as { answer?: string; grounded?: boolean };
         if (!cancelled) {
           setAiAnswer(data.answer?.trim() ?? "");
+          setAiGrounded(Boolean(data.grounded));
           setAiError(!data.answer?.trim());
         }
       } catch {
         if (!cancelled) {
           setAiAnswer("");
+          setAiGrounded(false);
           setAiError(true);
         }
       } finally {
@@ -451,7 +456,7 @@ ${context}`;
               <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
                 <div className="flex items-center gap-2 text-sm font-semibold">
                   <Sparkles className="size-4 text-primary" />
-                  <span>AI Search</span>
+                  <span>AI Overview</span>
                 </div>
                 {aiLoading ? (
                   <div className="mt-4 space-y-3" aria-label="Generating AI search result">
@@ -460,19 +465,24 @@ ${context}`;
                     <div className="h-4 w-7/12 animate-pulse rounded bg-secondary" />
                   </div>
                 ) : aiAnswer ? (
-                  <p className="mt-3 whitespace-pre-line text-[15px] leading-7 text-foreground/90">
-                    {aiAnswer}
-                  </p>
+                  <div className="mt-3 text-[15px] leading-7 text-foreground/90">
+                    {renderAiAnswer(aiAnswer)}
+                  </div>
+                  {aiGrounded && (
+                    <p className="mt-4 text-xs text-muted-foreground">
+                      Grounded with live web research and Ted's Lab results.
+                    </p>
+                  )}
                 ) : aiError ? (
                   <p className="mt-3 text-sm text-muted-foreground">
-                    AI Search is temporarily unavailable. Search results are still available below.
+                    AI Overview is temporarily unavailable. Search results are still available below.
                   </p>
                 ) : null}
               </div>
             </section>
 
             <div className="mt-8 max-w-3xl">
-              <h2 className="mb-4 text-xl font-semibold">Web-style Results</h2>
+              <h2 className="mb-4 text-xl font-semibold">Web Results</h2>
 
             {contentLoading ? (
               <div
@@ -527,7 +537,7 @@ ${context}`;
             <div className="mt-8 flex items-center justify-center gap-2 text-xs text-muted-foreground">
               <Globe2 className="size-3.5" />
               <span>
-                Search results from Ted's Lab. Use Google for results from the wider web.
+                Results from Ted's Lab, with AI Overview grounded in live web research when available.
               </span>
             </div>
           </section>
@@ -539,4 +549,30 @@ ${context}`;
 
 function resultCountLabel(count: number) {
   return count === 1 ? "1 relevant result" : count + " relevant results";
+}
+
+
+function renderAiAnswer(answer: string) {
+  const parts = answer.split(/(\[[^\]]+\]\(https?:\/\/[^\s)]+\))/g);
+  return (
+    <>
+      {parts.map((part, index) => {
+        const match = part.match(/^\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)$/);
+        if (match) {
+          return (
+            <a
+              key={index}
+              href={match[2]}
+              target="_blank"
+              rel="noreferrer"
+              className="text-primary underline underline-offset-2 hover:opacity-80"
+            >
+              {match[1]}
+            </a>
+          );
+        }
+        return <span key={index}>{part}</span>;
+      })}
+    </>
+  );
 }
