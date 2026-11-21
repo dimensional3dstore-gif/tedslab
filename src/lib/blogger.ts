@@ -41,6 +41,7 @@ export function useBlogPost(slug: string) {
         .from("blog_posts")
         .select("*")
         .eq("slug", slug)
+        .eq("status", "published")
         .maybeSingle();
       if (error) throw error;
       return data as BlogPost | null;
@@ -105,7 +106,16 @@ export function useSaveBlogPost() {
     }) => {
       if (!user) throw new Error("Sign in to publish a blog post.");
       const baseSlug = slugify(input.title) || "untitled-post";
-      const slug = input.id ? baseSlug : baseSlug + "-" + Date.now().toString(36);
+      let slug = input.id ? baseSlug : baseSlug + "-" + Date.now().toString(36);
+      if (input.id) {
+        const { data: collision } = await supabase
+          .from("blog_posts")
+          .select("id")
+          .eq("slug", slug)
+          .neq("id", input.id)
+          .maybeSingle();
+        if (collision) slug = baseSlug + "-" + Date.now().toString(36);
+      }
       const payload = {
         author_id: user.id,
         slug,
