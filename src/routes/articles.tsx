@@ -43,7 +43,7 @@ function ArticlesPage() {
 
         return (
           <>
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"><PageHeader title="All Articles" description={description} /><div className="flex flex-wrap gap-2">{isAdmin ? <Link to="/admin/articles/new" className="rounded-md bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground">Create article</Link> : <Link to="/articles/new" className="rounded-md bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground">Submit an article</Link>}</div></div>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"><PageHeader title="All Articles" description={description} /><div className="flex flex-wrap gap-2">{isAdmin ? <Link to="/admin/articles/new" preload="intent" className="rounded-md bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground">Create article</Link> : <Link to="/articles/new" className="rounded-md bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground">Submit an article</Link>}</div></div>
             {isFetching && filtered.length === 0 && (
               <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" aria-label="Loading articles" aria-busy="true">
                 {Array.from({ length: 6 }, (_, index) => (
