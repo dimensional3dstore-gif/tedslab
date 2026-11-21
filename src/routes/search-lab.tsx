@@ -79,6 +79,7 @@ function SearchLab() {
   const [aiLoading, setAiLoading] = useState(false);
   const [aiError, setAiError] = useState(false);
   const [aiGrounded, setAiGrounded] = useState(false);
+  const [spellingSuggestion, setSpellingSuggestion] = useState<string | null>(null);
 
   const contentLoading =
     articlesLoading || subjectsLoading || topicsLoading || pagesLoading;
@@ -265,10 +266,11 @@ function SearchLab() {
     let cancelled = false;
 
     async function generateSearchAnswer() {
-      if (!submittedQuery.trim() || contentLoading || !results.length) {
+      if (!submittedQuery.trim() || contentLoading) {
         setAiAnswer("");
         setAiError(false);
         setAiGrounded(false);
+        setSpellingSuggestion(null);
         return;
       }
 
@@ -277,48 +279,48 @@ function SearchLab() {
       setAiGrounded(false);
 
       const context = results.slice(0, 12).map((result, index) =>
-        `${index + 1}. ${result.title} [${result.type}]
-URL: ${result.href}
-Summary: ${result.description}`
+        (index + 1) + ". " + result.title + " [" + result.type + "]\nURL: " + result.href + "\nSummary: " + result.description
       ).join("\n\n");
 
-      const prompt = `You are the AI answer engine for Ted's Lab Search Lab.
-Answer the user's search query using the search results supplied below and act as the AI search layer for Ted's Lab.
-
-Rules:
-- Give a concise, useful answer in 2-4 short paragraphs.
-- Start with the direct answer, then add the most useful context.
-- Synthesize the results rather than merely listing them.
-- Prefer information supported by the supplied results.
-- If the results do not contain enough information, say that clearly and avoid inventing facts.
-- Mention relevant result titles naturally when useful.
-- Do not use markdown tables.
-- Do not claim you browsed the wider web.
-
-User query: ${submittedQuery}
-
-Search results:
-${context}`;
+      const prompt = "You are the AI answer engine for Ted's Lab Search Lab.\n" +
+        "Answer the user's search query using the search results supplied below.\n\n" +
+        "Rules:\n- Give a concise, useful answer in 2-4 short paragraphs.\n" +
+        "- Start with the direct answer, then add the most useful context.\n" +
+        "- Synthesize the results rather than merely listing them.\n" +
+        "- Prefer information supported by the supplied Ted's Lab results.\n" +
+        "- If the results do not contain enough information, say that clearly and avoid inventing facts.\n" +
+        "- Mention relevant result titles naturally when useful.\n" +
+        "- Do not use markdown tables.\n" +
+        "- Do not claim you browsed the wider web unless the server explicitly reports web grounding.\n\n" +
+        "User query: " + submittedQuery + "\n\n" +
+        "Search results:\n" + (context || "(No matching Ted's Lab results were found.)");
 
       try {
         const response = await fetch("/llm/api/ai", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ prompt }),
+          body: JSON.stringify({ prompt, query: submittedQuery, results: results.slice(0, 12) }),
         });
 
-        if (!response.ok) throw new Error("AI request failed");
+        const data = (await response.json()) as {
+          answer?: string;
+          grounded?: boolean;
+          spellingSuggestion?: string | null;
+        };
 
-        const data = (await response.json()) as { answer?: string; grounded?: boolean };
+        if (!response.ok) throw new Error(data.answer || "AI request failed");
+
         if (!cancelled) {
           setAiAnswer(data.answer?.trim() ?? "");
           setAiGrounded(Boolean(data.grounded));
+          setSpellingSuggestion(data.spellingSuggestion?.trim() || null);
           setAiError(!data.answer?.trim());
         }
       } catch {
         if (!cancelled) {
           setAiAnswer("");
           setAiGrounded(false);
+          setSpellingSuggestion(null);
           setAiError(true);
         }
       } finally {
@@ -453,6 +455,18 @@ ${context}`;
             </div>
 
             <section className="mt-6 max-w-3xl">
+              {spellingSuggestion && spellingSuggestion.toLowerCase() !== submittedQuery.trim().toLowerCase() && (
+                <button
+                  type="button"
+                  onClick={() => navigate({ to: "/search-lab", search: { q: spellingSuggestion } })}
+                  className="mb-3 flex w-full items-center gap-2 rounded-xl border border-border bg-card px-4 py-3 text-left text-sm hover:border-primary/40"
+                >
+                  <Search className="size-4 text-primary" />
+                  <span>
+                    Did you mean <strong className="text-primary">{spellingSuggestion}</strong>?
+                  </span>
+                </button>
+              )}
               <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
                 <div className="flex items-center gap-2 text-sm font-semibold">
                   <Sparkles className="size-4 text-primary" />
@@ -477,7 +491,7 @@ ${context}`;
                   </>
                 ) : aiError ? (
                   <p className="mt-3 text-sm text-muted-foreground">
-                    AI Overview is temporarily unavailable. Search results are still available below.
+                    AI Overview could not reach OpenRouter right now. Search results are still available below.
                   </p>
                 ) : null}
               </div>
