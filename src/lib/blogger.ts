@@ -48,6 +48,25 @@ export function useBlogPost(slug: string) {
   });
 }
 
+export function useBlogPostById(id: string) {
+  const { user } = useAuth();
+  return useQuery({
+    queryKey: ["blog-post", "id", id, user?.id],
+    enabled: Boolean(id && user),
+    queryFn: async () => {
+      if (!user) return null;
+      const { data, error } = await supabase
+        .from("blog_posts")
+        .select("*")
+        .eq("id", id)
+        .eq("author_id", user.id)
+        .maybeSingle();
+      if (error) throw error;
+      return data as BlogPost | null;
+    },
+  });
+}
+
 export function useMyBlogPosts() {
   const { user } = useAuth();
   return useQuery({
