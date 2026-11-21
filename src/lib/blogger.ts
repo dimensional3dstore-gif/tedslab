@@ -15,14 +15,17 @@ export type BlogPost = {
   published_at: string | null;
   created_at: string;
   updated_at: string;
+  vote_score?: number;
+  my_vote?: number;
 };
 
 export type BlogPostVote = { post_id: string; user_id: string; value: number };
 export type BlogPostComment = { id: string; post_id: string; author_id: string; body: string; created_at: string };
 
 export function usePublishedBlogPosts() {
+  const { user } = useAuth();
   return useQuery({
-    queryKey: ["blog-posts", "published"],
+    queryKey: ["blog-posts", "published", user?.id],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("blog_posts")
@@ -34,12 +37,16 @@ export function usePublishedBlogPosts() {
       if (!posts.length) return posts;
       const { data: votes, error: voteError } = await supabase
         .from("blog_post_votes")
-        .select("post_id,value")
+        .select("post_id,user_id,value")
         .in("post_id", posts.map((post) => post.id));
       if (voteError) throw voteError;
       const totals = new Map<string, number>();
-      for (const vote of votes ?? []) totals.set(vote.post_id, (totals.get(vote.post_id) ?? 0) + vote.value);
-      return posts.map((post) => ({ ...post, vote_score: totals.get(post.id) ?? 0 })) as (BlogPost & { vote_score: number })[];
+      const mine = new Map<string, number>();
+      for (const vote of votes ?? []) {
+        totals.set(vote.post_id, (totals.get(vote.post_id) ?? 0) + vote.value);
+        if (vote.user_id === user?.id) mine.set(vote.post_id, vote.value);
+      }
+      return posts.map((post) => ({ ...post, vote_score: totals.get(post.id) ?? 0, my_vote: mine.get(post.id) ?? 0 }));
     },
   });
 }
@@ -223,6 +230,47 @@ export function useAddBlogPostComment() {
     },
     onSuccess: (_, variables) => {
       void queryClient.invalidateQueries({ queryKey: ["blog-post-comments", variables.postId] });
+    },
+  });
+}
+
+
+export function useBlogPostVoteSummary(postId: string) {
+  const { user } = useAuth();
+  return useQuery({
+    queryKey: ["blog-post-votes", postId, user?.id],
+    enabled: Boolean(postId),
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("blog_post_votes")
+        .select("user_id,value")
+        .eq("post_id", postId);
+      if (error) throw error;
+      const votes = data ?? [];
+      return {
+        score: votes.reduce((total, vote) => total + vote.value, 0),
+        myVote: votes.find((vote) => vote.user_id === user?.id)?.value ?? 0,
+      };
+    },
+  });
+}
+
+export function useDeleteBlogPostComment() {
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
+  return useMutation({
+    mutationFn: async ({ commentId, postId }: { commentId: string; postId: string }) => {
+      if (!user) throw new Error("Sign in to manage comments.");
+      const { error } = await supabase
+        .from("blog_post_comments")
+        .delete()
+        .eq("id", commentId)
+        .eq("author_id", user.id);
+      if (error) throw error;
+      return postId;
+    },
+    onSuccess: (postId) => {
+      void queryClient.invalidateQueries({ queryKey: ["blog-post-comments", postId] });
     },
   });
 }
