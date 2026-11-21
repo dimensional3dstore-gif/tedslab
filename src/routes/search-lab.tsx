@@ -95,172 +95,34 @@ function SearchLab() {
   const results = useMemo(() => {
     const normalizedQuery = normalize(submittedQuery);
     if (!normalizedQuery) return [];
-
-    const rawTerms = normalizedQuery.split(" ").filter(Boolean);
-    const terms = Array.from(
-      new Set([
-        ...rawTerms,
-        ...rawTerms.flatMap((term) => SEARCH_ALIASES[term] ?? []),
-      ]),
-    );
-
-    function scoreField(text: string, weight: number) {
+    const stopWords = new Set(["what","which","when","where","who","why","how","is","are","the","a","an","of","for","to","in","on","with","and","or","does","do","explain","about"]);
+    const terms = normalizedQuery.split(" ").filter((term) => term && !stopWords.has(term));
+    if (!terms.length) return [];
+    function matches(text: string) {
       const value = normalize(text);
-      if (!value) return { score: 0, matchedTerms: 0 };
-
-      let score = 0;
-      let matchedTerms = 0;
-
-      if (value === normalizedQuery) score += 120 * weight;
-      if (value.includes(normalizedQuery)) score += 70 * weight;
-
-      for (const term of terms) {
-        if (value === term) {
-          score += 45 * weight;
-          matchedTerms += 1;
-        } else if (value.startsWith(term)) {
-          score += 25 * weight;
-          matchedTerms += 1;
-        } else if (value.includes(" " + term + " ")) {
-          score += 20 * weight;
-          matchedTerms += 1;
-        } else if (value.includes(term)) {
-          score += 8 * weight;
-          matchedTerms += 1;
-        }
-      }
-
-      return { score, matchedTerms };
+      const words = new Set(value.split(" "));
+      return terms.filter((term) => words.has(term) || value.includes(normalize(SEARCH_ALIASES[term]?.[0] ?? "\u0000"))).length;
     }
-
-    function makeResult(
-      id: string,
-      title: string,
-      description: string,
-      href: string,
-      type: Result["type"],
-      fields: Array<[string, number]>,
-    ): Result {
-      const titleMatch = scoreField(title, 4);
-      const bodyMatch = fields.reduce(
-        (acc, [text, weight]) => {
-          const result = scoreField(text, weight);
-          return {
-            score: acc.score + result.score,
-            matchedTerms: acc.matchedTerms + result.matchedTerms,
-          };
-        },
-        { score: 0, matchedTerms: 0 },
-      );
-
-      let score = titleMatch.score + bodyMatch.score;
-
-      // Prefer results that match every meaningful query term.
-      const totalMatchedTerms = titleMatch.matchedTerms + bodyMatch.matchedTerms;
-      const coverage = Math.min(totalMatchedTerms, terms.length) / Math.max(terms.length, 1);
-      score += coverage * 60;
-
-      // A title match should beat a weak body-only match.
-      if (titleMatch.matchedTerms > 0) score += 35;
-      if (titleMatch.matchedTerms >= rawTerms.length) score += 45;
-
-      return {
-        id,
-        title,
-        description,
-        href,
-        type,
-        score,
-        matchedTerms: Math.min(
-          terms.length,
-          titleMatch.matchedTerms + bodyMatch.matchedTerms,
-        ),
-      };
+    function makeResult(id: string, title: string, description: string, href: string, type: Result["type"], body: string): Result {
+      const titleHits = matches(title);
+      const summaryHits = matches(description);
+      const bodyHits = matches(body.slice(0, 1800));
+      const matchedTerms = Math.min(terms.length, new Set(terms.filter((term) => [title, description, body.slice(0, 1800)].some((field) => normalize(field).split(" ").includes(term)))).size);
+      const exactPhrase = normalize(title).includes(normalizedQuery) || normalize(description).includes(normalizedQuery);
+      const score = titleHits * 20 + summaryHits * 8 + bodyHits * 2 + (exactPhrase ? 100 : 0);
+      return { id, title, description, href, type, score, matchedTerms };
     }
-
     const all: Result[] = [
-      ...(articles ?? [])
-        .filter((article) => article.published === true)
-        .map((article) =>
-          makeResult(
-            "article-" + article.id,
-            article.title,
-            article.excerpt ??
-              article.body
-                ?.replace(/<[^>]+>/g, " ")
-                .replace(/\s+/g, " ")
-                .trim()
-                .slice(0, 180) ??
-              "",
-            "/articles/" + article.slug,
-            "Article",
-            [
-              [article.excerpt ?? "", 2],
-              [article.body ?? "", 1],
-              [article.subject_slug ?? "", 2],
-              [article.topic_slug ?? "", 2],
-            ],
-          ),
-        ),
-      ...(subjects ?? []).map((subject) =>
-        makeResult(
-          "subject-" + subject.id,
-          subject.title,
-          subject.description ?? "",
-          "/" + subject.slug,
-          "Subject",
-          [[subject.description ?? "", 2], [subject.slug ?? "", 2]],
-        ),
-      ),
-      ...(topics ?? []).map((topic) =>
-        makeResult(
-          "topic-" + topic.id,
-          topic.title,
-          topic.blurb ??
-            topic.body
-              ?.replace(/<[^>]+>/g, " ")
-              .replace(/\s+/g, " ")
-              .trim()
-              .slice(0, 180) ??
-            "",
-          "/" + topic.subject_slug + "/" + topic.slug,
-          "Topic",
-          [
-            [topic.blurb ?? "", 2],
-            [topic.body ?? "", 1],
-            [topic.subject_slug ?? "", 2],
-            [topic.slug ?? "", 2],
-          ],
-        ),
-      ),
-      ...(pages ?? [])
-        .filter((page) => page.published === true)
-        .map((page) =>
-          makeResult(
-            "page-" + page.id,
-            page.title,
-            page.description ?? "",
-            "/pages/" + page.slug,
-            "Page",
-            [
-              [page.description ?? "", 2],
-              [page.body ?? "", 1],
-              [page.slug ?? "", 2],
-            ],
-          ),
-        ),
+      ...(articles ?? []).filter((article) => article.published === true).map((article) => makeResult("article-" + article.id, article.title, article.excerpt ?? "", "/articles/" + article.slug, "Article", [article.subject_slug ?? "", article.topic_slug ?? "", article.body ?? ""].join(" "))),
+      ...(subjects ?? []).map((subject) => makeResult("subject-" + subject.id, subject.title, subject.description ?? "", "/" + subject.slug, "Subject", subject.slug ?? "")),
+      ...(topics ?? []).map((topic) => makeResult("topic-" + topic.id, topic.title, topic.blurb ?? "", "/" + topic.subject_slug + "/" + topic.slug, "Topic", [topic.subject_slug ?? "", topic.body ?? ""].join(" "))),
+      ...(pages ?? []).filter((page) => page.published === true).map((page) => makeResult("page-" + page.id, page.title, page.description ?? "", "/pages/" + page.slug, "Page", [page.slug ?? "", page.body ?? ""].join(" "))),
     ];
-
-    return all
-      .filter((result) => result.matchedTerms > 0 && result.score > 0)
+    const requiredCoverage = terms.length <= 2 ? 1 : 0.75;
+    return all.filter((result) => result.matchedTerms / terms.length >= requiredCoverage)
+      .filter((result) => normalize(result.title).includes(normalizedQuery) || normalize(result.description).includes(normalizedQuery) || terms.some((term) => normalize(result.title).split(" ").includes(term)))
       .filter((result) => filter === "All" || result.type === filter)
-      .sort(
-        (a, b) =>
-          b.score - a.score ||
-          b.matchedTerms - a.matchedTerms ||
-          a.title.localeCompare(b.title),
-      )
-      .slice(0, 50);
+      .sort((a, b) => b.score - a.score || b.matchedTerms - a.matchedTerms || a.title.localeCompare(b.title)).slice(0, 12);
   }, [articles, subjects, topics, pages, submittedQuery, filter]);
 
   useEffect(() => {
@@ -279,7 +141,7 @@ function SearchLab() {
       setAiError(false);
       setAiGrounded(false);
 
-      const context = results.slice(0, 12).map((result, index) =>
+      const context = results.slice(0, 8).map((result, index) =>
         (index + 1) + ". " + result.title + " [" + result.type + "]\nURL: " + result.href + "\nSummary: " + result.description
       ).join("\n\n");
 
@@ -303,7 +165,7 @@ function SearchLab() {
         const response = await fetch("/llm/api/ai", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ prompt, query: submittedQuery, results: results.slice(0, 12) }),
+          body: JSON.stringify({ prompt, query: submittedQuery, results: results.slice(0, 8) }),
         });
 
         const data = (await response.json()) as {
@@ -619,7 +481,7 @@ function SearchLab() {
             <div className="mt-8 flex items-center justify-center gap-2 text-xs text-muted-foreground">
               <Globe2 className="size-3.5" />
               <span>
-                Results from Ted's Lab, with AI Overview grounded in live web research when available.
+                Only closely relevant Ted's Lab matches are shown. AI Overview answers your question directly.
               </span>
             </div>
           </section>
