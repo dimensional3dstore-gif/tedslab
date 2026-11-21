@@ -1,8 +1,23 @@
-import { readdir, readFile, writeFile } from "node:fs/promises";
+import { access, readdir, readFile, writeFile } from "node:fs/promises";
 import { join, relative, resolve } from "node:path";
 
-// TanStack Start + Nitro's Vercel preset writes browser assets here.
-const staticDir = resolve(".vercel/output/static");
+const staticDirCandidates = [
+  resolve(".vercel/output/static"),
+  resolve(".output/public"),
+];
+let staticDir;
+for (const candidate of staticDirCandidates) {
+  try {
+    await access(join(candidate, "sw.js"));
+    staticDir = candidate;
+    break;
+  } catch {
+    // Try the next output layout used by the configured Nitro preset.
+  }
+}
+if (!staticDir) {
+  throw new Error(`Service worker was not found in: ${staticDirCandidates.join(", ")}`);
+}
 const swPath = join(staticDir, "sw.js");
 
 async function walk(dir) {
