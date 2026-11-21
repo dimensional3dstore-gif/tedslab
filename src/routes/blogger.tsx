@@ -50,7 +50,10 @@ function BloggerPage() {
                 ))}
               </div>
               {user ? (
-                <Link to="/blogger/new" className="inline-flex items-center gap-2 rounded-lg bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground"><PenLine className="size-3.5" />Create post</Link>
+                <div className="flex flex-wrap items-center gap-2">
+                  <Link to="/blogger/mine" className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-xs font-semibold hover:border-primary/40">My blogs</Link>
+                  <Link to="/blogger/new" className="inline-flex items-center gap-2 rounded-lg bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground"><PenLine className="size-3.5" />Create post</Link>
+                </div>
               ) : (
                 <span className="text-xs text-muted-foreground">Sign in to post, vote and comment</span>
               )}
