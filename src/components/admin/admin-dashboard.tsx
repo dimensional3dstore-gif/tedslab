@@ -215,7 +215,7 @@ export function AdminDashboard() {
         <h3 className="mb-4 text-lg font-semibold">Publishing Studio</h3>
         <p className="mb-4 text-sm text-muted-foreground">Jump directly into the workflows that build Ted's Lab's scientific knowledge base.</p>
         <div className="grid gap-2 md:grid-cols-2">
-          <Link to="/admin/articles/new" className="rounded-md border border-primary/30 bg-primary/5 p-3 text-sm font-semibold text-primary hover:bg-primary/10">→ Create Article</Link>
+          <Link to="/admin/articles/new" className="rounded-md border border-primary/30 bg-primary/5 p-3 text-sm font-semibold text-primary hover:bg-primary/10">→ Write & Publish Article</Link>
           <Link to="/admin/articles" className="rounded-md border border-border p-3 text-sm font-medium hover:bg-accent">→ Manage Articles & Annotate</Link>
           <Link to="/admin/sections" className="rounded-md border border-border p-3 text-sm font-medium hover:bg-accent">→ Create & Manage Sections</Link>
           <Link to="/admin/topics" className="rounded-md border border-border p-3 text-sm font-medium hover:bg-accent">→ Create & Manage Topics</Link>
