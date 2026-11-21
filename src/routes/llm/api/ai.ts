@@ -12,9 +12,44 @@ type SearchResult = {
   description?: string;
 };
 
+function isMathQuery(query: string) {
+  const normalized = query.toLowerCase().trim();
+  return (
+    /\\b(what is|calculate|compute|solve|evaluate|equals|how much is)\\b/.test(normalized) &&
+    /[0-9]/.test(normalized)
+  ) || /^\\s*[0-9().+\\-*/%^= ]+\\s*$/.test(normalized);
+}
+
+function tryCalculate(query: string) {
+  if (!isMathQuery(query)) return null;
+  let expression = query
+    .toLowerCase()
+    .replace(/what is|calculate|compute|solve|evaluate|equals|how much is/g, "")
+    .replace(/x/g, "*")
+    .replace(/÷/g, "/")
+    .replace(/[^0-9().+\\-*/%^ ]/g, "")
+    .trim();
+
+  if (!expression || !/[0-9]/.test(expression)) return null;
+
+  try {
+    // Only arithmetic characters reach this evaluator.
+    const value = Function("return (" + expression.replace(/%/g, "/100") + ")")();
+    if (typeof value !== "number" || !Number.isFinite(value)) return null;
+    return Number.isInteger(value) ? String(value) : String(Number(value.toFixed(10)));
+  } catch {
+    return null;
+  }
+}
+
 function deterministicFallback(prompt: string) {
   const query = prompt.match(/User query:\s*([^\n]+)/i)?.[1]?.trim() || "this search";
   const resultText = prompt.match(/Search results:\s*([\s\S]*)$/i)?.[1]?.trim() || "";
+  const calculation = tryCalculate(query);
+
+  if (calculation !== null) {
+    return "The answer is " + calculation + ".";
+  }
 
   if (!resultText || resultText === "(No matching Ted's Lab results were found.)") {
     return "I couldn't find a strong match for “" + query + "” in Ted's Lab. Try a broader term, a subject name, or a different spelling.";
@@ -151,7 +186,7 @@ async function requestOpenRouter(apiKey: string, model: string, prompt: string) 
           {
             role: "system",
             content:
-              "You are Ted's Lab AI Overview engine. Synthesize the supplied Ted's Lab search results. Give a direct answer first, then useful context. Prefer supplied results, never invent facts, and keep the answer concise. If results are empty, explain that no strong Ted's Lab match was found and suggest how to refine the search.",
+              "You are Ted's Lab AI Overview engine. Answer the user's actual question first; search results are supporting context, not the answer itself. For arithmetic or mathematical questions, solve the problem accurately and show the calculation briefly. Never respond to a mathematical question by merely summarizing unrelated search results. For factual questions, use the supplied results and web evidence when available. Never invent facts. Keep answers concise and direct. If search results are unrelated, ignore them rather than forcing them into the answer.",
           },
           { role: "user", content: prompt },
         ],
@@ -214,11 +249,12 @@ export const Route = createFileRoute("/llm/api/ai")({
           }
 
           const suggestion = spellingSuggestion(query, results);
+          const calculation = tryCalculate(query);
           const apiKey = process.env.OPENROUTER_API_KEY;
 
           if (!apiKey) {
             return Response.json({
-              answer: deterministicFallback(prompt),
+              answer: calculation !== null ? "The answer is " + calculation + "." : deterministicFallback(prompt),
               grounded: false,
               spellingSuggestion: suggestion,
               fallback: true,
@@ -246,7 +282,7 @@ export const Route = createFileRoute("/llm/api/ai")({
           }
 
           if (!answer) {
-            answer = deterministicFallback(prompt);
+            answer = calculation !== null ? "The answer is " + calculation + "." : deterministicFallback(prompt);
           }
 
           return Response.json({
