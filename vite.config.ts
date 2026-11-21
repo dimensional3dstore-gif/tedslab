@@ -5,9 +5,25 @@
 //     React/TanStack dedupe, error logger plugins, and sandbox detection (port/host/strictPort).
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
+import fs from "node:fs";
 import path from "node:path";
 
 const quantumpaediaRoot = path.resolve(process.cwd(), "src/apps/quantumpaedia");
+
+function resolveQuantumpaediaImport(source: string) {
+  const relativePath = source.slice(2);
+  const candidates = [
+    path.resolve(quantumpaediaRoot, relativePath),
+    ...[".js", ".jsx", ".ts", ".tsx"].map((ext) =>
+      path.resolve(quantumpaediaRoot, relativePath + ext),
+    ),
+    ...["index.js", "index.jsx", "index.ts", "index.tsx"].map((file) =>
+      path.resolve(quantumpaediaRoot, relativePath, file),
+    ),
+  ];
+
+  return candidates.find((candidate) => fs.existsSync(candidate)) ?? null;
+}
 
 export default defineConfig({
   define: {
@@ -27,7 +43,10 @@ export default defineConfig({
         // Its original "@/..." imports must resolve inside that app rather than the
         // Ted's Lab root src directory. Returning an absolute path avoids re-entering
         // the root @ alias and makes this deterministic in Vite/Rolldown production builds.
-        return path.resolve(quantumpaediaRoot, source.slice(2));
+        // Vite/Rolldown may invoke resolution before its normal extension
+        // probing. Resolve the imported file explicitly so production builds do not
+        // report Quantumpaedia's original "@/..." imports as unloadable dependencies.
+        return resolveQuantumpaediaImport(source);
       },
     }],
   },
