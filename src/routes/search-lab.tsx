@@ -496,27 +496,32 @@ function resultCountLabel(count: number) {
 }
 
 
+function renderAiInline(text: string, keyPrefix: string) {
+  const tokens = text.split(/(\\[[^\\]]+\\]\\(https?:\\/\\/[^\\s)]+\\)|\\*\\*[^*]+\\*\\*)/g);
+  return tokens.map((token, index) => {
+    const link = token.match(/^\\[([^\\]]+)\\]\\((https?:\\/\\/[^\\s)]+)\\)$/);
+    if (link) return <a key={keyPrefix + index} href={link[2]} target="_blank" rel="noreferrer" className="text-primary underline underline-offset-2 hover:opacity-80">{link[1]}</a>;
+    const bold = token.match(/^\\*\\*(.+)\\*\\*$/);
+    if (bold) return <strong key={keyPrefix + index} className="font-semibold text-foreground">{bold[1]}</strong>;
+    return <span key={keyPrefix + index}>{token}</span>;
+  });
+}
+
 function renderAiAnswer(answer: string) {
-  const parts = answer.split(/(\[[^\]]+\]\(https?:\/\/[^\s)]+\))/g);
+  const blocks = answer.trim().split(/\\n\\s*\\n/);
   return (
-    <>
-      {parts.map((part, index) => {
-        const match = part.match(/^\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)$/);
-        if (match) {
-          return (
-            <a
-              key={index}
-              href={match[2]}
-              target="_blank"
-              rel="noreferrer"
-              className="text-primary underline underline-offset-2 hover:opacity-80"
-            >
-              {match[1]}
-            </a>
-          );
+    <div className="space-y-3">
+      {blocks.map((block, index) => {
+        const lines = block.split(/\\r?\\n/).filter(Boolean);
+        if (lines.length && lines.every((line) => /^\\s*[-*]\\s+/.test(line))) {
+          return <ul key={index} className="list-disc space-y-1 pl-5">{lines.map((line, lineIndex) => <li key={lineIndex}>{renderAiInline(line.replace(/^\\s*[-*]\\s+/, ""), index + "-" + lineIndex)}</li>)}</ul>;
         }
-        return <span key={index}>{part}</span>;
+        return <div key={index} className="space-y-1">{lines.map((line, lineIndex) => {
+          const heading = line.match(/^#{1,3}\\s+(.+)$/);
+          if (heading) return <h3 key={lineIndex} className="pt-1 text-base font-semibold text-foreground">{renderAiInline(heading[1], index + "-" + lineIndex)}</h3>;
+          return <p key={lineIndex}>{renderAiInline(line, index + "-" + lineIndex)}</p>;
+        })}</div>;
       })}
-    </>
+    </div>
   );
 }
