@@ -79,7 +79,6 @@ function SearchLab() {
   const [aiLoading, setAiLoading] = useState(false);
   const [aiError, setAiError] = useState(false);
   const [aiGrounded, setAiGrounded] = useState(false);
-  const [aiGrounded, setAiGrounded] = useState(false);
 
   const contentLoading =
     articlesLoading || subjectsLoading || topicsLoading || pagesLoading;
@@ -275,7 +274,6 @@ function SearchLab() {
 
       setAiLoading(true);
       setAiError(false);
-      setAiGrounded(false);
       setAiGrounded(false);
 
       const context = results.slice(0, 12).map((result, index) =>
